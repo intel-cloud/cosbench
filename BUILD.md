@@ -6,15 +6,18 @@ under "dev" folder.
 
 Directory structure
 -------------------
-#  + adaptor-dev  	# a sample project for adaptor development
-#	+ dev				# all cosbench plugin projects
-#	+ dist				# all library
-#	+ version			# major binary versions
-#	+ release			# supporting files for release
-#		+ conf			# system and workload configuration files
-#		+ javadoc		# java doc files
-#		+ lib-src		# the corresponding source code for CDDL libraries
-#		+ licenses		# licenses for third-party libraries
+  
+${ROOT}
+  
+    + adaptor-dev  	  	(a sample project for adaptor development)    
+    + dev				(all cosbench plugin projects)
+    + dist				(all libraries)
+    + version			(major binary versions)
+    + release			(supporting files for release)
+      + conf			(system and workload configuration files)
+      + javadoc		    (java doc files)
+      + lib-src		    (the corresponding source code for CDDL libraries)
+      + licenses		(licenses for third-party libraries)
 
 
 COSBench is developed with Java* language, it is a modular system based on OSGi* framework, and includes a few OSGi plugin projects 
