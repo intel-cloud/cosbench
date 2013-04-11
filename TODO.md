@@ -6,7 +6,7 @@ COSBench is an ongoing project, in next six months, we plan to make below improv
 
 2. async http request
 
-3. usability enhancement, e.g. xml validator.
+3. usability enhancement, e.g. xml validator, error handling
 
 4. document improvement
 
