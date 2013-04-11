@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: COSBench Web Core Bundle
+Bundle-SymbolicName: cosbench-core-web
+Bundle-Version: 0.3.0.0
+Bundle-Vendor: intel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.intel.cosbench.web
+Import-Package: javax.servlet;version="[2.5.0,3.0.0)",
+ javax.servlet.http;version="[2.5.0,3.0.0)",
+ org.springframework.web.servlet;version="[3.0.0,4.0.0)",
+ org.springframework.web.servlet.mvc;version="[3.0.0,4.0.0)"

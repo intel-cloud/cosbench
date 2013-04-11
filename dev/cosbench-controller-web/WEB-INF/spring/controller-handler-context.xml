@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="indexHandler" name="/cli/index.action"
+		class="com.intel.cosbench.controller.handler.IndexHandler">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="submitHandler" name="/cli/submit.action"
+		class="com.intel.cosbench.controller.handler.SubmitHandler">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="configHandler" name="/cli/config.action"
+		class="com.intel.cosbench.controller.handler.ConfigHandler">
+		<property name="controller" ref="controller" />
+	</bean>
+	
+	<bean id="workloadHandler" name="/cli/workload.action"
+		class="com.intel.cosbench.controller.handler.WorkloadHandler">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="cancelHandler" name="/cli/cancel.action"
+		class="com.intel.cosbench.controller.handler.CancelHandler">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="urlHandler"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	</bean>
+
+</beans>

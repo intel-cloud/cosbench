@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: COSBench Log Bundle
+Bundle-SymbolicName: cosbench-log
+Bundle-Version: 0.3.0.0
+Bundle-Activator: com.intel.cosbench.log.osgi.Activator
+Bundle-Vendor: intel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.commons.io;version="[1.4.0,2.0.0)",
+ org.apache.log4j;version="[1.2.15,2.0.0)",
+ org.apache.log4j.spi;version="[1.2.15,2.0.0)",
+ org.apache.log4j.varia;version="[1.2.15,2.0.0)",
+ org.osgi.framework,
+ org.slf4j.helpers;version="[1.5.6,1.6.0)"
+Export-Package: com.intel.cosbench.log

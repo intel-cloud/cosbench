@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+
+	<!-- Application Name -->
+
+	<display-name>COSBench Controller</display-name>
+
+	<!-- Servlet Configuration and Mapping -->
+
+	<servlet>
+		<servlet-name>main</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+		</init-param>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/controller-web-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>*.csv</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>client</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+		</init-param>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/controller-handler-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>client</servlet-name>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>resource</servlet-name>
+		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>0</param-value>
+		</init-param>
+		<init-param>
+			<param-name>listings</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>resource</servlet-name>
+		<url-pattern>*.css</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>resource</servlet-name>
+		<url-pattern>*.png</url-pattern>
+	</servlet-mapping>
+
+	<!-- Spring Context Facilities Configuration -->
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+      /WEB-INF/spring/controller-web-osgi-context.xml
+    </param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>png</extension>
+		<mime-type>image/png</mime-type>
+	</mime-mapping>
+
+	<welcome-file-list>
+		<welcome-file>/index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

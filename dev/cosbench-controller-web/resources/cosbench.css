@@ -1,0 +1,239 @@
+/* ---------------------------------------
+ * Basic Styles
+ * --------------------------------------- */
+html {
+	color: #555;
+	font-size: 16px;
+	font-weight: normal;
+	font-family: verdana, tahoma, sans-serif;
+	font-weight: normal;
+}
+
+h2 {
+	padding: 0px;
+	margin: 18px 0px;
+	font-size: 24px;
+}
+
+h3 {
+	padding: 0px;
+	margin: 15px 0px;
+	color: #086DB6;
+	font-size: 22px;
+	font-weight: normal;
+}
+
+a {
+	color: #086DB6;
+}
+
+a:visited {
+	color: #555;
+}
+
+.content {
+	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* ---------------------------------------
+ * Header Styles
+ * --------------------------------------- */
+#header {
+	color: white;
+	background: transparent url('bg-header.png') repeat-x left top;
+	height: 65px;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+#title {
+	float: left;
+	font-size: 28px;
+	font-variant: small-caps;
+	position: relative;
+	top: 12px;
+}
+
+#title .codename {
+	font-size: 34px;
+	font-weight: bold;
+}
+
+#version {
+	float: right;
+	text-align: right;
+	position: relative;
+	top: 15px;
+}
+
+/* ---------------------------------------
+ * Footer Styles
+ * --------------------------------------- */
+#footer {
+	color: white;
+	background: url('bg-footer.png') repeat-x left bottom;
+	height: 35px;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+#footer .content {
+	font-size: 14px;
+	margin-top: 10px;
+}
+
+/* ---------------------------------------
+ * Main Styles
+ * --------------------------------------- */
+#main {
+	
+}
+
+.a1 {
+	width: 1000px;
+	padding: 5px;
+	margin: 15px 0px;
+}
+
+.a2 {
+	width: 900px;
+	padding: 5px;
+	margin: 15px 0px;
+}
+
+.a3 {
+	width: 800px;
+	padding: 5px;
+	margin: 15px 0px;
+	margin-left: 50px;
+}
+
+.top {
+	height: 47px;
+}
+
+.bottom {
+	height: 30px;
+}
+
+.form {
+	margin: 5px 0px 5px 0px;
+	padding: 5px 5px 5px 5px;
+	background: #EEEEEE;
+	border-top: 1px solid #C3C3C3;
+	border-bottom: 1px solid #C3C3C3;
+}
+
+.workflow {
+	margin: 10px 0px 10px 0px;
+	padding: 20px;
+	border-radius: 3px;
+	background: #FFFFCC;
+	border: 1px solid #C3C3C3;
+}
+
+/* ---------------------------------------
+ * Table Styles
+ * --------------------------------------- */
+.info-table {
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px #E1E1E1;
+	border-collapse: collapse;
+}
+
+.info-table th {
+	padding: 2px;
+	color: #FFFFFF;
+	background-color: #555555;
+}
+
+.info-table th:hover {
+	background-color: #333333;
+}
+
+.info-table th.id {
+	color: #555555;
+	background: #BBBBAA;
+}
+
+.info-table th.id:hover {
+	background-color: #E1E1E1;
+}
+
+.info-table td {
+	padding: 2px;
+	border-top: solid 1px #E1E1E1;
+	background-color: #FFFFFF;
+}
+
+.info-table tr.high-light td {
+	background: #F4F4F4;
+}
+
+.info-table tr:hover td {
+	background-color: #CCD9E9;
+}
+
+/* ---------------------------------------
+ * Text Styles
+ * --------------------------------------- */
+.error {
+	color: red;
+}
+
+.success {
+	color: green;
+}
+
+.warn {
+	color: orange;
+}
+
+.low {
+	color:silver;
+}
+
+.label {
+	margin-right: 10px;
+}
+
+.checkbox {
+	margin-right: 5px;
+}
+
+.grid {
+	margin-right: 10px;
+}
+
+/* ---------------------------------------
+ * State Styles
+ * --------------------------------------- */
+.state {
+	padding: 2px;
+	color: #FFFFFF;
+	border-radius: 3px;
+	font-size: 12px;
+	background-color: #9ACD32;
+}
+
+.workload-state-queuing,.stage-state-waiting,.task-state-created,.mission-state-submitted
+	{
+	background-color: #D2B48C;
+}
+
+.workload-state-finished,.stage-state-completed,.task-state-accomplished,.mission-state-accomplished
+	{
+	background-color: #18A9FF;
+}
+
+.workload-state-cancelled,.workload-state-terminated,.stage-state-cancelled,.stage-state-aborted,.stage-state-terminated,.task-state-aborted,.task-state-terminated,.mission-state-aborted,.mission-state-terminated
+	{
+	background-color: #FF3366;
+}

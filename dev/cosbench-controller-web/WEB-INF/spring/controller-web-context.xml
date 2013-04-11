@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="indexPageController" name="/index.html"
+		class="com.intel.cosbench.controller.web.IndexPageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="matrixPageController" name="/matrix.html"
+		class="com.intel.cosbench.controller.web.MatrixPageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="submitPageController" name="/submit.html"
+		class="com.intel.cosbench.controller.web.SubmitPageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="workloadSubmissionController" name="/submit-workload.do"
+		class="com.intel.cosbench.controller.web.WorkloadSubmissionController">
+		<property name="controller" ref="controller" />
+	</bean>
+	
+	<bean id="configPageController" name="/config.html"
+		class="com.intel.cosbench.controller.web.ConfigPageController">
+		<property name="controller" ref="controller" />
+	</bean>
+	
+	<bean id="workloadConfigurationController" name="/config-workload.do"
+		class="com.intel.cosbench.controller.web.WorkloadConfigurationController">
+		<property name="controller" ref="controller" />
+	</bean>	
+
+	<bean id="workloadPageController" name="/workload.html"
+		class="com.intel.cosbench.controller.web.WorkloadPageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="cancelWorkloadController" name="/cancel-workload.do"
+		class="com.intel.cosbench.controller.web.CancelWorkloadController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="downloadLogController" name="/download-log.do"
+		class="com.intel.cosbench.controller.web.DownloadLogController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="downloadConfigController" name="/download-config.do"
+		class="com.intel.cosbench.controller.web.DownloadConfigController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="stagePageController" name="/stage.html"
+		class="com.intel.cosbench.controller.web.StagePageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="timelinePageController" name="/timeline.html"
+		class="com.intel.cosbench.controller.web.TimelinePageController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="timelineCsvController" name="/timeline.csv"
+		class="com.intel.cosbench.controller.web.TimelineCSVController">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="urlHandler"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	</bean>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/freemarker/" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="defaultEncoding">UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="fmViewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="order" value="1" />
+	</bean>
+
+</beans>

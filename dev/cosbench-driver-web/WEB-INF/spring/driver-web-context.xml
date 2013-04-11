@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="indexPageController" name="/index.html"
+		class="com.intel.cosbench.driver.web.IndexPageController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="submitPageController" name="/submit.html"
+		class="com.intel.cosbench.driver.web.SubmitPageController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="missionPageController" name="/mission.html"
+		class="com.intel.cosbench.driver.web.MissionPageController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="workersPageController" name="/workers.html"
+		class="com.intel.cosbench.driver.web.WorkersPageController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="missionSubmissionController" name="/submit-mission.do"
+		class="com.intel.cosbench.driver.web.MissionSubmissionController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="performLoginController" name="/perform-login.do"
+		class="com.intel.cosbench.driver.web.PerformLoginController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="launchMissionController" name="/launch-mission.do"
+		class="com.intel.cosbench.driver.web.LaunchMissionController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="closeMissionController" name="/close-mission.do"
+		class="com.intel.cosbench.driver.web.CloseMissionController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="abortMissionController" name="/abort-mission.do"
+		class="com.intel.cosbench.driver.web.AbortMissionController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="urlHandler"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	</bean>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/freemarker/" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="defaultEncoding">UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="fmViewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="order" value="1" />
+	</bean>
+
+</beans>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="pingHandler" name="/i/ping.command"
+		class="com.intel.cosbench.driver.handler.PingHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="submitHandler" name="/i/submit.command"
+		class="com.intel.cosbench.driver.handler.SubmitHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="loginHandler" name="/i/login.command"
+		class="com.intel.cosbench.driver.handler.LoginHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="launchHandler" name="/i/launch.command"
+		class="com.intel.cosbench.driver.handler.LaunchHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="queryHandler" name="/i/query.command"
+		class="com.intel.cosbench.driver.handler.QueryHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="closeHandler" name="/i/close.command"
+		class="com.intel.cosbench.driver.handler.CloseHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="abortHandler" name="/i/abort.command"
+		class="com.intel.cosbench.driver.handler.AbortHandler">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="urlHandler"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	</bean>
+
+</beans>

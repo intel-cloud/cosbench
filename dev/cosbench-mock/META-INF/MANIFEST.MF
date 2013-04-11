@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: COSBench Mock Client Bundle
+Bundle-SymbolicName: cosbench-mock
+Bundle-Version: 0.3.0.0
+Bundle-Vendor: intel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.intel.cosbench.api.auth,
+ com.intel.cosbench.api.storage,
+ com.intel.cosbench.api.context,
+ com.intel.cosbench.config,
+ com.intel.cosbench.log,
+ org.apache.commons.io;version="[1.4.0,2.0.0)",
+ org.apache.commons.io.input;version="[1.4.0,2.0.0)",
+ org.apache.commons.io.output;version="[1.4.0,2.0.0)"

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: COSBench Config Bundle
+Bundle-SymbolicName: cosbench-config
+Bundle-Version: 0.3.0.0
+Bundle-Vendor: intel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.intel.cosbench.config,
+ com.intel.cosbench.config.castor,
+ com.intel.cosbench.config.common
+Import-Package: com.intel.cosbench.log,
+ org.apache.commons.configuration;version="[1.5.0,2.0.0)",
+ org.apache.commons.lang;version="2.5.0",
+ org.exolab.castor.mapping;version="[1.2.0,2.0.0)",
+ org.exolab.castor.xml;version="[1.2.0,2.0.0)"

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapping>
+
+	<class name="com.intel.cosbench.config.Auth">
+
+		<mapt-to xml="auth" />
+
+		<field name="type" type="string">
+			<bind-xml name="type" node="attribute" />
+		</field>
+
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
+
+	</class>
+
+</mapping>
