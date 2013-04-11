@@ -17,6 +17,7 @@ ${ROOT}
       + javadoc		    (java doc files)
       + lib-src		    (the corresponding source code for CDDL libraries)
       + licenses		(licenses for third-party libraries)
+	  + log				(log files)
 
 Overview
 --------
