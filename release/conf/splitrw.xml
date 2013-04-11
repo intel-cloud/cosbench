@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	This workload configuration demostrates how to split read and write to different containers. it's using 
+	amplistor as example, similar pattern is also applicable to other storage systems. 
+	
+	To split reads and writes to different containters, user can set different container range in “containers” parameter in “config” as following:
+		<operation type=”read” ratio=”80” config=”containers=u(1,2);objects=u(1,50)” />
+		<operation type=”write” ratio=”20” config=”containers=u(3,4);objects=u(51,100);sizes=c(64)KB” />
+	
+-->
+
+<workload name="splitrw-sample" description="sample benchmark to demostrate how to split read and write">
+
+  <storage type="ampli" config="host=192.168.10.1;port=8080" />
+  
+  <workflow>
+
+    <workstage name="init">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace;policy=b5ca9ef0c5164516815d82255aa1a7ae" />
+ 	  <work type="init" workers="1" config="containers=r(1,4)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="containers=r(1,4);objects=r(1,50);sizes=c(64)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="c1p0" workers="16" runtime="60">
+        <operation type="read" ratio="80" config="containers=u(1,2);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(3,4);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+ 
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="containers=r(1,4);objects=r(1,100)" />
+    </workstage>
+
+    <workstage name="dispose">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace" />
+      <work type="dispose" workers="1" config="containers=r(1,4)" />
+    </workstage>
+
+  </workflow>
+
+</workload>
