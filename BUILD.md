@@ -3,7 +3,7 @@ Directory structure
   
 ${ROOT}
   
-    + adaptor-dev        (a sample project for adaptor development)    
+    + adaptor-dev      	(a sample project for adaptor development)    
     + dev				(all cosbench plugin projects)
     + dist				(all libraries)
 		+ main			(the osgi launcher)
@@ -17,7 +17,6 @@ ${ROOT}
       + javadoc		    (java doc files)
       + lib-src		    (the corresponding source code for CDDL libraries)
       + licenses		(licenses for third-party libraries)
-	  + log				(log files)
 
 Overview
 --------
@@ -44,6 +43,10 @@ normally, it's "Running Platform". Selecting "Edit..." button to add required pl
 5. In COSBench, 3 folders under "dist" folder for plugins should be included: "main", "osgi" and "osgi\libs". After added those folders, then apply changes.
 
 6. Those error signs should disappear, then the development environment is ready.
+
+7. After applied modifications on one project, just generate the plugins by right clicking the project, and select "export... -> Plug-in Development -> Deployable plugins and fragments", and set the "Directory" to "dist\osgi" folder. Then the plugins libary will be placed at "dist\osgi\plugins" folder.
+
+8. One script called "pack.cmd" or "pack.sh" could help generate one delivable package by passing it the version number.  
 
 
 == END ==

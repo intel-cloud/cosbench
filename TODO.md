@@ -6,13 +6,12 @@ COSBench is an ongoing project, in next six months, we plan to make below improv
 
 2. async http request
 
-3. usability enhancement, e.g. xml validator, error handling
+3. usability enhancement, e.g. xml validator, error handling.
 
 4. document improvement
 
 
 If you have any other suggestions or you want to work with us together. please contact us at yaguang.wang@intel.com.
-
 
 
 == END ==

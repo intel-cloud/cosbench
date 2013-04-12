@@ -25,7 +25,7 @@ Licensing
 
 a) Intel source code is being released under the Apache 2.0 license.
 
-b) Additional libraries used with COSBench have their own licensing; refer to 3rd-party-licenses.htm for details.
+b) Additional libraries used with COSBench have their own licensing; refer to 3rd-party-licenses.pdf for details.
 
 
 Installation & Usage
@@ -56,7 +56,6 @@ Mailing list: (https://groups.google.com/forum/?fromgroups=#!forum/cosbench)
 
 
 *Other names and brands may be claimed as the property of others.
-
 
 
 = END =
