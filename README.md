@@ -46,13 +46,11 @@ If need build from source code, please refer to BUILD.md for details.
 
 Resource
 --------
-Blog: (???)
+Blog: (TBA)
 
 Wiki: (https://github.com/intel-cloud/cosbench/wiki)
 
 Issue tracking: (https://github.com/intel-cloud/cosbench/issues)
-
-Mailing list: (https://groups.google.com/forum/?fromgroups=#!forum/cosbench)
 
 
 *Other names and brands may be claimed as the property of others.
