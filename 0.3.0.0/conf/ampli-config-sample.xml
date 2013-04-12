@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="ampli-sample" description="sample benchmark for amplistor">
+
+  <storage type="ampli" config="host=192.168.10.1;port=8080" />
+  
+  <workflow>
+
+    <workstage name="init">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace;policy=14195ca863764fd48c281cb95c9bd555" />
+ 	  <work type="init" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="containers=r(1,32);objects=r(1,50);sizes=c(64)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="c1p0" workers="16" runtime="300">
+        <storage type="ampli" config="host=192.168.10.1;port=8080" />
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+
+      <work name="c2p0" workers="16" runtime="300">
+        <storage type="ampli" config="host=192.168.10.2;port=8080" />
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+      <work name="c3p0" workers="16" runtime="300">
+        <storage type="ampli" config="host=192.168.10.3;port=8080" />
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="containers=r(1,32);objects=r(1,100)" />
+    </workstage>
+
+    <workstage name="dispose">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace" />
+      <work type="dispose" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+  </workflow>
+
+</workload>

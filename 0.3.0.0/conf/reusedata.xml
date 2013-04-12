@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	This workload configuration is to demostrate how to reuse data for a few different tests, it's using 
+	amplistor as example, similar pattern is also applicable to other storage systems.
+	
+	To reuse data, user needs fill all data, and do all your tests before “cleanup” and “dispose” stages.  
+	The sequence would look like: init->prepare->test1->test2…->cleanup->dispose. 
+	
+-->
+
+<workload name="reusedata-sample" description="sample benchmark to demostrate how to reuse data">
+
+  <storage type="ampli" config="host=192.168.10.1;port=8080" />
+  
+  <workflow>
+    <workstage name="init">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace;policy=b5ca9ef0c5164516815d82255aa1a7ae" />
+ 	  <work type="init" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="10" config="containers=r(1,32);objects=r(1,50);sizes=c(64)KB" />
+    </workstage>
+
+    <workstage name="main_16">
+      <work name="c1p0" workers="16" runtime="60">
+        <storage type="ampli" config="host=192.168.10.1;port=8080" />
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+
+    </workstage>	
+	
+	<workstage name="main_32">
+      <work name="c1p0" workers="32" runtime="60">
+        <storage type="ampli" config="host=192.168.10.1;port=8080" />
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+
+    </workstage>
+	
+	<!-- more main stage can add -->
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="10" config="containers=r(1,32);objects=r(1,100)" />
+    </workstage>
+
+    <workstage name="dispose">
+	  <storage type="ampli" config="host=192.168.10.1;port=8080;nsroot=/manage/namespace" />
+      <work type="dispose" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+	</workflow>
+
+</workload>
