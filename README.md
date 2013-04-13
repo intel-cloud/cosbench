@@ -1,11 +1,11 @@
 COSBench - Cloud Object Storage Benchmark
 =========================================
 
-COSBench is a benchmarking tool to measure the performance of Cloud Object Storage Service. Object storage is an 
-emerging technology which is different traditional File System (e.g. NFS) or Block Device System (e.g. iSCSI), and 
-Amazon* S3 and Openstack* swift are well known object storage solution.
+COSBench is a benchmarking tool to measure the performance of Cloud Object Storage services. Object storage is an 
+emerging technology that is different from traditional file systems (e.g., NFS) or block device systems (e.g., iSCSI).
+Amazon S3 and Openstack* swift are well-known object storage solutions.
 
-COSbench now supports openstack swift and amplidata v2.3, 2.5 and 3.1, also it supports custom adaptor.
+COSBench now supports OpenStack* Swift and Amplidata v2.3, 2.5 and 3.1, as well as custom adaptors.
 
 
 Important Notice and Contact Information
@@ -36,23 +36,23 @@ Please refer to "COSBenchUserGuide.pdf" for details.
 
 Adaptor Development
 -------------------
-If need develop adaptor for new storage service, please refer to "COSBenchAdaptorDevGuide.pdf" for details.
+If needed, adaptors can be developed for new storage services; please refer to "COSBenchAdaptorDevGuide.pdf" for details.
 
 
 Build
 -----
-If need build from source code, please refer to BUILD.md for details.
+If a build from source code is needed, please refer to BUILD.md for details.
 
 
-Resource
---------
-Blog: (???)
+Resources
+---------
+Blog: TBD
 
 Wiki: (https://github.com/intel-cloud/cosbench/wiki)
 
 Issue tracking: (https://github.com/intel-cloud/cosbench/issues)
 
-Mailing list: (https://groups.google.com/forum/?fromgroups=#!forum/cosbench)
+Mailing list: (http://cosbench.1094679.n5.nabble.com/)
 
 
 *Other names and brands may be claimed as the property of others.
