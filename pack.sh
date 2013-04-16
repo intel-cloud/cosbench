@@ -39,6 +39,7 @@ cp -f TODO.md $1/
 
 cp -f COSBenchUserGuide.pdf $1/
 cp -f COSBenchAdaptorDevGuide.pdf $1/
+cp -f 3rd-party-licenses.pdf $1/
 cp -f pkg.lst $1/
 
 

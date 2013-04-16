@@ -42,6 +42,7 @@ xcopy /Y TODO.md %1
 
 xcopy /Y COSBenchUserGuide.pdf %1
 xcopy /Y COSBenchAdaptorDevGuide.pdf %1
+xcopy /Y 3rd-party-licenses.pdf %1
 xcopy /Y pkg.lst %1
 
 echo "Build up adaptor example enviornment"
