@@ -63,12 +63,12 @@ class KeystoneAuth extends NoneAuth {
     public void init(Config config, Logger logger) {
         super.init(config, logger);
 
-        url = config.get(AUTH_URL_KEY, URL_DEFAULT);
+        url = config.get(AUTH_URL_KEY, config.get(AUTH_URL_ALTKEY, URL_DEFAULT));
         username = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         password = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
         userToken = config.get(AUTH_USERTOKEN_KEY, AUTH_USERTOKEN_DEFAULT);
         tenantId = config.get(AUTH_TENANT_ID_KEY, AUTH_TENANT_ID_DEFAULT);
-        tenantName = config.get(AUTH_TENANT_NAME_KEY, AUTH_TENANT_NAME_DEFAULT);
+        tenantName = config.get(AUTH_TENANT_NAME_KEY, config.get(AUTH_TENANT_NAME_ALTKEY, AUTH_TENANT_NAME_DEFAULT));
         service = config.get(AUTH_SERVICE_KEY, AUTH_SERVICE_DEFAULT);
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
 

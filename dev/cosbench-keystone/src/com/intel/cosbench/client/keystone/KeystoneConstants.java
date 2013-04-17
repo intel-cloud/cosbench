@@ -23,6 +23,7 @@ public interface KeystoneConstants {
     // KEYSTONE
     // --------------------------------------------------------------------------
     String AUTH_URL_KEY = "auth_url";
+    String AUTH_URL_ALTKEY = "url";
     String URL_DEFAULT = "http://127.0.0.1:5000/v2.0";
 
     // --------------------------------------------------------------------------
@@ -53,6 +54,7 @@ public interface KeystoneConstants {
     String AUTH_TENANT_ID_DEFAULT = "";
 
     String AUTH_TENANT_NAME_KEY = "tenant_name";
+    String AUTH_TENANT_NAME_ALTKEY = "tenname";
     String AUTH_TENANT_NAME_DEFAULT = "";
 
     String AUTH_SERVICE_KEY = "service";
