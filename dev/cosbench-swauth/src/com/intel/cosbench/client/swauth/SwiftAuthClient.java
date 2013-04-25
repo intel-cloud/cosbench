@@ -66,7 +66,8 @@ public class SwiftAuthClient {
             method.setHeader(X_STORAGE_USER, username);
             method.setHeader(X_STORAGE_PASS, password);
             response = client.execute(method);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_OK) && 
+            		(response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100))) {
                 authToken = response.getFirstHeader(X_AUTH_TOKEN) != null ? response
                         .getFirstHeader(X_AUTH_TOKEN).getValue() : null;
                 storageURL = response.getFirstHeader(X_STORAGE_URL) != null ? response
