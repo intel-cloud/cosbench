@@ -1,3 +1,9 @@
+  COSBench 0.3.0.1 (13-ww17.5)
+------------------------------------
+1. add S3 adapter alpha (#36)
+2. fix a bug which causes can't login to ceph through swift gateway (#38)
+3. support range selector in main stage (#31)
+
   COSBench 0.3.0.0 (13-ww15.5)
 ------------------------------------
 1. rebase version to 0.3.0 for open source
