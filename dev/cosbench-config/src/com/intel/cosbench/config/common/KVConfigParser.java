@@ -48,7 +48,7 @@ public class KVConfigParser {
         String[] kv = StringUtils.split(entry, '=');
         if (kv.length != 2)
             logger.warn("cannot parse config entry {}", entry);
-        config.setProperty(kv[0], kv[1]);
+        config.setProperty(StringUtils.trim(kv[0]), StringUtils.trim(kv[1]));
     }
 
 }
