@@ -17,6 +17,12 @@ limitations under the License.
 
 package com.intel.cosbench.client.http;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.client.HttpClient;
@@ -26,11 +32,16 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.*;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.params.*;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 
 /**
  * This class encapsulates basic HTTP client related functions which are
@@ -51,24 +62,30 @@ public class HttpClientUtil {
      * @return a new HTTP client
      */
     public static HttpClient createHttpClient(int timeout) {
-        SchemeRegistry registry = initSchemeRegistry();
-        ClientConnectionManager cm = new SingleClientConnManager(registry);
-        HttpParams params = createDefaultHttpParams(timeout);
-        return new DefaultHttpClient(cm, params);
+//        SchemeRegistry registry = initSchemeRegistry();
+//        ClientConnectionManager cm = new SingleClientConnManager(registry);
+//        HttpParams params = createDefaultHttpParams(timeout);
+//        return new DefaultHttpClient(cm, params);
+    	
+    	// make it support self-signed certification for https.
+	      HttpParams params = createDefaultHttpParams(timeout);
+	      ClientConnectionManager cm = createClientConnManager();
+	
+	      return new DefaultHttpClient(cm, params);    	
     }
 
-    private static SchemeRegistry initSchemeRegistry() {
-        SchemeRegistry registry = new SchemeRegistry();
-        /* HTTP */
-        SchemeSocketFactory plain = PlainSocketFactory.getSocketFactory();
-        Scheme http = new Scheme("http", 80, plain);
-        registry.register(http);
-        /* HTTPS */
-        SchemeSocketFactory ssl = SSLSocketFactory.getSocketFactory();
-        Scheme https = new Scheme("https", 443, ssl);
-        registry.register(https);
-        return registry;
-    }
+//    private static SchemeRegistry initSchemeRegistry() {
+//        SchemeRegistry registry = new SchemeRegistry();
+//        /* HTTP */
+//        SchemeSocketFactory plain = PlainSocketFactory.getSocketFactory();
+//        Scheme http = new Scheme("http", 80, plain);
+//        registry.register(http);
+//        /* HTTPS */
+//        SchemeSocketFactory ssl = SSLSocketFactory.getSocketFactory();
+//        Scheme https = new Scheme("https", 443, ssl);
+//        registry.register(https);
+//        return registry;
+//    }
 
     private static HttpParams createDefaultHttpParams(int timeout) {
         HttpParams params = new BasicHttpParams();
@@ -81,7 +98,50 @@ public class HttpClientUtil {
         HttpProtocolParams.setUserAgent(params, "cosbench/2.0");
         return params;
     }
+    
+    @SuppressWarnings({ "deprecation"})
+	private static SSLSocketFactory createSSLSocketFactory()
+    {
+    	try
+    	{
+	    	SSLContext ctx = SSLContext.getInstance("TLS"); 
+	        X509TrustManager tm = new X509TrustManager() { 
+	        	@Override
+	            public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException { 
+	            } 
+	        	@Override
+	            public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException { 
+	            } 
+	
+	            public X509Certificate[] getAcceptedIssuers() { 
+	                return null; 
+	            }
+	        }; 
+	        ctx.init(null, new X509TrustManager[]{tm}, null);
+	        String[] enabled = {"SSL_RSA_WITH_NULL_MD5","SSL_RSA_WITH_NULL_SHA"};
+	        ctx.createSSLEngine().setEnabledCipherSuites(enabled);
+	        
+	        SSLSocketFactory ssf = new SSLSocketFactory(ctx); 
+	        ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);     
+	        
+            return ssf;
+        } catch (Exception ex) { 
+            ex.printStackTrace(); 
+            return null; 
+        } 	
+    }
 
+    private static ClientConnectionManager createClientConnManager()
+    {
+        SchemeRegistry sr = new SchemeRegistry();            
+        
+        sr.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+        sr.register(new Scheme("https", 443, createSSLSocketFactory()));
+
+        return new SingleClientConnManager(sr);
+//        return new ThreadSafeClientConnManager(sr);
+    }
+    
     /**
      * Releases the resources held by the given HTTP client.<br />
      * Note that no further connections can be made upon a disposed HTTP client.
