@@ -55,12 +55,4 @@ public class KVConfigParser {
 
         config.setProperty(key, value);
     }
-    
-    public static void main(String[] args)
-    {
-    	KVConfigParser.parse(" name='abc'");
-    	
-    	
-    }
-
 }
