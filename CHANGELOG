@@ -1,4 +1,11 @@
-  COSBench 0.3.0.1 (13-ww17.5)
+  COSBench 0.3.0.7 (13-ww20.4)
+------------------------------------
+1. fix a bug which causes secret key containing "=" doesn't work in s3 adapter (#45)
+2. support self-signed certificate for HTTPS (#15)
+3. revise the fix for range selector in main stage to (#31)
+4. fix a bug which causes inconsistent snapshop data at high concurrency. (#18)
+
+COSBench 0.3.0.1 (13-ww17.5)
 ------------------------------------
 1. add S3 adapter alpha (#36)
 2. fix a bug which causes can't login to ceph through swift gateway (#38)
@@ -72,7 +79,7 @@
 
   COSBench 2.0.1.GA (12-ww34.5)
 ------------------------------------
-1. enhance the content based on internal and external users’ feedback.
+1. enhance the content based on internal and external usersï¿½ feedback.
 2. make policy parameter optional for object related operation
 3. support timeout for amplistor
 4. fix a bug on "reset" button at matrix page
