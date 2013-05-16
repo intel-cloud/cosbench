@@ -29,6 +29,7 @@ import java.util.Date;
 public class Snapshot {
 
     private Report report;
+    private double ratio = 1.0;
     private Date timestamp; /* the time of creation */
 
     private int version; /* snapshot version number */
@@ -51,7 +52,15 @@ public class Snapshot {
     public Report getReport() {
         return report;
     }
-
+    
+    public void setRatio(double ratio) {
+    	this.ratio = ratio;
+    }
+    
+    public double getRatio() {
+    	return ratio;
+    }
+    
     public Date getTimestamp() {
         return timestamp;
     }
