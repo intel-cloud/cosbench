@@ -50,7 +50,10 @@ public class WorkerContext implements WorkerInfo {
     private volatile Report report = new Report();
     /* Each worker has its private random object so as to enhance performance */
     private transient Random random = new Random(RandomUtils.nextLong());
-
+    /* Each worker has its private required version */
+    private volatile int version = 0;
+    private volatile int runlen = 0;
+    
     public WorkerContext() {
         /* empty */
     }
@@ -114,11 +117,49 @@ public class WorkerContext implements WorkerInfo {
 
     @Override
     public Snapshot getSnapshot() {
-        return snapshot;
+    	if(snapshot.getVersion() < version)
+    	{
+    		logger.debug("Worker[{}] : blank snapshot is generated.", index);
+    		Snapshot blankSnapshot = new Snapshot();
+
+    		blankSnapshot.setVersion(version);
+    		blankSnapshot.setMinVersion(version);
+    		blankSnapshot.setMaxVersion(version);
+    		
+    		version++;
+    		runlen++;
+    		
+    		return blankSnapshot;
+    	}
+    
+    	// align snapshot metrics to compensate the under-counting due to blank snapshots.
+    	if(runlen > 0)
+    	{
+	    	Report report = snapshot.getReport();
+	    	double ratio = snapshot.getRatio();
+	    	Metrics[] metrics = report.getAllMetrics();
+	
+	    	for(int i=0; i<metrics.length; i++)
+	    	{
+	    		logger.debug("Worker[{}] : ratio={}", index, ratio);
+	    		metrics[i].setThroughput(metrics[i].getThroughput()*ratio);
+	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*ratio);
+	    	}
+	    	
+	    	runlen = 0;
+    	}
+    	
+    	version++;
+    	
+    	return snapshot;
     }
 
     public void setSnapshot(Snapshot snapshot) {
-        this.snapshot = snapshot;
+    	this.snapshot = snapshot;
+
+    	this.snapshot.setVersion(version);
+    	this.snapshot.setMinVersion(version);
+    	this.snapshot.setMaxVersion(version);
     }
 
     @Override
