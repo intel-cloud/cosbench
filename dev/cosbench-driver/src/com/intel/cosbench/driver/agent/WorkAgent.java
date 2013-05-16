@@ -32,8 +32,6 @@ import com.intel.cosbench.service.AbortedException;
 
 class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
-    private int version; /* snapshot version */
-
     private long start; /* agent startup time */
     private long begin; /* effective workload startup time */
     private long end; /* effective workload shut-down time */
@@ -209,9 +207,10 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
             mark.clear();
         }
         Snapshot snapshot = new Snapshot(report);
-        snapshot.setVersion(version++);
-        snapshot.setMinVersion(snapshot.getVersion());
-        snapshot.setMaxVersion(snapshot.getVersion());
+        snapshot.setRatio((window)/(interval*1000.0));
+//        snapshot.setVersion(version++);
+//        snapshot.setMinVersion(snapshot.getVersion());
+//        snapshot.setMaxVersion(snapshot.getVersion());
         workerContext.setSnapshot(snapshot);
     }
 
