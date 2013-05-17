@@ -45,10 +45,14 @@ public class KVConfigParser {
     }
 
     private static void addConfigEntry(String entry, Configuration config) {
-        String[] kv = StringUtils.split(entry, '=');
-        if (kv.length != 2)
+        int pos = StringUtils.indexOf(entry, '=');
+        if(pos < 0)
             logger.warn("cannot parse config entry {}", entry);
-        config.setProperty(StringUtils.trim(kv[0]), StringUtils.trim(kv[1]));
-    }
+        
+        String key = StringUtils.trim(StringUtils.left(entry,  pos));
+        String value = StringUtils.trim(StringUtils.right(entry,  entry.length() - pos -1));
+        logger.debug("key=" + key + ";value=" + value);
 
+        config.setProperty(key, value);
+    }
 }
