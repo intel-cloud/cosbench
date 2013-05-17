@@ -54,7 +54,7 @@ class RangeIntGenerator implements IntGenerator {
     	int limit = segment + offset + lower;
     	cursor = cursor <= 0 ? limit - segment : cursor + 1;
     	
-    	return cursor < limit ? cursor : -1;
+    	return cursor < limit ? cursor : lower;
     }
     
     public static RangeIntGenerator parse(String pattern) {
