@@ -142,8 +142,8 @@ public class WorkerContext implements WorkerInfo {
 	    	for(int i=0; i<metrics.length; i++)
 	    	{
 	    		logger.debug("Worker[{}] : ratio={}", index, ratio);
-	    		metrics[i].setThroughput(metrics[i].getThroughput()*ratio);
-	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*ratio);
+	    		metrics[i].setThroughput(metrics[i].getThroughput()*(runlen+1));
+	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*(runlen+1));
 	    	}
 	    	
 	    	runlen = 0;
