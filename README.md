@@ -31,7 +31,7 @@ b) Additional libraries used with COSBench have their own licensing; refer to 3r
 Distribution Packages
 ---------------------
 
-Please refer to "DISTRIBUTION.md" to get the link for distribution packages.
+Please refer to "DISTRIBUTIONS.md" to get the link for distribution packages.
 
 
 Installation & Usage
