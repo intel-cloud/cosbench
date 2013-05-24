@@ -44,7 +44,7 @@ public class S3Storage extends NoneStorage {
     	parms.put(PROXY_HOST_KEY, proxyHost);
     	parms.put(PROXY_PORT_KEY, proxyPort);
 
-        logger.info("using storage config: {}", parms);
+        logger.debug("using storage config: {}", parms);
         
         ClientConfiguration clientConf = new ClientConfiguration();
         clientConf.setConnectionTimeout(timeout);
