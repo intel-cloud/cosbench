@@ -1,3 +1,12 @@
+  COSBench 0.3.1.0 (13-ww21.3)
+------------------------------------
+1. revise the fix of inconsistence between snapshot data and report (#18)
+2. a few minor enhancement
+
+  COSBench 0.3.0.8 (13-ww20.5)
+------------------------------------
+1. replace the broken 0.3.0.7 
+
   COSBench 0.3.0.7 (13-ww20.4)
 ------------------------------------
 1. fix a bug which causes secret key containing "=" doesn't work in s3 adapter (#45)
