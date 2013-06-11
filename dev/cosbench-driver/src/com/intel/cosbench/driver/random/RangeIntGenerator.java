@@ -45,7 +45,7 @@ class RangeIntGenerator implements IntGenerator {
     }
 
     @Override
-    public int next(Random random, int idx, int all) {
+    public synchronized int next(Random random, int idx, int all) {
     	int range = upper - lower + 1;
     	int base = range / all;
     	int extra = range % all;
