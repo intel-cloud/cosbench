@@ -6,8 +6,6 @@ import static com.intel.cosbench.client.librados.LibradosConstants.AUTH_USERNAME
 import static com.intel.cosbench.client.librados.LibradosConstants.AUTH_USERNAME_KEY;
 import static com.intel.cosbench.client.librados.LibradosConstants.ENDPOINT_DEFAULT;
 import static com.intel.cosbench.client.librados.LibradosConstants.ENDPOINT_KEY;
-import static com.intel.cosbench.client.librados.LibradosConstants.POOL_DEFAULT;
-import static com.intel.cosbench.client.librados.LibradosConstants.POOL_KEY;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,9 +34,8 @@ public class LibradosStorage extends NoneStorage {
     private String accessKey;
     private String secretKey;
     private String endpoint;
-    private String pool;
 
-    private Rados client;
+    private static Rados client;
 
     public void init(Config config, Logger logger) {
         super.init(config, logger);
@@ -46,22 +43,22 @@ public class LibradosStorage extends NoneStorage {
         this.endpoint = config.get(ENDPOINT_KEY, ENDPOINT_DEFAULT);
         this.accessKey = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         this.secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
-        this.pool = config.get(POOL_KEY, POOL_DEFAULT);
 
         parms.put(ENDPOINT_KEY, endpoint);
         parms.put(AUTH_USERNAME_KEY, accessKey);
         parms.put(AUTH_PASSWORD_KEY, secretKey);
         logger.debug("using storage config: {}", parms);
 
-        client = new Rados(this.accessKey);
-
-        try {
-            client.confSet("key", secretKey);
-            client.confSet("mon_host", this.endpoint);
-            client.connect();
-            logger.debug("Librados client has been initialized");
-        } catch (RadosException e) {
-            throw new StorageException(e);
+        if (client == null) {
+            client = new Rados(this.accessKey);
+            try {
+                client.confSet("key", this.secretKey);
+                client.confSet("mon_host", this.endpoint);
+                client.connect();
+                logger.debug("Librados client has been initialized");
+            } catch (RadosException e) {
+                throw new StorageException(e);
+            }
         }
     }
 
@@ -71,7 +68,7 @@ public class LibradosStorage extends NoneStorage {
 
     public void dispose() {
         super.dispose();
-        client = null;
+//        client = null;
     }
 
     public InputStream getObject(String container, String object, Config config) {
@@ -81,24 +78,35 @@ public class LibradosStorage extends NoneStorage {
         logger.info("Retrieving " + container + "\\" + object);
         IoCTX ioctx;
         try {
-            ioctx = client.ioCtxCreate(this.pool);
+            ioctx = client.ioCtxCreate(container);
             long length = ioctx.stat(object).getSize();
             if (length > (Math.pow(2, 31) - 1)) {
                 throw new StorageException("Object larger than 2GB, handling not implemented");
-                // TODO: implement
+                // TODO: implement - read in parts and concatinate
             }
-            byte[] buf = ioctx.readBytes(object, (int) length, 0);
+            
+            byte[] buf = new byte[(int) length];
+            ioctx.read(object, (int) length, 0, buf);
             stream = new ByteArrayInputStream(buf);
         } catch (RadosException e) {
             throw new StorageException(e);
         }
+        client.ioCtxDestroy(ioctx);
         return stream;
     }
 
     public void createContainer(String container, Config config) {
         super.createContainer(container, config);
         try {
-            client.poolCreate(container);
+            boolean exists = false;
+            for (String pool : client.poolList()) {
+                if (pool.equals(container)) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                client.poolCreate(container);    
+            }
         } catch (RadosException e) {
             throw new StorageException(e);
         }
@@ -115,12 +123,14 @@ public class LibradosStorage extends NoneStorage {
 
     public void createObject(String container, String object, InputStream data, long length, Config config) {
         super.createObject(container, object, data, length, config);
-        byte[] buf = null;
+        byte[] buf = new byte[(int) length];
         try {
             data.read(buf, 0, (int) length);
             IoCTX ioctx = client.ioCtxCreate(container);
             ioctx.write(object, buf);
-        } catch (RadosException | IOException e) {
+        } catch (RadosException e) {
+            throw new StorageException(e);
+        } catch (IOException e) {
             throw new StorageException(e);
         }
     }

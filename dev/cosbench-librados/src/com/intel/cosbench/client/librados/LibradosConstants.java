@@ -12,8 +12,8 @@ public interface LibradosConstants {
     // CONNECTION
     // --------------------------------------------------------------------------
 
-    //String CONN_TIMEOUT_KEY = "timeout";
-    //int CONN_TIMEOUT_DEFAULT = 30000;
+    // String CONN_TIMEOUT_KEY = "timeout";
+    // int CONN_TIMEOUT_DEFAULT = 30000;
     // --------------------------------------------------------------------------
     // ENDPOINT
     // --------------------------------------------------------------------------
@@ -26,22 +26,19 @@ public interface LibradosConstants {
 
     String AUTH_USERNAME_KEY = "accesskey";
     String AUTH_USERNAME_DEFAULT = "";
-    
+
     String AUTH_PASSWORD_KEY = "secretkey";
     String AUTH_PASSWORD_DEFAULT = "";
-    
+
     // --------------------------------------------------------------------------
     // CLIENT CONFIGURATION
     // --------------------------------------------------------------------------
-        String POOL_KEY = "pool";
-        String POOL_DEFAULT = "data";
-    
-    
-    //    String PROXY_HOST_KEY = "proxyhost";
-//    String PROXY_PORT_KEY = "proxyport";    
-    
+
+    // String PROXY_HOST_KEY = "proxyhost";
+    // String PROXY_PORT_KEY = "proxyport";
+
     // --------------------------------------------------------------------------
     // CONTEXT NEEDS FROM AUTH MODULE
     // --------------------------------------------------------------------------
-    //String S3CLIENT_KEY = "s3client";
+    // String S3CLIENT_KEY = "s3client";
 }
