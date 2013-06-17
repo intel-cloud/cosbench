@@ -1,5 +1,4 @@
 /** 
- 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -31,7 +30,7 @@ public interface LibradosConstants {
     // ENDPOINT
     // --------------------------------------------------------------------------
     String ENDPOINT_KEY = "endpoint";
-    String ENDPOINT_DEFAULT = "http://s3.amazonaws.com";
+    String ENDPOINT_DEFAULT = "127.0.0.1";
 
     // --------------------------------------------------------------------------
     // AUTHENTICATION
@@ -42,16 +41,4 @@ public interface LibradosConstants {
 
     String AUTH_PASSWORD_KEY = "secretkey";
     String AUTH_PASSWORD_DEFAULT = "";
-
-    // --------------------------------------------------------------------------
-    // CLIENT CONFIGURATION
-    // --------------------------------------------------------------------------
-
-    // String PROXY_HOST_KEY = "proxyhost";
-    // String PROXY_PORT_KEY = "proxyport";
-
-    // --------------------------------------------------------------------------
-    // CONTEXT NEEDS FROM AUTH MODULE
-    // --------------------------------------------------------------------------
-    // String S3CLIENT_KEY = "s3client";
 }

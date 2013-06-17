@@ -1,3 +1,16 @@
+/** 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. 
+ */
 package com.intel.cosbench.api.librados;
 
 import static org.junit.Assert.assertTrue;
@@ -16,12 +29,10 @@ import org.junit.Test;
 import com.ceph.rados.RadosException;
 import com.intel.cosbench.api.storage.StorageException;
 
-/*
- * TestLibradosStorage.java 28.05.2013
+/**
  * 
- * Copyright (c) 2013 1&1 Internet AG. All rights reserved.
+ * @author Niklas Goerke niklas974@github
  * 
- * $Id$
  */
 
 public class TestLibradosStorage {
@@ -52,7 +63,7 @@ public class TestLibradosStorage {
         // test init via setUp()
     }
 
-    @Test(expected=StorageException.class)
+    @Test(expected = StorageException.class)
     public final void testDispose() {
         storage.dispose();
         storage.createContainer(null, null);
@@ -127,7 +138,7 @@ public class TestLibradosStorage {
         } catch (Throwable e) {
             fail("There Should not be an exception, here");
         }
-        //Expecting an Exception here:
+        // Expecting an Exception here:
         storage.getObject("testcontainer", "testobject", config);
 
         // This will probably never happen…
