@@ -45,6 +45,8 @@ public class Generators {
             return generator;
         if ((generator = RangeIntGenerator.parse(pattern)) != null)
             return generator;
+        if ((generator = SequentialIntGenerator.parse(pattern)) != null)
+            return generator;
         String msg = "unrecognized distribution: " + pattern;
         throw new ConfigException(msg);
     }
