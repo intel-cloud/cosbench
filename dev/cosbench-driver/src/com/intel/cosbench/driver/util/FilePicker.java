@@ -39,7 +39,7 @@ public class FilePicker {
 
     public void init(String range, Config config) {
         String selector = config.get("fileselection").substring(0, 1);
-        objNmGen = Generators.getNameGenerator(selector + range, "", "");
+        this.objNmGen = Generators.getNameGenerator(selector + range, "", "");
     }
 
     public int pickObjKey(Random random) {

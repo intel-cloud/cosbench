@@ -60,10 +60,11 @@ class FileWriter extends AbstractOperator {
         contPicker.init(division, config);
         String filepath = config.get("files");
         folder = new File(filepath);
+        if (!folder.exists()) {
+            throw new RuntimeException("Folder " + filepath + " does not exist.");
+        }
         listOfFiles = folder.listFiles();
-        System.out.println("listOfFiles.length: " + listOfFiles.length);
         String range = "(1," + listOfFiles.length + ")";
-        System.out.println("initialising filePicker, range: " + range);
         filePicker.init(range, config);
     }
 
@@ -79,13 +80,10 @@ class FileWriter extends AbstractOperator {
             doLogErr(session.getLogger(), "fail to perform file filewrite operation, can not read " + folder.getAbsolutePath());
             sample = new Sample(new Date(), OP_TYPE, false);
         }
-
-        // looks kinda ugly, but does make sense…
-
         Random random = session.getRandom();
         String containerName = contPicker.pickContName(random, idx, all);
-
-        // as I said, the 1 from init() is being removed here
+        
+        // as we index arrays starting from 0, we need to remove 1 here
         Integer rand = (filePicker.pickObjKey(random) - 1);
         String filename = null;
         try {
@@ -103,10 +101,8 @@ class FileWriter extends AbstractOperator {
         try {
             FileInputStream fis = new FileInputStream(listOfFiles[rand]);
             sample = doWrite(fis, listOfFiles[rand].length(), containerName, filename, config, session);
-            System.out.println("rand: " + rand + " filename: " + filename + " container " + containerName);
         } catch (FileNotFoundException e) {
             doLogErr(session.getLogger(), "fail to perform file Write operation", e);
-            System.out.println("fail to perform file Write operation " + e.getMessage());
             sample = new Sample(new Date(), OP_TYPE, false);
         }
         session.getListener().onSampleCreated(sample);
