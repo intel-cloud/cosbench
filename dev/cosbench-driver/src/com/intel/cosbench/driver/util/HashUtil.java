@@ -25,17 +25,13 @@ public class HashUtil {
     private MessageDigest algo = null;
     public static final String GUARD = "!!!!";
 
-    public HashUtil() {
+    public HashUtil() throws NoSuchAlgorithmException {
         this("MD5");
     }
 
-    public HashUtil(String _algo) {
-        try {
-            algo = MessageDigest.getInstance(_algo);
-            algo.reset();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("MD5 algorithm is not supported!");
-        }
+    public HashUtil(String _algo) throws NoSuchAlgorithmException {
+        algo = MessageDigest.getInstance(_algo);
+        algo.reset();
     }
 
     public int getHashLen() {

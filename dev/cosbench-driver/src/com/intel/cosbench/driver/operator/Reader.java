@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.driver.operator;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
@@ -105,68 +106,71 @@ class Reader extends AbstractOperator {
     private static boolean validateChecksum(String conName, String objName,
             Session session, InputStream in, OutputStream out)
             throws IOException {
-        HashUtil util = new HashUtil();
-        int hashLen = util.getHashLen();
+        HashUtil util;
+        try {
+            util = new HashUtil();
+            int hashLen = util.getHashLen();
 
-        byte buf1[] = new byte[4096];
-        byte buf2[] = new byte[4096];
+            byte buf1[] = new byte[4096];
+            byte buf2[] = new byte[4096];
 
-        String storedHash = new String();
-        String calculatedHash = new String();
-        int br1 = in.read(buf1);
+            String storedHash = new String();
+            String calculatedHash = new String();
+            int br1 = in.read(buf1);
 
-        if (br1 <= hashLen) {
-            out.write(buf1, 0, br1);
-            String warn = "The size is too small to embed checksum, will skip integrity checking.";
-            doLogWarn(session.getLogger(), warn);
-        }
-
-        while (br1 > hashLen) { // hash is attached in the end.
-            int br2 = in.read(buf2);
-
-            if (br2 < 0) { // reach end of stream
+            if (br1 <= hashLen) {
                 out.write(buf1, 0, br1);
-                util.update(buf1, 0, br1 - hashLen);
-
-                calculatedHash = util.calculateHash();
-                storedHash = new String(buf1, br1 - hashLen, hashLen);
-
-                br1 = 0;
-            } else if (br2 <= hashLen) {
-                out.write(buf1, 0, br1 + br2);
-                util.update(buf1, 0, br1 + br2 - hashLen);
-
-                calculatedHash = util.calculateHash();
-                storedHash = new String(buf1, br1 + br2 - hashLen, hashLen
-                        - br2)
-                        + new String(buf2, 0, br2);
-
-                br1 = 0;
-            } else {
-                out.write(buf1, 0, br1);
-                util.update(buf1, 0, br1);
-
-                System.arraycopy(buf2, 0, buf1, 0, br2);
-
-                br1 = br2;
-            }
-        }
-
-        if (!calculatedHash.equals(storedHash)) {
-            if (storedHash.startsWith(HashUtil.GUARD)) {
-                String err = "Inconsistent Hashes for " + conName + "\\"
-                        + objName + ": calculated=" + calculatedHash
-                        + ", stored=" + storedHash;
-                doLogErr(session.getLogger(), err);
-                return false;
-            } else {
-                String warn = "No checksum embedded in " + conName + "\\"
-                        + objName;
+                String warn = "The size is too small to embed checksum, will skip integrity checking.";
                 doLogWarn(session.getLogger(), warn);
             }
-        }
 
-        return true; /* checksum - okay */
+            while (br1 > hashLen) { // hash is attached in the end.
+                int br2 = in.read(buf2);
+
+                if (br2 < 0) { // reach end of stream
+                    out.write(buf1, 0, br1);
+                    util.update(buf1, 0, br1 - hashLen);
+
+                    calculatedHash = util.calculateHash();
+                    storedHash = new String(buf1, br1 - hashLen, hashLen);
+
+                    br1 = 0;
+                } else if (br2 <= hashLen) {
+                    out.write(buf1, 0, br1 + br2);
+                    util.update(buf1, 0, br1 + br2 - hashLen);
+
+                    calculatedHash = util.calculateHash();
+                    storedHash = new String(buf1, br1 + br2 - hashLen, hashLen - br2) + new String(buf2, 0, br2);
+
+                    br1 = 0;
+                } else {
+                    out.write(buf1, 0, br1);
+                    util.update(buf1, 0, br1);
+
+                    System.arraycopy(buf2, 0, buf1, 0, br2);
+
+                    br1 = br2;
+                }
+            }
+
+            if (!calculatedHash.equals(storedHash)) {
+                if (storedHash.startsWith(HashUtil.GUARD)) {
+                    String err =
+                            "Inconsistent Hashes for " + conName + "\\" + objName + ": calculated=" + calculatedHash
+                                    + ", stored=" + storedHash;
+                    doLogErr(session.getLogger(), err);
+                    return false;
+                } else {
+                    String warn = "No checksum embedded in " + conName + "\\" + objName;
+                    doLogWarn(session.getLogger(), warn);
+                }
+            }
+
+            return true; /* checksum - okay */
+        } catch (NoSuchAlgorithmException e) {
+            doLogErr(session.getLogger(), "Alogrithm not found", e);
+        }
+        return false; // if we reach this, something went wrong when trying to calculate the hash
     }
 
 }
