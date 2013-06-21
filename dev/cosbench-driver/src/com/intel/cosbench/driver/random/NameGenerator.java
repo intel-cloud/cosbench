@@ -25,4 +25,6 @@ public interface NameGenerator {
 
     public String next(Random random, int idx, int all);
 
+    int nextKey(Random random);
+
 }

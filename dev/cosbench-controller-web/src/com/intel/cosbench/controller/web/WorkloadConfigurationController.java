@@ -308,9 +308,34 @@ public class WorkloadConfigurationController extends AbstractController {
     		wOp.setConfig(wconfig);
     		
     		work.addOperation(wOp);
-    		
-    		
-    		// delete operation
+            
+            // filewrite operation
+            String fwconfig = "";
+            Operation fwOp = new Operation("filewrite");
+            
+            int fwRatio = getParmInt(req, "filewrite.ratio", 0);
+            fwOp.setRatio(fwRatio);
+            
+            // "containers" section in config
+            String fwcselector = getParm(req, "filewrite.containers");
+            String fwcmin = getParm(req, "filewrite.containers.min");
+            String fwcmax = getParm(req, "filewrite.containers.max");
+            fwconfig += "containers=" + fwcselector + "(" + fwcmin + "," + fwcmax + ");";
+            
+            // "objects" section in config
+            String fwoselector = getParm(req, "filewrite.fileselection");
+            fwconfig += "fileselection=" + fwoselector + ";";
+            
+            
+            // "files" section in config
+            String fwfselector = getParm(req, "filewrite.files");
+            fwconfig += "files=" + fwfselector;
+            
+            fwOp.setConfig(fwconfig);
+            
+            work.addOperation(fwOp);
+            
+            // delete operation
     		String dconfig = "";
     		Operation dOp = new Operation("delete");    		
 
