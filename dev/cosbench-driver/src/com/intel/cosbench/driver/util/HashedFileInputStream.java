@@ -25,9 +25,9 @@ import java.io.IOException;
 import org.apache.commons.io.input.NullInputStream;
 
 /**
- * This class is to generate random data as input stream for data uploading.
+ * This class is used to concatinate the file given with its hash (hash is formatted !!!!$hash!!!!)
  * 
- * @author ywang19, qzheng7
+ * @author Niklas Goerke niklas974@github
  * 
  */
 public class HashedFileInputStream extends NullInputStream {
