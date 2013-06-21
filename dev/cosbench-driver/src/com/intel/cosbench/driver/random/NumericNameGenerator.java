@@ -48,6 +48,11 @@ class NumericNameGenerator implements NameGenerator {
         int value = generator.next(random);
         return StringUtils.join(new Object[] { prefix, value, suffix });
     }
+    
+    @Override
+    public int nextKey(Random random) {
+        return generator.next(random);
+    }    
 
     @Override
     public String next(Random random, int idx, int all) {

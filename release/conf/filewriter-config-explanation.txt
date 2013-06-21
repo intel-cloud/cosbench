@@ -1,0 +1,24 @@
+This is a short explanation of how the config for the filewriter works:
+
+<work name="filewrite" workers="4" totalOps="104">
+As known from other work configs.
+Notice: 104 ops will be done, if there are only 100 files given, 4 pretty much random files will be written twice.
+
+
+
+<operation type="filewrite" config="cprefix=cont;containers=u(1,2);fileselection=s;files=/tmp/testfiles/" />
+type should be filewrite, so that the filewriter is being used.
+
+For the config= part:
+
+cprefix= 				The Container Prefix, as known from other configs
+containers= 		The identifier for the container, as known from other configs
+fileselection=	The Selector to be used to generate the ints which will then be used to distinguish between the files on the disk. Only the letter needs to be given, any range given will be ignored and replaced with the amount of files.
+								Notice: s ist suggested, as it guarantees thread-safe reading of all the files (if totalOps >= amount of files).
+files=					The absoulte path to the folder containing the files which should be written.
+								Notice: If you run one or more drivers on different hosts, the files must accessible on that very machine.
+
+
+
+</work>
+As known.
