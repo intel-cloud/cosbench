@@ -56,25 +56,37 @@ COSBench includes a few OSGi bundle projects, and there are two major executable
 To debug both executables, a few special settings are required.
 
 1. COSBench Controller
-	1.1 The major bundle project is "cosbench-web-controller". 
+
+	1.1 The major bundle project is "cosbench-web-controller".
+	
 	1.2 Right click on the project, and select "Run As"\"Run Configuration...".
+	
 	1.3 In "Run Configuration" window, right click on "OSGi Framework" and select "New" to create an new configuration with name "controller".
+	
 	1.4 In "Bundles" tab, there are a few parameters can set, the settings depend on the file "release\conf\.controller\config.ini" in github repository.
+	
 	1.5 At the header, make changes as following:
 		"Default Start level:" = 8
 		"Default Auto-Start:" = true
+		
 	1.6 At the bundle table, for each bundle, there are two parameters: "Start Level" and "Auto-Start". The information is recorded "osgi.bundles" parameter in config.ini.
 		e.g.
 		"libs/com.springsource.freemarker-2.3.15.jar@2\:start" means the freemarker bundle will be with "Start Level" = 2 and "Auto-Start" = true.
+		
 	1.7 Some bundles may not set the two parameters, like "com.springsource.apache.coyote". in this case, just let it be. 
+	
 	1.8 After configured bundle part, the next step is to configure "Arguments" tab, here is the settings:
 		program arguments: -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console
 		vm arguments: -Xms40m -Xmx512m -Declipse.ignoreApp=true -Dosgi.noShutdown=true **-Dosgi.startLevel=8** **-Dcosbench.tomcat.config=c:\controller-tomcat-server.xml**
+		
 	1.9 There are two parameter pairs are added beside default, one is "osgi.startLevel=8" which tells framework the start level, another is "cosbench.tomcat.config" whi
 		indicates where to find the tomcat configuration file.
+		
 	1.10 Making one sub folder called "plugins" in "dist\osgi" folder, and copy "org.eclipse.org-xxx.jar" into "plugins" folder, then refresh all bundle projects, now there should
 		no error marks on each project.
+		
 	1.11 Running the project should see messages as below on eclipse console window:
+	
 		osgi> Persistence bundle starting...
 		Persistence bundle started.
 		----------------------------------------------
@@ -82,8 +94,11 @@ To debug both executables, a few special settings are required.
 		----------------------------------------------
 	
 2. COSBench Driver
+
 	1.1 The major bundle project is "cosbench-driver-web". 
+	
 	1.2 The configuration is similar to that for COSBench Controller, and the bundle dependency information can be extracted from "release\conf\.driver\config.ini".
+
 
 
 == END ==
