@@ -136,12 +136,11 @@ public class WorkerContext implements WorkerInfo {
     	if(runlen > 0)
     	{
 	    	Report report = snapshot.getReport();
-	    	double ratio = snapshot.getRatio();
 	    	Metrics[] metrics = report.getAllMetrics();
 	
 	    	for(int i=0; i<metrics.length; i++)
 	    	{
-	    		logger.debug("Worker[{}] : ratio={}", index, ratio);
+	    		logger.debug("Worker[{}] : ratio={}", index, runlen+1);
 	    		metrics[i].setThroughput(metrics[i].getThroughput()*(runlen+1));
 	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*(runlen+1));
 	    	}
@@ -177,13 +176,13 @@ public class WorkerContext implements WorkerInfo {
 
     @Override
     public void disposeRuntime() {
-        logger = null;
         authApi.dispose();
         authApi = null;
         storageApi.dispose();
         storageApi = null;
         random = null;
         snapshot = new Snapshot();
+        logger = null;
     }
 
 }

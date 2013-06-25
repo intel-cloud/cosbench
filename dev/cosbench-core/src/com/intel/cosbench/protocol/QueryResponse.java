@@ -88,7 +88,7 @@ public class QueryResponse extends Response {
     }
 
     public void setReport(List<Metrics> report) {
-        this.report = report;
+        this.report = report != null? report: new ArrayList<Metrics>();
     }
 
 }
