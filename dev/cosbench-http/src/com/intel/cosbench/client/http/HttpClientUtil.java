@@ -62,30 +62,12 @@ public class HttpClientUtil {
      * @return a new HTTP client
      */
     public static HttpClient createHttpClient(int timeout) {
-//        SchemeRegistry registry = initSchemeRegistry();
-//        ClientConnectionManager cm = new SingleClientConnManager(registry);
-//        HttpParams params = createDefaultHttpParams(timeout);
-//        return new DefaultHttpClient(cm, params);
-    	
     	// make it support self-signed certification for https.
 	      HttpParams params = createDefaultHttpParams(timeout);
 	      ClientConnectionManager cm = createClientConnManager();
 	
 	      return new DefaultHttpClient(cm, params);    	
     }
-
-//    private static SchemeRegistry initSchemeRegistry() {
-//        SchemeRegistry registry = new SchemeRegistry();
-//        /* HTTP */
-//        SchemeSocketFactory plain = PlainSocketFactory.getSocketFactory();
-//        Scheme http = new Scheme("http", 80, plain);
-//        registry.register(http);
-//        /* HTTPS */
-//        SchemeSocketFactory ssl = SSLSocketFactory.getSocketFactory();
-//        Scheme https = new Scheme("https", 443, ssl);
-//        registry.register(https);
-//        return registry;
-//    }
 
     private static HttpParams createDefaultHttpParams(int timeout) {
         HttpParams params = new BasicHttpParams();
@@ -139,7 +121,6 @@ public class HttpClientUtil {
         sr.register(new Scheme("https", 443, createSSLSocketFactory()));
 
         return new SingleClientConnManager(sr);
-//        return new ThreadSafeClientConnManager(sr);
     }
     
     /**
