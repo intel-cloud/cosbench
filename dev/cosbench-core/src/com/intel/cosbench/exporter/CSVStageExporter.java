@@ -64,14 +64,21 @@ class CSVStageExporter extends AbstractStageExporter {
             throws IOException {
         StringBuilder buffer = new StringBuilder();
         buffer.append(TIME.format(snapshot.getTimestamp())).append(',');
+        Report report = snapshot.getReport();
+
+        if(report.getSize() == 0)
+        {
+               report.addMetrics(Metrics.newMetrics("na-na"));
+        }
+        
         /* Operation Count */
-        for (Metrics metrics : snapshot.getReport())
+        for (Metrics metrics : report)
             buffer.append(metrics.getSampleCount()).append(',');
         /* Byte Count */
-        for (Metrics metrics : snapshot.getReport())
+        for (Metrics metrics : report)
             buffer.append(metrics.getByteCount()).append(',');
         /* Response Time */
-        for (Metrics metrics : snapshot.getReport()) {
+        for (Metrics metrics : report) {
             double r = metrics.getAvgResTime();
             if (r > 0)
                 buffer.append(NUM.format(r));
@@ -80,13 +87,13 @@ class CSVStageExporter extends AbstractStageExporter {
             buffer.append(',');
         }
         /* Throughput */
-        for (Metrics metrics : snapshot.getReport())
+        for (Metrics metrics : report)
             buffer.append(NUM.format(metrics.getThroughput())).append(',');
         /* Bandwidth */
-        for (Metrics metrics : snapshot.getReport())
+        for (Metrics metrics : report)
             buffer.append(NUM.format(metrics.getBandwidth())).append(',');
         /* Success Ratio */
-        for (Metrics metrics : snapshot.getReport()) {
+        for (Metrics metrics : report) {
             double t = (double) metrics.getTotalSampleCount();
             if (t > 0)
                 buffer.append(RATIO.format(metrics.getSampleCount() / t));

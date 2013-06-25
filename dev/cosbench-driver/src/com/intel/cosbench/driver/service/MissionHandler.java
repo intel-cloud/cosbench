@@ -339,6 +339,8 @@ class MissionHandler {
         Thread.interrupted(); // clear interruption status
         if (shutdownNow)
             executor.shutdownNow(); // abort agents
+        else
+        	executor.shutdown();
         if (!awaitTermination(5) && !awaitTermination(10))
             awaitTermination(30);
         String id = missionContext.getId();

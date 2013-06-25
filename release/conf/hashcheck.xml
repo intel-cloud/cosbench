@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	This workload configuration demostrates how to do integrity check with "hashcheck" parameter. it's using 
+	swift as example, can be applied to other storage systems. 
+	
+-->
+
+<workload name="swift-sample" description="sample benchmark for swift">
+
+  <storage type="swift" />
+  
+  <!-- MODIFY ME -->
+  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.10.1:8080/auth/v1.0" />
+
+  <!-- Keystone Authentication 
+  <auth type="keystone" config="username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service" /> 
+  -->
+
+  <workflow>
+
+    <workstage name="init">
+      <work type="init" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="hashcheck=true;containers=r(1,32);objects=r(1,50);sizes=c(64)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="main" workers="8" runtime="300">
+        <operation type="read" ratio="80" config="hashcheck=true;containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="hashcheck=true;containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="containers=r(1,32);objects=r(1,100)" />
+    </workstage>
+
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+  </workflow>
+
+</workload>

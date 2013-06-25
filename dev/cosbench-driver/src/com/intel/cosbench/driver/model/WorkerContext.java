@@ -25,6 +25,7 @@ import com.intel.cosbench.api.auth.AuthAPI;
 import com.intel.cosbench.api.storage.StorageAPI;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Mission;
+import com.intel.cosbench.driver.agent.WorkAgent;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.WorkerInfo;
 
@@ -52,12 +53,21 @@ public class WorkerContext implements WorkerInfo {
     private transient Random random = new Random(RandomUtils.nextLong());
     /* Each worker has its private required version */
     private volatile int version = 0;
-    private volatile int runlen = 0;
+    
+    private WorkAgent workAgent;
     
     public WorkerContext() {
         /* empty */
     }
 
+	public void setWorkAgent(WorkAgent workAgent) {
+		this.workAgent = workAgent;
+	}
+
+	public WorkAgent getWorkAgent() {
+		return this.workAgent;
+	}
+    
     @Override
     public int getIndex() {
         return index;
@@ -117,49 +127,16 @@ public class WorkerContext implements WorkerInfo {
 
     @Override
     public Snapshot getSnapshot() {
-    	if(snapshot.getVersion() < version)
-    	{
-    		logger.debug("Worker[{}] : blank snapshot is generated.", index);
-    		Snapshot blankSnapshot = new Snapshot();
-
-    		blankSnapshot.setVersion(version);
-    		blankSnapshot.setMinVersion(version);
-    		blankSnapshot.setMaxVersion(version);
-    		
-    		version++;
-    		runlen++;
-    		
-    		return blankSnapshot;
-    	}
-    
-    	// align snapshot metrics to compensate the under-counting due to blank snapshots.
-    	if(runlen > 0)
-    	{
-	    	Report report = snapshot.getReport();
-	    	double ratio = snapshot.getRatio();
-	    	Metrics[] metrics = report.getAllMetrics();
-	
-	    	for(int i=0; i<metrics.length; i++)
-	    	{
-	    		logger.debug("Worker[{}] : ratio={}", index, ratio);
-	    		metrics[i].setThroughput(metrics[i].getThroughput()*(runlen+1));
-	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*(runlen+1));
-	    	}
-	    	
-	    	runlen = 0;
-    	}
-    	
-    	version++;
-    	
-    	return snapshot;
+		workAgent.doSnapshot();
+		return this.snapshot;
     }
 
     public void setSnapshot(Snapshot snapshot) {
     	this.snapshot = snapshot;
 
-    	this.snapshot.setVersion(version);
-    	this.snapshot.setMinVersion(version);
-    	this.snapshot.setMaxVersion(version);
+    	this.snapshot.setVersion(++version);
+    	this.snapshot.setMinVersion(++version);
+    	this.snapshot.setMaxVersion(++version);
     }
 
     @Override
@@ -177,13 +154,13 @@ public class WorkerContext implements WorkerInfo {
 
     @Override
     public void disposeRuntime() {
-        logger = null;
         authApi.dispose();
         authApi = null;
         storageApi.dispose();
         storageApi = null;
         random = null;
         snapshot = new Snapshot();
+        logger = null;
     }
 
 }

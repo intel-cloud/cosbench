@@ -42,7 +42,7 @@ public class SwiftClient {
     private HttpClient client;
 
     /* current operation */
-    private volatile HttpUriRequest request;
+    private volatile HttpUriRequest method;
 
     public SwiftClient(HttpClient client) {
         this.client = client;
@@ -57,14 +57,14 @@ public class SwiftClient {
     }
 
     public void dispose() {
-        request = null;
+        method = null;
         HttpClientUtil.disposeHttpClient(client);
     }
 
     public void abort() {
-        if (request != null)
-            request.abort();
-        request = null;
+        if (method != null)
+            method.abort();
+        method = null;
     }
 
     public void init(String authToken, String storageURL) {
@@ -75,7 +75,7 @@ public class SwiftClient {
     public SwiftAccount getAccountInfo() throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpHead method = HttpClientUtil.makeHttpHead(storageURL);
+            method = HttpClientUtil.makeHttpHead(storageURL);
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_NO_CONTENT) {
@@ -95,7 +95,7 @@ public class SwiftClient {
             throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpHead method = HttpClientUtil.makeHttpHead(getContainerPath(container));
+            method = HttpClientUtil.makeHttpHead(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_NO_CONTENT) {
@@ -119,7 +119,7 @@ public class SwiftClient {
             SwiftException {
         SwiftResponse response = null;
         try {
-            HttpPut method = HttpClientUtil.makeHttpPut(getContainerPath(container));
+            method = HttpClientUtil.makeHttpPut(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_CREATED)
@@ -138,7 +138,7 @@ public class SwiftClient {
             SwiftException {
         SwiftResponse response = null;
         try {
-            HttpDelete method = HttpClientUtil.makeHttpDelete(getContainerPath(container));
+            method = HttpClientUtil.makeHttpDelete(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_NO_CONTENT)
@@ -161,7 +161,7 @@ public class SwiftClient {
 
     public InputStream getObjectAsStream(String container, String object)
             throws IOException, SwiftException {
-        HttpGet method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
+        method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
         method.setHeader(X_AUTH_TOKEN, authToken);
         SwiftResponse response = new SwiftResponse(client.execute(method));
         if (response.getStatusCode() == SC_OK)
@@ -179,12 +179,12 @@ public class SwiftClient {
             throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpPut method = HttpClientUtil.makeHttpPut(getObjectPath(container, object));
+            method = HttpClientUtil.makeHttpPut(getObjectPath(container, object));
             method.setHeader(X_AUTH_TOKEN, authToken);
             ByteArrayEntity entity = new ByteArrayEntity(data);
             entity.setChunked(false);
             entity.setContentType("application/octet-stream");
-            method.setEntity(entity);
+            ((HttpPut)method).setEntity(entity);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_CREATED)
                 return;
@@ -206,7 +206,7 @@ public class SwiftClient {
             InputStream data, long length) throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpPut method = HttpClientUtil.makeHttpPut(getObjectPath(container, object));
+            method = HttpClientUtil.makeHttpPut(getObjectPath(container, object));
             method.setHeader(X_AUTH_TOKEN, authToken);
             InputStreamEntity entity = new InputStreamEntity(data, length);
             if (length < 0)
@@ -214,7 +214,7 @@ public class SwiftClient {
             else
                 entity.setChunked(false);
             entity.setContentType("application/octet-stream");
-            method.setEntity(entity);
+            ((HttpPut)method).setEntity(entity);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_CREATED)
                 return;
@@ -236,7 +236,7 @@ public class SwiftClient {
             throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpDelete method = HttpClientUtil.makeHttpDelete(getObjectPath(container, object));
+            method = HttpClientUtil.makeHttpDelete(getObjectPath(container, object));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_NO_CONTENT)
@@ -259,7 +259,7 @@ public class SwiftClient {
             Map<String, String> map) throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpPost method = HttpClientUtil.makeHttpPost(getObjectPath(container, object));
+            method = HttpClientUtil.makeHttpPost(getObjectPath(container, object));
             method.setHeader(X_AUTH_TOKEN, authToken);
             for (String ele : map.keySet())
                 method.addHeader(ele, map.get(ele));
@@ -282,7 +282,7 @@ public class SwiftClient {
             throws IOException, SwiftException {
         SwiftResponse response = null;
         try {
-            HttpHead method = HttpClientUtil.makeHttpHead(getObjectPath(container, object));
+            method = HttpClientUtil.makeHttpHead(getObjectPath(container, object));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_OK) {
@@ -313,45 +313,6 @@ public class SwiftClient {
         }
         return true;
     }
-
-//    private HttpGet makeHttpGet(String url) {
-//        HttpGet GET = new HttpGet(url);
-//        this.request = GET;
-//        return GET;
-//    }
-//
-//    private HttpPut makeHttpPut(String url) {
-//        HttpPut PUT = new HttpPut(url);
-//        this.request = PUT;
-//        return PUT;
-//    }
-//
-//    private HttpHead makeHttpHead(String url) {
-//        HttpHead HEAD = new HttpHead(url);
-//        this.request = HEAD;
-//        return HEAD;
-//    }
-//
-//    private HttpPost makeHttpPost(String url) {
-//        HttpPost POST = new HttpPost(url);
-//        this.request = POST;
-//        return POST;
-//    }
-//
-//    private HttpDelete makeHttpDelete(String url) {
-//        HttpDelete DELETE = new HttpDelete(url);
-//        this.request = DELETE;
-//        return DELETE;
-//    }
-//
-//    private static String encodeURL(String str) {
-//        URLCodec codec = new URLCodec();
-//        try {
-//            return codec.encode(str).replaceAll("\\+", "%20");
-//        } catch (EncoderException ee) {
-//            return str;
-//        }
-//    }
 
     private String getContainerPath(String container) {
         return storageURL + "/" + HttpClientUtil.encodeURL(container);
