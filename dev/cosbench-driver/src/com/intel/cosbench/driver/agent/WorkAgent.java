@@ -207,7 +207,6 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
             mark.clear();
         }
         Snapshot snapshot = new Snapshot(report);
-        snapshot.setRatio(window/(interval*1000.0));
         workerContext.setSnapshot(snapshot);
     }
 
