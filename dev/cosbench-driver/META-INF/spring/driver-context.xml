@@ -15,10 +15,16 @@
 		<property name="factories" ref="storageAPIFactories" />
 	</bean>
 
+	<bean name="ioengineAPIs"
+		class="com.intel.cosbench.driver.service.COSBIOEngineAPIService">
+		<property name="factories" ref="ioengineAPIFactories" />
+	</bean>
+
 	<bean name="factory" init-method="init"
 		class="com.intel.cosbench.driver.service.COSBDriverServiceFactory">
 		<property name="authAPIs" ref="authAPIs" />
 		<property name="storageAPIs" ref="storageAPIs" />
+		<property name="ioengineAPIs" ref="ioengineAPIs" />		
 	</bean>
 
 	<bean name="driverService" factory-bean="factory" factory-method="getDriverService" />

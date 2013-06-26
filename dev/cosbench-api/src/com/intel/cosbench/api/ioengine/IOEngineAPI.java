@@ -46,7 +46,7 @@ public interface IOEngineAPI {
      *         configured for the IOEngineentication mechanism if IOEngineentication is successful, and otherwise, an 
      *         exception will be raised.
      */
-    public IOEngineContext startup() ;
+    public IOEngineContext startup() throws IOEngineException;
     
     /**
      * Triggers the back-end IOEngineentication mechanism.
@@ -55,7 +55,7 @@ public interface IOEngineAPI {
      *         configured for the IOEngineentication mechanism if IOEngineentication is successful, and otherwise, an 
      *         exception will be raised.
      */
-    public boolean shutdown();
+    public boolean shutdown() throws IOEngineException;
 
     /**
      * Retrieves parameters and current settings used by the IOEngine-API.
