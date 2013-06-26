@@ -9,4 +9,5 @@ Import-Package: com.intel.cosbench.config,
  com.intel.cosbench.log
 Export-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.storage,
+ com.intel.cosbench.api.ioengine,
  com.intel.cosbench.api.context

@@ -22,6 +22,7 @@ import java.util.Random;
 import org.apache.commons.lang.math.RandomUtils;
 
 import com.intel.cosbench.api.auth.AuthAPI;
+import com.intel.cosbench.api.ioengine.IOEngineAPI;
 import com.intel.cosbench.api.storage.StorageAPI;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Mission;
@@ -40,6 +41,7 @@ public class WorkerContext implements WorkerInfo {
     private int index;
     private Mission mission;
     private transient Logger logger;
+    private transient IOEngineAPI ioengineApi;
     private transient AuthAPI authApi;
     private transient StorageAPI storageApi;
 
@@ -91,6 +93,14 @@ public class WorkerContext implements WorkerInfo {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+    
+    public IOEngineAPI getIOEngineApi() {
+        return ioengineApi;
+    }
+
+    public void setIOEngineApi(IOEngineAPI api) {
+        this.ioengineApi = api;
     }
 
     public AuthAPI getAuthApi() {

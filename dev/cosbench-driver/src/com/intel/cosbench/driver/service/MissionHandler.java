@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.intel.cosbench.api.auth.*;
+import com.intel.cosbench.api.ioengine.*;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
 import com.intel.cosbench.config.castor.CastorConfigTools;
@@ -53,14 +54,17 @@ class MissionHandler {
     }
 
     private int retry; // auth retry number
+    private Config ioengineConfig; // shared ioengine configurations
     private Config authConfig; // shared auth configurations
     private Config storageConfig; // shared storage configurations
 
+    private IOEngineAPIService ioengineAPIs;
     private AuthAPIService authAPIs;
     private StorageAPIService storageAPIs;
 
     private ExecutorService executor;
     private MissionContext missionContext;
+    private IOEngineAPI ioengine;
 
     public MissionHandler() {
         /* empty */
@@ -94,6 +98,7 @@ class MissionHandler {
         createOperators();
         initOpPicker();
         parseConfigs();
+        createIOEngine();
         createWorkers();
         createExecutor();
     }
@@ -146,11 +151,20 @@ class MissionHandler {
 
     private void parseConfigs() {
         Mission m = missionContext.getMission();
+        ioengineConfig = KVConfigParser.parse(m.getAuth().getConfig());
         authConfig = KVConfigParser.parse(m.getAuth().getConfig());
         retry = authConfig.getInt(AUTH_RETRY_KEY, DEFAULT_AUTH_RETRY);
         storageConfig = KVConfigParser.parse(m.getStorage().getConfig());
     }
 
+    private void createIOEngine() {
+        LogManager manager = missionContext.getLogManager();
+        Mission mission = missionContext.getMission();
+    	ioengine = createIOEngineApi(mission.getIOEngine(), manager);
+    	
+    	ioengine.init(ioengineConfig, manager.getLogger());
+    }
+    
     private void createWorkers() {
         WorkerRegistry registry = new WorkerRegistry();
         Mission mission = missionContext.getMission();
@@ -167,9 +181,16 @@ class MissionHandler {
         context.setIndex(idx);
         context.setMission(mission);
         context.setLogger(manager.getLogger());
+//        context.setIOEngineApi(createIOEngineApi(mission.getIOEngine(), manager));
         context.setAuthApi(createAuthApi(mission.getAuth(), manager));
         context.setStorageApi(createStorageApi(mission.getStorage(), manager));
         return context;
+    }
+    
+    private IOEngineAPI createIOEngineApi(IOEngine ioengine, LogManager manager) {
+        String type = ioengine.getType();
+        Logger logger = manager.getLogger();
+        return ioengineAPIs.getIOEngine(type, ioengineConfig, logger);
     }
 
     private AuthAPI createAuthApi(Auth auth, LogManager manager) {
@@ -238,6 +259,9 @@ class MissionHandler {
         String id = missionContext.getId();
         LOGGER.debug("begin to execute mission {}", id);
         try {
+        	if(ioengine != null)
+        		ioengine.startup();
+        	
             stressTarget();
         } catch (TimeoutException te) {
             /* no need to shutdown agents again */
@@ -254,6 +278,12 @@ class MissionHandler {
         } catch (MissionException me) {
             missionContext.setState(TERMINATED);
             LOGGER.info("mission {} has been terminated", id);
+            return;
+        } catch (IOEngineException iee) {
+        	missionContext.setState(ABORTED);
+            boolean shutdownNow = true;
+            abortAgents(shutdownNow);
+            missionContext.setState(ABORTED);
             return;
         } catch (Exception e) {
             missionContext.setState(TERMINATED);
