@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.driver.random;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import org.apache.commons.io.input.NullInputStream;
@@ -51,7 +52,11 @@ public class RandomInputStream extends NullInputStream {
         super(size);
 
         this.hashCheck = hashCheck;
-        this.util = new HashUtil();
+        try {
+            this.util = new HashUtil();
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Alogrithm not found", e);
+        }
         this.hashLen = this.util.getHashLen();
         if (size <= hashLen) {
             logger.warn("The size is too small to embed checksum, will ignore integrity checking.");

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
 
@@ -31,6 +32,8 @@ import com.intel.cosbench.bench.Sample;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.driver.util.ContainerPicker;
 import com.intel.cosbench.driver.util.FilePicker;
+import com.intel.cosbench.driver.util.HashUtil;
+import com.intel.cosbench.driver.util.HashedFileInputStream;
 import com.intel.cosbench.service.AbortedException;
 
 /**
@@ -49,6 +52,7 @@ class FileWriter extends AbstractOperator {
     private File folder;
 
     private File[] listOfFiles;
+    private boolean hashCheck = false;
 
     public FileWriter() {
         /* empty */
@@ -66,6 +70,7 @@ class FileWriter extends AbstractOperator {
         listOfFiles = folder.listFiles();
         String range = "(1," + listOfFiles.length + ")";
         filePicker.init(range, config);
+        hashCheck = config.getBoolean("hashCheck", false);
     }
 
     @Override
@@ -86,25 +91,33 @@ class FileWriter extends AbstractOperator {
         // as we index arrays starting from 0, we need to remove 1 here
         Integer rand = (filePicker.pickObjKey(random) - 1);
         String filename = null;
-        try {
-            filename = listOfFiles[rand].getName();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            doLogErr(session.getLogger(), "fail to perform file Write operation, tried to put more files than exist", e);
-            sample = new Sample(new Date(), OP_TYPE, false);
-            session.getListener().onSampleCreated(sample);
-            Date now = sample.getTimestamp();
-            Result result = new Result(now, OP_TYPE, sample.isSucc());
-            session.getListener().onOperationCompleted(result);
-            return;
-        }
 
         try {
-            FileInputStream fis = new FileInputStream(listOfFiles[rand]);
-            sample = doWrite(fis, listOfFiles[rand].length(), containerName, filename, config, session);
+            filename = listOfFiles[rand].getName();
+            long length = listOfFiles[rand].length();
+            InputStream fis = null;
+            if (hashCheck) {
+                HashUtil util = new HashUtil();
+                int hashLen = util.getHashLen();
+                length += hashLen;
+                fis = new HashedFileInputStream(listOfFiles[rand], hashCheck, util, length);
+            } else {
+                fis = new FileInputStream(listOfFiles[rand]);
+            }
+
+            sample = doWrite(fis, length, containerName, filename, config, session);
         } catch (FileNotFoundException e) {
-            doLogErr(session.getLogger(), "fail to perform file Write operation", e);
+            doLogErr(session.getLogger(), "failed to perform file Write operation, file not found", e);
+            sample = new Sample(new Date(), OP_TYPE, false);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            doLogErr(session.getLogger(), "failed to perform file Write operation, tried to put more files than exist", e);
+            sample = new Sample(new Date(), OP_TYPE, false);
+        } catch (NoSuchAlgorithmException e) {
+            doLogErr(session.getLogger(),
+                    "failed to perform file Write operation, hash Algorithm MD5 not supported, deaktivate hashCheck, maybe?", e);
             sample = new Sample(new Date(), OP_TYPE, false);
         }
+
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
         Result result = new Result(now, OP_TYPE, sample.isSucc());
