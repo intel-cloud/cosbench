@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.driver.random;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -28,7 +29,7 @@ class RangeIntGenerator implements IntGenerator {
     private int lower;
     private int upper;
     
-    private int cursor;
+    private AtomicInteger cursor;
 
     public RangeIntGenerator(int lower, int upper) {
         if (lower <= 0 || upper <= 0 || lower > upper)
@@ -36,7 +37,7 @@ class RangeIntGenerator implements IntGenerator {
         this.lower = lower;
         this.upper = upper;
         
-        this.cursor = 0;
+        this.cursor = new AtomicInteger(0);
     }
 
     @Override
@@ -52,9 +53,9 @@ class RangeIntGenerator implements IntGenerator {
     	int offset = base * (idx - 1) + (extra >= idx - 1 ? idx - 1 : extra);
     	int segment = base + (extra >= idx ? 1 : 0);
     	int limit = segment + offset + lower;
-    	cursor = cursor <= 0 ? limit - segment : cursor + 1;
+    	cursor.set(cursor.get() <= 0 ? limit - segment : cursor.incrementAndGet());
     	
-    	return cursor < limit ? cursor : lower;
+    	return cursor.get() < limit ? cursor.get() : lower;
     }
     
     public static RangeIntGenerator parse(String pattern) {
@@ -76,7 +77,7 @@ class RangeIntGenerator implements IntGenerator {
         pattern = StringUtils.substringBetween(pattern, "(", ")");
         String[] args = StringUtils.split(pattern, ",");
         int lower = Integer.parseInt(args[0]);
-        int upper = Integer.parseInt(args[1]);
+        int upper = Integer.parseInt(args[1]);        
         return new RangeIntGenerator(lower, upper);
     }
 
