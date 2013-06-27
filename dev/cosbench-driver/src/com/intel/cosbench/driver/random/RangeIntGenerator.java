@@ -17,26 +17,92 @@ limitations under the License.
 
 package com.intel.cosbench.driver.random;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.Random;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.ConfigException;
 
-class RangeIntGenerator implements IntGenerator {
+public class RangeIntGenerator implements IntGenerator {
 
     private int lower;
     private int upper;
     
-    private int cursor;
+    private AtomicInteger cursor;
 
+    static class TestThread extends Thread 
+    {
+    	private int all;
+    	private int idx;
+    	private RangeIntGenerator generator;
+    	private Random rnd;
+    	
+    	public TestThread(String pattern, int idx, int all) 
+    	{
+    		this.all = all;
+    		this.idx = idx;
+    		this.setName("Thread[" + idx + "]");
+    		this.generator = RangeIntGenerator.parse(pattern);
+    		this.rnd = new Random(123);
+            
+    	}
+    	
+    	public void start()
+    	{
+        	int i=0;            	
+        	    
+        	try
+        	{
+	            while(i++< 11) {
+	            	System.out.println(this.getName() + ": " +generator.next(rnd, idx, all));
+	            	sleep(1);
+	            }
+        	}catch(InterruptedException ie)
+        	{
+        		ie.printStackTrace();
+        	}
+    	}
+   }
+    
+    public static void main(String[] args)
+    {
+    	final String pattern = "r(50,100)";
+    	
+		final int all = 5;
+		int i = 0;
+		
+		Vector<TestThread> threads = new Vector<TestThread>();
+		
+		for(i=0; i<all; i++)
+		{
+			TestThread thread = new TestThread(pattern, i+1, all);
+			threads.add(thread);
+			thread.start();
+		}
+		
+		try {
+			for(i=0; i<all; i++)
+			{
+				threads.elementAt(i).join();
+			}
+		}catch(InterruptedException ie) {
+			ie.printStackTrace();
+		}
+		
+    }
+    
+    
     public RangeIntGenerator(int lower, int upper) {
         if (lower <= 0 || upper <= 0 || lower > upper)
             throw new IllegalArgumentException();
         this.lower = lower;
         this.upper = upper;
         
-        this.cursor = 0;
+        this.cursor = new AtomicInteger(0);
     }
 
     @Override
@@ -45,16 +111,16 @@ class RangeIntGenerator implements IntGenerator {
     }
 
     @Override
-    public synchronized int next(Random random, int idx, int all) {
+    public int next(Random random, int idx, int all) {
     	int range = upper - lower + 1;
     	int base = range / all;
     	int extra = range % all;
     	int offset = base * (idx - 1) + (extra >= idx - 1 ? idx - 1 : extra);
     	int segment = base + (extra >= idx ? 1 : 0);
-    	int limit = segment + offset + lower;
-    	cursor = cursor <= 0 ? limit - segment : cursor + 1;
     	
-    	return cursor < limit ? cursor : lower;
+    	cursor.set(cursor.get()%(segment));
+
+    	return lower + offset + cursor.getAndIncrement();
     }
     
     public static RangeIntGenerator parse(String pattern) {
@@ -76,7 +142,7 @@ class RangeIntGenerator implements IntGenerator {
         pattern = StringUtils.substringBetween(pattern, "(", ")");
         String[] args = StringUtils.split(pattern, ",");
         int lower = Integer.parseInt(args[0]);
-        int upper = Integer.parseInt(args[1]);
+        int upper = Integer.parseInt(args[1]);        
         return new RangeIntGenerator(lower, upper);
     }
 
