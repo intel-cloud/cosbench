@@ -188,21 +188,10 @@ public class HttpClientUtil {
 
 	public static void makeRequest(HttpAsyncRequester requester, BasicHttpRequest request, 
     		BasicNIOConnPool connPool, HttpHost target, String path, FutureCallback<HttpResponse> futureCallback) throws Exception {
-//    			final DataConsumer consumer = new DataConsumer(path);             
-//    		          requester.execute(
-//    		                new DataProducer(target, request),
-//    		                consumer,
-//    		                connPool,
-//    		                new BasicHttpContext(),
-//    		                future); 
-//    		    }	
    
 		    // Execute HTTP GETs to the following hosts and
 	    	long start = System.currentTimeMillis();
 	    	
-	        Vector<HttpHost> targets = new Vector<HttpHost>();
-	        targets.add(new HttpHost("www.intel.com", 80, "http"));
-	        
         	HttpCoreContext coreContext = HttpCoreContext.create();
         	
 	        final ZeroCopyFileConsumer fileconsumer = new ZeroCopyFileConsumer(new File("c:\\temp\\null")); 	            
