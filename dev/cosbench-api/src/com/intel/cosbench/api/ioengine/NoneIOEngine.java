@@ -49,7 +49,7 @@ public class NoneIOEngine implements IOEngineAPI {
         this.logger = logger;
         this.parms = new Context();
         
-        logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
+//        logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
         /* register all parameters */
         parms.put(LOGGING_KEY, logging);
         
