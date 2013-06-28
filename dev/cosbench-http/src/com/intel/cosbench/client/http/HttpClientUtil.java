@@ -17,14 +17,20 @@ limitations under the License.
 
 package com.intel.cosbench.client.http;
 
+import java.io.File;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -36,12 +42,24 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.nio.protocol.BasicAsyncRequestProducer;
+import org.apache.http.nio.protocol.HttpAsyncRequester;
+import org.apache.http.impl.nio.pool.BasicNIOConnPool;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.FileEntity;
+
+
 
 /**
  * This class encapsulates basic HTTP client related functions which are
@@ -163,5 +181,44 @@ public class HttpClientUtil {
             return str;
         }
     }
+    
+    public static BasicHttpRequest getRequest(String method, String path) {
+        return new BasicHttpRequest(method, path);
+    }
 
+	public static void makeRequest(HttpAsyncRequester requester, BasicHttpRequest request, 
+    		BasicNIOConnPool connPool, HttpHost target, String path, FutureCallback<HttpResponse> futureCallback) throws Exception {
+//    			final DataConsumer consumer = new DataConsumer(path);             
+//    		          requester.execute(
+//    		                new DataProducer(target, request),
+//    		                consumer,
+//    		                connPool,
+//    		                new BasicHttpContext(),
+//    		                future); 
+//    		    }	
+   
+		    // Execute HTTP GETs to the following hosts and
+	    	long start = System.currentTimeMillis();
+	    	
+	        Vector<HttpHost> targets = new Vector<HttpHost>();
+	        targets.add(new HttpHost("www.intel.com", 80, "http"));
+	        
+        	HttpCoreContext coreContext = HttpCoreContext.create();
+        	
+	        final ZeroCopyFileConsumer fileconsumer = new ZeroCopyFileConsumer(new File("c:\\temp\\null")); 	            
+            Future<HttpResponse> future = requester.execute(
+                    new BasicAsyncRequestProducer(target, request),
+                    fileconsumer,
+//                    new BasicAsyncResponseConsumer() ,
+                    connPool,
+                    coreContext,
+                    // Handle HTTP response from a callback
+                    futureCallback);
+            
+            future.get();
+            
+            long end = System.currentTimeMillis();
+            
+            System.out.println("Elapsed Time: " + (end-start) + " ms.");
+        }
 }

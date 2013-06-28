@@ -17,6 +17,8 @@ limitations under the License.
 
 package com.intel.cosbench.bench;
 
+import java.util.Vector;
+
 import com.intel.cosbench.utils.MapRegistry.Item;
 
 
@@ -40,10 +42,24 @@ public class Mark implements Cloneable, Item {
 
     private long rtSum; /* total response time */
     private long byteCount; /* total bytes transferred */
+    
+    private Vector<Sample> samples = new Vector<Sample>();
 
     public Mark() {
         /* empty */
     }
+    
+	@SuppressWarnings("unchecked")
+	public Mark clone() {
+		Mark o = null;
+		try {
+			o = (Mark) super.clone();
+			o.samples = (Vector<Sample>) samples.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return o;
+	}
 
     @Override
     public String getName() {
@@ -125,8 +141,17 @@ public class Mark implements Cloneable, Item {
         totalSampleCount = 0;
         rtSum = 0;
         byteCount = 0;
+		samples.clear();
     }
 
+	public void addToSamples(Sample sample) {
+		samples.add(sample);
+	}
+
+	public Vector<Sample> getSamples() {
+		return samples;
+	}
+    
     public void addSample(Sample sample) {
         if (sample.isSucc())
         {

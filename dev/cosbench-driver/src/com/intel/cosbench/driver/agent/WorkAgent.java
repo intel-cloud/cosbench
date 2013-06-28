@@ -30,7 +30,7 @@ import com.intel.cosbench.driver.util.OperationPicker;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.service.AbortedException;
 
-class WorkAgent extends AbstractAgent implements Session, OperationListener {
+public class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
     private long start; /* agent startup time */
     private long begin; /* effective workload startup time */
@@ -50,6 +50,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
     private int totalOps; /* total operations to be performed */
     private long totalBytes; /* total bytes to be transferred */
+	private long ltotalBytes;
+	private int ltotalOps;
 
     private OperationPicker operationPicker;
     private OperatorRegistry operatorRegistry;
@@ -58,6 +60,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private WatchDog dog = new WatchDog();
 
     private Status currMarks = new Status(); /* for snapshots */
+	private Status currMarksCloned = new Status();/* for snapshots */
     private Status globalMarks = new Status(); /* for the final report */
 
     public WorkAgent() {
@@ -155,7 +158,6 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     }
 
     private void doWork() {
-        doSnapshot();
         while (!isFinished)
             try {
                 performOperation();
@@ -164,7 +166,6 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
                     doSummary();
                 isFinished = true;
             }
-        doSnapshot();
     }
 
     private void performOperation() {
@@ -176,55 +177,59 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     }
 
     @Override
-    public void onSampleCreated(Sample sample) {
-        curr = sample.getTimestamp().getTime();
+    public synchronized void onSampleCreated(Sample sample) {
         String type = getMarkType(sample.getOpType(), sample.getSampleType());
-        currMarks.getMark(type).addSample(sample);
+        currMarks.getMark(type).addToSamples(sample);
         if (lbegin >= begin && lbegin < end && curr > begin && curr <= end) {
-            globalMarks.getMark(type).addSample(sample);
-            operatorRegistry.getOperator(sample.getOpType()).addSample(sample);
+            globalMarks.getMark(type).addToSamples(sample);
+            setlTotalBytes(getlTotalBytes() + sample.getBytes());
+            //operatorRegistry.getOperator(sample.getOpType()).addSample(sample);
             if (lbegin < frsample)
                 frsample = lbegin; // first sample emitted during runtime
             lrsample = curr; // last sample collected during runtime
         }
-        lsample = curr; // last sample collected
-        trySnapshot(); // make a snapshot if necessary
     }
 
-    private void trySnapshot() {
-        if (lsample < check)
-            return;
-        doSnapshot();
-        lcheck = System.currentTimeMillis();
-        check = lcheck + interval * 1000;
-    }
+    public void doSnapshot() {
+		synchronized (currMarks) {
+			for (Mark mark : currMarks) {
+				currMarksCloned.addMark(mark.clone());
+				mark.clear();
+			}
+		}
 
-    private void doSnapshot() {
-        long window = lsample - lcheck;
-        Report report = new Report();
-        for (Mark mark : currMarks) {
-            report.addMetrics(Metrics.convert(mark, window));
-            mark.clear();
-        }
-        Snapshot snapshot = new Snapshot(report);
-        workerContext.setSnapshot(snapshot);
+		long window = System.currentTimeMillis() - lcheck;
+		Report report = new Report();
+		for (Mark mark : currMarksCloned) {
+			for (Sample sample : mark.getSamples()) {
+				mark.addSample(sample);
+			}
+			report.addMetrics(Metrics.convert(mark, window));
+			mark.clear();
+		}
+
+		Snapshot snapshot = new Snapshot(report);
+		workerContext.setSnapshot(snapshot);
+		lcheck = System.currentTimeMillis();
     }
 
     @Override
-    public void onOperationCompleted(Result result) {
+    public synchronized void onOperationCompleted(Result result) {
         curr = result.getTimestamp().getTime();
         String type = getMarkType(result.getOpType(), result.getSampleType());
         currMarks.getMark(type).addOperation(result);
-        if (lop >= begin && lop < end && curr > begin && curr <= end)
+        if (lop >= begin && lop < end && curr > begin && curr <= end){
             globalMarks.getMark(type).addOperation(result);
+			setlTotoalOps(getlTotalOps() + 1);
+        }
         lop = curr; // last operation performed
         trySummary(); // make a summary report if necessary
     }
 
     private void trySummary() {
         if ((timeout <= 0 || curr < timeout) // timeout
-                && (totalOps <= 0 || getTotalOps() < totalOps) // operations
-                && (totalBytes <= 0 || getTotalBytes() < totalBytes)) // bytes
+                && (totalOps <= 0 || getlTotalOps() < totalOps) // operations
+                && (totalBytes <= 0 || getlTotalBytes() < totalBytes)) // bytes
             return; // not finished
         doSummary();
         isFinished = true;
@@ -237,19 +242,34 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
             report.addMetrics(Metrics.convert(mark, window));
         workerContext.setReport(report);
     }
+	private void setlTotoalOps(int total) {
+		this.ltotalOps = total;
+	}
 
-    private int getTotalOps() {
-        int sum = 0;
-        for (Mark mark : globalMarks)
-            sum += mark.getTotalOpCount();
-        return sum;
-    }
+	private int getlTotalOps() {
+		return this.ltotalOps;
+	}
 
-    private long getTotalBytes() {
-        long bytes = 0;
-        for (Mark mark : globalMarks)
-            bytes += mark.getByteCount();
-        return bytes;
-    }
+	private void setlTotalBytes(long totalBytes) {
+		this.ltotalBytes = totalBytes;
+	}
+
+	private long getlTotalBytes() {
+		return this.ltotalBytes;
+	}
+
+//    private int getTotalOps() {
+//        int sum = 0;
+//        for (Mark mark : globalMarks)
+//            sum += mark.getTotalOpCount();
+//        return sum;
+//    }
+//
+//    private long getTotalBytes() {
+//        long bytes = 0;
+//        for (Mark mark : globalMarks)
+//            bytes += mark.getByteCount();
+//        return bytes;
+//    }
 
 }

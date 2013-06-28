@@ -8,18 +8,10 @@
          http://www.springframework.org/schema/osgi
          http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-	<osgi:list id="authAPIFactories" interface="com.intel.cosbench.api.auth.AuthAPIFactory" />
+	<bean name="authFactory" class="com.intel.cosbench.api.swauth.SwiftAuthFactory" />
 
-	<osgi:list id="storageAPIFactories"
-		interface="com.intel.cosbench.api.storage.StorageAPIFactory">
-	</osgi:list>
-
-	<osgi:list id="ioengineAPIFactories"
-		interface="com.intel.cosbench.api.ioengine.IOEngineAPIFactory">
-	</osgi:list>
-	
-	<osgi:service ref="driverService" context-class-loader="service-provider"
-		interface="com.intel.cosbench.service.DriverService">
+	<osgi:service ref="authFactory" context-class-loader="service-provider"
+		interface="com.intel.cosbench.api.auth.AuthAPIFactory">
 	</osgi:service>
 
 </beans>
