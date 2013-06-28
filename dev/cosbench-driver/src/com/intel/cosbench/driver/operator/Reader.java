@@ -81,7 +81,7 @@ class Reader extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
-            in = session.getApi().getObject(conName, objName, config,this);
+            in = session.getApi().getObject(conName, objName, config);
             if (!hashCheck)
                 IOUtils.copyLarge(in, cout);
             else if (!validateChecksum(conName, objName, session, in, cout))
