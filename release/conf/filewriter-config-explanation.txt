@@ -17,7 +17,7 @@ fileselection=	The Selector to be used to generate the ints which will then be u
 								Notice: s ist suggested, as it guarantees thread-safe reading of all the files (if totalOps >= amount of files).
 files=					The absoulte path to the folder containing the files which should be written.
 								Notice: If you run one or more drivers on different hosts, the files must accessible on that very machine.
-
+hashCheck=				true / false (default: false). When true, the file will be extended by the hash in a format the reader can understand and verify.
 
 
 </work>
