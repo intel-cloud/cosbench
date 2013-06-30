@@ -19,65 +19,26 @@ package com.intel.cosbench.api.nioengine;
 
 import static com.intel.cosbench.api.nioengine.NIOEngineConstants.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.InetSocketAddress;
-import java.util.Vector;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.http.HttpHost;
+import org.apache.http.impl.nio.DefaultHttpClientIODispatch;
+import org.apache.http.impl.nio.pool.BasicNIOConnPool;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.nio.protocol.HttpAsyncRequestExecutor;
+import org.apache.http.nio.reactor.ConnectingIOReactor;
+import org.apache.http.nio.reactor.IOEventDispatch;
+import org.apache.http.config.ConnectionConfig;
 
-//import org.apache.http.config.*;
-
-import org.apache.http.params.*;
-import org.apache.http.nio.NHttpConnection;
-
-import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.LogFactory;
 import com.intel.cosbench.log.LogManager;
 import com.intel.cosbench.log.Logger;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.nio.DefaultClientIOEventDispatch;
-import org.apache.http.impl.nio.DefaultHttpClientIODispatch;
-import org.apache.http.impl.nio.pool.BasicNIOConnPool;
-import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.nio.protocol.BasicAsyncRequestProducer;
-import org.apache.http.nio.protocol.BufferingHttpClientHandler;
-import org.apache.http.nio.protocol.EventListener;
-import org.apache.http.nio.protocol.HttpAsyncRequestExecutor;
-import org.apache.http.nio.protocol.HttpAsyncRequester;
-import org.apache.http.nio.protocol.HttpRequestExecutionHandler;
-import org.apache.http.nio.reactor.ConnectingIOReactor;
-import org.apache.http.nio.reactor.IOEventDispatch;
-import org.apache.http.nio.reactor.SessionRequest;
-import org.apache.http.nio.reactor.SessionRequestCallback;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpCoreContext;
-import org.apache.http.protocol.HttpProcessor;
-import org.apache.http.protocol.HttpProcessorBuilder;
-import org.apache.http.protocol.ImmutableHttpProcessor;
-import org.apache.http.protocol.RequestConnControl;
-import org.apache.http.protocol.RequestContent;
-import org.apache.http.protocol.RequestExpectContinue;
-import org.apache.http.protocol.RequestTargetHost;
-import org.apache.http.protocol.RequestUserAgent;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.conn.params.*;
-import org.apache.http.entity.FileEntity;
-
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.api.ioengine.*;
 
@@ -379,50 +340,51 @@ class NIOEngine extends NoneIOEngine {
 
 
 /* below is for httpcore 4.3-beta2 */
-class NIOEngine extends NoneIOEngine {
 
-	private int channels;
-	
+/**
+ * This class encapsulates basic operations need to setup NIO engine.
+ * 
+ * @author ywang19
+ *
+ */
+public class NIOEngine extends NoneIOEngine {
+
+	private int channels = IOENGINE_CHANNELS_DEFAULT;		// the number of working channel.
+	private int concurrency = IOENGINE_CONCURRENCY_DEFAULT; 	// the queue or pool size in max.
+
 	private ConnectingIOReactor ioReactor;
 	private IOEventDispatch ioEventDispatch;
-	private BasicNIOConnPool pool;
+	private BasicNIOConnPool connPool;
 	
-    public static void main(String[] args)
-    {
-    	NIOEngine ioengine = new NIOEngine();
 
-    	LogManager manager = LogFactory.createLogManager();
-        Logger logger = manager.getLogger();
-        	
-    	ioengine.init(null,logger);
-    	ioengine.startup();
-    	
-    	try
-    	{
-    		ioengine.issueRequest();
-    	}catch(Exception ie) {
-    		ie.printStackTrace();
-    	}
-    	
-    	ioengine.shutdown();
-    	
-    }
-    
+	public BasicNIOConnPool getConnPool() {
+		return connPool;
+	}
+
+	public int getChannels() {
+		return channels;
+	}
+
+	public void setChannels(int channels) {
+		this.channels = channels;
+	}
+
+	public int getConcurrency() {
+		return concurrency;
+	}
+
+	public void setConcurrency(int concurrency) {
+		this.concurrency = concurrency;
+	}
+
+   
     public NIOEngine() {
     }
-    
-    public void issueRequest() throws Exception {
+
+/*    
+    public void issueRequest(HttpHost target, BasicHttpRequest request, final CountDownLatch latch) throws Exception {
         // Create HTTP requester
-    	HttpHost proxy = new HttpHost("proxy-prc.intel.com", 911, "http");
-    	HttpParams params = new SyncBasicHttpParams();
-        params
-            .setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 50000)
-            .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 100000)
-            .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
-            .setBooleanParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false)
-            .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
-            .setParameter(CoreProtocolPNames.USER_AGENT, "HttpComponents/1.1")
-       	.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+//    	HttpHost proxy = new HttpHost("proxy-prc.intel.com", 911, "http");
         
         // Execute HTTP GETs to the following hosts and    	
         HttpProcessor httpproc = HttpProcessorBuilder.create()
@@ -430,28 +392,34 @@ class NIOEngine extends NoneIOEngine {
                 .add(new RequestContent())
                 .add(new RequestTargetHost())
                 .add(new RequestConnControl())
-                .add(new RequestUserAgent("AsyncCOS/1.1"))
+                .add(new RequestUserAgent("Mozilla/5.0"))
                 .add(new RequestExpectContinue()).build();
         HttpAsyncRequester requester = new HttpAsyncRequester(httpproc);
-        String path = "/tmp/null";
-        HttpHost target = new HttpHost("10.239.44.145", 80, "http");
+        String out_path = "c:\\temp\\123.html";
         
-        BasicHttpRequest request = new BasicHttpRequest("GET", path);
-        
-        final CountDownLatch latch = new CountDownLatch(1);
-    	HttpClientUtil.makeRequest(requester, request, pool, target, path, new COSBFutureCallback(target, latch));
-    	latch.await();
+//        final CountDownLatch latch = new CountDownLatch(1);
+    	HttpClientUtil.makeRequest(requester, request, pool, target, out_path, new COSBFutureCallback(target, latch));
+//    	latch.await();
     }
-
+*/
+    
+//    public void issueRequest(HttpHost target, BasicHttpRequest request, final CountDownLatch latch) throws Exception {
+//
+//    	NIOClient client = new NIOClient(connPool);
+//    	client.issueRequest(target, request, latch);
+//
+//    }
+    
     @Override
     public boolean init(Config config, Logger logger) {
         super.init(config, logger);
-        
-        
-//        channels = config.getInt(IOENGINE_CHANNELS_KEY, IOENGINE_CHANNELS_DEFAULT);
-        channels = 2;
-        parms.put(IOENGINE_CHANNELS_KEY, channels);
+//      channels = config.getInt(IOENGINE_CHANNELS_KEY, IOENGINE_CHANNELS_DEFAULT);
+//      concurrency = config.getInt(IOENGINE_CONCURRENCY_KEY, IOENGINE_CONCURRENCY_DEFAULT);
 
+        parms.put(IOENGINE_CHANNELS_KEY, channels);
+        parms.put(IOENGINE_CONCURRENCY_KEY, concurrency);
+        
+        
         logger.debug("using IOEngine config: {}", parms);
         
         try
@@ -463,15 +431,17 @@ class NIOEngine extends NoneIOEngine {
 
 	        
 	        // Create client-side I/O event dispatch
-	        ioEventDispatch = new DefaultHttpClientIODispatch(protocolHandler,
-	                ConnectionConfig.DEFAULT);
+	        ioEventDispatch = new DefaultHttpClientIODispatch(protocolHandler, ConnectionConfig.DEFAULT);
 	        // Create client-side I/O reactor
-	        ioReactor = new DefaultConnectingIOReactor();
+	        ioReactor = new DefaultConnectingIOReactor(IOReactorConfig.custom()
+	        		.setIoThreadCount(channels)
+	        		.build(), 
+	        		null);
 	        // Create HTTP connection pool
-	        pool = new BasicNIOConnPool(ioReactor, ConnectionConfig.DEFAULT);
+	        connPool = new BasicNIOConnPool(ioReactor, ConnectionConfig.DEFAULT);
 	        // Limit total number of connections to just two
-	        pool.setDefaultMaxPerRoute(channels);
-	        pool.setMaxTotal(channels);
+	        connPool.setDefaultMaxPerRoute(channels);
+	        connPool.setMaxTotal(channels);
         }catch(Exception e) {
             logger.debug("NIOEngine is failed to initialize");
         	e.printStackTrace();

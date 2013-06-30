@@ -28,11 +28,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.nio.pool.BasicNIOConnPool;
 import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.nio.protocol.HttpAsyncRequestExecutor;
-import org.apache.http.nio.protocol.HttpAsyncRequester;
-import org.apache.http.concurrent.FutureCallback;
 import static org.apache.http.HttpStatus.*;
 
 import com.intel.cosbench.api.context.AuthContext;

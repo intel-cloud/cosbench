@@ -47,6 +47,7 @@ public abstract class ZeroCopyConsumer<T> extends AbstractAsyncResponseConsumer<
         this.response = response;
     }
 
+    
     @Override
     protected void onEntityEnclosed(
             final HttpEntity entity, final ContentType contentType) throws IOException {
@@ -81,11 +82,13 @@ public abstract class ZeroCopyConsumer<T> extends AbstractAsyncResponseConsumer<
 	
     @Override
     protected HttpResponse buildResult(final HttpContext context) throws Exception {
-        final FileEntity entity = new FileEntity(this.file);
-        entity.setContentType(this.response.getFirstHeader(HTTP.CONTENT_TYPE));
-        this.response.setEntity(entity);
-        process(this.response, this.file, this.contentType);
-        
+//        final FileEntity entity = new FileEntity(this.file);
+//        entity.setContentType(this.response.getFirstHeader(HTTP.CONTENT_TYPE));
+//        this.response.setEntity(entity);
+//        process(this.response, this.file, this.contentType);
+
+    	process(this.response, this.file, this.contentType);
+    	
         return this.response;
     }
 

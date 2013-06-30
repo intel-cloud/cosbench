@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.client.http;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Vector;
@@ -29,8 +30,10 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -57,6 +60,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 
 
@@ -186,28 +190,30 @@ public class HttpClientUtil {
         return new BasicHttpRequest(method, path);
     }
 
+/*
 	public static void makeRequest(HttpAsyncRequester requester, BasicHttpRequest request, 
     		BasicNIOConnPool connPool, HttpHost target, String path, FutureCallback<HttpResponse> futureCallback) throws Exception {
    
-		    // Execute HTTP GETs to the following hosts and
 	    	long start = System.currentTimeMillis();
 	    	
         	HttpCoreContext coreContext = HttpCoreContext.create();
-        	
-	        final ZeroCopyFileConsumer fileconsumer = new ZeroCopyFileConsumer(new File("c:\\temp\\null")); 	            
+        	final ZCConsumer<File> consumer = new ZCConsumer<File>(new ConsumerFileSink(new File(path)));        	
+//        	final ZCConsumer<ByteBuffer> consumer = new ZCConsumer<ByteBuffer>(new ConsumerNullSink(ByteBuffer.allocate(8192)));
+       		
             Future<HttpResponse> future = requester.execute(
                     new BasicAsyncRequestProducer(target, request),
-                    fileconsumer,
+                    consumer,
 //                    new BasicAsyncResponseConsumer() ,
                     connPool,
                     coreContext,
                     // Handle HTTP response from a callback
                     futureCallback);
             
-            future.get();
+//            future.get();
             
             long end = System.currentTimeMillis();
             
             System.out.println("Elapsed Time: " + (end-start) + " ms.");
         }
+*/
 }
