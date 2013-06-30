@@ -27,6 +27,7 @@ import com.intel.cosbench.config.Mission;
 import com.intel.cosbench.driver.model.*;
 import com.intel.cosbench.driver.operator.*;
 import com.intel.cosbench.driver.util.OperationPicker;
+import com.intel.cosbench.driver.util.StatsCallback;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.service.AbortedException;
 
@@ -62,6 +63,8 @@ public class WorkAgent extends AbstractAgent implements Session, OperationListen
     private Status currMarks = new Status(); /* for snapshots */
 	private Status currMarksCloned = new Status();/* for snapshots */
     private Status globalMarks = new Status(); /* for the final report */
+    
+    private StatsCallback statsCallback = new StatsCallback(this);
 
     public WorkAgent() {
         /* empty */
@@ -173,6 +176,7 @@ public class WorkAgent extends AbstractAgent implements Session, OperationListen
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
         OperatorContext context = operatorRegistry.getOperator(op);
+        statsCallback.setOpType(context.getOperator().getOpType());
         context.getOperator().operate(this);
     }
 
