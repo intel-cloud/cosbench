@@ -5,12 +5,8 @@ Bundle-SymbolicName: cosbench-driver
 Bundle-Version: 0.3.1.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-<<<<<<< HEAD
-Export-Package: com.intel.cosbench.driver.operator,
- com.intel.cosbench.driver.util
-=======
-Export-Package: com.intel.cosbench.driver.util
->>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
+Export-Package: com.intel.cosbench.driver.util,
+ com.intel.cosbench.driver.operator
 Import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,
  com.intel.cosbench.api.ioengine,

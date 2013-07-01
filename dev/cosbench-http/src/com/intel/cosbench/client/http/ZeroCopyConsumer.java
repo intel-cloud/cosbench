@@ -48,15 +48,6 @@ public abstract class ZeroCopyConsumer<T> extends
 		this.response = response;
 	}
 
-<<<<<<< HEAD
-	@Override
-	protected void onEntityEnclosed(final HttpEntity entity,
-			final ContentType contentType) throws IOException {
-		this.contentType = contentType;
-		this.fileChannel = this.accessfile.getChannel();
-		this.idx = 0;
-	}
-=======
     
     @Override
     protected void onEntityEnclosed(
@@ -65,7 +56,6 @@ public abstract class ZeroCopyConsumer<T> extends
         this.fileChannel = this.accessfile.getChannel();
         this.idx = 0;
     }
->>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 
 	@Override
 	protected void onContentReceived(final ContentDecoder decoder,
@@ -91,15 +81,6 @@ public abstract class ZeroCopyConsumer<T> extends
 	protected abstract T process(HttpResponse response, File file,
 			ContentType contentType) throws Exception;
 
-<<<<<<< HEAD
-	@Override
-	protected HttpResponse buildResult(final HttpContext context)
-			throws Exception {
-		final FileEntity entity = new FileEntity(this.file);
-		entity.setContentType(this.response.getFirstHeader(HTTP.CONTENT_TYPE));
-		this.response.setEntity(entity);
-		process(this.response, this.file, this.contentType);
-=======
 	
     @Override
     protected HttpResponse buildResult(final HttpContext context) throws Exception {
@@ -112,10 +93,7 @@ public abstract class ZeroCopyConsumer<T> extends
     	
         return this.response;
     }
->>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 
-		return this.response;
-	}
 
 	@Override
 	protected void releaseResources() {

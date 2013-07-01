@@ -32,7 +32,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ConnectTimeoutException;
-<<<<<<< HEAD
 import org.apache.http.impl.nio.pool.BasicNIOConnPool;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
@@ -40,10 +39,7 @@ import org.apache.http.nio.protocol.HttpAsyncRequestExecutor;
 import org.apache.http.nio.protocol.HttpAsyncRequester;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.InputStreamEntity;
-
-=======
 import org.apache.http.message.BasicHttpRequest;
->>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 import static org.apache.http.HttpStatus.*;
 
 import com.intel.cosbench.api.context.AuthContext;
