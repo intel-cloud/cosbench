@@ -19,13 +19,12 @@ package com.intel.cosbench.api.nioengine;
 
 import static com.intel.cosbench.api.nioengine.NIOEngineConstants.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.InetSocketAddress;
-import java.util.Vector;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
+<<<<<<< HEAD
 //import org.apache.http.config.*;
 
 import org.apache.http.params.*;
@@ -39,44 +38,23 @@ import com.intel.cosbench.log.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
+=======
+>>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.nio.DefaultClientIOEventDispatch;
 import org.apache.http.impl.nio.DefaultHttpClientIODispatch;
 import org.apache.http.impl.nio.pool.BasicNIOConnPool;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.nio.protocol.BasicAsyncRequestProducer;
-import org.apache.http.nio.protocol.BufferingHttpClientHandler;
-import org.apache.http.nio.protocol.EventListener;
 import org.apache.http.nio.protocol.HttpAsyncRequestExecutor;
-import org.apache.http.nio.protocol.HttpAsyncRequester;
-import org.apache.http.nio.protocol.HttpRequestExecutionHandler;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOEventDispatch;
-import org.apache.http.nio.reactor.SessionRequest;
-import org.apache.http.nio.reactor.SessionRequestCallback;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpCoreContext;
-import org.apache.http.protocol.HttpProcessor;
-import org.apache.http.protocol.HttpProcessorBuilder;
-import org.apache.http.protocol.ImmutableHttpProcessor;
-import org.apache.http.protocol.RequestConnControl;
-import org.apache.http.protocol.RequestContent;
-import org.apache.http.protocol.RequestExpectContinue;
-import org.apache.http.protocol.RequestTargetHost;
-import org.apache.http.protocol.RequestUserAgent;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.ConnectionConfig;
-import org.apache.http.conn.params.*;
-import org.apache.http.entity.FileEntity;
 
+import com.intel.cosbench.config.Config;
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.LogManager;
+import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.api.ioengine.*;
 
@@ -293,8 +271,8 @@ import com.intel.cosbench.api.ioengine.*;
  */
 
 /* below is for httpcore 4.3-beta2 */
-class NIOEngine extends NoneIOEngine {
 
+<<<<<<< HEAD
 	private int channels;
 
 	private ConnectingIOReactor ioReactor;
@@ -501,5 +479,176 @@ class NIOEngine extends NoneIOEngine {
 		context.put(IOEngineContext.TARGET_KEY, this.target);
 		return context;
 	}
+=======
+/**
+ * This class encapsulates basic operations need to setup NIO engine.
+ * 
+ * @author ywang19
+ *
+ */
+public class NIOEngine extends NoneIOEngine {
+
+	private int channels = IOENGINE_CHANNELS_DEFAULT;		// the number of working channel.
+	private int concurrency = IOENGINE_CONCURRENCY_DEFAULT; 	// the queue or pool size in max.
+
+	private ConnectingIOReactor ioReactor;
+	private IOEventDispatch ioEventDispatch;
+	private BasicNIOConnPool connPool;
+	
+
+	public BasicNIOConnPool getConnPool() {
+		return connPool;
+	}
+
+	public int getChannels() {
+		return channels;
+	}
+
+	public void setChannels(int channels) {
+		this.channels = channels;
+	}
+
+	public int getConcurrency() {
+		return concurrency;
+	}
+
+	public void setConcurrency(int concurrency) {
+		this.concurrency = concurrency;
+	}
+
+   
+    public NIOEngine() {
+    }
+
+/*    
+    public void issueRequest(HttpHost target, BasicHttpRequest request, final CountDownLatch latch) throws Exception {
+        // Create HTTP requester
+//    	HttpHost proxy = new HttpHost("proxy-prc.intel.com", 911, "http");
+        
+        // Execute HTTP GETs to the following hosts and    	
+        HttpProcessor httpproc = HttpProcessorBuilder.create()
+                // Use standard client-side protocol interceptors
+                .add(new RequestContent())
+                .add(new RequestTargetHost())
+                .add(new RequestConnControl())
+                .add(new RequestUserAgent("Mozilla/5.0"))
+                .add(new RequestExpectContinue()).build();
+        HttpAsyncRequester requester = new HttpAsyncRequester(httpproc);
+        String out_path = "c:\\temp\\123.html";
+        
+//        final CountDownLatch latch = new CountDownLatch(1);
+    	HttpClientUtil.makeRequest(requester, request, pool, target, out_path, new COSBFutureCallback(target, latch));
+//    	latch.await();
+    }
+*/
+    
+//    public void issueRequest(HttpHost target, BasicHttpRequest request, final CountDownLatch latch) throws Exception {
+//
+//    	NIOClient client = new NIOClient(connPool);
+//    	client.issueRequest(target, request, latch);
+//
+//    }
+    
+    @Override
+    public boolean init(Config config, Logger logger) {
+        super.init(config, logger);
+//      channels = config.getInt(IOENGINE_CHANNELS_KEY, IOENGINE_CHANNELS_DEFAULT);
+//      concurrency = config.getInt(IOENGINE_CONCURRENCY_KEY, IOENGINE_CONCURRENCY_DEFAULT);
+
+        parms.put(IOENGINE_CHANNELS_KEY, channels);
+        parms.put(IOENGINE_CONCURRENCY_KEY, concurrency);
+        
+        
+        logger.debug("using IOEngine config: {}", parms);
+        
+        try
+        {
+//	    	// Create HTTP protocol processing chain
+
+	        // Create client-side HTTP protocol handler
+	        HttpAsyncRequestExecutor protocolHandler = new HttpAsyncRequestExecutor();
+
+	        
+	        // Create client-side I/O event dispatch
+	        ioEventDispatch = new DefaultHttpClientIODispatch(protocolHandler, ConnectionConfig.DEFAULT);
+	        // Create client-side I/O reactor
+	        ioReactor = new DefaultConnectingIOReactor(IOReactorConfig.custom()
+	        		.setIoThreadCount(channels)
+	        		.build(), 
+	        		null);
+	        // Create HTTP connection pool
+	        connPool = new BasicNIOConnPool(ioReactor, ConnectionConfig.DEFAULT);
+	        // Limit total number of connections to just two
+	        connPool.setDefaultMaxPerRoute(channels);
+	        connPool.setMaxTotal(channels);
+        }catch(Exception e) {
+            logger.debug("NIOEngine is failed to initialize");
+        	e.printStackTrace();
+        	
+        	return false;
+        }
+
+        logger.debug("NIOEngine has been initialized");
+        
+        return true;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
+    @Override
+    public boolean shutdown() throws IOEngineException {
+    	
+    	try {
+    		ioReactor.shutdown();
+    	}catch(IOException e) {
+    		logger.error("Failed to shut down I/O Reactor.");
+    		
+    		throw new IOEngineException(e);
+    	}
+    	
+    	return true;
+    }
+    
+    @Override
+    public IOEngineContext startup() throws IOEngineException {
+        super.startup();
+        
+        try {
+            // 
+        	Thread ioThread = new Thread(new Runnable() {
+
+                public void run() {
+                    try {
+                        // Ready to go!
+                        ioReactor.execute(ioEventDispatch);
+                    } catch (InterruptedIOException ex) {
+                        System.err.println("Interrupted");
+                    } catch (IOException e) {
+                        System.err.println("I/O error: " + e.getMessage());
+                    }
+                    System.out.println("Shutdown");
+                }
+
+            });
+            // Start the client thread
+            ioThread.start();            
+        	
+        } catch (Exception e) {
+        	logger.error(e.getMessage());
+        	
+        	throw new IOEngineException(e);
+        }
+        
+        return createContext();
+    }
+
+    private IOEngineContext createContext() {
+        IOEngineContext context = new IOEngineContext();
+        return context;
+    }
+>>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 
 }

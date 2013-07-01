@@ -5,11 +5,11 @@ Bundle-SymbolicName: cosbench-swauth
 Bundle-Version: 0.3.1.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.intel.cosbench.api.nioengine
 Bundle-ClassPath: .,
  org.apache.httpcomponents.httpclient_4.3-beta2.jar,
  org.apache.httpcomponents.httpcore_4.3-beta2.jar
 Import-Package: com.intel.cosbench.api.context,
  com.intel.cosbench.api.ioengine,
- com.intel.cosbench.client.http,
  com.intel.cosbench.config,
  com.intel.cosbench.log

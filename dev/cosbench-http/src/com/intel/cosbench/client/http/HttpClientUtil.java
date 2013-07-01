@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.client.http;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Vector;
@@ -29,8 +30,10 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -57,6 +60,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 
 /**
@@ -68,6 +72,7 @@ import org.apache.http.entity.FileEntity;
  */
 public class HttpClientUtil {
 
+<<<<<<< HEAD
 	/**
 	 * Creates a default HTTP client with a given timeout setting.<br />
 	 * Note that this client is <strong>NOT Thread-Safe</strong> and can only be
@@ -210,4 +215,148 @@ public class HttpClientUtil {
 		//
 		// System.out.println("Elapsed Time: " + (end-start) + " ms.");
 	}
+=======
+    /**
+     * Creates a default HTTP client with a given timeout setting.<br />
+     * Note that this client is <strong>NOT Thread-Safe</strong> and can only be
+     * used by a single thread.
+     * 
+     * @param timeout
+     *            the timeout in seconds that will be honored by this client
+     * @return a new HTTP client
+     */
+    public static HttpClient createHttpClient(int timeout) {
+    	// make it support self-signed certification for https.
+	      HttpParams params = createDefaultHttpParams(timeout);
+	      ClientConnectionManager cm = createClientConnManager();
+	
+	      return new DefaultHttpClient(cm, params);    	
+    }
+
+    private static HttpParams createDefaultHttpParams(int timeout) {
+        HttpParams params = new BasicHttpParams();
+        /* default HTTP parameters */
+        DefaultHttpClient.setDefaultHttpParams(params);
+        /* connection/socket timeouts */
+        HttpConnectionParams.setSoTimeout(params, timeout);
+        HttpConnectionParams.setConnectionTimeout(params, timeout);
+        /* user agent */
+        HttpProtocolParams.setUserAgent(params, "cosbench/2.0");
+        return params;
+    }
+    
+    @SuppressWarnings({ "deprecation"})
+	private static SSLSocketFactory createSSLSocketFactory()
+    {
+    	try
+    	{
+	    	SSLContext ctx = SSLContext.getInstance("TLS"); 
+	        X509TrustManager tm = new X509TrustManager() { 
+	        	@Override
+	            public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException { 
+	            } 
+	        	@Override
+	            public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException { 
+	            } 
+	
+	            public X509Certificate[] getAcceptedIssuers() { 
+	                return null; 
+	            }
+	        }; 
+	        ctx.init(null, new X509TrustManager[]{tm}, null);
+	        String[] enabled = {"SSL_RSA_WITH_NULL_MD5","SSL_RSA_WITH_NULL_SHA"};
+	        ctx.createSSLEngine().setEnabledCipherSuites(enabled);
+	        
+	        SSLSocketFactory ssf = new SSLSocketFactory(ctx); 
+	        ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);     
+	        
+            return ssf;
+        } catch (Exception ex) { 
+            ex.printStackTrace(); 
+            return null; 
+        } 	
+    }
+
+    private static ClientConnectionManager createClientConnManager()
+    {
+        SchemeRegistry sr = new SchemeRegistry();            
+        
+        sr.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+        sr.register(new Scheme("https", 443, createSSLSocketFactory()));
+
+        return new SingleClientConnManager(sr);
+    }
+    
+    /**
+     * Releases the resources held by the given HTTP client.<br />
+     * Note that no further connections can be made upon a disposed HTTP client.
+     * 
+     * @param client
+     *            the HTTP client to be disposed.
+     */
+    public static void disposeHttpClient(HttpClient client) {
+        ClientConnectionManager manager = client.getConnectionManager();
+        manager.shutdown();
+    }
+
+    public static HttpGet makeHttpGet(String url) {
+    	return new HttpGet(url);
+    }
+
+    public static HttpPut makeHttpPut(String url) {
+        return new HttpPut(url);
+    }
+
+    public static HttpHead makeHttpHead(String url) {
+        return new HttpHead(url);
+    }
+
+    public static HttpPost makeHttpPost(String url) {
+        return new HttpPost(url);
+    }
+
+    public static HttpDelete makeHttpDelete(String url) {
+        return new HttpDelete(url);
+    }
+
+    public static String encodeURL(String str) {
+        URLCodec codec = new URLCodec();
+        try {
+            return codec.encode(str).replaceAll("\\+", "%20");
+        } catch (EncoderException ee) {
+            return str;
+        }
+    }
+    
+    public static BasicHttpRequest getRequest(String method, String path) {
+        return new BasicHttpRequest(method, path);
+    }
+
+/*
+	public static void makeRequest(HttpAsyncRequester requester, BasicHttpRequest request, 
+    		BasicNIOConnPool connPool, HttpHost target, String path, FutureCallback<HttpResponse> futureCallback) throws Exception {
+   
+	    	long start = System.currentTimeMillis();
+	    	
+        	HttpCoreContext coreContext = HttpCoreContext.create();
+        	final ZCConsumer<File> consumer = new ZCConsumer<File>(new ConsumerFileSink(new File(path)));        	
+//        	final ZCConsumer<ByteBuffer> consumer = new ZCConsumer<ByteBuffer>(new ConsumerNullSink(ByteBuffer.allocate(8192)));
+       		
+            Future<HttpResponse> future = requester.execute(
+                    new BasicAsyncRequestProducer(target, request),
+                    consumer,
+//                    new BasicAsyncResponseConsumer() ,
+                    connPool,
+                    coreContext,
+                    // Handle HTTP response from a callback
+                    futureCallback);
+            
+//            future.get();
+            
+            long end = System.currentTimeMillis();
+            
+            System.out.println("Elapsed Time: " + (end-start) + " ms.");
+        }
+*/
+>>>>>>> 01b77a30b4640d36ad28230ca216963236066af0
 }
