@@ -20,11 +20,14 @@ package com.intel.cosbench.driver.operator;
 import java.util.Random;
 
 import com.intel.cosbench.api.storage.StorageAPI;
+import com.intel.cosbench.driver.util.StatsCallback;
 import com.intel.cosbench.log.Logger;
 
 public interface Session {
 
     public int getIndex();
+    
+    public StatsCallback getStatsCallback();
 
     public int getTotalWorkers();
 

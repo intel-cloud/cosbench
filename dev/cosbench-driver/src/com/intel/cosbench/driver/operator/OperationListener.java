@@ -20,7 +20,7 @@ package com.intel.cosbench.driver.operator;
 import com.intel.cosbench.bench.*;
 
 public interface OperationListener {
-
+	
     public void onSampleCreated(Sample sample);
 
     public void onOperationCompleted(Result result);

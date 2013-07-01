@@ -64,10 +64,10 @@ class Reader extends AbstractOperator {
         String[] path = objPicker.pickObjPath(session.getRandom(), idx, all);
         NullOutputStream out = new NullOutputStream();
         Sample sample = doRead(out, path[0], path[1], config, session);
-        session.getListener().onSampleCreated(sample);
-        Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
-        session.getListener().onOperationCompleted(result);
+        //session.getListener().onSampleCreated(sample);
+        //Date now = sample.getTimestamp();
+        //Result result = new Result(now, OP_TYPE, sample.isSucc());
+        //session.getListener().onOperationCompleted(result);
     }
 
     private Sample doRead(OutputStream out, String conName, String objName,
@@ -75,31 +75,32 @@ class Reader extends AbstractOperator {
         if (Thread.interrupted())
             throw new AbortedException();
 
-        InputStream in = null;
+//        InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
 
         long start = System.currentTimeMillis();
 
         try {
-            in = session.getApi().getObject(conName, objName, config);
-            if (!hashCheck)
-                IOUtils.copyLarge(in, cout);
-            else if (!validateChecksum(conName, objName, session, in, cout))
-                return new Sample(new Date(), OP_TYPE, false);
+            session.getApi().getObject(conName, objName, config, session);
+//            if (!hashCheck)
+//                IOUtils.copyLarge(in, cout);
+//            else if (!validateChecksum(conName, objName, session, in, cout))
+//                return new Sample(new Date(), OP_TYPE, false);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform read operation", e);
             return new Sample(new Date(), OP_TYPE, false);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(cout);
+//            IOUtils.closeQuietly(in);
+//            IOUtils.closeQuietly(cout);
         }
+		return null;
 
-        long end = System.currentTimeMillis();
-
-        Date now = new Date(end);
-        return new Sample(now, OP_TYPE, true, end - start, cout.getByteCount());
+//        long end = System.currentTimeMillis();
+//
+//        Date now = new Date(end);
+//        return new Sample(now, OP_TYPE, true, end - start, cout.getByteCount());
     }
 
     private static boolean validateChecksum(String conName, String objName,

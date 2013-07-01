@@ -74,10 +74,10 @@ class Writer extends AbstractOperator {
         RandomInputStream in = new RandomInputStream(size, random, isRandom,
                 hashCheck);
         Sample sample = doWrite(in, len, path[0], path[1], config, session);
-        session.getListener().onSampleCreated(sample);
-        Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
-        session.getListener().onOperationCompleted(result);
+//        session.getListener().onSampleCreated(sample);
+//        Date now = sample.getTimestamp();
+//        Result result = new Result(now, OP_TYPE, sample.isSucc());
+//        session.getListener().onOperationCompleted(result);
     }
 
     public static Sample doWrite(InputStream in, long length, String conName,

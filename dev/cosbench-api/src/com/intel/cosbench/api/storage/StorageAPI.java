@@ -21,6 +21,7 @@ import java.io.InputStream;
 
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.driver.operator.Session;
 import com.intel.cosbench.log.Logger;
 
 public interface StorageAPI {
@@ -71,6 +72,16 @@ public interface StorageAPI {
      *            by the <code>login()</code> from the Auth-API.
      */
     public void setAuthContext(AuthContext info);
+    
+    /**
+     * Associates IOEnginecontext with this Storage-API for further
+     * storage operations.
+     * 
+     * @param info
+     *            - one IOEngineContext instance, normally, it's the result returned
+     *            by the <code>login()</code> from the Auth-API.
+     */
+    public void setIOEngineContext(IOEngineContext info);
 
     /**
      * Downloads an object from a container.
@@ -81,8 +92,9 @@ public interface StorageAPI {
      *            - the name of an object to be downloaded.
      * @param config
      *            - the configuration used for this operation.
+     * @param session 
      */
-    public InputStream getObject(String container, String object, Config config);
+    public InputStream getObject(String container, String object, Config config, Session session);
 
     /**
      * Creates a new container.
@@ -108,9 +120,12 @@ public interface StorageAPI {
      * @param config
      *            - the configuration used for this operation.
      */
+    @Deprecated
     public void createObject(String container, String object, InputStream data,
             long length, Config config);
-
+    
+	void createObject(String container, String object, InputStream data,
+			long length, Config config, Session session);
     /**
      * Removes a given container.
      * 
@@ -132,6 +147,8 @@ public interface StorageAPI {
      *            - the configuration used for this operation.
      */
     public void deleteObject(String container, String object, Config config);
+
+
 
     // public Map<String, String> getMetadata(String container, String object,
     // Config config);

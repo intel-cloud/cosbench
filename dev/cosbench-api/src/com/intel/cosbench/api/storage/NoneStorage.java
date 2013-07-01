@@ -24,6 +24,7 @@ import java.util.*;
 
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.driver.operator.Session;
 import com.intel.cosbench.log.Logger;
 
 /**
@@ -61,6 +62,11 @@ public class NoneStorage implements StorageAPI {
     public void setAuthContext(AuthContext info) {
         /* empty */
     }
+    
+	@Override
+	public void setIOEngineContext(IOEngineContext info) {
+		/* empty */		
+	}
 
     @Override
     public void dispose() {
@@ -78,7 +84,7 @@ public class NoneStorage implements StorageAPI {
     }
 
     @Override
-    public InputStream getObject(String container, String object, Config config) {
+    public InputStream getObject(String container, String object, Config config, Session session) {
         if (logging)
             logger.info("performing GET at /{}/{}", container, object);
         return new ByteArrayInputStream(new byte[] {});
@@ -97,7 +103,7 @@ public class NoneStorage implements StorageAPI {
             logger.info("performing PUT at /{}/{}", container, object);
     }
 
-    @Override
+    @Deprecated
     public void createObject(String container, String object, InputStream data,
             long length, Config config) {
         if (logging)
@@ -110,23 +116,58 @@ public class NoneStorage implements StorageAPI {
             logger.info("performing DELETE at /{}", container);
     }
 
-    @Override
+    @Deprecated
     public void deleteObject(String container, String object, Config config) {
         if (logging)
             logger.info("performing DELETE at /{}/{}", container, object);
     }
-
+    
+    @Deprecated
     protected void createMetadata(String container, String object,
             Map<String, String> map, Config config) {
         if (logging)
             logger.info("performing POST at /{}/{}", container, object);
     }
-
+    
+    protected void createMetadata(String container, String object,
+            Map<String, String> map, Config config, Session session) {
+        if (logging)
+            logger.info("performing POST at /{}/{}", container, object);
+    }
+    
+    @Deprecated
     protected Map<String, String> getMetadata(String container, String object,
             Config config) {
         if (logging)
             logger.info("performing HEAD at /{}/{}", container, object);
         return Collections.emptyMap();
     }
+    @Override
+	public void createObject(String container, String object, InputStream data,
+			long length, Config config, Session session) {
+        if (logging)
+            logger.info("performing PUT at /{}/{}", container, object);
+		
+	}
+
+	protected Map<String, String> getMetadata(String container, String object,
+			Config config, Session session) {
+        if (logging)
+            logger.info("performing HEAD at /{}/{}", container, object);
+        return Collections.emptyMap();
+	}
+
+	public void deleteContainer(String container, Config config, Session session) {
+		if (logging)
+            logger.info("performing DELETE at /{}/{}", container, container);
+		
+	}
+
+	public void deleteObject(String container, String object, Config config,
+			Session session) {
+		if (logging)
+            logger.info("performing DELETE at /{}/{}", container, object);
+		
+	}
 
 }
