@@ -190,30 +190,4 @@ public class HttpClientUtil {
         return new BasicHttpRequest(method, path);
     }
 
-/*
-	public static void makeRequest(HttpAsyncRequester requester, BasicHttpRequest request, 
-    		BasicNIOConnPool connPool, HttpHost target, String path, FutureCallback<HttpResponse> futureCallback) throws Exception {
-   
-	    	long start = System.currentTimeMillis();
-	    	
-        	HttpCoreContext coreContext = HttpCoreContext.create();
-        	final ZCConsumer<File> consumer = new ZCConsumer<File>(new ConsumerFileSink(new File(path)));        	
-//        	final ZCConsumer<ByteBuffer> consumer = new ZCConsumer<ByteBuffer>(new ConsumerNullSink(ByteBuffer.allocate(8192)));
-       		
-            Future<HttpResponse> future = requester.execute(
-                    new BasicAsyncRequestProducer(target, request),
-                    consumer,
-//                    new BasicAsyncResponseConsumer() ,
-                    connPool,
-                    coreContext,
-                    // Handle HTTP response from a callback
-                    futureCallback);
-            
-//            future.get();
-            
-            long end = System.currentTimeMillis();
-            
-            System.out.println("Elapsed Time: " + (end-start) + " ms.");
-        }
-*/
 }
