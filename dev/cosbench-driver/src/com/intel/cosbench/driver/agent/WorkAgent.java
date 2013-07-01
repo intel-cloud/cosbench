@@ -84,6 +84,10 @@ public class WorkAgent extends AbstractAgent implements Session, OperationListen
         this.operatorRegistry = operatorRegistry;
     }
 
+    public StatsCallback getStatsCallback(){
+    	return this.statsCallback;
+    }
+    
     @Override
     public int getIndex() {
         return workerContext.getIndex();

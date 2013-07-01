@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="org.apache.httpcomponents.httpclient_4.3-beta2.jar"/>
-	<classpathentry kind="lib" path="org.apache.httpcomponents.httpcore_4.3-beta2.jar"/>
+	<classpathentry kind="lib" path="org.apache.httpcomponents.httpclient_4.3-beta2.jar" sourcepath="C:/Users/jialinsu/Desktop/asynchttplibs/httpcomponents-core-4.3-beta2-src.zip"/>
+	<classpathentry kind="lib" path="org.apache.httpcomponents.httpcore_4.3-beta2.jar" sourcepath="C:/Users/jialinsu/Desktop/asynchttplibs/httpcomponents-core-4.3-beta2-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

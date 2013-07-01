@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.intel.cosbench.api.auth.*;
+import com.intel.cosbench.api.context.IOEngineContext;
 import com.intel.cosbench.api.ioengine.*;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
@@ -65,6 +66,7 @@ class MissionHandler {
     private ExecutorService executor;
     private MissionContext missionContext;
     private IOEngineAPI ioengine;
+    private IOEngineContext ioEngineContext;
 
     public MissionHandler() {
         /* empty */
@@ -202,7 +204,11 @@ class MissionHandler {
     private StorageAPI createStorageApi(Storage storage, LogManager manager) {
         String type = storage.getType();
         Logger logger = manager.getLogger();
-        return storageAPIs.getStorage(type, storageConfig, logger);
+        StorageAPI storageAPI = storageAPIs.getStorage(type, storageConfig, logger);
+        if (this.ioEngineContext != null){
+        	storageAPI.setIOEngineContext(this.ioEngineContext);
+        }
+        return storageAPI;
     }
 
     private void createExecutor() {
@@ -260,7 +266,7 @@ class MissionHandler {
         LOGGER.debug("begin to execute mission {}", id);
         try {
         	if(ioengine != null)
-        		ioengine.startup();
+        		ioEngineContext = ioengine.startup();
         	
             stressTarget();
         } catch (TimeoutException te) {

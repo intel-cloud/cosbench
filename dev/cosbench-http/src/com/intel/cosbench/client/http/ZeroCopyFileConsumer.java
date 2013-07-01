@@ -15,13 +15,12 @@ public class ZeroCopyFileConsumer extends ZeroCopyConsumer<File> {
 		// TODO Auto-generated constructor stub
 	}
 
-	protected File process(
-	        final HttpResponse response,
-	        final File file,
-	        final ContentType contentType) throws Exception {
-	    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-	        throw new HttpException("Upload failed: " + response.getStatusLine());
-	    }
-	    return file;
+	protected File process(final HttpResponse response, final File file,
+			final ContentType contentType) throws Exception {
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			throw new HttpException("Upload failed: "
+					+ response.getStatusLine());
+		}
+		return file;
 	}
 }
