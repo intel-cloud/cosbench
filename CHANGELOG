@@ -1,3 +1,9 @@
+  COSBench 0.3.1.1 (13-ww29.2)
+------------------------------------
+1. librados based ceph adaptor is merged.
+2. new operators (fileread/filewrite) are supported.
+3. fix one issue which causes unexpected termination especially at large object size (#60)
+
   COSBench 0.3.1.0 (13-ww21.3)
 ------------------------------------
 1. revise the fix of inconsistence between snapshot data and report (#18)
