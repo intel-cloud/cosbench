@@ -33,9 +33,6 @@
         <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
         <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
 			</work>
-      <work name="filewrite" workers="8" totalOps="80">
-        <operation type="filewrite" config="cprefix=radtest;containers=u(1,2);fileselection=s;files=/tmp/testfiles/" />
-		  </work>
     </workstage>
 
     <!-- Clean Up Stage -->
