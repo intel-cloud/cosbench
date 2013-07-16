@@ -218,6 +218,7 @@
 										<th >Container Selector</th>
 										<th >Object Selector</th>
 										<th >Size Selector</th>
+										<th >File selector</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -266,6 +267,27 @@
 											</select>										
 										</td>															
 									</tr>
+									<tr>                                        
+                                        <td >File-Write</td>
+										<td ><input type="number" name="filewrite.ratio" style="width:30px" value="0" /> </td>
+										<td >
+											<select name="filewrite.containers" hidden="true">
+											  <option value="u" selected="true">Uniform</option>
+											</select>
+											<input type="number" name="filewrite.containers.min" style="width:30px" value="1" /> - <input type="number" name="filewrite.containers.max" style="width:30px" value="32" /> 
+										</td>
+										<td >
+											<select name="filewrite.fileselection" hidden="true">
+											  <option value="s" selected="true">Uniform</option>
+											</select>
+										</td>
+                                        <td >
+                                        </td>
+										<td >
+											<input name="filewrite.files" type="text" style="width:100px" value="/tmp/testfiles/" />									
+										</td>															
+									</tr>
+									<tr>
 									<tr>
 										<td >Delete</td>
 										<td ><input type="number" name="delete.ratio" style="width:30px" value="0"/> </td>
