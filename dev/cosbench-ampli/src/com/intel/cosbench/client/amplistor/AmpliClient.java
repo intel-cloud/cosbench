@@ -254,22 +254,18 @@ public class AmpliClient {
 
         HttpResponse response = null;
         
-        try
-        {
-        	response = client.execute(method);
+    	response = client.execute(method);
 
-	        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-	            return response.getEntity().getContent();
-	        } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-	            return response.getEntity().getContent();
-	        } else {
-	            throw new AmpliException("unknown error when request object "
-	                    + objName + "@" + namespace, response.getAllHeaders(),
-	                    response.getStatusLine());
-	        }
-        } finally {
-            if (response != null)
-                EntityUtils.consume(response.getEntity());
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            return response.getEntity().getContent();
+        } 
+        EntityUtils.consume(response.getEntity());
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            return response.getEntity().getContent();
+        } else {
+            throw new AmpliException("unknown error when request object "
+                    + objName + "@" + namespace, response.getAllHeaders(),
+                    response.getStatusLine());
         }
     }
 
