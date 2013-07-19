@@ -88,6 +88,12 @@ public class AmpliStorage extends NoneStorage {
     }
 
     @Override
+    public void abort() {
+    	super.abort();
+    	client.abort();
+    }
+    
+    @Override
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
         InputStream stream;
