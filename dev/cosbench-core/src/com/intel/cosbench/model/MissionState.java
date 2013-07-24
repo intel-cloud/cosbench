@@ -30,6 +30,8 @@ public enum MissionState {
     LAUNCHED,
 
     FINISHED,
+    
+    FAILED,
 
     ACCOMPLISHED,
 
@@ -41,6 +43,7 @@ public enum MissionState {
 
     static {
         FINAL_STATES = new HashSet<MissionState>();
+        FINAL_STATES.add(FAILED);
         FINAL_STATES.add(ACCOMPLISHED);
         FINAL_STATES.add(TERMINATED);
         FINAL_STATES.add(ABORTED);
@@ -63,7 +66,7 @@ public enum MissionState {
     }
 
     public static boolean allowClose(MissionState state) {
-        return FINISHED.equals(state);
+        return FINISHED.equals(state) || FAILED.equals(state);
     }
 
 }
