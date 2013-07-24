@@ -34,6 +34,8 @@ public enum TaskState {
     FINISHED,
 
     ACCOMPLISHED,
+    
+    FAILED,
 
     ABORTED,
 
@@ -47,6 +49,7 @@ public enum TaskState {
 
     static {
         FINAL_STATES = new HashSet<TaskState>();
+        FINAL_STATES.add(FAILED);
         FINAL_STATES.add(ACCOMPLISHED);
         FINAL_STATES.add(TERMINATED);
         FINAL_STATES.add(ABORTED);

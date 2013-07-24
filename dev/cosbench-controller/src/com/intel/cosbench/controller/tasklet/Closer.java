@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
-*/ 
+ */
 
 package com.intel.cosbench.controller.tasklet;
 
@@ -33,29 +33,30 @@ import com.intel.cosbench.protocol.CloseResponse;
  */
 class Closer extends AbstractCommandTasklet<CloseResponse> {
 
-    public Closer(TaskContext context) {
-        super(context, CloseResponse.class);
-    }
+	public Closer(TaskContext context) {
+		super(context, CloseResponse.class);
+	}
 
-    @Override
-    protected void execute() {
-        String id = context.getMissionId();
-        issueCommand("close", id);
-        try {
-            closeHttpClient();
-        } catch (Exception e) {
-            LOGGER.error("unexpected exception", e);
-        }
-        context.setState(ACCOMPLISHED);
-    }
+	@Override
+	protected void execute() {
+		String id = context.getMissionId();
+		issueCommand("close", id);
+		try {
+			closeHttpClient();
+		} catch (Exception e) {
+			LOGGER.error("unexpected exception", e);
+		}
+//		context.setState(ACCOMPLISHED);
+	}
 
-    @Override
-    protected void handleResponse(CloseResponse response) {
-        Report report = new Report();
-        for (Metrics metrics : response.getReport())
-            report.addMetrics(metrics);
-        context.setReport(report);
-        context.setLog(response.getDriverLog());
-    }
+	@Override
+	protected void handleResponse(CloseResponse response) {
+		Report report = new Report();
+		for (Metrics metrics : response.getReport())
+			report.addMetrics(metrics);
+		context.setReport(report);
+		context.setLog(response.getDriverLog());
+		context.setState(response.getState());
+	}
 
 }

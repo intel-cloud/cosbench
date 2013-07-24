@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
-*/ 
+ */
 
 package com.intel.cosbench.driver.model;
 
@@ -35,183 +35,183 @@ import com.intel.cosbench.model.*;
  */
 public class MissionContext implements MissionInfo {
 
-    private String id;
-    private Date date;
-    private volatile MissionState state;
-    private StateRegistry stateHistory = new StateRegistry();
-    private transient XmlConfig config;
-    private transient volatile Future<?> future;
+	private String id;
+	private Date date;
+	private volatile MissionState state;
+	private StateRegistry stateHistory = new StateRegistry();
+	private transient XmlConfig config;
+	private transient volatile Future<?> future;
 
-    private Mission mission;
-    private LogManager logManager;
-    private transient OperationPicker operationPicker;
-    private transient OperatorRegistry operatorRegistry;
+	private Mission mission;
+	private LogManager logManager;
+	private transient OperationPicker operationPicker;
+	private transient OperatorRegistry operatorRegistry;
 
-    private WorkerRegistry workerRegistry;
+	private WorkerRegistry workerRegistry;
 
-    /* Report will be available after the mission is accomplished */
-    private volatile Report report = null; // will be merged from worker reports
+	/* Report will be available after the mission is accomplished */
+	private volatile Report report = null; // will be merged from worker reports
 
-    private transient List<MissionListener> listeners = new ArrayList<MissionListener>();
+	private transient List<MissionListener> listeners = new ArrayList<MissionListener>();
 
-    public MissionContext() {
-        /* empty */
-    }
+	public MissionContext() {
+		/* empty */
+	}
 
-    @Override
-    public String getId() {
-        return id;
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @Override
-    public Date getDate() {
-        return date;
-    }
+	@Override
+	public Date getDate() {
+		return date;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    @Override
-    public MissionState getState() {
-        return state;
-    }
+	@Override
+	public MissionState getState() {
+		return state;
+	}
 
-    public void setState(MissionState state) {
-        this.state = state;
-        stateHistory.addState(state.name());
-        if (MissionState.isStopped(state))
-            fireMissionStopped();
-    }
+	public void setState(MissionState state) {
+		this.state = state;
+		stateHistory.addState(state.name());
+		if (MissionState.isStopped(state) && !state.equals(MissionState.FAILED))
+			fireMissionStopped();
+	}
 
-    private void fireMissionStopped() {
-        if (report == null)
-            report = mergeReport();
-        for (MissionListener listener : listeners)
-            listener.missionStopped(this);
-    }
+	private void fireMissionStopped() {
+		if (report == null)
+			report = mergeReport();
+		for (MissionListener listener : listeners)
+			listener.missionStopped(this);
+	}
 
-    private Report mergeReport() {
-        ReportMerger merger = new ReportMerger();
-        for (WorkerContext worker : workerRegistry)
-            merger.add(worker.getReport());
-        Report report = merger.merge();
-        OperatorRegistry registry = operatorRegistry;
-        for (Metrics metrics : report) {
-            OperatorContext op = registry.getOperator(metrics.getOpType());
-            metrics.setLatency(Histogram.convert(op.getCounter()));
-        }
-        return report;
-    }
+	private Report mergeReport() {
+		ReportMerger merger = new ReportMerger();
+		for (WorkerContext worker : workerRegistry)
+			merger.add(worker.getReport());
+		Report report = merger.merge();
+		OperatorRegistry registry = operatorRegistry;
+		for (Metrics metrics : report) {
+			OperatorContext op = registry.getOperator(metrics.getOpType());
+			metrics.setLatency(Histogram.convert(op.getCounter()));
+		}
+		return report;
+	}
 
-    @Override
-    public StateInfo[] getStateHistory() {
-        return stateHistory.getAllStates();
-    }
+	@Override
+	public StateInfo[] getStateHistory() {
+		return stateHistory.getAllStates();
+	}
 
-    public XmlConfig getConfig() {
-        return config;
-    }
+	public XmlConfig getConfig() {
+		return config;
+	}
 
-    public void setConfig(XmlConfig config) {
-        this.config = config;
-    }
+	public void setConfig(XmlConfig config) {
+		this.config = config;
+	}
 
-    public Future<?> getFuture() {
-        return future;
-    }
+	public Future<?> getFuture() {
+		return future;
+	}
 
-    public void setFuture(Future<?> future) {
-        this.future = future;
-    }
+	public void setFuture(Future<?> future) {
+		this.future = future;
+	}
 
-    @Override
-    public Mission getMission() {
-        return mission;
-    }
+	@Override
+	public Mission getMission() {
+		return mission;
+	}
 
-    public void setMission(Mission mission) {
-        this.mission = mission;
-    }
+	public void setMission(Mission mission) {
+		this.mission = mission;
+	}
 
-    @Override
-    public LogManager getLogManager() {
-        return logManager;
-    }
+	@Override
+	public LogManager getLogManager() {
+		return logManager;
+	}
 
-    public void setLogManager(LogManager logManager) {
-        this.logManager = logManager;
-    }
+	public void setLogManager(LogManager logManager) {
+		this.logManager = logManager;
+	}
 
-    public OperationPicker getOperationPicker() {
-        return operationPicker;
-    }
+	public OperationPicker getOperationPicker() {
+		return operationPicker;
+	}
 
-    public void setOperationPicker(OperationPicker operationPicker) {
-        this.operationPicker = operationPicker;
-    }
+	public void setOperationPicker(OperationPicker operationPicker) {
+		this.operationPicker = operationPicker;
+	}
 
-    public OperatorRegistry getOperatorRegistry() {
-        return operatorRegistry;
-    }
+	public OperatorRegistry getOperatorRegistry() {
+		return operatorRegistry;
+	}
 
-    public void setOperatorRegistry(OperatorRegistry operatorRegistry) {
-        this.operatorRegistry = operatorRegistry;
-    }
+	public void setOperatorRegistry(OperatorRegistry operatorRegistry) {
+		this.operatorRegistry = operatorRegistry;
+	}
 
-    public WorkerRegistry getWorkerRegistry() {
-        return workerRegistry;
-    }
+	public WorkerRegistry getWorkerRegistry() {
+		return workerRegistry;
+	}
 
-    @Override
-    public int getWorkerCount() {
-        return workerRegistry.getSize();
-    }
+	@Override
+	public int getWorkerCount() {
+		return workerRegistry.getSize();
+	}
 
-    @Override
-    public WorkerInfo[] getWorkerInfos() {
-        return workerRegistry.getAllWorkers();
-    }
+	@Override
+	public WorkerInfo[] getWorkerInfos() {
+		return workerRegistry.getAllWorkers();
+	}
 
-    public void setWorkerRegistry(WorkerRegistry workerRegistry) {
-        this.workerRegistry = workerRegistry;
-    }
+	public void setWorkerRegistry(WorkerRegistry workerRegistry) {
+		this.workerRegistry = workerRegistry;
+	}
 
-    @Override
-    public Snapshot getSnapshot() {
-        SnapshotMerger merger = new SnapshotMerger();
-        for (WorkerContext worker : workerRegistry)
-            merger.add(worker.getSnapshot());
-        return merger.merge();
-    }
+	@Override
+	public Snapshot getSnapshot() {
+		SnapshotMerger merger = new SnapshotMerger();
+		for (WorkerContext worker : workerRegistry)
+			merger.add(worker.getSnapshot());
+		return merger.merge();
+	}
 
-    @Override
-    public Report getReport() {
-        return report != null ? report : new Report();
-    }
+	@Override
+	public Report getReport() {
+		return report != null ? report : new Report();
+	}
 
-    public void setReport(Report report) {
-        this.report = report;
-    }
+	public void setReport(Report report) {
+		this.report = report;
+	}
 
-    public void addListener(MissionListener listener) {
-        listeners.add(listener);
-    }
+	public void addListener(MissionListener listener) {
+		listeners.add(listener);
+	}
 
-    @Override
-    public void disposeRuntime() {
-        for (WorkerContext worker : workerRegistry)
-            worker.disposeRuntime();
-        config = null;
-        future = null;
-        operationPicker = null;
-        operatorRegistry = null;
-        listeners = null;
-        logManager.dispose();
-    }
+	@Override
+	public void disposeRuntime() {
+		for (WorkerContext worker : workerRegistry)
+			worker.disposeRuntime();
+		config = null;
+		future = null;
+		operationPicker = null;
+		operatorRegistry = null;
+		listeners = null;
+		logManager.dispose();
+	}
 
 }

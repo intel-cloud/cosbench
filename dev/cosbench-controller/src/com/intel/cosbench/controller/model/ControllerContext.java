@@ -31,6 +31,9 @@ public class ControllerContext implements ControllerInfo {
     private String url;
     private int concurrency;
     private DriverRegistry driverRegistry;
+    private String userName;
+    private String passWord;
+    private boolean needAuth;
 
     public ControllerContext() {
         /* empty */
@@ -78,6 +81,30 @@ public class ControllerContext implements ControllerInfo {
     @Override
     public DriverInfo[] getDriverInfos() {
         return driverRegistry.getAllDrivers();
+    }
+    
+    public String getUserName(){
+    	return userName;
+    }
+    
+    public void setUserName(String userName){
+    	this.userName = userName;
+    }
+    
+    public String getPassWord(){
+    	return passWord;
+    }
+    
+    public void setPassWord(String passWord){
+    	this.passWord = passWord;
+    }
+    
+    public boolean getNeddAuth(){
+    	return needAuth;
+    }
+    
+    public void setNeedAuth(boolean needAuth){
+    	this.needAuth = needAuth;
     }
 
 }

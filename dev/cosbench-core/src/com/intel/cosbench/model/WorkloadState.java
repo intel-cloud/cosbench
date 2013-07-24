@@ -26,6 +26,8 @@ public enum WorkloadState {
     PROCESSING,
 
     FINISHED,
+    
+    FAILED,
 
     TERMINATED,
 
@@ -36,6 +38,7 @@ public enum WorkloadState {
     static {
         FINAL_STATES = new HashSet<WorkloadState>();
         FINAL_STATES.add(FINISHED);
+        FINAL_STATES.add(FAILED);
         FINAL_STATES.add(TERMINATED);
         FINAL_STATES.add(CANCELLED);
     }
