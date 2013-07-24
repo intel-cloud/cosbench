@@ -76,7 +76,17 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
         context.setUrl(loadControllerUrl());
         context.setConcurrency(loadConcurrency());
         context.setDriverRegistry(getDriverRegistry());
+        context.setUserName(loadUserName());
+        context.setPassWord(loadPassWord());
+        context.setNeedAuth(loadNeedAuth(context));
         return context;
+    }
+    
+    private boolean loadNeedAuth(ControllerContext context) {
+    	if(context.getUserName().equalsIgnoreCase("N/A") || context.getUserName().equals(null)){
+    		return false;
+    	}
+    	return true;
     }
 
     protected String loadLogLevel() {
@@ -93,6 +103,14 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
 
     private String loadControllerUrl() {
         return config.get("controller.url", "N/A");
+    }
+    
+    private String loadUserName(){
+    	return config.get("controller.username", "N/A");
+    }
+    
+    private String loadPassWord(){
+    	return config.get("controller.password", "N/A");
     }
 
     private int loadConcurrency() {
