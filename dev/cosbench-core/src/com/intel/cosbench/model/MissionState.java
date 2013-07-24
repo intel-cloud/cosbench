@@ -66,7 +66,7 @@ public enum MissionState {
     }
 
     public static boolean allowClose(MissionState state) {
-        return FINISHED.equals(state) || FAILED.equals(state);
+        return FINISHED.equals(state);
     }
 
 }

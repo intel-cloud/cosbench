@@ -315,11 +315,8 @@ class MissionHandler {
 		String id = missionContext.getId();
 		missionContext.setState(ACCOMPLISHED);
 
-		LOGGER.info("!!!! mission: " + missionContext.getId() + " size: "
-				+ missionContext.getReport().getSize() + " len: "
-				+ missionContext.getReport().getAllMetrics().length);
 		for (int i = 0; i < missionContext.getReport().getAllMetrics().length; i++) {
-			LOGGER.info("!!!! mission op: "
+			LOGGER.debug("!!!! mission op: "
 					+ missionContext.getReport().getAllMetrics()[i].getOpType()
 					+ "-"
 					+ missionContext.getReport().getAllMetrics()[i].getOpType());
@@ -327,7 +324,7 @@ class MissionHandler {
 					&& missionContext.getReport().getAllMetrics()[i]
 							.getTotalSampleCount() > 0) {
 				missionContext.setState(FAILED);
-				LOGGER.info("!!!! mission opt -> FAILED");
+				LOGGER.debug("!!!! mission opt -> FAILED");
 				break;
 			}
 		}
