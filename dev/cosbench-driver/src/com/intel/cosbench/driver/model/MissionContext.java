@@ -84,7 +84,7 @@ public class MissionContext implements MissionInfo {
     public void setState(MissionState state) {
         this.state = state;
         stateHistory.addState(state.name());
-        if (MissionState.isStopped(state))
+        if (MissionState.isStopped(state) && !state.equals(MissionState.FAILED))
             fireMissionStopped();
     }
 
