@@ -18,12 +18,14 @@ limitations under the License.
 package com.intel.cosbench.driver.handler;
 
 import static com.intel.cosbench.model.MissionState.TERMINATED;
+import static com.intel.cosbench.model.MissionState.FAILED;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.model.MissionInfo;
+import com.intel.cosbench.model.TaskState;
 import com.intel.cosbench.protocol.*;
 
 public class CloseHandler extends MissionHandler {
@@ -41,6 +43,10 @@ public class CloseHandler extends MissionHandler {
         CloseResponse response = new CloseResponse();
         Report report = info.getReport();
         response.setReport(Arrays.asList(report.getAllMetrics()));
+		if (info.getState().equals(FAILED))
+			response.setState(TaskState.FAILED);
+		else
+			response.setState(TaskState.ACCOMPLISHED);
         String log = null;
         try {
             log = info.getLogManager().getLogAsString();
