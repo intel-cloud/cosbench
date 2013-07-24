@@ -20,6 +20,7 @@ package com.intel.cosbench.protocol;
 import java.util.List;
 
 import com.intel.cosbench.bench.Metrics;
+import com.intel.cosbench.model.TaskState;
 
 /**
  * The response to get log from driver when closed.
@@ -31,9 +32,18 @@ public class CloseResponse extends Response {
 
     private List<Metrics> report; /* metrics report */
     private String driverLog; /* driver log */
+    private TaskState state;
 
     public CloseResponse() {
         /* empty */
+    }
+    
+    public TaskState getState(){
+    	return state;
+    }
+    
+    public void setState(TaskState state){
+    	this.state = state;
     }
 
     public List<Metrics> getReport() {
