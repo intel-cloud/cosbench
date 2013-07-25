@@ -17,8 +17,6 @@ limitations under the License.
 
 package com.intel.cosbench.controller.tasklet;
 
-import static com.intel.cosbench.model.TaskState.ACCOMPLISHED;
-
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.controller.model.TaskContext;
 import com.intel.cosbench.protocol.CloseResponse;
@@ -46,7 +44,6 @@ class Closer extends AbstractCommandTasklet<CloseResponse> {
         } catch (Exception e) {
             LOGGER.error("unexpected exception", e);
         }
-        context.setState(ACCOMPLISHED);
     }
 
     @Override
@@ -56,6 +53,7 @@ class Closer extends AbstractCommandTasklet<CloseResponse> {
             report.addMetrics(metrics);
         context.setReport(report);
         context.setLog(response.getDriverLog());
+        context.setState(response.getState());
     }
 
 }

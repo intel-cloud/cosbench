@@ -143,6 +143,13 @@ class WorkloadProcessor {
         }
         workloadContext.setStopDate(new Date());
         workloadContext.setCurrentStage(null);
+		for (StageContext stageContext : workloadContext.getStageRegistry()
+				.getAllItems()) {
+			if (stageContext.getState().equals(StageState.FAILED)) {
+				workloadContext.setState(FAILED);
+				return;
+			}
+		}
         workloadContext.setState(FINISHED);
     }
 

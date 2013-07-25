@@ -314,6 +314,19 @@ class MissionHandler {
                     "mission should be in the state of finished");
         String id = missionContext.getId();
         missionContext.setState(ACCOMPLISHED);
+		for (int i = 0; i < missionContext.getReport().getAllMetrics().length; i++) {
+			LOGGER.debug("!!!! mission op: "
+					+ missionContext.getReport().getAllMetrics()[i].getOpType()
+					+ "-"
+					+ missionContext.getReport().getAllMetrics()[i].getOpType());
+			if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
+					&& missionContext.getReport().getAllMetrics()[i]
+							.getTotalSampleCount() > 0) {
+				missionContext.setState(FAILED);
+				LOGGER.debug("!!!! mission opt -> FAILED");
+				break;
+			}
+		}
         LOGGER.info("mission {} has been closed successfully", id);
     }
 
