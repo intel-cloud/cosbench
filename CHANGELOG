@@ -4,7 +4,7 @@
 2. fix one issue which causes failures for amplistor read operations (#76)
 3. add multiple main stage support in configuration UI (#80)
 4. fix one issue which causes confusion (sucessfuly) status even 0% successfuly operations (34) 
-
+5. update document and configuration sample to show how to configure for s3 compatible systems
   
   COSBench 0.3.1.1 (13-ww29.2)
 ------------------------------------
