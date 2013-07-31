@@ -1,10 +1,11 @@
-  COSBench 0.3.1.2 (13-ww31.1)
+  COSBench 0.3.1.2 (13-ww31.3)
 ------------------------------------
 1. add filewrite related configuration in UI and user guide
 2. fix one issue which causes failures for amplistor read operations (#76)
 3. add multiple main stage support in configuration UI (#80)
 4. fix one issue which causes confusion (sucessfuly) status even 0% successfuly operations (34) 
 5. update document and configuration sample to show how to configure for s3 compatible systems
+6. clarify issue #71 about how to route S3 traffic to/from specific AWS S3 region.
   
   COSBench 0.3.1.1 (13-ww29.2)
 ------------------------------------
