@@ -15,17 +15,37 @@
 #limitations under the License.
 #
 address=127.0.0.1:19088
+username=""
+password=""
 
 usage()
 {
         echo
-        echo "Usage: $0 <username:password> <action: submit|cancel|info> <parameter> <web ip:port>"
+        echo "Usage: $0 <action: submit|cancel|info> <parameter> <web username:password@ip:port>"
         echo "  - action:"
         echo "          - <submit> <configuration file>: submit configuration and start workload"
         echo "          - <cancel> <workload id>: cancel workload"
         echo "          - <info>: check status"
-        echo "  - <web ip:port> 127.0.0.1:19088 by default"
+        echo "  - <web username:password@ip:port> anonymous:cosbench@127.0.0.1:19088 by default"
         echo
+}
+check()
+{
+	if [[ "${info}" == ?*:?*@?*.?*.?*.?*:?* ]]; then
+		address=${info#*@}
+		userinfo=${info%@*}
+		username=${userinfo%:*}
+		password=${userinfo#*:}
+	elif [[ "${info}" != *@?*:?* ]] && [[ "${info}" == ?*.?*.?*.?*:?* ]]; then
+		address=${info}	
+	elif [[ "${info}" != *@?*:?* ]] && [[ "${info}" != ?*:*@* ]] && [[ "${info}" == ?*:?* ]]; then
+		userinfo=${info}	
+		username=${userinfo%:*}
+		password=${userinfo#*:}
+	else
+		usage
+		exit 1
+	fi
 }
 
 which curl 1>&2 >/dev/null
@@ -40,27 +60,28 @@ if [ $# -lt 1 ]; then
         exit 1
 fi
 
-user=$1
-action=$2
-
+action=$1
 case $action in
         "submit")
-                if [ $# -ge 4 ]; then
-                        address=$4
+                if [ $# -ge 3 ]; then
+                        info=$3
+			check
                 fi
-                curl -u $user -F config=@$3 http://${address}/controller/cli/submit.action
+		curl -F config=@$2 "http://${address}/controller/cli/submit.action?username=${username}&password=${password}"
                 ;;
         "info")
-                if [ $# -ge 3 ]; then
-                        address=$3
+                if [ $# -ge 2 ]; then
+                        info=$2
+			check
                 fi
-                curl -u $user http://${address}/controller/cli/index.action
+                curl "http://${address}/controller/cli/index.action?username=${username}&password=${password}"
                 ;;
         "cancel")
-                if [ $# -ge 4 ]; then
-                        adddress=$4
+                if [ $# -ge 3 ]; then
+                        info=$3
+			check
                 fi
-                curl -u $user -d id=$3 http://${address}/controller/cli/cancel.action
+                curl -d id=$2 "http://${address}/controller/cli/cancel.action?username=${username}&password=${password}"
                 ;;
         *)
                 echo "!!!Unknown action: $action"

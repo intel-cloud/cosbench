@@ -105,24 +105,5 @@
 	<welcome-file-list>
 		<welcome-file>/index.html</welcome-file>
 	</welcome-file-list>
-	
-	<security-constraint>
-        <web-resource-collection>
-            <web-resource-name>management pages</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>driver</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <login-config>
-        <auth-method>BASIC</auth-method>
-        <realm-name>Basic Authentication</realm-name>
-    </login-config>
-    
-    <security-role>
-        <role-name>driver</role-name>
-    </security-role>
 
 </web-app>
