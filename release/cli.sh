@@ -67,7 +67,7 @@ case $action in
                         info=$3
 			check
                 fi
-		curl -F config=@$2 "http://${address}/controller/cli/submit.action?username=${username}&password=${password}"
+				curl -F config=@$2 "http://${address}/controller/cli/submit.action?username=${username}&password=${password}"
                 ;;
         "info")
                 if [ $# -ge 2 ]; then
