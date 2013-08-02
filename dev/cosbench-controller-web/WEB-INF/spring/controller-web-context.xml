@@ -5,6 +5,16 @@
 	xsi:schemaLocation="
          http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+         
+    <bean id="logonPageController" name="/logon.html"
+    	class="com.intel.cosbench.controller.web.LogonPageController">
+    	<property name="controller" ref="controller" />
+    </bean>
+    
+    <bean id="logErrorPageController" name="/logonError.html"
+    	class="com.intel.cosbench.controller.web.LogonErrorPageController">
+    	<property name="controller" ref="controller" />
+    </bean>
 
 	<bean id="indexPageController" name="/index.html"
 		class="com.intel.cosbench.controller.web.IndexPageController">
