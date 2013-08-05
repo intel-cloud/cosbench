@@ -109,5 +109,44 @@
 	<welcome-file-list>
 		<welcome-file>/index.html</welcome-file>
 	</welcome-file-list>
+	
+	<filter>
+    	<description>Requires user to log in as a member</description>
+    	<filter-name>MemberLoginFilter</filter-name>
+    	<filter-class>com.intel.cosbench.controller.web.CliLoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+    	<filter-name>MemberLoginFilter</filter-name>
+    	<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+    
+	<security-constraint>
+    	<web-resource-collection>
+      		<web-resource-name>Form WRCollection</web-resource-name>
+      		<url-pattern>*.html</url-pattern>
+      		<url-pattern>*.do</url-pattern>
+      		<url-pattern>*.csv</url-pattern>
+    	</web-resource-collection>
+     	<auth-constraint>
+      		<role-name>cosbench</role-name>
+    	</auth-constraint>
+    	<user-data-constraint>
+      		<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+  	</security-constraint>
+  
+  	<login-config>
+    	<auth-method>FORM</auth-method>
+    	<form-login-config>
+      		<form-login-page>/logon.html</form-login-page>
+      		<form-error-page>/logonError.html</form-error-page>
+    	</form-login-config>
+  	</login-config>
+
+  	<security-role>
+    	<role-name>cosbench</role-name>
+  	</security-role>
+  	
+
 
 </web-app>
