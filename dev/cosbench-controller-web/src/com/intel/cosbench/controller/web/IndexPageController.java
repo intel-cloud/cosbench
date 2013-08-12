@@ -17,8 +17,11 @@ limitations under the License.
 
 package com.intel.cosbench.controller.web;
 
+import java.io.IOException;
+
 import javax.servlet.http.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.intel.cosbench.service.ControllerService;
@@ -38,14 +41,40 @@ public class IndexPageController extends AbstractController {
         this.controller = controller;
     }
 
-    @Override
-    protected ModelAndView process(HttpServletRequest req,
-            HttpServletResponse res) {
-        ModelAndView result = new ModelAndView("index");
+	@Override
+	protected ModelAndView process(HttpServletRequest req,
+			HttpServletResponse res) throws IOException {
+		ModelAndView result = new ModelAndView("index");
+		String id = req.getParameter("id");
+		String up = req.getParameter("up");
+		String neighId = req.getParameter("neighid");
+		String cancelIds = req.getParameter("cancelIds");
+		String cancel = req.getParameter("cancel");
+		String resubmitIds = req.getParameter("resubmitIds");
+		String resubmit = req.getParameter("resubmit");
+		if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(up)) {
+			boolean isUp = up.equalsIgnoreCase("yes") ? true : false;
+			boolean changePriorityOk = controller.changePriority(id, neighId,
+					isUp);
+			if (changePriorityOk) {
+				result.addObject("highlightId", id);
+			}
+		} else if (!StringUtils.isEmpty(cancelIds)
+				&& !StringUtils.isEmpty(cancel)) {
+			String[] ids = cancelIds.split("_");
+			for (String cancelId : ids) {
+				controller.cancel(cancelId);
+			}
+		} else if (!StringUtils.isEmpty(resubmit)&&!StringUtils.isEmpty(resubmitIds)){
+			String[] ids = resubmitIds.split("_");
+			for (String resubmitId : ids){
+				String newId = controller.resubmit(resubmitId);
+				controller.fire(newId);
+			}
+		}
         result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("aInfos", controller.getActiveWorkloads());
         result.addObject("hInfos", controller.getHistoryWorkloads());
-        return result;
-    }
-
+		return result;
+	}
 }

@@ -38,6 +38,7 @@ public class WorkloadContext implements WorkloadInfo {
     private Workload workload;
     private transient volatile StageInfo currentStage;
     private StageRegistry stageRegistry;
+    private int priority; /* workload priority */
 
     /* Report will be available after the workload is finished */
     private volatile Report report = null; // will be merged from stage reports
@@ -55,6 +56,14 @@ public class WorkloadContext implements WorkloadInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public int getPriority(){
+    	return this.priority;
+    }
+    
+    public void setPriority(int priority){
+    	this.priority = priority;
     }
 
     @Override
@@ -232,7 +241,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void disposeRuntime() {
         for (StageContext stage : stageRegistry)
             stage.disposeRuntime();
-        config = null;
+//        config = null;
         future = null;
         currentStage = null;
         listeners = null;
