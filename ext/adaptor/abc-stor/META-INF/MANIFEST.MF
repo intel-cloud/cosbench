@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Abc Auth Client Bundle
-Bundle-SymbolicName: abc-auth
-Bundle-Version: 0.3.0.0
+Bundle-Name: Abc Storage Client Bundle
+Bundle-SymbolicName: cosbench-abcstor
+Bundle-Version: 0.3.1.0
 Bundle-Vendor: Abc Co.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,
+ com.intel.cosbench.api.storage,
  com.intel.cosbench.client.http,
  com.intel.cosbench.config,
  com.intel.cosbench.log,
