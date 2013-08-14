@@ -40,8 +40,12 @@
         <th>State</th>
         <th style="width:15%;">Link</th>
       </tr>
-       <#list aInfos?sort_by("priority") as aInfo >
-        <tr>
+      <#list aInfos?sort_by("priority") as aInfo >
+        <#if submitted?? && aInfo.id == id >
+        <tr class="high-light">
+        <#else>
+          <tr>
+        </#if>
           <td>${aInfo.id}</td>
           <td>${aInfo.workload.name}</td>
           <td>${aInfo.submitDate?datetime}</td>
