@@ -1,19 +1,21 @@
-function checkAll(str) {
+function checkAll(event, str) {
+	var e = window.event ? window.event.srcElement : event.currentTarget;
 	var a = document.getElementsByName(str);
 	for ( var i = 0; i < a.length; i++)
-		a[i].checked = window.event.srcElement.checked;
+		a[i].checked = e.checked;
 }
 
-function checkItem(allname) {
-	var e = window.event.srcElement;
-	var all = eval("document.all." + allname);
+function checkItem(event, allId) {
+	func = checkItem.caller;
+	var e = window.event ? window.event.srcElement : event.currentTarget;
+	var all = document.getElementById(allId);
 	check(e, all);
 }
 
-function checkMe(id, allname) {
+function checkMe(id, allId) {
 	document.getElementById('checkbox-' + id).checked = !document
 			.getElementById('checkbox-' + id).checked;
-	var all = eval("document.all." + allname);
+	var all = document.getElementById(allId);
 	check(document.getElementById('checkbox-' + id), all);
 }
 
