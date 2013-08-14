@@ -44,7 +44,7 @@
   <div>
     <table class="info-table">
       <tr>
-      	<th style="width:5%;"><input type="checkbox" name="AllActive" onclick="checkAll('ActiveWorkload')"></th>
+      	<th style="width:5%;"><input type="checkbox" id="AllActive" onclick="checkAll(event,'ActiveWorkload')"></th>
         <th class="id" style="width:5%;">ID</th>
         <th>Name</th>
         <th>Submitted-At</th>
@@ -58,7 +58,7 @@
         <#else>
           <tr>
         </#if>
-          <td><input type="checkbox" id="checkbox-${aInfo.id}" name="ActiveWorkload" onclick="checkItem('AllActive')" value="${aInfo.id}"></td>
+          <td><input type="checkbox" id="checkbox-${aInfo.id}" name="ActiveWorkload" onclick="checkItem(event,'AllActive')" value="${aInfo.id}"></td>
           <td onclick="checkMe('${aInfo.id}','AllActive');">${aInfo.id}</td>
           <td onclick="checkMe('${aInfo.id}','AllActive');">${aInfo.workload.name}</td>
           <td onclick="checkMe('${aInfo.id}','AllActive');">${aInfo.submitDate?datetime}</td>
@@ -93,7 +93,7 @@
     <p><a href="matrix.html?ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
     <table class="info-table">
       <tr>
-        <th style="width:5%;"><input type="checkbox" name="AllHistory" onclick="checkAll('HistoryWorkload')"></th>
+        <th style="width:5%;"><input type="checkbox" id="AllHistory" onclick="checkAll(event,'HistoryWorkload')"></th>
         <th class="id" style="width:5%;">ID</th>
         <th>Name</th>
         <th>Duration</th>
@@ -103,7 +103,7 @@
       </tr>
       <#list hInfos as hInfo >
         <tr>
-          <td><input type="checkbox" id="checkbox-${hInfo.id}" name="HistoryWorkload" onclick="checkItem('AllHistory')" value="${hInfo.id}"></td>
+          <td><input type="checkbox" id="checkbox-${hInfo.id}" name="HistoryWorkload" onclick="checkItem(event,'AllHistory')" value="${hInfo.id}"></td>
           <td onclick="checkMe('${hInfo.id}','AllHistory');");">${hInfo.id}</td>
           <td onclick="checkMe('${hInfo.id}','AllHistory');");">${hInfo.workload.name}</td>
           <td onclick="checkMe('${hInfo.id}','AllHistory');");"><#if hInfo.startDate?? >${hInfo.startDate?datetime}<#else>N/A</#if> - ${hInfo.stopDate?time}</td>
