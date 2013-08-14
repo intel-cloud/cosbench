@@ -49,7 +49,7 @@
         <th>Name</th>
         <th>Submitted-At</th>
         <th>State</th>
-        <th style="width:5%;">Priority</th>
+        <th style="width:5%;">Order</th>
         <th style="width:15%;">Link</th>
       </tr>
       <#list aInfos?sort_by("priority") as aInfo >

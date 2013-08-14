@@ -67,10 +67,10 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         processors = new HashMap<String, WorkloadProcessor>();
         processors = Collections.synchronizedMap(processors);
         int concurrency = context.getConcurrency();
-//        executor = Executors.newFixedThreadPool(concurrency);
-        executor = new PriorityThreadPoolExecutor(concurrency, concurrency, 0L,
+		executor = new PriorityThreadPoolExecutor(concurrency, concurrency, 0L,
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
-						memRepo.getMaxCapacity(), new PriorityFutureComparator()));
+						memRepo.getMaxCapacity(),
+						new PriorityFutureComparator()));
     }
 
     @Override
@@ -124,19 +124,10 @@ class COSBControllerService implements ControllerService, WorkloadListener {
             throw new IllegalStateException();
         LOGGER.debug("[ CT ] - starting workload {} ...", id);
         /* for strong consistency: a lock should be employed here */
-        if (processor.getWorkloadContext().getFuture() != null)
-            throw new IllegalStateException();
-//        class ControllerThread implements Runnable {
-//
-//            @Override
-//            public void run() {
-//                processor.process(); // errors are reflected in state
-//                processor.getWorkloadContext().setFuture(null);
-//            }
-//
-//        }
-        ControllerThread ctrlThrd = new ControllerThread(processor);
-        Future<?> future = executor.submit(ctrlThrd);
+		if (processor.getWorkloadContext().getFuture() != null)
+			throw new IllegalStateException();
+		ControllerThread ctrlThrd = new ControllerThread(processor);
+		Future<?> future = executor.submit(ctrlThrd);
         processor.getWorkloadContext().setFuture(future);
         yieldExecution(200); // give workload processor a chance
         LOGGER.debug("[ CT ] - workload {} started", id);
@@ -193,7 +184,6 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 				LOGGER.error(
 						"[ CT ] - change workload {} priority failed cause can't remove workload...",
 						workloadId);
-				System.out.println("can't remove" + workloadId);
 				return false;
 			}
 			processors.get(workloadId).getWorkloadContext().setFuture(null);
@@ -246,7 +236,6 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			LOGGER.error(
 					"[ CT ] - change workload {} {} priority failed cause can't remove workload...",
 					id, neighbourWId);
-			System.out.println("can't remove");
 			return false;
 		}
 		processors.get(id).getWorkloadContext().setFuture(null);
