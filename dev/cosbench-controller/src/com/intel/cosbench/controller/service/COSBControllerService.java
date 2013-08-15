@@ -45,7 +45,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
     private AtomicInteger count; /* workload id generator */
     
-    private AtomicInteger priority;
+    private AtomicInteger order;
 
     private ControllerContext context;
     private Map<String, WorkloadProcessor> processors;
@@ -63,7 +63,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
 	public void init() {
         count = new AtomicInteger(archiver.getTotalWorkloads());
-        priority = new AtomicInteger(0);
+        order = new AtomicInteger(0);
         processors = new HashMap<String, WorkloadProcessor>();
         processors = Collections.synchronizedMap(processors);
         int concurrency = context.getConcurrency();
@@ -94,7 +94,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private WorkloadContext createWorkloadContext(XmlConfig config) {
         WorkloadContext context = new WorkloadContext();
         context.setId(generateWorkloadId());
-        context.setOrder(generatePriority());
+        context.setOrder(generateOrder());
         context.setSubmitDate(new Date());
         context.setConfig(config);
         context.setState(WorkloadState.QUEUING);
@@ -105,8 +105,8 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         return "w" + count.incrementAndGet();
     }
     
-    private int generatePriority() {
-    	return priority.incrementAndGet();
+    private int generateOrder() {
+    	return order.incrementAndGet();
     }
 
     private WorkloadProcessor createProcessor(WorkloadContext workload) {
@@ -148,41 +148,41 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
 		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
 			LOGGER.error(
-					"[ CT ] - workload {} priority failed cause it's highest priority...",
+					"[ CT ] - workload {} order failed cause it's highest order...",
 					id);
 			return false;
 		}
-		List<Integer> prioritys = new ArrayList<Integer>();
-		Map<String, String> priorityWorkloadMap = new HashMap<String, String>();
+		List<Integer> orders = new ArrayList<Integer>();
+		Map<String, String> orderWorkloadMap = new HashMap<String, String>();
 		for (WorkloadContext workload : getActiveWorkloads()) {
 			if ((workload.getOrder() >= order && workload.getOrder() <= neighOrder)
 					|| (workload.getOrder() <= order && workload
 							.getOrder() >= neighOrder)) {
-				prioritys.add(workload.getOrder());
-				priorityWorkloadMap.put(String.valueOf(workload.getOrder()),
+				orders.add(workload.getOrder());
+				orderWorkloadMap.put(String.valueOf(workload.getOrder()),
 						workload.getId());
 			}
 		}
-		Integer[] priorityArray = prioritys.toArray(new Integer[prioritys.size()]);
-		Arrays.sort(priorityArray);
+		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
+		Arrays.sort(orderArray);
 		
 		if (up) {
-			for (int i = priorityArray.length - 2; i >= 0; i--) {
-				processors.get(priorityWorkloadMap.get(String.valueOf(priorityArray[i])))
-						.getWorkloadContext().setOrder(priorityArray[i + 1]);
+			for (int i = orderArray.length - 2; i >= 0; i--) {
+				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+						.getWorkloadContext().setOrder(orderArray[i + 1]);
 			}
 		} else {
-			for (int i = 1; i <priorityArray.length; i++) {
-				processors.get(priorityWorkloadMap.get(String.valueOf(priorityArray[i])))
-						.getWorkloadContext().setOrder(priorityArray[i - 1]);
+			for (int i = 1; i <orderArray.length; i++) {
+				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+						.getWorkloadContext().setOrder(orderArray[i - 1]);
 			}
 		}
 		processors.get(id).getWorkloadContext().setOrder(neighOrder);
-		for (String workloadId : priorityWorkloadMap.values()) {
+		for (String workloadId : orderWorkloadMap.values()) {
 			if (!processors.get(workloadId).getWorkloadContext().getFuture()
 					.cancel(true)) {
 				LOGGER.error(
-						"[ CT ] - change workload {} priority failed cause can't remove workload...",
+						"[ CT ] - change workload {} order failed cause can't remove workload...",
 						workloadId);
 				return false;
 			}
@@ -195,11 +195,11 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 	public boolean changeOrder(String id, boolean up) {
 		int order = processors.get(id).getWorkloadContext().getOrder();
 		int neighbourOrder = 0;
-		List<Integer> prioritys = new ArrayList<Integer>();
+		List<Integer> orders = new ArrayList<Integer>();
 		for(WorkloadContext workload:getActiveWorkloads()){
-			prioritys.add(workload.getOrder());
+			orders.add(workload.getOrder());
 		}
-		Integer[] orderArray = prioritys.toArray(new Integer[prioritys.size()]);
+		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
 		Arrays.sort(orderArray);
 		if (up) {
 			for (int i = orderArray.length - 1; i >= 0; i--) {
@@ -226,7 +226,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			return false;
 		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
 			LOGGER.debug(
-					"[ CT ] - workload {} priority failed cause it's highest priority...",
+					"[ CT ] - workload {} order failed cause it's highest order...",
 					id);
 			return false;
 		}
@@ -234,7 +234,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 				|| !processors.get(neighbourWId).getWorkloadContext()
 						.getFuture().cancel(true)) {
 			LOGGER.error(
-					"[ CT ] - change workload {} {} priority failed cause can't remove workload...",
+					"[ CT ] - change workload {} {} order failed cause can't remove workload...",
 					id, neighbourWId);
 			return false;
 		}
