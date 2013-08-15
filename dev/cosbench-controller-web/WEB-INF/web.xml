@@ -75,10 +75,6 @@
 		<servlet-name>resource</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>resource</servlet-name>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>
 
 	<!-- Spring Context Facilities Configuration -->
 
@@ -108,10 +104,6 @@
 	<mime-mapping>
 		<extension>png</extension>
 		<mime-type>image/png</mime-type>
-	</mime-mapping>
-	<mime-mapping>
-		<extension>js</extension>
-		<mime-type>application/x-javascript</mime-type>
 	</mime-mapping>
 
 	<welcome-file-list>
