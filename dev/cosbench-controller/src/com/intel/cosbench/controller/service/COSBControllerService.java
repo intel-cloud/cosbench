@@ -18,9 +18,12 @@ limitations under the License.
 package com.intel.cosbench.controller.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.XmlConfig;
 import com.intel.cosbench.controller.archiver.*;
@@ -41,11 +44,12 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private static final Logger LOGGER = LogFactory.getSystemLogger();
 
     private AtomicInteger count; /* workload id generator */
+    
+    private AtomicInteger order;
 
     private ControllerContext context;
     private Map<String, WorkloadProcessor> processors;
-
-    private ExecutorService executor;
+	private OrderThreadPoolExecutor executor;
     private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
     private WorkloadRepository memRepo = new RAMWorkloadRepository();
 
@@ -57,12 +61,16 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         this.context = context;
     }
 
-    public void init() {
+	public void init() {
         count = new AtomicInteger(archiver.getTotalWorkloads());
+        order = new AtomicInteger(0);
         processors = new HashMap<String, WorkloadProcessor>();
         processors = Collections.synchronizedMap(processors);
         int concurrency = context.getConcurrency();
-        executor = Executors.newFixedThreadPool(concurrency);
+		executor = new OrderThreadPoolExecutor(concurrency, concurrency, 0L,
+				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
+						memRepo.getMaxCapacity(),
+						new OrderFutureComparator()));
     }
 
     @Override
@@ -76,10 +84,17 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         LOGGER.debug("[ CT ] - workload {} submitted", workload.getId());
         return workload.getId();
     }
+    
+    @Override
+    public String resubmit(String id) throws IOException{
+		memRepo.getWorkload(id).getConfig().getContent().reset();
+    	return submit(memRepo.getWorkload(id).getConfig());
+    }
 
     private WorkloadContext createWorkloadContext(XmlConfig config) {
         WorkloadContext context = new WorkloadContext();
         context.setId(generateWorkloadId());
+        context.setOrder(generateOrder());
         context.setSubmitDate(new Date());
         context.setConfig(config);
         context.setState(WorkloadState.QUEUING);
@@ -88,6 +103,10 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
     private String generateWorkloadId() {
         return "w" + count.incrementAndGet();
+    }
+    
+    private int generateOrder() {
+    	return order.incrementAndGet();
     }
 
     private WorkloadProcessor createProcessor(WorkloadContext workload) {
@@ -105,22 +124,128 @@ class COSBControllerService implements ControllerService, WorkloadListener {
             throw new IllegalStateException();
         LOGGER.debug("[ CT ] - starting workload {} ...", id);
         /* for strong consistency: a lock should be employed here */
-        if (processor.getWorkloadContext().getFuture() != null)
-            throw new IllegalStateException();
-        class ControllerThread implements Runnable {
-
-            @Override
-            public void run() {
-                processor.process(); // errors are reflected in state
-                processor.getWorkloadContext().setFuture(null);
-            }
-
-        }
-        Future<?> future = executor.submit(new ControllerThread());
+		if (processor.getWorkloadContext().getFuture() != null)
+			throw new IllegalStateException();
+		ControllerThread ctrlThrd = new ControllerThread(processor);
+		Future<?> future = executor.submit(ctrlThrd);
         processor.getWorkloadContext().setFuture(future);
         yieldExecution(200); // give workload processor a chance
         LOGGER.debug("[ CT ] - workload {} started", id);
     }
+    
+	@Override
+	public boolean changeOrder(String id, String neighbourWId, boolean up) {
+		if (StringUtils.isEmpty(neighbourWId)) {
+			return changeOrder(id, up);
+		}
+		if(neighbourWId.equals(String.valueOf(0)))//multiple checked workload id
+			return false;
+		int order = processors.get(id).getWorkloadContext().getOrder();
+		int neighOrder = processors.get(neighbourWId).getWorkloadContext()
+				.getOrder();
+		if (!up == order > neighOrder ? true : false)
+			return false;
+
+		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
+			LOGGER.error(
+					"[ CT ] - workload {} order failed cause it's highest order...",
+					id);
+			return false;
+		}
+		List<Integer> orders = new ArrayList<Integer>();
+		Map<String, String> orderWorkloadMap = new HashMap<String, String>();
+		for (WorkloadContext workload : getActiveWorkloads()) {
+			if ((workload.getOrder() >= order && workload.getOrder() <= neighOrder)
+					|| (workload.getOrder() <= order && workload
+							.getOrder() >= neighOrder)) {
+				orders.add(workload.getOrder());
+				orderWorkloadMap.put(String.valueOf(workload.getOrder()),
+						workload.getId());
+			}
+		}
+		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
+		Arrays.sort(orderArray);
+		
+		if (up) {
+			for (int i = orderArray.length - 2; i >= 0; i--) {
+				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+						.getWorkloadContext().setOrder(orderArray[i + 1]);
+			}
+		} else {
+			for (int i = 1; i <orderArray.length; i++) {
+				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+						.getWorkloadContext().setOrder(orderArray[i - 1]);
+			}
+		}
+		processors.get(id).getWorkloadContext().setOrder(neighOrder);
+		for (String workloadId : orderWorkloadMap.values()) {
+			if (!processors.get(workloadId).getWorkloadContext().getFuture()
+					.cancel(true)) {
+				LOGGER.error(
+						"[ CT ] - change workload {} order failed cause can't remove workload...",
+						workloadId);
+				return false;
+			}
+			processors.get(workloadId).getWorkloadContext().setFuture(null);
+			fire(workloadId);
+		}
+		return true;
+	}
+	
+	public boolean changeOrder(String id, boolean up) {
+		int order = processors.get(id).getWorkloadContext().getOrder();
+		int neighbourOrder = 0;
+		List<Integer> orders = new ArrayList<Integer>();
+		for(WorkloadContext workload:getActiveWorkloads()){
+			orders.add(workload.getOrder());
+		}
+		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
+		Arrays.sort(orderArray);
+		if (up) {
+			for (int i = orderArray.length - 1; i >= 0; i--) {
+				if (orderArray[i] < order) {
+					neighbourOrder = orderArray[i];
+					break;
+				}
+			}
+		}else{
+			for (int i = 0; i < orderArray.length; i++) {
+				if (orderArray[i] > order) {
+					neighbourOrder = orderArray[i];
+					break;
+				}
+			}
+		}
+		String neighbourWId = String.valueOf(0);
+		for(WorkloadContext workload:getActiveWorkloads()){
+			if (workload.getOrder() == neighbourOrder) {
+				neighbourWId = workload.getId();
+			}
+		}
+		if (neighbourWId.equals(String.valueOf(0)))//can't find neighbour workload
+			return false;
+		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
+			LOGGER.debug(
+					"[ CT ] - workload {} order failed cause it's highest order...",
+					id);
+			return false;
+		}
+		if (!processors.get(id).getWorkloadContext().getFuture().cancel(true)
+				|| !processors.get(neighbourWId).getWorkloadContext()
+						.getFuture().cancel(true)) {
+			LOGGER.error(
+					"[ CT ] - change workload {} {} order failed cause can't remove workload...",
+					id, neighbourWId);
+			return false;
+		}
+		processors.get(id).getWorkloadContext().setFuture(null);
+		processors.get(neighbourWId).getWorkloadContext().setFuture(null);
+		processors.get(id).getWorkloadContext().setOrder(neighbourOrder);
+		processors.get(neighbourWId).getWorkloadContext().setOrder(order);
+		fire(id);
+		fire(neighbourWId);
+		return true;
+	}
 
     @Override
     public void cancel(String id) {
@@ -128,7 +253,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         if (processor == null)
             return; // already stopped
         LOGGER.debug("[ CT ] - canceling workload{} ...", id);
-        processor.cancel();
+		processor.cancel();
         yieldExecution(500); // give workload processor a chance
         LOGGER.debug("[ CT ] - workload {} cancelled", id);
     }

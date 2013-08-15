@@ -40,7 +40,7 @@
         <th>State</th>
         <th style="width:15%;">Link</th>
       </tr>
-      <#list aInfos as aInfo >
+      <#list aInfos?sort_by("order") as aInfo >
         <#if submitted?? && aInfo.id == id >
         <tr class="high-light">
         <#else>
