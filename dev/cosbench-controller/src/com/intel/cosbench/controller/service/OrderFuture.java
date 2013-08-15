@@ -2,11 +2,11 @@ package com.intel.cosbench.controller.service;
 
 import java.util.concurrent.FutureTask;
 
-class PriorityFuture<T> extends FutureTask<T> {
+class OrderFuture<T> extends FutureTask<T> {
 
 	private int priority;
 	
-	public PriorityFuture(Runnable runnable, T value, int priority) {
+	public OrderFuture(Runnable runnable, T value, int priority) {
 		super(runnable, value);
 		this.priority = priority;	
 	}

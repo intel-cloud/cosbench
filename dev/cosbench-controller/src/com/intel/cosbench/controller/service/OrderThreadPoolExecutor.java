@@ -5,16 +5,16 @@ import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
+public class OrderThreadPoolExecutor extends ThreadPoolExecutor {
 
-	public PriorityThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+	public OrderThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
 			long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
 		super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
 	}
 
 	protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-		return new PriorityFuture<T>(runnable, null,
-				((ControllerThread) runnable).getPriority());
+		return new OrderFuture<T>(runnable, null,
+				((ControllerThread) runnable).getOrder());
 	}
 
 	public Future<?> submit(Runnable task) {

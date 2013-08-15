@@ -1,12 +1,12 @@
 package com.intel.cosbench.controller.service;
 
 class ControllerThread implements Runnable {
-	private int priority;
+	private int order;
 	private WorkloadProcessor processor;
 
 	public ControllerThread(WorkloadProcessor processor) {
 		this.processor = processor;
-		setPriority(processor.getWorkloadContext().getPriority());
+		setOrder(processor.getWorkloadContext().getOrder());
 	}
 
 	@Override
@@ -15,11 +15,11 @@ class ControllerThread implements Runnable {
 		processor.getWorkloadContext().setFuture(null);
 	}
 
-	public int getPriority() {
-		return this.priority;
+	public int getOrder() {
+		return this.order;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 }
