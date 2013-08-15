@@ -49,7 +49,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
     private ControllerContext context;
     private Map<String, WorkloadProcessor> processors;
-	private PriorityThreadPoolExecutor executor;
+	private OrderThreadPoolExecutor executor;
     private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
     private WorkloadRepository memRepo = new RAMWorkloadRepository();
 
@@ -67,10 +67,10 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         processors = new HashMap<String, WorkloadProcessor>();
         processors = Collections.synchronizedMap(processors);
         int concurrency = context.getConcurrency();
-		executor = new PriorityThreadPoolExecutor(concurrency, concurrency, 0L,
+		executor = new OrderThreadPoolExecutor(concurrency, concurrency, 0L,
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
 						memRepo.getMaxCapacity(),
-						new PriorityFutureComparator()));
+						new OrderFutureComparator()));
     }
 
     @Override
@@ -94,7 +94,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private WorkloadContext createWorkloadContext(XmlConfig config) {
         WorkloadContext context = new WorkloadContext();
         context.setId(generateWorkloadId());
-        context.setPriority(generatePriority());
+        context.setOrder(generatePriority());
         context.setSubmitDate(new Date());
         context.setConfig(config);
         context.setState(WorkloadState.QUEUING);
@@ -134,16 +134,16 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     }
     
 	@Override
-	public boolean changePriority(String id, String neighbourWId, boolean up) {
+	public boolean changeOrder(String id, String neighbourWId, boolean up) {
 		if (StringUtils.isEmpty(neighbourWId)) {
-			return changePriority(id, up);
+			return changeOrder(id, up);
 		}
 		if(neighbourWId.equals(String.valueOf(0)))//multiple checked workload id
 			return false;
-		int priority = processors.get(id).getWorkloadContext().getPriority();
-		int neighPriority = processors.get(neighbourWId).getWorkloadContext()
-				.getPriority();
-		if (!up == priority > neighPriority ? true : false)
+		int order = processors.get(id).getWorkloadContext().getOrder();
+		int neighOrder = processors.get(neighbourWId).getWorkloadContext()
+				.getOrder();
+		if (!up == order > neighOrder ? true : false)
 			return false;
 
 		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
@@ -155,11 +155,11 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		List<Integer> prioritys = new ArrayList<Integer>();
 		Map<String, String> priorityWorkloadMap = new HashMap<String, String>();
 		for (WorkloadContext workload : getActiveWorkloads()) {
-			if ((workload.getPriority() >= priority && workload.getPriority() <= neighPriority)
-					|| (workload.getPriority() <= priority && workload
-							.getPriority() >= neighPriority)) {
-				prioritys.add(workload.getPriority());
-				priorityWorkloadMap.put(String.valueOf(workload.getPriority()),
+			if ((workload.getOrder() >= order && workload.getOrder() <= neighOrder)
+					|| (workload.getOrder() <= order && workload
+							.getOrder() >= neighOrder)) {
+				prioritys.add(workload.getOrder());
+				priorityWorkloadMap.put(String.valueOf(workload.getOrder()),
 						workload.getId());
 			}
 		}
@@ -169,15 +169,15 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		if (up) {
 			for (int i = priorityArray.length - 2; i >= 0; i--) {
 				processors.get(priorityWorkloadMap.get(String.valueOf(priorityArray[i])))
-						.getWorkloadContext().setPriority(priorityArray[i + 1]);
+						.getWorkloadContext().setOrder(priorityArray[i + 1]);
 			}
 		} else {
 			for (int i = 1; i <priorityArray.length; i++) {
 				processors.get(priorityWorkloadMap.get(String.valueOf(priorityArray[i])))
-						.getWorkloadContext().setPriority(priorityArray[i - 1]);
+						.getWorkloadContext().setOrder(priorityArray[i - 1]);
 			}
 		}
-		processors.get(id).getWorkloadContext().setPriority(neighPriority);
+		processors.get(id).getWorkloadContext().setOrder(neighOrder);
 		for (String workloadId : priorityWorkloadMap.values()) {
 			if (!processors.get(workloadId).getWorkloadContext().getFuture()
 					.cancel(true)) {
@@ -192,33 +192,33 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		return true;
 	}
 	
-	public boolean changePriority(String id, boolean up) {
-		int priority = processors.get(id).getWorkloadContext().getPriority();
-		int neighbourPriority = 0;
+	public boolean changeOrder(String id, boolean up) {
+		int order = processors.get(id).getWorkloadContext().getOrder();
+		int neighbourOrder = 0;
 		List<Integer> prioritys = new ArrayList<Integer>();
 		for(WorkloadContext workload:getActiveWorkloads()){
-			prioritys.add(workload.getPriority());
+			prioritys.add(workload.getOrder());
 		}
-		Integer[] priorityArray = prioritys.toArray(new Integer[prioritys.size()]);
-		Arrays.sort(priorityArray);
+		Integer[] orderArray = prioritys.toArray(new Integer[prioritys.size()]);
+		Arrays.sort(orderArray);
 		if (up) {
-			for (int i = priorityArray.length - 1; i >= 0; i--) {
-				if (priorityArray[i] < priority) {
-					neighbourPriority = priorityArray[i];
+			for (int i = orderArray.length - 1; i >= 0; i--) {
+				if (orderArray[i] < order) {
+					neighbourOrder = orderArray[i];
 					break;
 				}
 			}
 		}else{
-			for (int i = 0; i < priorityArray.length; i++) {
-				if (priorityArray[i] > priority) {
-					neighbourPriority = priorityArray[i];
+			for (int i = 0; i < orderArray.length; i++) {
+				if (orderArray[i] > order) {
+					neighbourOrder = orderArray[i];
 					break;
 				}
 			}
 		}
 		String neighbourWId = String.valueOf(0);
 		for(WorkloadContext workload:getActiveWorkloads()){
-			if(workload.getPriority()==neighbourPriority){
+			if (workload.getOrder() == neighbourOrder) {
 				neighbourWId = workload.getId();
 			}
 		}
@@ -240,8 +240,8 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		}
 		processors.get(id).getWorkloadContext().setFuture(null);
 		processors.get(neighbourWId).getWorkloadContext().setFuture(null);
-		processors.get(id).getWorkloadContext().setPriority(neighbourPriority);
-		processors.get(neighbourWId).getWorkloadContext().setPriority(priority);
+		processors.get(id).getWorkloadContext().setOrder(neighbourOrder);
+		processors.get(neighbourWId).getWorkloadContext().setOrder(order);
 		fire(id);
 		fire(neighbourWId);
 		return true;

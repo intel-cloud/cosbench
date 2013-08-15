@@ -37,7 +37,7 @@ public interface ControllerService {
 
     public void fire(String id);
     
-    public boolean changePriority(String id, String neighId, boolean up);
+    public boolean changeOrder(String id, String neighId, boolean up);
 
     public void cancel(String id);
 

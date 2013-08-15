@@ -54,7 +54,7 @@ public class IndexPageController extends AbstractController {
 		String resubmit = req.getParameter("resubmit");
 		if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(up)) {
 			boolean isUp = up.equalsIgnoreCase("yes") ? true : false;
-			boolean changePriorityOk = controller.changePriority(id, neighId,
+			boolean changePriorityOk = controller.changeOrder(id, neighId,
 					isUp);
 			if (changePriorityOk) {
 				result.addObject("highlightId", id);

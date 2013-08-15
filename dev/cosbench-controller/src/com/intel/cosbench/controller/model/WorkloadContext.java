@@ -38,7 +38,7 @@ public class WorkloadContext implements WorkloadInfo {
     private Workload workload;
     private transient volatile StageInfo currentStage;
     private StageRegistry stageRegistry;
-    private int priority; /* workload priority */
+    private int order; /* workload order */
 
     /* Report will be available after the workload is finished */
     private volatile Report report = null; // will be merged from stage reports
@@ -58,12 +58,12 @@ public class WorkloadContext implements WorkloadInfo {
         this.id = id;
     }
     
-    public int getPriority(){
-    	return this.priority;
+    public int getOrder(){
+    	return this.order;
     }
     
-    public void setPriority(int priority){
-    	this.priority = priority;
+    public void setOrder(int order){
+    	this.order = order;
     }
 
     @Override
