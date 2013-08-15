@@ -11,8 +11,8 @@ class OrderFutureComparator implements Comparator<Runnable> {
 		else if (o2 == null)
 			return 1;
 		else {
-			int p1 = ((OrderFuture<?>) o1).getPriority();
-			int p2 = ((OrderFuture<?>) o2).getPriority();
+			int p1 = ((OrderFuture<?>) o1).getOrder();
+			int p2 = ((OrderFuture<?>) o2).getOrder();
 
 			return p1 > p2 ? 1 : (p1 == p2 ? 0 : -1);
 		}

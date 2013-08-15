@@ -4,14 +4,14 @@ import java.util.concurrent.FutureTask;
 
 class OrderFuture<T> extends FutureTask<T> {
 
-	private int priority;
+	private int order;
 	
-	public OrderFuture(Runnable runnable, T value, int priority) {
+	public OrderFuture(Runnable runnable, T value, int order) {
 		super(runnable, value);
-		this.priority = priority;	
+		this.order = order;	
 	}
 
-	public int getPriority() {
-		return priority;
+	public int getOrder() {
+		return order;
 	}
 }
