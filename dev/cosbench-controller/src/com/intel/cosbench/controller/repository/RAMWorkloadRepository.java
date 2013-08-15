@@ -53,8 +53,9 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         WorkloadList workloads = new SimpleWorkloadList(getMaxCapacity());
         this.workloads = workloads;
     }
-
-    private int getMaxCapacity() {
+    
+    @Override
+    public int getMaxCapacity() {
         int maxCapacity = MAX_WORKLOAD_DEFAULT;
         String config = System.getProperty(MAX_WORKLOAD_KEY);
         if (!StringUtils.isEmpty(config))

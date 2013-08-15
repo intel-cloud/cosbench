@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.service;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.intel.cosbench.config.XmlConfig;
 import com.intel.cosbench.model.*;
@@ -31,8 +32,12 @@ import com.intel.cosbench.model.*;
 public interface ControllerService {
 
     public String submit(XmlConfig config);
+    
+	public String resubmit(String id) throws IOException;
 
     public void fire(String id);
+    
+    public boolean changeOrder(String id, String neighId, boolean up);
 
     public void cancel(String id);
 

@@ -32,5 +32,7 @@ public interface WorkloadRepository {
     public WorkloadContext[] getActiveWorkloads();
 
     public WorkloadContext[] getInactiveWorkloads();
+    
+    public int getMaxCapacity();
 
 }

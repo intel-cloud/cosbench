@@ -38,6 +38,7 @@ public class WorkloadContext implements WorkloadInfo {
     private Workload workload;
     private transient volatile StageInfo currentStage;
     private StageRegistry stageRegistry;
+    private int order; /* workload order */
 
     /* Report will be available after the workload is finished */
     private volatile Report report = null; // will be merged from stage reports
@@ -55,6 +56,14 @@ public class WorkloadContext implements WorkloadInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public int getOrder(){
+    	return this.order;
+    }
+    
+    public void setOrder(int order){
+    	this.order = order;
     }
 
     @Override
@@ -232,7 +241,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void disposeRuntime() {
         for (StageContext stage : stageRegistry)
             stage.disposeRuntime();
-        config = null;
+//        config = null;
         future = null;
         currentStage = null;
         listeners = null;
