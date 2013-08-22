@@ -43,7 +43,7 @@ abstract class AbstractOperator implements Operator {
 
     @Override
     public String getSampleType() {
-        return getOpType();
+        return getName();
     }
 
     @Override

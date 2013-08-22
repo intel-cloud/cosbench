@@ -147,7 +147,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private void initMarks() {
         Set<String> types = new LinkedHashSet<String>();
         for (OperatorContext op : operatorRegistry)
-            types.add(getMarkType(op.getOpType(), op.getSampleType()));
+            types.add(getMarkType(op.getName(), op.getSampleType()));
         for (String type : types)
             currMarks.addMark(newMark(type));
         for (String type : types)

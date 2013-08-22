@@ -23,6 +23,10 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.commons.lang.StringUtils;
+
+import static com.intel.cosbench.driver.util.Defaults.OPERATION_PREFIX;
+import static com.intel.cosbench.driver.util.Defaults.OPERATION_SUFFIX;
 import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
@@ -139,8 +143,15 @@ class MissionHandler {
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();
         Mission mission = missionContext.getMission();
-        for (Operation op : mission)
-            picker.addOperation(op.getType(), op.getRatio());
+		for (Operation op : mission) {
+			Config config = KVConfigParser.parse(op.getConfig());
+			picker.addOperation(
+					StringUtils.join(new Object[] {
+							config.get("opprefix", OPERATION_PREFIX),
+							op.getType(),
+							config.get("opsuffix", OPERATION_SUFFIX) }),
+					op.getRatio());
+		}
         missionContext.setOperationPicker(picker);
     }
 
@@ -318,7 +329,7 @@ class MissionHandler {
 			LOGGER.debug("!!!! mission op: "
 					+ missionContext.getReport().getAllMetrics()[i].getOpType()
 					+ "-"
-					+ missionContext.getReport().getAllMetrics()[i].getOpType());
+					+ missionContext.getReport().getAllMetrics()[i].getSampleType());
 			if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
 					&& missionContext.getReport().getAllMetrics()[i]
 							.getTotalSampleCount() > 0) {
