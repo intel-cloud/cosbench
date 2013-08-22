@@ -23,7 +23,10 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.*;
+import org.apache.commons.lang.StringUtils;
 
+import static com.intel.cosbench.driver.util.Defaults.OPERATION_PREFIX;
+import static com.intel.cosbench.driver.util.Defaults.OPERATION_SUFFIX;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -39,6 +42,8 @@ import com.intel.cosbench.service.AbortedException;
 class Reader extends AbstractOperator {
 
     public static final String OP_TYPE = "read";
+    
+    public String name;
 
     private boolean hashCheck = false;
 
@@ -53,11 +58,25 @@ class Reader extends AbstractOperator {
         super.init(division, config);
         objPicker.init(division, config);
         hashCheck = config.getBoolean("hashCheck", false);
+		name = StringUtils.join(new Object[] {
+				config.get("opprefix", OPERATION_PREFIX), OP_TYPE,
+				config.get("opsuffix", OPERATION_SUFFIX) });
     }
 
     @Override
     public String getOpType() {
         return OP_TYPE;
+    }
+    
+
+	@Override
+	public String getName() {
+		return name;
+	}
+	
+    @Override
+    public String getSampleType() {
+        return getName();
     }
 
     @Override
@@ -67,7 +86,7 @@ class Reader extends AbstractOperator {
         Sample sample = doRead(out, path[0], path[1], config, session);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
+        Result result = new Result(now, name, sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
 
@@ -86,12 +105,12 @@ class Reader extends AbstractOperator {
             if (!hashCheck)
                 IOUtils.copyLarge(in, cout);
             else if (!validateChecksum(conName, objName, session, in, cout))
-                return new Sample(new Date(), OP_TYPE, false);
+                return new Sample(new Date(), name, false);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform read operation", e);
-            return new Sample(new Date(), OP_TYPE, false);
+            return new Sample(new Date(), name, false);
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(cout);
@@ -100,7 +119,7 @@ class Reader extends AbstractOperator {
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, OP_TYPE, true, end - start, cout.getByteCount());
+        return new Sample(now, name, true, end - start, cout.getByteCount());
     }
 
     private static boolean validateChecksum(String conName, String objName,
