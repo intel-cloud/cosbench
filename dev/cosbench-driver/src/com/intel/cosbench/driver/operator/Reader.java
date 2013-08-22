@@ -73,6 +73,11 @@ class Reader extends AbstractOperator {
 	public String getName() {
 		return name;
 	}
+	
+    @Override
+    public String getSampleType() {
+        return getName();
+    }
 
     @Override
     protected void operate(int idx, int all, Session session) {
