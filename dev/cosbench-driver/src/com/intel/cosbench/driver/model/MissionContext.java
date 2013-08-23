@@ -102,7 +102,7 @@ public class MissionContext implements MissionInfo {
         Report report = merger.merge();
         OperatorRegistry registry = operatorRegistry;
         for (Metrics metrics : report) {
-            OperatorContext op = registry.getOperator(metrics.getOpType());
+            OperatorContext op = registry.getOperator(metrics.getOpId());
             metrics.setLatency(Histogram.convert(op.getCounter()));
         }
         return report;

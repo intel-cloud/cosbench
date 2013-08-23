@@ -23,10 +23,6 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import org.apache.commons.lang.StringUtils;
-
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_PREFIX;
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_SUFFIX;
 import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
@@ -133,25 +129,15 @@ class MissionHandler {
 
     private static OperatorContext createOperatorContext(Operation op) {
         OperatorContext context = new OperatorContext();
-        String type = op.getType();
-        String division = op.getDivision();
         Config config = KVConfigParser.parse(op.getConfig());
-        context.setOperator(Operators.getOperator(type, division, config));
+        context.setOperator(Operators.getOperator(op, config));
         return context;
     }
 
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();
-        Mission mission = missionContext.getMission();
-		for (Operation op : mission) {
-			Config config = KVConfigParser.parse(op.getConfig());
-			picker.addOperation(
-					StringUtils.join(new Object[] {
-							config.get("opprefix", OPERATION_PREFIX),
-							op.getType(),
-							config.get("opsuffix", OPERATION_SUFFIX) }),
-					op.getRatio());
-		}
+        for(OperatorContext op : missionContext.getOperatorRegistry().getAllItems())
+        	picker.addOperation(op.getId(), op.getOperator().getRatio());
         missionContext.setOperationPicker(picker);
     }
 
@@ -329,7 +315,7 @@ class MissionHandler {
 			LOGGER.debug("!!!! mission op: "
 					+ missionContext.getReport().getAllMetrics()[i].getOpType()
 					+ "-"
-					+ missionContext.getReport().getAllMetrics()[i].getSampleType());
+					+ missionContext.getReport().getAllMetrics()[i].getOpType());
 			if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
 					&& missionContext.getReport().getAllMetrics()[i]
 							.getTotalSampleCount() > 0) {

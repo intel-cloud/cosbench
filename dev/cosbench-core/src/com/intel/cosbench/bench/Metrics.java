@@ -34,6 +34,8 @@ public class Metrics implements Item, Cloneable {
 
     private String opType; /* operation type */
     private String sampleType; /* sample type */
+    private String opName; /* operation name*/
+    private String opId; /* operation id */
 
     /* Status */
 
@@ -78,6 +80,22 @@ public class Metrics implements Item, Cloneable {
 
     public void setSampleType(String sampleType) {
         this.sampleType = sampleType;
+    }
+    
+    public String getOpName(){
+    	return opName;
+    }
+    
+    public void setOpName(String opName){
+    	this.opName = opName;
+    }
+    
+    public String getOpId() {
+    	return opId;
+    }
+    
+    public void setOpId(String opId) {
+    	this.opId = opId;
     }
 
     public int getSampleCount() {
@@ -153,16 +171,19 @@ public class Metrics implements Item, Cloneable {
         return this;
     }
 
-    public static String getMetricsType(String opType, String sampleType) {
-        return opType + "-" + sampleType;
+	public static String getMetricsType(String opId, String opType,
+			String sampleType, String opName) {
+		return opId + "-" + opType + "-" + sampleType + "-" + opName;
     }
 
     public static Metrics newMetrics(String type) {
         String[] types = type.split("-");
         Metrics metrics = new Metrics();
         metrics.setName(type);
-        metrics.setOpType(types[0]);
-        metrics.setSampleType(types[1]);
+        metrics.setOpId(types[0]);
+        metrics.setOpType(types[1]);
+        metrics.setSampleType(types[2]);
+        metrics.setOpName(types[3]);
         return metrics;
     }
 
@@ -171,7 +192,8 @@ public class Metrics implements Item, Cloneable {
         int tsps = mark.getTotalSampleCount();
         long rtSum = mark.getRtSum();
         long bytes = mark.getByteCount();
-        String type = getMetricsType(mark.getOpType(), mark.getSampleType());
+		String type = getMetricsType(mark.getOpId(), mark.getOpType(),
+				mark.getSampleType(), mark.getOpName());
         Metrics metrics = newMetrics(type);
         metrics.setSampleCount(sps);
         metrics.setTotalSampleCount(tsps);

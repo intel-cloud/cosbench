@@ -59,8 +59,8 @@ class FileWriter extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+        super.init(id, ratio, division, config);
         contPicker.init(division, config);
         String filepath = config.get("files");
         folder = new File(filepath);
@@ -83,7 +83,8 @@ class FileWriter extends AbstractOperator {
         Sample sample;
         if (!folder.canRead()) {
             doLogErr(session.getLogger(), "fail to perform file filewrite operation, can not read " + folder.getAbsolutePath());
-            sample = new Sample(new Date(), OP_TYPE, false);
+			sample = new Sample(new Date(), getId(), getOpType(),
+					getSampleType(), getName(), false);
         }
         Random random = session.getRandom();
         String containerName = contPicker.pickContName(random, idx, all);
@@ -108,23 +109,27 @@ class FileWriter extends AbstractOperator {
             sample = doWrite(fis, length, containerName, filename, config, session);
         } catch (FileNotFoundException e) {
             doLogErr(session.getLogger(), "failed to perform file Write operation, file not found", e);
-            sample = new Sample(new Date(), OP_TYPE, false);
+			sample = new Sample(new Date(), getId(), getOpType(),
+					getSampleType(), getName(), false);
         } catch (ArrayIndexOutOfBoundsException e) {
             doLogErr(session.getLogger(), "failed to perform file Write operation, tried to put more files than exist", e);
-            sample = new Sample(new Date(), OP_TYPE, false);
+            sample = new Sample(new Date(),  getId(), getOpType(),
+					getSampleType(), getName(), false);
         } catch (NoSuchAlgorithmException e) {
             doLogErr(session.getLogger(),
                     "failed to perform file Write operation, hash Algorithm MD5 not supported, deaktivate hashCheck, maybe?", e);
-            sample = new Sample(new Date(), OP_TYPE, false);
+            sample = new Sample(new Date(), getId(), getOpType(),
+					getSampleType(), getName(), false);
         }
 
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
+		Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
 
-    public static Sample doWrite(InputStream in, long length, String conName, String objName, Config config, Session session) {
+    public Sample doWrite(InputStream in, long length, String conName, String objName, Config config, Session session) {
         if (Thread.interrupted())
             throw new AbortedException();
 
@@ -138,7 +143,8 @@ class FileWriter extends AbstractOperator {
             throw new AbortedException();
         } catch (Exception e) {
             session.getLogger().error("fail to perform write operation", e);
-            return new Sample(new Date(), OP_TYPE, false);
+            return new Sample(new Date(), getId(), getOpType(), getSampleType(),
+    				getName(), false);
         } finally {
             IOUtils.closeQuietly(cin);
         }
@@ -146,6 +152,7 @@ class FileWriter extends AbstractOperator {
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, OP_TYPE, true, end - start, cin.getByteCount());
+        return new Sample(now,  getId(), getOpType(), getSampleType(),
+				getName(), true, end - start, cin.getByteCount());
     }
 }

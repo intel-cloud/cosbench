@@ -17,7 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.driver.util;
 
-public interface Defaults {
+interface Defaults {
 
     String CONTAINER_PREFIX = "mycontainers_";
 
@@ -26,9 +26,5 @@ public interface Defaults {
     String OBJECT_PREFIX = "myobjects_";
 
     String OBJECT_SUFFIX = null;
-    
-    String OPERATION_SUFFIX = null;
-    
-    String OPERATION_PREFIX = null;
 
 }

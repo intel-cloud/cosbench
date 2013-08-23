@@ -54,7 +54,7 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
     protected void writeMetrics(Writer writer, Metrics metrics)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
-        String opt = metrics.getOpType();
+        String opt = metrics.getOpName();
         String spt = metrics.getSampleType();
         if (spt.equals(opt))
             buffer.append(opt);

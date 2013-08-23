@@ -22,10 +22,7 @@ import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.lang.StringUtils;
 
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_PREFIX;
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_SUFFIX;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -55,16 +52,14 @@ class Writer extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+        super.init(id, ratio, division, config);
         objPicker.init(division, config);
         sizePicker.init(config);
         chunked = config.getBoolean("chunked", false);
         isRandom = !config.get("content", "random").equals("zero");
         hashCheck = config.getBoolean("hashCheck", false);
-		name = StringUtils.join(new Object[] {
-				config.get("opprefix", OPERATION_PREFIX), OP_TYPE,
-				config.get("opsuffix", OPERATION_SUFFIX) });
+		name = config.get("name", OP_TYPE);
     }
 
     @Override
@@ -76,11 +71,6 @@ class Writer extends AbstractOperator {
 	public String getName() {
 		return name;
 	}
-	
-    @Override
-    public String getSampleType() {
-        return getName();
-    }
 
     @Override
     protected void operate(int idx, int all, Session session) {
@@ -91,20 +81,16 @@ class Writer extends AbstractOperator {
         RandomInputStream in = new RandomInputStream(size, random, isRandom,
                 hashCheck);
 		Sample sample = doWrite(in, len, path[0], path[1], config, session,
-				name);
+				this);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, name, sample.isSucc());
+		Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
-
-    public static Sample doWrite(InputStream in, long length, String conName,
-			String objName, Config config, Session session) {
-		return doWrite(in, length, conName, objName, config, session, OP_TYPE);
-	}
     
     public static  Sample doWrite(InputStream in, long length, String conName,
-            String objName, Config config, Session session, String opName) {
+            String objName, Config config, Session session, Operator op) {
         if (Thread.interrupted())
             throw new AbortedException();
 
@@ -119,7 +105,8 @@ class Writer extends AbstractOperator {
             throw new AbortedException();
         } catch (Exception e) {
             session.getLogger().error("fail to perform write operation", e);
-            return new Sample(new Date(), opName, false);
+			return new Sample(new Date(), op.getId(), op.getOpType(),
+					op.getSampleType(), op.getName(), false);
         } finally {
             IOUtils.closeQuietly(cin);
         }
@@ -127,7 +114,8 @@ class Writer extends AbstractOperator {
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, opName, true, end - start, cin.getByteCount());
+		return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
+				op.getName(), true, end - start, cin.getByteCount());
     }
     /*
      * public static Sample doWrite(byte[] data, String conName, String objName,

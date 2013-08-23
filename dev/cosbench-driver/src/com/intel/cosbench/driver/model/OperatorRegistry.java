@@ -28,5 +28,9 @@ public class OperatorRegistry extends MapRegistry<OperatorContext> {
     public OperatorContext getOperator(String type) {
         return getItem(type);
     }
+    
+    public void addItem(OperatorContext item) {
+        registry.put(item.getId(), item);
+    }
 
 }

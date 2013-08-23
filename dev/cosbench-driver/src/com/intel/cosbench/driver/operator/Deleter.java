@@ -17,12 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.driver.operator;
 
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_PREFIX;
-import static com.intel.cosbench.driver.util.Defaults.OPERATION_SUFFIX;
-
 import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
@@ -48,12 +43,10 @@ class Deleter extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+    	super.init(id, ratio, division, config);
         objPicker.init(division, config);
-		name = StringUtils.join(new Object[] {
-				config.get("opprefix", OPERATION_PREFIX), OP_TYPE,
-				config.get("opsuffix", OPERATION_SUFFIX) });
+		name = config.get("name", OP_TYPE);
     }
 
     @Override
@@ -65,29 +58,20 @@ class Deleter extends AbstractOperator {
 	public String getName() {
 		return name;
 	}
-	
-    @Override
-    public String getSampleType() {
-        return getName();
-    }
 
     @Override
     protected void operate(int idx, int all, Session session) {
         String[] path = objPicker.pickObjPath(session.getRandom(), idx, all);
-        Sample sample = doDelete(path[0], path[1], config, session, name);
+        Sample sample = doDelete(path[0], path[1], config, session, this);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, name, sample.isSucc());
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
-
-    public static Sample doDelete(String conName, String objName,
-			Config config, Session session) {
-		return doDelete(conName, objName, config, session, OP_TYPE);
-	}
     
     public static Sample doDelete(String conName, String objName,
-            Config config, Session session, String opName) {
+            Config config, Session session, Operator op) {
         if (Thread.interrupted())
             throw new AbortedException();
 
@@ -99,13 +83,15 @@ class Deleter extends AbstractOperator {
             throw new AbortedException();
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform remove operation", e);
-            return new Sample(new Date(), opName, false);
+            return new Sample(new Date(), op.getId(), op.getOpType(),
+					op.getSampleType(), op.getName(), false);
         }
 
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, opName, true, end - start, 0L);
+        return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
+				op.getName(), true, end - start, 0L);
     }
 
 }
