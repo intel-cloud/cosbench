@@ -49,8 +49,8 @@ class Cleaner extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+        super.init(id, ratio, division, config);
         objScanner.init(division, config);
         deleteContainer = config.getBoolean("deleteContainer", true);
     }
@@ -79,7 +79,7 @@ class Cleaner extends AbstractOperator {
             }
             if (path[1] == null)
                 continue;
-            Sample sample = doDelete(path[0], path[1], config, session);
+            Sample sample = doDelete(path[0], path[1], config, session, this);
             sample.setOpType(opType);
             session.getListener().onSampleCreated(sample);
         }
@@ -88,7 +88,8 @@ class Cleaner extends AbstractOperator {
             doDispose(lastContainer, config, session);
 
         Date now = new Date();
-        Result result = new Result(now, opType, getSampleType(), true);
+		Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), true);
         session.getListener().onOperationCompleted(result);
     }
 

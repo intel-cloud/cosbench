@@ -91,11 +91,20 @@ class WorkloadProcessor {
     }
 
     private static StageContext createStageContext(String id, Stage stage) {
+    	initStageOpId(stage);
         StageContext context = new StageContext();
         context.setId(id);
         context.setStage(stage);
         context.setState(StageState.WAITING);
         return context;
+    }
+    
+    private static void initStageOpId(Stage stage) {
+    	int index = 0;
+		for (Work work : stage.getWorks()) {
+			for (Operation op : work.getOperations())
+				op.setId("op" + String.valueOf(++index));
+		}
     }
 
     private void createExecutor() {

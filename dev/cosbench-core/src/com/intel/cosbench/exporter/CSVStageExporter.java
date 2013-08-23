@@ -22,6 +22,8 @@ import static com.intel.cosbench.exporter.Formats.*;
 import java.io.*;
 import java.util.Arrays;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intel.cosbench.bench.*;
 
 /**
@@ -53,8 +55,13 @@ class CSVStageExporter extends AbstractStageExporter {
         for (int i = 0; i < 6; i++)
             // 6 metrics
             for (Metrics metrics : snapshots[0].getReport())
-                buffer.append(metrics.getSampleType()).append(',');
-        buffer.append("Min-Version").append(',');
+				buffer.append(
+						StringUtils.join(new Object[] {
+								(metrics.getOpName().equals(
+										metrics.getSampleType()) ? null
+										: metrics.getOpName() + "-"),
+								metrics.getSampleType() })).append(',');
+        buffer.append("Min-Version").append(','); 
         buffer.append("Version").append(',');
         buffer.append("Max-Version").append('\n');
         writer.write(buffer.toString());
