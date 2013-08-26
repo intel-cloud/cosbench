@@ -39,7 +39,6 @@ import com.intel.cosbench.service.AbortedException;
 class Writer extends AbstractOperator {
 
     public static final String OP_TYPE = "write";
-    public String name;
 
     private boolean chunked;
     private boolean isRandom;
@@ -59,18 +58,12 @@ class Writer extends AbstractOperator {
         chunked = config.getBoolean("chunked", false);
         isRandom = !config.get("content", "random").equals("zero");
         hashCheck = config.getBoolean("hashCheck", false);
-		name = config.get("name", OP_TYPE);
     }
 
     @Override
     public String getOpType() {
         return OP_TYPE;
     }
-    
-	@Override
-	public String getName() {
-		return name;
-	}
 
     @Override
     protected void operate(int idx, int all, Session session) {

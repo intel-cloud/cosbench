@@ -31,21 +31,23 @@ abstract class AbstractOperator implements Operator {
     private static final Logger LOGGER = LogFactory.getSystemLogger();
 
     protected Config config;
-    
     protected String id;
-    
+    protected String name;
     protected int ratio;
 
     @Override
     public String getName() {
-        return getOpType();
+        return name;
     }
 
     protected void init(String id, int ratio, String division, Config config) {
         this.config = config;
         this.id = id;
         this.ratio = ratio;
+		name = config.get("name", getOpType());
     }
+    
+    abstract public String getOpType();
     
     @Override
     public int getRatio() {

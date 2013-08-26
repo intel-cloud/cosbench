@@ -40,8 +40,6 @@ class Reader extends AbstractOperator {
 
     public static final String OP_TYPE = "read";
     
-    private String name;
-    
     private boolean hashCheck = false;
 
     private ObjectPicker objPicker = new ObjectPicker();
@@ -55,18 +53,12 @@ class Reader extends AbstractOperator {
         super.init(id, ratio, division, config);
         objPicker.init(division, config);
         hashCheck = config.getBoolean("hashCheck", false);
-		name = config.get("name", OP_TYPE);
     }
 
     @Override
     public String getOpType() {
         return OP_TYPE;
     }
-    
-	@Override
-	public String getName() {
-		return name;
-	}
 
     @Override
     protected void operate(int idx, int all, Session session) {

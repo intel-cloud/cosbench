@@ -136,8 +136,9 @@ class MissionHandler {
 
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();
-        for(OperatorContext op : missionContext.getOperatorRegistry().getAllItems())
-        	picker.addOperation(op.getId(), op.getOperator().getRatio());
+        Mission mission = missionContext.getMission();
+        for (Operation op : mission)
+        	picker.addOperation(op.getId(), op.getRatio());
         missionContext.setOperationPicker(picker);
     }
 
