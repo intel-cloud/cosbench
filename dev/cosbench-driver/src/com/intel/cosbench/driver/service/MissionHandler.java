@@ -129,10 +129,8 @@ class MissionHandler {
 
     private static OperatorContext createOperatorContext(Operation op) {
         OperatorContext context = new OperatorContext();
-        String type = op.getType();
-        String division = op.getDivision();
         Config config = KVConfigParser.parse(op.getConfig());
-        context.setOperator(Operators.getOperator(type, division, config));
+        context.setOperator(Operators.getOperator(op, config));
         return context;
     }
 
@@ -140,7 +138,7 @@ class MissionHandler {
         OperationPicker picker = new OperationPicker();
         Mission mission = missionContext.getMission();
         for (Operation op : mission)
-            picker.addOperation(op.getType(), op.getRatio());
+        	picker.addOperation(op.getId(), op.getRatio());
         missionContext.setOperationPicker(picker);
     }
 

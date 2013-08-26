@@ -27,7 +27,7 @@ public class MapRegistry<T extends MapRegistry.Item> implements Iterable<T> {
 
     }
 
-    private Map<String, T> registry;
+    protected Map<String, T> registry;
 
     public MapRegistry() {
         Map<String, T> registry = new LinkedHashMap<String, T>();

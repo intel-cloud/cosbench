@@ -43,6 +43,10 @@ public class OperatorContext implements Item {
     public String getName() {
         return operator.getName();
     }
+    
+    public String getId(){
+    	return operator.getId();
+    }
 
     public String getOpType() {
         return operator.getOpType();

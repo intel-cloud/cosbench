@@ -32,17 +32,18 @@ public class Result {
     private boolean succ;
     private String opType;
     private String sampleType;
+    private String opName;
+    private String opId;
 
-    public Result(Date timestamp, String opType, boolean succ) {
-        this(timestamp, opType, opType, succ);
-    }
-
-    public Result(Date timestamp, String opType, String sampleType, boolean succ) {
-        this.timestamp = timestamp;
-        this.succ = succ;
-        this.opType = opType;
-        this.sampleType = sampleType;
-    }
+	public Result(Date timestamp, String opId, String opType,
+			String sampleType, String opName, boolean succ) {
+		this.timestamp = timestamp;
+		this.succ = succ;
+		this.opType = opType;
+		this.sampleType = sampleType;
+		this.opName = opName;
+		this.opId = opId;
+	}
 
     public Date getTimestamp() {
         return timestamp;
@@ -74,6 +75,14 @@ public class Result {
 
     public void setSampleType(String sampleType) {
         this.sampleType = sampleType;
+    }
+    
+    public String getOpName(){
+    	return opName;
+    }
+    
+    public String getOpId() {
+    	return opId;
     }
 
 }

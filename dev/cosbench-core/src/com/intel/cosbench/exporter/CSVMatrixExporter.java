@@ -61,12 +61,12 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
         StringBuilder buffer = new StringBuilder();
         String uuid = workload.getId() + '-' + stage.getId() + '-' + idx;
         buffer.append(uuid).append(',');
-        String opt = metrics.getOpType();
+        String opt = metrics.getOpName();
         String spt = metrics.getSampleType();
         if (spt.equals(opt))
             buffer.append(opt);
         else
-            buffer.append(opt + '-' + spt);
+        	buffer.append(opt + '-' + spt);
         buffer.append(',');
         buffer.append(metrics.getSampleCount()).append(',');
         buffer.append(metrics.getByteCount()).append(',');
@@ -113,7 +113,7 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
             Metrics metrics) throws IOException {
         for (Work work : stage.getStage())
             for (Operation op : work) {
-                if (op.getType().equals(metrics.getOpType())) {
+                if (op.getId().equals(metrics.getOpId())) {
                     buffer.append(op.getRatio()).append('%').append(' ');
                     String config = op.getConfig();
                     config = config.replaceAll(",", "-").replaceAll(";", " ");
