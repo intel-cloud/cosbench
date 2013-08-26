@@ -147,7 +147,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private void initMarks() {
         Set<String> types = new LinkedHashSet<String>();
         for (OperatorContext op : operatorRegistry)
-            types.add(getMarkType(op.getOpType(), op.getSampleType()));
+            types.add(getMarkType(op.getId(), op.getOpType(), op.getSampleType(), op.getName()));
         for (String type : types)
             currMarks.addMark(newMark(type));
         for (String type : types)
@@ -178,11 +178,12 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public void onSampleCreated(Sample sample) {
         curr = sample.getTimestamp().getTime();
-        String type = getMarkType(sample.getOpType(), sample.getSampleType());
+		String type = getMarkType(sample.getOpId(), sample.getOpType(),
+				sample.getSampleType(), sample.getOpName());
         currMarks.getMark(type).addSample(sample);
         if (lbegin >= begin && lbegin < end && curr > begin && curr <= end) {
             globalMarks.getMark(type).addSample(sample);
-            operatorRegistry.getOperator(sample.getOpType()).addSample(sample);
+            operatorRegistry.getOperator(sample.getOpId()).addSample(sample);
             if (lbegin < frsample)
                 frsample = lbegin; // first sample emitted during runtime
             lrsample = curr; // last sample collected during runtime
@@ -213,7 +214,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public void onOperationCompleted(Result result) {
         curr = result.getTimestamp().getTime();
-        String type = getMarkType(result.getOpType(), result.getSampleType());
+		String type = getMarkType(result.getOpId(), result.getOpType(),
+				result.getSampleType(), result.getOpName());
         currMarks.getMark(type).addOperation(result);
         if (lop >= begin && lop < end && curr > begin && curr <= end)
             globalMarks.getMark(type).addOperation(result);

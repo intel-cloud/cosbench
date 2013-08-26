@@ -51,8 +51,8 @@ class Writer extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+        super.init(id, ratio, division, config);
         objPicker.init(division, config);
         sizePicker.init(config);
         chunked = config.getBoolean("chunked", false);
@@ -73,15 +73,17 @@ class Writer extends AbstractOperator {
         String[] path = objPicker.pickObjPath(random, idx, all);
         RandomInputStream in = new RandomInputStream(size, random, isRandom,
                 hashCheck);
-        Sample sample = doWrite(in, len, path[0], path[1], config, session);
+		Sample sample = doWrite(in, len, path[0], path[1], config, session,
+				this);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
+		Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
-
-    public static Sample doWrite(InputStream in, long length, String conName,
-            String objName, Config config, Session session) {
+    
+    public static  Sample doWrite(InputStream in, long length, String conName,
+            String objName, Config config, Session session, Operator op) {
         if (Thread.interrupted())
             throw new AbortedException();
 
@@ -96,7 +98,8 @@ class Writer extends AbstractOperator {
             throw new AbortedException();
         } catch (Exception e) {
             session.getLogger().error("fail to perform write operation", e);
-            return new Sample(new Date(), OP_TYPE, false);
+			return new Sample(new Date(), op.getId(), op.getOpType(),
+					op.getSampleType(), op.getName(), false);
         } finally {
             IOUtils.closeQuietly(cin);
         }
@@ -104,7 +107,8 @@ class Writer extends AbstractOperator {
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, OP_TYPE, true, end - start, cin.getByteCount());
+		return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
+				op.getName(), true, end - start, cin.getByteCount());
     }
     /*
      * public static Sample doWrite(byte[] data, String conName, String objName,
