@@ -34,7 +34,6 @@ import com.intel.cosbench.service.AbortedException;
 class Deleter extends AbstractOperator {
 
     public static final String OP_TYPE = "delete";
-    public String name;
 
     private ObjectPicker objPicker = new ObjectPicker();
 
@@ -46,18 +45,12 @@ class Deleter extends AbstractOperator {
     protected void init(String id, int ratio, String division, Config config) {
     	super.init(id, ratio, division, config);
         objPicker.init(division, config);
-		name = config.get("name", OP_TYPE);
     }
 
     @Override
     public String getOpType() {
         return OP_TYPE;
     }
-    
-	@Override
-	public String getName() {
-		return name;
-	}
 
     @Override
     protected void operate(int idx, int all, Session session) {
