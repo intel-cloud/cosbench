@@ -173,11 +173,11 @@ public class Metrics implements Item, Cloneable {
 
 	public static String getMetricsType(String opId, String opType,
 			String sampleType, String opName) {
-		return opId + "-" + opType + "-" + sampleType + "-" + opName;
+		return opId + "." + opType + "." + sampleType + "." + opName;
     }
 
     public static Metrics newMetrics(String type) {
-        String[] types = type.split("-");
+        String[] types = type.split("\\.");
         Metrics metrics = new Metrics();
         metrics.setName(type);
         metrics.setOpId(types[0]);
