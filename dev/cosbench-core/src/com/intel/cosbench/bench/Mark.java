@@ -164,11 +164,11 @@ public class Mark implements Cloneable, Item {
 
 	public static String getMarkType(String opId, String opType,
 			String sampleType, String opName) {
-		return opId + ";" + opType + ";" + sampleType + ";" + opName;
+		return opId + "." + opType + "." + sampleType + "." + opName;
 	}
 
     public static Mark newMark(String type) {
-        String[] types = type.split(";");
+        String[] types = type.split("\\.");
         Mark mark = new Mark();
         mark.setName(type);
         mark.setOpId(types[0]);
