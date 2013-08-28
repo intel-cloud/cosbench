@@ -23,6 +23,8 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
@@ -122,6 +124,7 @@ class MissionHandler {
     private void createOperators() {
         OperatorRegistry registry = new OperatorRegistry();
         Mission mission = missionContext.getMission();
+        initOpDefaultName(mission);
         for (Operation op : mission)
             registry.addOperator(createOperatorContext(op));
         missionContext.setOperatorRegistry(registry);
@@ -133,6 +136,28 @@ class MissionHandler {
         context.setOperator(Operators.getOperator(op, config));
         return context;
     }
+    
+	private void initOpDefaultName(Mission mission) {
+		Set<String> opTypes = new HashSet<String>();
+		for (Operation op : mission.getOperations()) {
+			opTypes.add(op.getType());
+		}
+		if (opTypes.size() == mission.getOperations().size())
+			return;
+		for (String opType : opTypes) {
+			int index = 0;
+			for (Operation op : mission.getOperations()) {
+				if (op.getType().equals(opType)) {
+					index++;
+					if (op.getConfig().indexOf("name") < 0) {
+						op.setConfig(StringUtils.join(new Object[] {
+								op.getConfig(), ";name=",
+								String.valueOf(index), "-", op.getType() }));
+					}
+				}
+			}
+		}
+	}
 
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();

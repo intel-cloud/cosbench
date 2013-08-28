@@ -11,7 +11,7 @@
   </tr>
   <#list allMetrics as mInfo>
     <tr>
-      <td>${mInfo.opName}<#if mInfo.opName != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
+      <td>${mInfo.opName}<#if mInfo.opType != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
       <td>
         <#assign op = mInfo.sampleCount >
         <#if (op >= 1000) >
