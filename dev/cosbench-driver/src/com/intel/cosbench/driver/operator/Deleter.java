@@ -19,6 +19,7 @@ package com.intel.cosbench.driver.operator;
 
 import java.util.Date;
 
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -74,6 +75,9 @@ class Deleter extends AbstractOperator {
             session.getApi().deleteObject(conName, objName, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
+        } catch (StorageException se) {
+            String msg = "Error deleting object " +  conName + ": " + objName; 
+            doLogWarn(session.getLogger(), msg);
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform remove operation", e);
             return new Sample(new Date(), op.getId(), op.getOpType(),
