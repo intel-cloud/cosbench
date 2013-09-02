@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.controller.web;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.*;
@@ -240,130 +241,164 @@ public class WorkloadConfigurationController extends AbstractController {
     	return Integer.parseInt(val);
     }
     
-    private Stage constructNormalStage(HttpServletRequest req)
-    {
-    	boolean checked = ("on".equalsIgnoreCase(getParm(req, "normal.checked")));
-    	if(checked)
-    	{
-    		Stage stage = new Stage("normal");
-    		Work work = new Work("normal", "normal");
-    		work.setWorkers(getParmInt(req, "normal.workers"));
-    		work.setRampup(getParmInt(req, "normal.rampup"));
-    		work.setRuntime(getParmInt(req, "normal.runtime"));
-    		
-    		// read operation
-    		String rconfig = "";    		
-    		Operation rOp = new Operation("read");
-    		
-    		int rRatio = getParmInt(req, "read.ratio", 0);
-    		rOp.setRatio(rRatio);
-    		
-    		String rcselector = getParm(req, "read.containers");
-    		String rcmin = getParm(req, "read.containers.min");
-    		String rcmax = getParm(req, "read.containers.max");
-    		rconfig += "containers=" + rcselector + "(" + rcmin + "," + rcmax + ");";
-    		
-    		// "objects" section in config
-    		String roselector = getParm(req, "read.objects");
-    		String romin = getParm(req, "read.objects.min");
-    		String romax = getParm(req, "read.objects.max");
-    		rconfig += "objects=" + roselector + "(" + romin + "," + romax + ");";
-    		rOp.setConfig(rconfig);
-    		
-    		work.addOperation(rOp);
-    		
-    		
-    		// write operation
-    		String wconfig = "";
-    		Operation wOp = new Operation("write");    		
+	private ArrayList<Object> constructNormalStage(HttpServletRequest req) {
+		if (req.getParameterValues("normal.checked") != null) {
 
-    		int wRatio = getParmInt(req, "write.ratio", 0);
-    		wOp.setRatio(wRatio);
-    		
-    		String wcselector = getParm(req, "write.containers");
-    		String wcmin = getParm(req, "write.containers.min");
-    		String wcmax = getParm(req, "write.containers.max");
-    		wconfig += "containers=" + wcselector + "(" + wcmin + "," + wcmax + ");";
-    		
-    		// "objects" section in config
-    		String woselector = getParm(req, "write.objects");
-    		String womin = getParm(req, "write.objects.min");
-    		String womax = getParm(req, "write.objects.max");
-    		wconfig += "objects=" + woselector + "(" + womin + "," + womax + ");";
-    		
-    		// "sizes" section in config
-    		String wsselector = getParm(req, "write.sizes");
-    		String wsmin = getParm(req, "write.sizes.min");
-    		String wsmax = getParm(req, "write.sizes.max");
-    		String wsunit = getParm(req, "write.sizes.unit");
-    		
-    		String wsexp = "";
-    		if("u".equals(wsselector) || "r".equals(wsselector))
-    			wsexp = wsselector + "(" + wsmin + "," + wsmax + ")" + wsunit ;
-    		if("c".equals(wsselector))
-    			wsexp = wsselector + "(" + wsmin + ")" + wsunit;
-    		
-    		wconfig += "sizes=" + wsexp;
-    		
-    		wOp.setConfig(wconfig);
-    		
-    		work.addOperation(wOp);
-            
-            // filewrite operation
-            String fwconfig = "";
-            Operation fwOp = new Operation("filewrite");
-            
-            int fwRatio = getParmInt(req, "filewrite.ratio", 0);
-            fwOp.setRatio(fwRatio);
-            
-            // "containers" section in config
-            String fwcselector = getParm(req, "filewrite.containers");
-            String fwcmin = getParm(req, "filewrite.containers.min");
-            String fwcmax = getParm(req, "filewrite.containers.max");
-            fwconfig += "containers=" + fwcselector + "(" + fwcmin + "," + fwcmax + ");";
-            
-            // "objects" section in config
-            String fwoselector = getParm(req, "filewrite.fileselection");
-            fwconfig += "fileselection=" + fwoselector + ";";
-            
-            
-            // "files" section in config
-            String fwfselector = getParm(req, "filewrite.files");
-            fwconfig += "files=" + fwfselector;
-            
-            fwOp.setConfig(fwconfig);
-            
-            work.addOperation(fwOp);
-            
-            // delete operation
-    		String dconfig = "";
-    		Operation dOp = new Operation("delete");    		
+			String workStageName = new String("normal");
+			ArrayList<Object> workStageList = new ArrayList<Object>();
+			for (int i = 0; i < req.getParameterValues("normal.checked").length; i++) {
+				if (i > 0) {
+					workStageName = new String("normal" + i);
+				}
+				Stage stage = new Stage(workStageName);
+				Work work = new Work(workStageName, "normal");
+				work.setWorkers(getParmInt(req
+						.getParameterValues("normal.workers")[i]));
+				work.setRampup(getParmInt(req
+						.getParameterValues("normal.rampup")[i]));
+				work.setRuntime(getParmInt(req
+						.getParameterValues("normal.runtime")[i]));
 
-    		int dRatio = getParmInt(req, "delete.ratio", 0);
-    		dOp.setRatio(dRatio);
-    		
-    		String dcselector = getParm(req, "delete.containers");
-    		String dcmin = getParm(req, "delete.containers.min");
-    		String dcmax = getParm(req, "delete.containers.max");
-    		dconfig += "containers=" + dcselector + "(" + dcmin + "," + dcmax + ");";
-    		
-    		// "objects" section in config
-    		String doselector = getParm(req, "delete.objects");
-    		String domin = getParm(req, "delete.objects.min");
-    		String domax = getParm(req, "delete.objects.max");
-    		dconfig += "objects=" + doselector + "(" + domin + "," + domax + ");";
-    		dOp.setConfig(dconfig);
-    		
-    		work.addOperation(dOp);
-    		
-    		stage.addWork(work);
-    		
-    		return stage;
-    	}
-    	
-    	return null;
-    }
+				// read operation
+				String rconfig = "";
+				Operation rOp = new Operation("read");
+
+				int rRatio = getParmInt(
+						req.getParameterValues("read.ratio")[i], 0);
+				rOp.setRatio(rRatio);
+
+				String rcselector = req.getParameterValues("read.containers")[i];
+				String rcmin = req.getParameterValues("read.containers.min")[i];
+				String rcmax = req.getParameterValues("read.containers.max")[i];
+				rconfig += "containers=" + rcselector + "(" + rcmin + ","
+						+ rcmax + ");";
+
+				// "objects" section in config
+				String roselector = req.getParameterValues("read.objects")[i];
+				String romin = req.getParameterValues("read.objects.min")[i];
+				String romax = req.getParameterValues("read.objects.max")[i];
+				rconfig += "objects=" + roselector + "(" + romin + "," + romax
+						+ ");";
+				rOp.setConfig(rconfig);
+
+				work.addOperation(rOp);
+
+				// write operation
+				String wconfig = "";
+				Operation wOp = new Operation("write");
+
+				int wRatio = getParmInt(
+						req.getParameterValues("write.ratio")[i], 0);
+				wOp.setRatio(wRatio);
+
+				String wcselector = req.getParameterValues("write.containers")[i];
+				String wcmin = req.getParameterValues("write.containers.min")[i];
+				String wcmax = req.getParameterValues("write.containers.max")[i];
+				wconfig += "containers=" + wcselector + "(" + wcmin + ","
+						+ wcmax + ");";
+
+				// "objects" section in config
+				String woselector = req.getParameterValues("write.objects")[i];
+				String womin = req.getParameterValues("write.objects.min")[i];
+				String womax = req.getParameterValues("write.objects.max")[i];
+				wconfig += "objects=" + woselector + "(" + womin + "," + womax
+						+ ");";
+
+				// "sizes" section in config
+				String wsselector = req.getParameterValues("write.sizes")[i];
+				String wsmin = req.getParameterValues("write.sizes.min")[i];
+				String wsmax = req.getParameterValues("write.sizes.max")[i];
+				String wsunit = req.getParameterValues("write.sizes.unit")[i];
+
+				String wsexp = "";
+				if ("u".equals(wsselector) || "r".equals(wsselector))
+					wsexp = wsselector + "(" + wsmin + "," + wsmax + ")"
+							+ wsunit;
+				if ("c".equals(wsselector))
+					wsexp = wsselector + "(" + wsmin + ")" + wsunit;
+
+				wconfig += "sizes=" + wsexp;
+
+				wOp.setConfig(wconfig);
+
+				work.addOperation(wOp);
+
+				// filewrite operation
+				String fwconfig = "";
+				Operation fwOp = new Operation("filewrite");
+
+				int fwRatio = getParmInt(
+						req.getParameterValues("filewrite.ratio")[i], 0);
+				fwOp.setRatio(fwRatio);
+
+				// "containers" section in config
+				String fwcselector = req
+						.getParameterValues("filewrite.containers")[i];
+				String fwcmin = req
+						.getParameterValues("filewrite.containers.min")[i];
+				String fwcmax = req
+						.getParameterValues("filewrite.containers.max")[i];
+				fwconfig += "containers=" + fwcselector + "(" + fwcmin + ","
+						+ fwcmax + ");";
+
+				// "objects" section in config
+				String fwoselector = req
+						.getParameterValues("filewrite.fileselection")[i];
+				fwconfig += "fileselection=" + fwoselector + ";";
+
+				// "files" section in config
+				String fwfselector = req.getParameterValues("filewrite.files")[i];
+				fwconfig += "files=" + fwfselector;
+
+				fwOp.setConfig(fwconfig);
+
+				work.addOperation(fwOp);
+
+				// delete operation
+				String dconfig = "";
+				Operation dOp = new Operation("delete");
+
+				int dRatio = getParmInt(
+						req.getParameterValues("delete.ratio")[i], 0);
+				dOp.setRatio(dRatio);
+
+				String dcselector = req.getParameterValues("delete.containers")[i];
+				String dcmin = req.getParameterValues("delete.containers.min")[i];
+				String dcmax = req.getParameterValues("delete.containers.max")[i];
+				dconfig += "containers=" + dcselector + "(" + dcmin + ","
+						+ dcmax + ");";
+
+				// "objects" section in config
+				String doselector = req.getParameterValues("delete.objects")[i];
+				String domin = req.getParameterValues("delete.objects.min")[i];
+				String domax = req.getParameterValues("delete.objects.max")[i];
+				dconfig += "objects=" + doselector + "(" + domin + "," + domax
+						+ ");";
+				dOp.setConfig(dconfig);
+
+				work.addOperation(dOp);
+
+				stage.addWork(work);
+
+				workStageList.add(stage);
+			}
+			return workStageList;
+		}
+		
+		return null;
+	}
     
+	private int getParmInt(String string, int defVal) {
+		if (string != null)
+			return Integer.parseInt(string);
+		else
+			return defVal;
+	}
+
+	private int getParmInt(String string) {
+		return Integer.parseInt(string);
+	}
+	
     private Workload constructWorkloadFromPostData(HttpServletRequest req)
             throws Exception {
     	Workload workload = new Workload();
@@ -387,8 +422,12 @@ public class WorkloadConfigurationController extends AbstractController {
     	Stage prepareStage = constructPrepareStage(req);    	
     	if(prepareStage != null) workflow.addStage(prepareStage);    	
     	
-    	Stage normalStage = constructNormalStage(req);    	
-    	if(normalStage != null) workflow.addStage(normalStage);    	
+		ArrayList<Object> normalStageList = constructNormalStage(req);
+		if (normalStageList != null) {
+			for (int i = 0; i < normalStageList.size(); i++) {
+				workflow.addStage((Stage) normalStageList.get(i));
+			}
+		}	
     	
     	Stage cleanupStage = constructCleanupStage(req);    	
     	if(cleanupStage != null) workflow.addStage(cleanupStage);    

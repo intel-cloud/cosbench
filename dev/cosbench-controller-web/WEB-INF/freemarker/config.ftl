@@ -4,18 +4,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
   <title>Workload Configuration</title>
-  <script>
-	  function toggleDiv(id)
-		{
-			divElement = document.getElementById(id);
-			if(divElement.style.display == 'none'){
-				divElement.style.display = '';
-			}else {
-				divElement.style.display = 'none';
-			}
-			return false;
-		}
-  </script>
 </head>
 <body>
 <#include "header.ftl">
@@ -183,7 +171,7 @@
 			</div>
 			
 			<div id="normal" class="a2">
-					<input type="checkbox" name="normal.checked" checked="checked" onClick="toggleDiv('normal.work');"><strong> Main Stage:</strong>
+					<input type="checkbox" id="normal.checked" name="normal.checked" checked="checked" onClick="toggleMainDiv(this.parentNode);"><strong> Main Stage:</strong>
 				
 				<div id="normal.work" class="a3">
 						<table class="info-table">
@@ -218,6 +206,7 @@
 										<th >Container Selector</th>
 										<th >Object Selector</th>
 										<th >Size Selector</th>
+										<th >File selector</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -266,6 +255,27 @@
 											</select>										
 										</td>															
 									</tr>
+									<tr>                                        
+                                        <td >File-Write</td>
+										<td ><input type="number" name="filewrite.ratio" style="width:30px" value="0" /> </td>
+										<td >
+											<select name="filewrite.containers" hidden="true">
+											  <option value="u" selected="true">Uniform</option>
+											</select>
+											<input type="number" name="filewrite.containers.min" style="width:30px" value="1" /> - <input type="number" name="filewrite.containers.max" style="width:30px" value="32" /> 
+										</td>
+										<td >
+											<select name="filewrite.fileselection" hidden="true">
+											  <option value="s" selected="true">Uniform</option>
+											</select>
+										</td>
+                                        <td >
+                                        </td>
+										<td >
+											<input name="filewrite.files" type="text" style="width:100px" value="/tmp/testfiles/" />									
+										</td>															
+									</tr>
+									<tr>
 									<tr>
 										<td >Delete</td>
 										<td ><input type="number" name="delete.ratio" style="width:30px" value="0"/> </td>
@@ -289,6 +299,7 @@
 					</div>
 				</div>
 			</div>
+			<input type="button" id="addMain" value="Add Main Stage" onClick="addMainStage();" />
 			
 			<div id="cleanup" class="a2">
 					<input type="checkbox" name="cleanup.checked" checked="checked" onClick="toggleDiv('cleanup.work');"><strong> Cleanup Stage:</strong>
@@ -365,5 +376,43 @@
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->
 <#include "footer.ftl">
+<script>
+  	var numOfClones = 0;
+	var previousDiv = document.getElementById('normal');
+	
+	function toggleDiv(id)
+		{
+			divElement = document.getElementById(id);
+			if(divElement.style.display == 'none'){
+				divElement.style.display = '';
+			}else {
+				divElement.style.display = 'none';
+			}
+			return false;
+		}
+		
+	function toggleMainDiv(divElement) {
+    
+    if(numOfClones==0){   
+       toggleDiv('normal.work');
+       return;
+    }
+    if (divElement.nextElementSibling.id == 'addMain') {
+        previousDiv = divElement.previousElementSibling;
+    }
+    numOfClones--;
+    divElement.parentNode.removeChild(divElement);
+	}
+
+	function addMainStage(){
+    	if(numOfClones==0 && document.getElementById('normal.checked').checked == false){
+        return;
+    }
+    var cloneDiv = previousDiv.cloneNode(true);
+    previousDiv.parentNode.insertBefore(cloneDiv, previousDiv.nextElementSibling);
+    numOfClones++;
+    previousDiv = cloneDiv;
+	}
+  </script>
 </body>  
 </html>

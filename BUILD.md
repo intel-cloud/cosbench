@@ -3,7 +3,7 @@ Directory structure
   
 ${ROOT}
   
-    + adaptor-dev      	(a sample project for adaptor development)    
+    + ext		      	(sample projects for adaptor development)    
     + dev				(all cosbench plugin projects)
     + dist				(all libraries)
 		+ main			(the osgi launcher)
@@ -45,7 +45,8 @@ normally, it's "Running Platform". Selecting "Edit..." button to add required pl
 
 6. Those error signs should disappear, then the development environment is ready.
 
-7. After applied modifications on one project, just generate the plugins by right clicking the project, and select "export... -> Plug-in Development -> Deployable plugins and fragments", and set the "Directory" to "dist\osgi" folder. Then the plugins libary will be placed at "dist\osgi\plugins" folder.
+7. After applied modifications on one project, just generate the plugins by right clicking the project, and select "export... -> Plug-in Development -> Deployable plugins and fragments", 
+and set the "Directory" to "dist\osgi" folder. Then the plugins library will be placed at "dist\osgi\plugins" folder.
 
 8. One script called "pack.cmd" or "pack.sh" could help generate one delivable package by passing it the version number.  
 

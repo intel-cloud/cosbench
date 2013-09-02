@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -68,6 +69,7 @@ class FileWriter extends AbstractOperator {
             throw new RuntimeException("Folder " + filepath + " does not exist.");
         }
         listOfFiles = folder.listFiles();
+        Arrays.sort(listOfFiles);
         String range = "(1," + listOfFiles.length + ")";
         filePicker.init(range, config);
         hashCheck = config.getBoolean("hashCheck", false);
