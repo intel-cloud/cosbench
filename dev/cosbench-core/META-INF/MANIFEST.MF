@@ -7,8 +7,8 @@ Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.intel.cosbench.bench,
  com.intel.cosbench.exporter,
- com.intel.cosbench.model,
  com.intel.cosbench.protocol,
+ com.intel.cosbench.model,
  com.intel.cosbench.service,
  com.intel.cosbench.utils
 Import-Package: com.intel.cosbench.config,

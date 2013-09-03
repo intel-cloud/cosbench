@@ -22,6 +22,8 @@ import static com.intel.cosbench.exporter.Formats.*;
 import java.io.*;
 
 import com.intel.cosbench.bench.*;
+import com.intel.cosbench.model.StageInfo;
+import com.intel.cosbench.model.StateInfo;
 
 /**
  * This class is to export workload information into CSV format.
@@ -34,6 +36,7 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
     @Override
     protected void writeHeader(Writer writer) throws IOException {
         StringBuilder buffer = new StringBuilder();
+        buffer.append("Stage").append(',');
         buffer.append("Op-Type").append(',');
         buffer.append("Op-Count").append(',');
         buffer.append("Byte-Count").append(',');
@@ -46,14 +49,17 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
         buffer.append("100%-ResTime").append(',');
         buffer.append("Throughput").append(',');
         buffer.append("Bandwidth").append(',');
-        buffer.append("Succ-Ratio").append('\n');
+        buffer.append("Succ-Ratio").append(',');
+        buffer.append("Status").append(',');
+        buffer.append("Detailed Status").append('\n');
         writer.write(buffer.toString());
     }
 
     @Override
-    protected void writeMetrics(Writer writer, Metrics metrics)
+    protected void writeMetrics(Writer writer, Metrics metrics, StageInfo stage)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
+        buffer.append(stage.getStage().getName()).append(',');
         String opt = metrics.getOpName();
         String spt = metrics.getSampleType();
         if (spt.equals(opt))
@@ -72,13 +78,47 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
         writeLatencyInfo(buffer, metrics.getLatency());
         buffer.append(NUM.format(metrics.getThroughput())).append(',');
         buffer.append(NUM.format(metrics.getBandwidth())).append(',');
-        double t = (double) metrics.getTotalSampleCount();
+        double t = (double) metrics.getRatio();
         if (t > 0)
-            buffer.append(RATIO.format(metrics.getSampleCount() / t));
+            buffer.append(RATIO.format(metrics.getRatio())).append(',');
         else
-            buffer.append("N/A");
-        buffer.append('\n');
+            buffer.append("N/A").append(',');
+        buffer.append(stage.getState().name().toLowerCase()).append(',');
+        for (StateInfo state : stage.getStateHistory()) {
+			buffer.append(
+					state.getName().toLowerCase() + " @ "
+							+ DATETIME.format(state.getDate())).append(',');
+        }
+        buffer.setCharAt(buffer.length() - 1, '\n');
         writer.write(buffer.toString());
+    }
+    
+    @Override
+    protected void writeMetrics(Writer writer, StageInfo stage)
+            throws IOException {
+    	 StringBuilder buffer = new StringBuilder();
+         buffer.append(stage.getStage().getName()).append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append("N/A").append(',');
+         buffer.append(stage.getState().name().toLowerCase()).append(',');
+         for (StateInfo state : stage.getStateHistory()) {
+ 			buffer.append(
+ 					state.getName().toLowerCase() + " @ "
+ 							+ DATETIME.format(state.getDate())).append(',');
+         }
+         buffer.setCharAt(buffer.length() - 1, '\n');
+         writer.write(buffer.toString());
     }
 
     private static void writeLatencyInfo(StringBuilder buffer, Histogram latency)

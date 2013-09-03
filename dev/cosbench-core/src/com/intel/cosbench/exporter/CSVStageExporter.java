@@ -101,9 +101,9 @@ class CSVStageExporter extends AbstractStageExporter {
             buffer.append(NUM.format(metrics.getBandwidth())).append(',');
         /* Success Ratio */
         for (Metrics metrics : report) {
-            double t = (double) metrics.getTotalSampleCount();
+            double t = (double) metrics.getRatio();
             if (t > 0)
-                buffer.append(RATIO.format(metrics.getSampleCount() / t));
+                buffer.append(RATIO.format(metrics.getRatio()));
             else
                 buffer.append("N/A");
             buffer.append(',');
