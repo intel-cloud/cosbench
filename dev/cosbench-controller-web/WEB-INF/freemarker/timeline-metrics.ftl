@@ -127,10 +127,10 @@
       </#list>
       <#list allMetrics as mInfo >
         <td>
-          <#if mInfo.totalSampleCount == 0 >
+          <#if mInfo.ratio == 0.0 >
             N/A
           <#else>
-            <#assign sRatio = mInfo.sampleCount / mInfo.totalSampleCount >
+            <#assign sRatio = mInfo.ratio >
             ${sRatio?string("0.##%")}
           </#if>
         </td>

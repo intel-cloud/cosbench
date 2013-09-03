@@ -66,6 +66,8 @@ public class Aggregator {
         metrics.setBandwidth(getBandwidth());
         metrics.setAvgResTime(getAvgResTime());
         metrics.setLatency(getLatency());
+		metrics.setRatio(metrics.getTotalSampleCount() > 0 ? (double) metrics
+				.getSampleCount() / metrics.getTotalSampleCount() : 0D);
         return metrics;
     }
 

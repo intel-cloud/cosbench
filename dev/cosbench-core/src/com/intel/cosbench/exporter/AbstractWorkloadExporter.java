@@ -20,6 +20,7 @@ package com.intel.cosbench.exporter;
 import java.io.*;
 
 import com.intel.cosbench.bench.Metrics;
+import com.intel.cosbench.model.StageInfo;
 import com.intel.cosbench.model.WorkloadInfo;
 
 /**
@@ -44,14 +45,20 @@ abstract class AbstractWorkloadExporter implements WorkloadExporter {
     public void export(Writer writer) throws IOException {
         writeHeader(writer);
         writer.flush();
-        for (Metrics metrics : workload.getReport())
-            writeMetrics(writer, metrics);
+        for (StageInfo stage : workload.getStageInfos()) {
+        	for (Metrics metrics : stage.getReport())
+                writeMetrics(writer, metrics, stage);
+			if (stage.getReport().getSize() == 0)
+				writeMetrics(writer, stage);
+        }
         writer.flush();
     }
 
-    protected abstract void writeHeader(Writer writer) throws IOException;
+    protected abstract void writeMetrics(Writer writer, StageInfo stage) throws IOException;
 
-    protected abstract void writeMetrics(Writer writer, Metrics metrics)
+	protected abstract void writeHeader(Writer writer) throws IOException;
+
+    protected abstract void writeMetrics(Writer writer, Metrics metrics, StageInfo stage)
             throws IOException;
 
 }
