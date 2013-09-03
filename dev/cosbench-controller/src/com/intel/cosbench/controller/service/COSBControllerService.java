@@ -27,11 +27,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.XmlConfig;
 import com.intel.cosbench.controller.archiver.*;
+import com.intel.cosbench.controller.loader.SimpleWorkloadLoader;
 import com.intel.cosbench.controller.model.*;
 import com.intel.cosbench.controller.repository.*;
 import com.intel.cosbench.log.*;
 import com.intel.cosbench.model.*;
 import com.intel.cosbench.service.ControllerService;
+import com.intel.cosbench.service.WorkloadLoader;
 
 /**
  * This class is the major service for controller.
@@ -51,6 +53,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private Map<String, WorkloadProcessor> processors;
 	private OrderThreadPoolExecutor executor;
     private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
+    private WorkloadLoader loader = new SimpleWorkloadLoader();
     private WorkloadRepository memRepo = new RAMWorkloadRepository();
 
     public COSBControllerService() {
@@ -71,7 +74,21 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
 						memRepo.getMaxCapacity(),
 						new OrderFutureComparator()));
+		try {
+			loadArchivedWorkload();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
+	
+	public void loadArchivedWorkload() throws IOException {
+		List<WorkloadInfo> workloadContexts = loader.loadWorkloadRun();
+		if (workloadContexts == null)
+			return;
+		for (WorkloadInfo workloadContext : workloadContexts)
+			memRepo.saveWorkload((WorkloadContext) workloadContext);
+	}
+	
 
     @Override
     public String submit(XmlConfig config) {
@@ -99,6 +116,10 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         context.setConfig(config);
         context.setState(WorkloadState.QUEUING);
         return context;
+    }
+    
+    public WorkloadLoader getWorkloadLoader() {
+    	return loader;
     }
 
     private String generateWorkloadId() {

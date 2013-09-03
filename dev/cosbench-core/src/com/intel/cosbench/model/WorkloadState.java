@@ -50,5 +50,4 @@ public enum WorkloadState {
     public static boolean isRunning(WorkloadState stage) {
         return PROCESSING.equals(stage);
     }
-
 }

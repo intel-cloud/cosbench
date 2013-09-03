@@ -80,9 +80,9 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
         writeLatencyInfo(buffer, metrics.getLatency());
         buffer.append(NUM.format(metrics.getThroughput())).append(',');
         buffer.append(NUM.format(metrics.getBandwidth())).append(',');
-        double t = (double) metrics.getTotalSampleCount();
+        double t = (double) metrics.getRatio();
         if (t > 0)
-            buffer.append(RATIO.format(metrics.getSampleCount() / t));
+            buffer.append(RATIO.format(metrics.getRatio()));
         else
             buffer.append("N/A");
         buffer.append(',');

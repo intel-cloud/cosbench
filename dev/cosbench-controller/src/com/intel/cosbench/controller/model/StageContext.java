@@ -22,6 +22,7 @@ import java.util.*;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.*;
 import com.intel.cosbench.model.*;
+import com.intel.cosbench.utils.ListRegistry;
 
 /**
  * This class encapsulates one work stage.
@@ -64,10 +65,21 @@ public class StageContext implements StageInfo {
     }
 
     public void setState(StageState state) {
+    	setState(state, false);
+    }
+    
+    public void setState(StageState state, boolean archived) {
         this.state = state;
+        if(archived) 
+        	return;
         stateHistory.addState(state.name());
         if (StageState.isStopped(state))
             fireStageStopped();
+    }
+    
+    @Override
+    public void setState(String state, Date date) {
+    	stateHistory.addState(state,date);
     }
 
     private void fireStageStopped() {
@@ -173,6 +185,7 @@ public class StageContext implements StageInfo {
         return report != null ? report : new Report();
     }
 
+    @Override
     public void setReport(Report report) {
         this.report = report;
     }
@@ -203,5 +216,10 @@ public class StageContext implements StageInfo {
         scheduleRegistry = null;
         listeners = null;
     }
+
+	@Override
+	public ListRegistry<Snapshot> getSnapshotRegistry() {
+		return snapshotRegistry;
+	}
 
 }

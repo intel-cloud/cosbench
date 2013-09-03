@@ -17,16 +17,22 @@ limitations under the License.
 
 package com.intel.cosbench.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Stage;
+import com.intel.cosbench.utils.ListRegistry;
 
 public interface StageInfo extends LifeCycle, Benchmark {
 
     public String getId();
 
     public StageState getState();
+    
+    public void setState(String state, Date date);
+    
+    public void setState(StageState state, boolean archived);
 
     public StateInfo[] getStateHistory();
 
@@ -47,5 +53,9 @@ public interface StageInfo extends LifeCycle, Benchmark {
     public Snapshot[] getSnapshots();
     
     public int getSnapshotCount();
+
+	public void setReport(Report report);
+	
+	public ListRegistry<Snapshot> getSnapshotRegistry();
 
 }
