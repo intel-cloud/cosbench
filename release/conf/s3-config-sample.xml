@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <workload name="s3-sample" description="sample benchmark for s3">
 
-  <storage type="s3" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>" />
+  <storage type="s3" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>" />
 
   <workflow>
 
