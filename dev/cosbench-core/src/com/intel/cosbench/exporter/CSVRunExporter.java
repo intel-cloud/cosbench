@@ -22,6 +22,8 @@ import static com.intel.cosbench.exporter.Formats.DATETIME;
 import java.io.*;
 import java.util.Date;
 
+import com.intel.cosbench.model.StateInfo;
+import com.intel.cosbench.model.WorkloadInfo;
 import com.intel.cosbench.model.WorkloadState;
 
 /**
@@ -44,7 +46,8 @@ class CSVRunExporter extends AbstractRunExporter {
         buffer.append("Started-At").append(',');
         buffer.append("Stopped-At").append(',');
         buffer.append("Op-Info").append(',');
-        buffer.append("State").append('\n');
+        buffer.append("State").append(',');
+        buffer.append("Detailed State").append('\n');
         writer.write(buffer.toString());
     }
 
@@ -57,8 +60,16 @@ class CSVRunExporter extends AbstractRunExporter {
         appendDate(buffer, workload.getStopDate());
         appendOperations(buffer, workload.getAllOperations());
         appendState(buffer, workload.getState());
+        appendDetailedState(buffer, workload);
         buffer.setCharAt(buffer.length() - 1, '\n');
         writer.write(buffer.toString());
+    }
+    
+    private static void appendDetailedState(StringBuilder buffer, WorkloadInfo workload) {
+        for(StateInfo state : workload.getStateHistory()) {
+        	String detailedState = state.getName().toLowerCase() + " @ " + DATETIME.format(state.getDate());
+        	buffer.append(detailedState).append(',');
+        }
     }
 
     private static void appendDate(StringBuilder buffer, Date date) {

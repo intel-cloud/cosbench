@@ -52,5 +52,7 @@ public interface ControllerService {
     public File getWorkloadLog(WorkloadInfo info);
 
     public File getWorkloadConfig(WorkloadInfo info);
+    
+    public WorkloadLoader getWorkloadLoader();
 
 }

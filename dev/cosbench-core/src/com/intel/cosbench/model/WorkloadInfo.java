@@ -52,4 +52,10 @@ public interface WorkloadInfo extends LifeCycle, Benchmark {
 
     public int getSnapshotCount();
 
+	public void setWorkload(Workload workload);
+	
+	public void setArchived(boolean archived);
+	
+	public boolean getArchived();
+
 }

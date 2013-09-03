@@ -52,6 +52,9 @@ public class Metrics implements Item, Cloneable {
 
     /* Latency Details */
     private Histogram latency; /* detailed latency metrics */
+    
+    /* success ratio */
+    private double ratio;
 
     public Metrics() {
         /* empty */
@@ -161,6 +164,14 @@ public class Metrics implements Item, Cloneable {
     public void setLatency(Histogram latency) {
         this.latency = latency;
     }
+    
+    public void setRatio(double ratio) {
+    	this.ratio = ratio;
+    }
+    
+    public double getRatio() {
+    	return ratio;
+    }
 
     @Override
     public Metrics clone() {
@@ -197,6 +208,8 @@ public class Metrics implements Item, Cloneable {
         Metrics metrics = newMetrics(type);
         metrics.setSampleCount(sps);
         metrics.setTotalSampleCount(tsps);
+        metrics.setRatio(metrics.getTotalSampleCount() > 0 ? (double) metrics
+				.getSampleCount() / metrics.getTotalSampleCount() : 0D);
         metrics.setByteCount(bytes);
         metrics.setWorkerCount(1);
         metrics.setAvgResTime(rtSum > 0 ? ((double) rtSum) / sps : 0);
