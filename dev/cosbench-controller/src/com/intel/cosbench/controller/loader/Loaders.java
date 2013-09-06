@@ -49,23 +49,5 @@ public class Loaders {
 				stageId);
 		return loader;
 	}
-//
-//    public static LatencyLoader newLatencyExporter(WorkloadInfo workload) {
-//        AbstractLatencyExporter exporter = new CSVLatencyExporter();
-//        exporter.setWorkload(workload);
-//        return exporter;
-//    }
-//
-//    public static LogLoader newLogExporter(WorkloadInfo workload) {
-//        SimpleLogExporter exporter = new SimpleLogExporter();
-//        exporter.setWorkload(workload);
-//        return exporter;
-//    }
-//
-//    public static MatrixLoader newMatrixExporter(WorkloadInfo workload) {
-//        AbstractMatrixExporter exporter = new CSVMatrixExporter();
-//        exporter.setWorkload(workload);
-//        return exporter;
-//    }
 
 }

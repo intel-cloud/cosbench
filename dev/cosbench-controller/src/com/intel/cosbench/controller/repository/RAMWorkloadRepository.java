@@ -104,7 +104,16 @@ public class RAMWorkloadRepository implements WorkloadRepository,
     public synchronized WorkloadContext[] getInactiveWorkloads() {
         List<WorkloadContext> result = new ArrayList<WorkloadContext>();
         for (WorkloadContext workload : workloads.values())
-            if (WorkloadState.isStopped(workload.getState()))
+            if (WorkloadState.isStopped(workload.getState()) && !workload.getArchived())
+                result.add(workload);
+        return result.toArray(new WorkloadContext[result.size()]);
+    }
+    
+    @Override
+    public synchronized WorkloadContext[] getArchivedWorkloads() {
+    	List<WorkloadContext> result = new ArrayList<WorkloadContext>();
+        for (WorkloadContext workload : workloads.values())
+            if (workload.getArchived())
                 result.add(workload);
         return result.toArray(new WorkloadContext[result.size()]);
     }

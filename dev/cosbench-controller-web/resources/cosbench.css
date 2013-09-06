@@ -32,7 +32,7 @@ a:visited {
 }
 
 .content {
-	width: 1000px;
+	width: 1100px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -177,9 +177,15 @@ a:visited {
 	background: #F4F4F4;
 }
 
+.info-table tr.nohover:hover td{
+	background-color: #FFFFFF;
+}
+
 .info-table tr:hover td {
 	background-color: #CCD9E9;
 }
+
+
 
 /* ---------------------------------------
  * Text Styles
