@@ -48,6 +48,8 @@ public interface ControllerService {
     public WorkloadInfo[] getActiveWorkloads();
 
     public WorkloadInfo[] getHistoryWorkloads();
+    
+    public WorkloadInfo[] getArchivedWorkloads();
 
     public File getWorkloadLog(WorkloadInfo info);
 

@@ -37,7 +37,7 @@
 	}
 	function findChecked(name) {
 		var a = document.getElementsByName(name);
-		var value = "";
+		var value = '';
 		for ( var i = 0; i < a.length; i++) {
 			if (a[i].checked) {
 				value += a[i].value;
@@ -63,7 +63,12 @@
 		}
 	}
 	function resubmitWorkloads() {
-		var ids = findChecked('HistoryWorkload');
+		var hids = findChecked('HistoryWorkload');
+		var aids = findChecked('ArchivedWorkload');
+		var ids = '';
+		if(hids.length > 0)
+			ids = hids + '_';
+		ids += aids;
 		document.getElementById('resubmitIds').value = ids;
 		document.getElementById('resubmitForm').submit();
 	}
@@ -151,9 +156,10 @@
   </form>
   <p><a href="submit.html">submit new workloads</a></p>
   <p><a href="config.html">config workloads</a></p>
-  <h3>Historical Workloads</h3>
+ 
   <div>
-    <p><a href="matrix.html?ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
+   <h3>Historical Workloads</h3>
+    <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
     <table class="info-table">
       <tr>
         <th style="width:5%;"><input type="checkbox" id="AllHistory" onclick="checkAll(event,'HistoryWorkload')"></th>
@@ -180,8 +186,38 @@
         </tr>
       </#list>
     </table>
-    <#if (hInfos?size < 10) >
-      <p class="warn">There are ${hInfos?size} Historical workloads.</p>
+    
+    <h3>Archived Workloads</h3>
+    <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
+    <table class="info-table">
+      <tr>
+        <th style="width:5%;"><input type="checkbox" id="AllArchived" onclick="checkAll(event,'ArchivedWorkload')"></th>
+        <th class="id" style="width:5%;">ID</th>
+        <th>Name</th>
+        <th>Duration</th>
+        <th>Op-Info</th>
+        <th>State</th>
+        <th style="width:15%;">Link</th>
+      </tr>
+       <#list archInfos as aInfo >
+        <tr>
+          <td><input type="checkbox" id="checkbox-${aInfo.id}" name="ArchivedWorkload" onclick="checkItem(event,'AllArchived')" value="${aInfo.id}"></td>
+          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.id}</td>
+          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.workload.name}</td>
+          <td onclick="checkMe('${aInfo.id}','AllArchived');");"><#if aInfo.startDate?? >${aInfo.startDate?datetime}<#else>N/A</#if> - ${aInfo.stopDate?time}</td>
+          <td onclick="checkMe('${aInfo.id}','AllArchived');");">
+            <#list aInfo.allOperations as op >
+              ${op}<#if op_has_next>,</#if>
+            </#list>
+          </td>
+          <td onclick="checkMe('${aInfo.id}','AllArchived');"><span class="workload-state-${aInfo.state?lower_case} state">${aInfo.state?lower_case}</span></td>
+          <td><a href="workload.html?id=${aInfo.id}">view details</a></td>
+        </tr>
+      </#list>
+    </table>
+    
+    <#if (hInfos?size + archInfos?size < 10) >
+      <p class="warn">There are ${hInfos?size + archInfos?size} Historical and Archived workloads.</p>
     </#if>
     <form id="resubmitForm" method="POST" action="index.html">
   		<input id="resubmitIds" type="hidden" name="resubmitIds" value="">

@@ -37,7 +37,7 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
     protected void writeHeader(Writer writer) throws IOException {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Id").append(',');
-        buffer.append("Op-Type").append(',');
+        buffer.append("Op-Name").append(',');
         buffer.append("Op-Count").append(',');
         buffer.append("Byte-Count").append(',');
         buffer.append("Worker-Count").append(',');

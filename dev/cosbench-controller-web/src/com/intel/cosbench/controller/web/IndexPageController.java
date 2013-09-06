@@ -75,6 +75,7 @@ public class IndexPageController extends AbstractController {
         result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("aInfos", controller.getActiveWorkloads());
         result.addObject("hInfos", controller.getHistoryWorkloads());
+        result.addObject("archInfos", controller.getArchivedWorkloads());
 		return result;
 	}
 }

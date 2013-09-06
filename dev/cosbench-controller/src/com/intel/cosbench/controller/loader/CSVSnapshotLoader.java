@@ -104,11 +104,25 @@ class CSVSnapshotLoader extends AbstractSnapshotLoader {
 			metric.setAvgResTime(getDoubleValue(columns[i + opNum * 2 + 1]));
 			metric.setThroughput(getDoubleValue(columns[i + opNum * 3 + 1]));
 			metric.setBandwidth(getDoubleValue(columns[i + opNum * 4 + 1]));
-			metric.setRatio(columns[i + opNum * 5 + 1].equalsIgnoreCase("N/A") ? 0D
-					: Double.valueOf(columns[i + opNum * 5 + 1].substring(0,
-							columns[i + opNum * 5 + 1].length() - 1)) / 100.0);
+//			metric.setRatio(columns[i + opNum * 5 + 1].equalsIgnoreCase("N/A") ? 0D
+//					: Double.valueOf(columns[i + opNum * 5 + 1].substring(0,
+//							columns[i + opNum * 5 + 1].length() - 1)) / 100.0);
+			setRatio(columns[i + opNum * 5 + 1], metric);
 			metrics.add(metric);
 		}
 		return metrics;
+	}
+	
+	private void setRatio(String column, Metrics metrics) {
+		if (!column.equalsIgnoreCase("N/A")) {
+			metrics.setRatio(Double.valueOf(column.substring(0,
+					column.length() - 1)) / 100.0);
+			metrics.setTotalSampleCount(metrics.getSampleCount()
+					/ metrics.getRatio() > Integer.MAX_VALUE ? Integer.MAX_VALUE
+					: (int) (metrics.getSampleCount() / metrics.getRatio()));
+		} else {
+			metrics.setRatio(0D);
+			metrics.setTotalSampleCount(0);
+		}
 	}
 }	

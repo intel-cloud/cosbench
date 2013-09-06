@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
-*/ 
+ */
 
 package com.intel.cosbench.controller.service;
 
@@ -43,44 +43,43 @@ import com.intel.cosbench.service.WorkloadLoader;
  */
 class COSBControllerService implements ControllerService, WorkloadListener {
 
-    private static final Logger LOGGER = LogFactory.getSystemLogger();
+	private static final Logger LOGGER = LogFactory.getSystemLogger();
 
-    private AtomicInteger count; /* workload id generator */
-    
-    private AtomicInteger order;
+	private AtomicInteger count; /* workload id generator */
 
-    private ControllerContext context;
-    private Map<String, WorkloadProcessor> processors;
+	private AtomicInteger order;
+
+	private ControllerContext context;
+	private Map<String, WorkloadProcessor> processors;
 	private OrderThreadPoolExecutor executor;
-    private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
-    private WorkloadLoader loader = new SimpleWorkloadLoader();
-    private WorkloadRepository memRepo = new RAMWorkloadRepository();
+	private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
+	private WorkloadLoader loader = new SimpleWorkloadLoader();
+	private WorkloadRepository memRepo = new RAMWorkloadRepository();
 
-    public COSBControllerService() {
-        /* empty */
-    }
+	public COSBControllerService() {
+		/* empty */
+	}
 
-    public void setContext(ControllerContext context) {
-        this.context = context;
-    }
+	public void setContext(ControllerContext context) {
+		this.context = context;
+	}
 
 	public void init() {
-        count = new AtomicInteger(archiver.getTotalWorkloads());
-        order = new AtomicInteger(0);
-        processors = new HashMap<String, WorkloadProcessor>();
-        processors = Collections.synchronizedMap(processors);
-        int concurrency = context.getConcurrency();
+		count = new AtomicInteger(archiver.getTotalWorkloads());
+		order = new AtomicInteger(0);
+		processors = new HashMap<String, WorkloadProcessor>();
+		processors = Collections.synchronizedMap(processors);
+		int concurrency = context.getConcurrency();
 		executor = new OrderThreadPoolExecutor(concurrency, concurrency, 0L,
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
-						memRepo.getMaxCapacity(),
-						new OrderFutureComparator()));
+						memRepo.getMaxCapacity(), new OrderFutureComparator()));
 		try {
 			loadArchivedWorkload();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    }
-	
+	}
+
 	public void loadArchivedWorkload() throws IOException {
 		List<WorkloadInfo> workloadContexts = loader.loadWorkloadRun();
 		if (workloadContexts == null)
@@ -88,78 +87,84 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		for (WorkloadInfo workloadContext : workloadContexts)
 			memRepo.saveWorkload((WorkloadContext) workloadContext);
 	}
-	
 
-    @Override
-    public String submit(XmlConfig config) {
-        LOGGER.debug("[ CT ] - submitting workload ... ");
-        WorkloadContext workload = createWorkloadContext(config);
-        WorkloadProcessor processor = createProcessor(workload);
-        workload.addListener(this);
-        processors.put(workload.getId(), processor);
-        memRepo.saveWorkload(workload);
-        LOGGER.debug("[ CT ] - workload {} submitted", workload.getId());
-        return workload.getId();
-    }
-    
-    @Override
-    public String resubmit(String id) throws IOException{
-		memRepo.getWorkload(id).getConfig().getContent().reset();
-    	return submit(memRepo.getWorkload(id).getConfig());
-    }
+	@Override
+	public String submit(XmlConfig config) {
+		LOGGER.debug("[ CT ] - submitting workload ... ");
+		WorkloadContext workload = createWorkloadContext(config);
+		WorkloadProcessor processor = createProcessor(workload);
+		workload.addListener(this);
+		processors.put(workload.getId(), processor);
+		memRepo.saveWorkload(workload);
+		LOGGER.debug("[ CT ] - workload {} submitted", workload.getId());
+		return workload.getId();
+	}
 
-    private WorkloadContext createWorkloadContext(XmlConfig config) {
-        WorkloadContext context = new WorkloadContext();
-        context.setId(generateWorkloadId());
-        context.setOrder(generateOrder());
-        context.setSubmitDate(new Date());
-        context.setConfig(config);
-        context.setState(WorkloadState.QUEUING);
-        return context;
-    }
-    
-    public WorkloadLoader getWorkloadLoader() {
-    	return loader;
-    }
+	@Override
+	public String resubmit(String id) throws IOException {
+		XmlConfig config = SimpleWorkloadLoader.getWorkloadConfg(memRepo
+				.getWorkload(id));
+		if (config != null)
+			return submit(config);
+		LOGGER.debug(
+				"[ CT ] - workload {} resubmitted failed, has no workload config",
+				id);
+		return null;
+	}
 
-    private String generateWorkloadId() {
-        return "w" + count.incrementAndGet();
-    }
-    
-    private int generateOrder() {
-    	return order.incrementAndGet();
-    }
+	private WorkloadContext createWorkloadContext(XmlConfig config) {
+		WorkloadContext context = new WorkloadContext();
+		context.setId(generateWorkloadId());
+		context.setOrder(generateOrder());
+		context.setSubmitDate(new Date());
+		context.setConfig(config);
+		context.setState(WorkloadState.QUEUING);
+		return context;
+	}
 
-    private WorkloadProcessor createProcessor(WorkloadContext workload) {
-        WorkloadProcessor processor = new WorkloadProcessor();
-        processor.setControllerContext(context);
-        processor.setWorkloadContext(workload);
-        processor.init();
-        return processor;
-    }
+	public WorkloadLoader getWorkloadLoader() {
+		return loader;
+	}
 
-    @Override
-    public void fire(String id) {
-        final WorkloadProcessor processor = processors.get(id);
-        if (processor == null)
-            throw new IllegalStateException();
-        LOGGER.debug("[ CT ] - starting workload {} ...", id);
-        /* for strong consistency: a lock should be employed here */
+	private String generateWorkloadId() {
+		return "w" + count.incrementAndGet();
+	}
+
+	private int generateOrder() {
+		return order.incrementAndGet();
+	}
+
+	private WorkloadProcessor createProcessor(WorkloadContext workload) {
+		WorkloadProcessor processor = new WorkloadProcessor();
+		processor.setControllerContext(context);
+		processor.setWorkloadContext(workload);
+		processor.init();
+		return processor;
+	}
+
+	@Override
+	public void fire(String id) {
+		final WorkloadProcessor processor = processors.get(id);
+		if (processor == null)
+			throw new IllegalStateException();
+		LOGGER.debug("[ CT ] - starting workload {} ...", id);
+		/* for strong consistency: a lock should be employed here */
 		if (processor.getWorkloadContext().getFuture() != null)
 			throw new IllegalStateException();
 		ControllerThread ctrlThrd = new ControllerThread(processor);
 		Future<?> future = executor.submit(ctrlThrd);
-        processor.getWorkloadContext().setFuture(future);
-        yieldExecution(200); // give workload processor a chance
-        LOGGER.debug("[ CT ] - workload {} started", id);
-    }
-    
+		processor.getWorkloadContext().setFuture(future);
+		yieldExecution(200); // give workload processor a chance
+		LOGGER.debug("[ CT ] - workload {} started", id);
+	}
+
 	@Override
 	public boolean changeOrder(String id, String neighbourWId, boolean up) {
 		if (StringUtils.isEmpty(neighbourWId)) {
 			return changeOrder(id, up);
 		}
-		if(neighbourWId.equals(String.valueOf(0)))//multiple checked workload id
+		if (neighbourWId.equals(String.valueOf(0)))// multiple checked workload
+													// id
 			return false;
 		int order = processors.get(id).getWorkloadContext().getOrder();
 		int neighOrder = processors.get(neighbourWId).getWorkloadContext()
@@ -177,8 +182,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		Map<String, String> orderWorkloadMap = new HashMap<String, String>();
 		for (WorkloadContext workload : getActiveWorkloads()) {
 			if ((workload.getOrder() >= order && workload.getOrder() <= neighOrder)
-					|| (workload.getOrder() <= order && workload
-							.getOrder() >= neighOrder)) {
+					|| (workload.getOrder() <= order && workload.getOrder() >= neighOrder)) {
 				orders.add(workload.getOrder());
 				orderWorkloadMap.put(String.valueOf(workload.getOrder()),
 						workload.getId());
@@ -186,15 +190,17 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		}
 		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
 		Arrays.sort(orderArray);
-		
+
 		if (up) {
 			for (int i = orderArray.length - 2; i >= 0; i--) {
-				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+				processors
+						.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
 						.getWorkloadContext().setOrder(orderArray[i + 1]);
 			}
 		} else {
-			for (int i = 1; i <orderArray.length; i++) {
-				processors.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
+			for (int i = 1; i < orderArray.length; i++) {
+				processors
+						.get(orderWorkloadMap.get(String.valueOf(orderArray[i])))
 						.getWorkloadContext().setOrder(orderArray[i - 1]);
 			}
 		}
@@ -212,12 +218,12 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		}
 		return true;
 	}
-	
+
 	public boolean changeOrder(String id, boolean up) {
 		int order = processors.get(id).getWorkloadContext().getOrder();
 		int neighbourOrder = 0;
 		List<Integer> orders = new ArrayList<Integer>();
-		for(WorkloadContext workload:getActiveWorkloads()){
+		for (WorkloadContext workload : getActiveWorkloads()) {
 			orders.add(workload.getOrder());
 		}
 		Integer[] orderArray = orders.toArray(new Integer[orders.size()]);
@@ -229,7 +235,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 					break;
 				}
 			}
-		}else{
+		} else {
 			for (int i = 0; i < orderArray.length; i++) {
 				if (orderArray[i] > order) {
 					neighbourOrder = orderArray[i];
@@ -238,12 +244,13 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			}
 		}
 		String neighbourWId = String.valueOf(0);
-		for(WorkloadContext workload:getActiveWorkloads()){
+		for (WorkloadContext workload : getActiveWorkloads()) {
 			if (workload.getOrder() == neighbourOrder) {
 				neighbourWId = workload.getId();
 			}
 		}
-		if (neighbourWId.equals(String.valueOf(0)))//can't find neighbour workload
+		if (neighbourWId.equals(String.valueOf(0)))// can't find neighbour
+													// workload
 			return false;
 		if (processors.get(neighbourWId).getWorkloadContext().getState() != WorkloadState.QUEUING) {
 			LOGGER.debug(
@@ -268,68 +275,72 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		return true;
 	}
 
-    @Override
-    public void cancel(String id) {
-        WorkloadProcessor processor = processors.get(id);
-        if (processor == null)
-            return; // already stopped
-        LOGGER.debug("[ CT ] - canceling workload{} ...", id);
+	@Override
+	public void cancel(String id) {
+		WorkloadProcessor processor = processors.get(id);
+		if (processor == null)
+			return; // already stopped
+		LOGGER.debug("[ CT ] - canceling workload{} ...", id);
 		processor.cancel();
-        yieldExecution(500); // give workload processor a chance
-        LOGGER.debug("[ CT ] - workload {} cancelled", id);
-    }
+		yieldExecution(500); // give workload processor a chance
+		LOGGER.debug("[ CT ] - workload {} cancelled", id);
+	}
 
-    private static void yieldExecution(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            LOGGER.warn("get interrupted when performing yield");
-            Thread.currentThread().interrupt(); // re-interrupt
-        }
-    }
+	private static void yieldExecution(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			LOGGER.warn("get interrupted when performing yield");
+			Thread.currentThread().interrupt(); // re-interrupt
+		}
+	}
 
-    @Override
-    public ControllerInfo getControllerInfo() {
-        return context;
-    }
+	@Override
+	public ControllerInfo getControllerInfo() {
+		return context;
+	}
 
-    @Override
-    public WorkloadContext getWorkloadInfo(String id) {
-        return memRepo.getWorkload(id);
-    }
+	@Override
+	public WorkloadContext getWorkloadInfo(String id) {
+		return memRepo.getWorkload(id);
+	}
 
-    @Override
-    public WorkloadContext[] getActiveWorkloads() {
-        return memRepo.getActiveWorkloads();
-    }
+	@Override
+	public WorkloadContext[] getActiveWorkloads() {
+		return memRepo.getActiveWorkloads();
+	}
 
-    @Override
-    public WorkloadContext[] getHistoryWorkloads() {
-        return memRepo.getInactiveWorkloads();
-    }
+	@Override
+	public WorkloadContext[] getHistoryWorkloads() {
+		return memRepo.getInactiveWorkloads();
+	}
+	
+	public WorkloadContext[] getArchivedWorkloads() {
+		return memRepo.getArchivedWorkloads();
+	}
 
-    @Override
-    public void workloadStarted(WorkloadContext workload) {
-        /* empty */
-    }
+	@Override
+	public void workloadStarted(WorkloadContext workload) {
+		/* empty */
+	}
 
-    @Override
-    public void workloadStopped(WorkloadContext workload) {
-        String id = workload.getId();
-        WorkloadProcessor processor = processors.remove(id);
-        processor.dispose();
-        archiver.archive(workload);
-        LOGGER.debug("processor for workload {} has been detached", id);
-    }
+	@Override
+	public void workloadStopped(WorkloadContext workload) {
+		String id = workload.getId();
+		WorkloadProcessor processor = processors.remove(id);
+		processor.dispose();
+		archiver.archive(workload);
+		LOGGER.debug("processor for workload {} has been detached", id);
+	}
 
-    @Override
-    public File getWorkloadLog(WorkloadInfo info) {
-        return archiver.getWorkloadLog(info);
-    }
+	@Override
+	public File getWorkloadLog(WorkloadInfo info) {
+		return archiver.getWorkloadLog(info);
+	}
 
-    @Override
-    public File getWorkloadConfig(WorkloadInfo info) {
-        return archiver.getWorkloadConfig(info);
-    }
+	@Override
+	public File getWorkloadConfig(WorkloadInfo info) {
+		return archiver.getWorkloadConfig(info);
+	}
 
 }

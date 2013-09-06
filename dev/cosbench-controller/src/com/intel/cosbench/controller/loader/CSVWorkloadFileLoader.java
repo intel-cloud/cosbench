@@ -57,7 +57,7 @@ class CSVWorkloadFileLoader extends AbstractWorkloadFileLoader {
 				stageId = "s" + index++;
 				sameStage = false;
 			}
-			if (columns[14].equalsIgnoreCase("completed")) {
+			if (columns[15].equalsIgnoreCase("completed")) {
 				Metrics metrics = loadMetrics(columns);
 				if (!sameStage) {
 					Report report = new Report();
@@ -68,13 +68,13 @@ class CSVWorkloadFileLoader extends AbstractWorkloadFileLoader {
 				workloadContext.getReport().addMetrics(metrics);
 			}
 			for (StageState state : StageState.values()) {
-				if (columns[14]
+				if (columns[15]
 						.equalsIgnoreCase(state.toString().toLowerCase())) {
 					workloadContext.getStageInfo(stageId).setState(state, true);
 					break;
 				}
 			}
-			int pos = 14;
+			int pos = 15;
 			while (!sameStage && ++pos <= columns.length - 1) {
 				String str[] = columns[pos].split("@");
 				String stateName = str[0].trim();
@@ -89,7 +89,7 @@ class CSVWorkloadFileLoader extends AbstractWorkloadFileLoader {
 			}
 		}
 	}
-	
+
 	private Metrics loadMetrics(String[] columns) {
 		Metrics metrics = new Metrics();
 		int n = columns[1].lastIndexOf("-");
@@ -97,48 +97,60 @@ class CSVWorkloadFileLoader extends AbstractWorkloadFileLoader {
 		if (n > 0) {
 			metrics.setOpName(columns[1].substring(0, n));
 			metrics.setSampleType(columns[1].substring(n + 1));
-		}else{
+		} else {
 			metrics.setOpName(columns[1]);
 			metrics.setSampleType(columns[1]);
 		}
-		metrics.setSampleCount(Integer.valueOf(columns[2]));
-		metrics.setByteCount(Integer.valueOf(columns[3]));
-		metrics.setAvgResTime(columns[4].equalsIgnoreCase("N/A") ? 0
-				: Double.valueOf(columns[4]));
+		metrics.setOpType(columns[2]);
+		metrics.setSampleCount(Integer.valueOf(columns[3]));
+		metrics.setByteCount(Integer.valueOf(columns[4]));
+		metrics.setAvgResTime(columns[5].equalsIgnoreCase("N/A") ? 0 : Double
+				.valueOf(columns[5]));
 		metrics.setLatency(loadHistogram(columns));
-		metrics.setThroughput(Double.valueOf(columns[11]));
-		metrics.setBandwidth(Double.valueOf(columns[12]));
-		metrics.setRatio((columns[13].equalsIgnoreCase("N/A") ? 0
-				: Double.valueOf(columns[13].substring(0,
-						columns[13].length() - 1)) / 100.0));
+		metrics.setThroughput(Double.valueOf(columns[12]));
+		metrics.setBandwidth(Double.valueOf(columns[13]));
+		setRatio(columns[14], metrics);
 		return metrics;
 	}
-	
+
+	private void setRatio(String column, Metrics metrics) {
+		if (!column.equalsIgnoreCase("N/A")) {
+			metrics.setRatio(Double.valueOf(column.substring(0,
+					column.length() - 1)) / 100.0);
+			metrics.setTotalSampleCount(metrics.getSampleCount()
+					/ metrics.getRatio() > Integer.MAX_VALUE ? Integer.MAX_VALUE
+					: (int) (metrics.getSampleCount() / metrics.getRatio()));
+		} else {
+			metrics.setRatio(0D);
+			metrics.setTotalSampleCount(0);
+		}
+	}
+
 	private Histogram loadHistogram(String[] columns) {
 		Histogram histogram = new Histogram();
 		long[] l_60 = new long[2];
-		l_60[1] = columns[5].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[5]);
+		l_60[1] = columns[6].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[6]);
 		histogram.set_60(l_60);
 		long[] l_80 = new long[2];
-		l_80[1] = columns[6].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[6]);
+		l_80[1] = columns[7].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[7]);
 		histogram.set_80(l_80);
 		long[] l_90 = new long[2];
-		l_90[1] = columns[7].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[7]);
+		l_90[1] = columns[8].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[8]);
 		histogram.set_90(l_90);
 		long[] l_95 = new long[2];
-		l_95[1] = columns[8].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[8]);
+		l_95[1] = columns[9].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[9]);
 		histogram.set_95(l_95);
 		long[] l_99 = new long[2];
-		l_99[1] = columns[9].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[9]);
+		l_99[1] = columns[10].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[10]);
 		histogram.set_99(l_99);
 		long[] l_100 = new long[2];
-		l_100[1] = columns[10].equalsIgnoreCase("N/A") ? 0L : Long
-				.valueOf(columns[10]);
+		l_100[1] = columns[11].equalsIgnoreCase("N/A") ? 0L : Long
+				.valueOf(columns[11]);
 		histogram.set_100(l_100);
 		return histogram;
 	}
