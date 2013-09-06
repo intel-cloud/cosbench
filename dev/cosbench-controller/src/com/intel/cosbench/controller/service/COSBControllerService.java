@@ -102,11 +102,17 @@ class COSBControllerService implements ControllerService, WorkloadListener {
         return workload.getId();
     }
     
-    @Override
-    public String resubmit(String id) throws IOException{
-		memRepo.getWorkload(id).getConfig().getContent().reset();
-    	return submit(memRepo.getWorkload(id).getConfig());
-    }
+	@Override
+	public String resubmit(String id) throws IOException {
+		XmlConfig config = SimpleWorkloadLoader.getWorkloadConfg(memRepo
+				.getWorkload(id));
+		if (config != null)
+			return submit(config);
+		LOGGER.debug(
+				"[ CT ] - workload {} resubmitted failed, has no workload config",
+				id);
+		return null;
+	}
 
     private WorkloadContext createWorkloadContext(XmlConfig config) {
         WorkloadContext context = new WorkloadContext();
@@ -307,6 +313,11 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     public WorkloadContext[] getHistoryWorkloads() {
         return memRepo.getInactiveWorkloads();
     }
+    
+	@Override
+	public WorkloadInfo[] getArchivedWorkloads() {
+		return memRepo.getArchivedWorkloads();
+	}
 
     @Override
     public void workloadStarted(WorkloadContext workload) {

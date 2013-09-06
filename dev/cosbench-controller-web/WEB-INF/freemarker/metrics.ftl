@@ -88,7 +88,7 @@
         </#if>
       </td>
       <td>
-        <#if mInfo.ratio == 0.0 >
+        <#if mInfo.totalSampleCount == 0 >
           N/A
         <#else>
           <#assign sRatio = mInfo.ratio >
