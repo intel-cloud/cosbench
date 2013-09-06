@@ -17,10 +17,13 @@ limitations under the License.
 
 package com.intel.cosbench.controller.web;
 
+import java.io.IOException;
+
 import javax.servlet.http.*;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.intel.cosbench.model.WorkloadInfo;
 import com.intel.cosbench.service.ControllerService;
 import com.intel.cosbench.web.AbstractController;
 
@@ -56,7 +59,21 @@ public class MatrixPageController extends AbstractController {
         if (others != null && others.length > 0)
             for (String other : others)
                 result.addObject(other, true);
-        result.addObject("hInfos", controller.getHistoryWorkloads());
+        if(req.getParameter("type").equals("histo"))
+        	result.addObject("hInfos", controller.getHistoryWorkloads());
+        else if (req.getParameter("type").equals("arch")) {
+        	for (WorkloadInfo info : controller.getArchivedWorkloads()) {
+        		if (info.getReport().getAllMetrics().length==0) {
+        			try {
+        				controller.getWorkloadLoader().loadWorkloadPageInfo(info);
+        			} catch (IOException e) {
+        				e.printStackTrace();
+        			}
+        		}
+        	}
+        	result.addObject("hInfos", controller.getArchivedWorkloads());
+        }
+        result.addObject("type", req.getParameter("type"));
         return result;
     }
 

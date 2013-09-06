@@ -63,16 +63,21 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 
 	private void loadWorkloadConfig(WorkloadInfo workloadContext)
 			throws FileNotFoundException {
+		XmlConfig config = getWorkloadConfg(workloadContext);
+		WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
+		workloadContext.setWorkload(resolver.toWorkload(config));
+		createStages(workloadContext);
+	}
 
+	public static XmlConfig getWorkloadConfg(WorkloadInfo workloadContext)
+			throws FileNotFoundException {
 		File file = new File(
 				new File(ROOT_DIR, getRunDirName(workloadContext)),
 				"workload-config.xml");
 		if (!file.exists())
-			return;
+			return null;
 		XmlConfig config = new XmlConfig(new FileInputStream(file));
-		WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
-		workloadContext.setWorkload(resolver.toWorkload(config));
-		createStages(workloadContext);
+		return config;
 	}
 
 	private void createStages(WorkloadInfo workloadContext) {
@@ -111,13 +116,13 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 				workloadContext);
 		loader.load();
 	}
-	
-    private static String getStageFileName(StageInfo info) {
-        String name = info.getId();
-        name += "-" + info.getStage().getName();
-        return name;
-    }
-    
+
+	private static String getStageFileName(StageInfo info) {
+		String name = info.getId();
+		name += "-" + info.getStage().getName();
+		return name;
+	}
+
 	@Override
 	public void loadStagePageInfo(WorkloadInfo workloadContext, String stageId)
 			throws IOException {
@@ -128,7 +133,8 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 		if (!file.exists())
 			return;
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-		SnapshotLoader loader = Loaders.newSnapshotLoader(reader, workloadContext, stageId);
+		SnapshotLoader loader = Loaders.newSnapshotLoader(reader,
+				workloadContext, stageId);
 		loader.load();
 	}
 

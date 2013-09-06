@@ -33,6 +33,8 @@ public interface WorkloadRepository {
 
     public WorkloadContext[] getInactiveWorkloads();
     
+    public WorkloadContext[] getArchivedWorkloads();
+    
     public int getMaxCapacity();
 
 }

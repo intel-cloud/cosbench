@@ -274,7 +274,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void disposeRuntime() {
         for (StageContext stage : stageRegistry)
             stage.disposeRuntime();
-//        config = null;
+        config = null;
         future = null;
         currentStage = null;
         listeners = null;
