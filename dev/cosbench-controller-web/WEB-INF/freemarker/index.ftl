@@ -108,7 +108,15 @@
     </#list>
   </table>
   <p>There are ${cInfo.driverCount} drivers attached to the controller.</p>
-  <h3>Active Workloads</h3>
+  
+  <div>
+  	<p/>
+    <p><a href="submit.html">submit new workloads</a></p>
+  	<p><a href="config.html">config workloads</a></p>
+  	<p/>
+  </div>
+  
+  <h3>Active Workloads  <span class="counter state">${aInfos?size}</span></h3>
   <div>
     <table class="info-table">
       <tr>
@@ -147,18 +155,20 @@
       </#list>
     </table>
   </div>
-  <p class="warn">There are currently ${aInfos?size} active workloads.</p>
   
-  <form id="cancelForm" method="POST" action="index.html">
-  	<input id="cancelIds" type="hidden" name="cancelIds" value="">
-  	<input type="hidden" name="cancel" value="yes">
-  	<input type="button" onclick="cancelWorkloads();" value="Cancel">
-  </form>
-  <p><a href="submit.html">submit new workloads</a></p>
-  <p><a href="config.html">config workloads</a></p>
- 
+  <#if (aInfos?size > 0) >
+	  <form id="cancelForm" method="POST" action="index.html">
+	  	<input id="cancelIds" type="hidden" name="cancelIds" value="">
+	  	<input type="hidden" name="cancel" value="yes">
+	  	<input type="button" onclick="cancelWorkloads();" value="Cancel">
+	  </form>
+  </#if>
+  
+
+
+  
   <div>
-   <h3>Historical Workloads</h3>
+   <h3>Historical Workloads  <span class="counter state">${hInfos?size}</span></h3>
     <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
     <table class="info-table">
       <tr>
@@ -187,7 +197,7 @@
       </#list>
     </table>
     
-    <h3>Archived Workloads</h3>
+    <h3>Archived Workloads  <span class="counter state">${archInfos?size}</span></h3>
     <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
     <table class="info-table">
       <tr>
@@ -216,9 +226,6 @@
       </#list>
     </table>
     
-    <#if (hInfos?size + archInfos?size < 10) >
-      <p class="warn">There are ${hInfos?size + archInfos?size} Historical and Archived workloads.</p>
-    </#if>
     <form id="resubmitForm" method="POST" action="index.html">
   		<input id="resubmitIds" type="hidden" name="resubmitIds" value="">
   		<input type="hidden" name="resubmit" value="yes">
