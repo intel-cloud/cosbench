@@ -103,7 +103,7 @@ class CSVWorkloadFileLoader extends AbstractWorkloadFileLoader {
 		}
 		metrics.setOpType(columns[2]);
 		metrics.setSampleCount(Integer.valueOf(columns[3]));
-		metrics.setByteCount(Integer.valueOf(columns[4]));
+		metrics.setByteCount(Long.valueOf(columns[4]));
 		metrics.setAvgResTime(columns[5].equalsIgnoreCase("N/A") ? 0 : Double
 				.valueOf(columns[5]));
 		metrics.setLatency(loadHistogram(columns));
