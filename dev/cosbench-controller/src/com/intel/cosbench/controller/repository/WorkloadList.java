@@ -31,4 +31,6 @@ interface WorkloadList {
 
     public WorkloadContext[] add(WorkloadContext workload);
 
+	public void remove(WorkloadContext workload);
+
 }
