@@ -80,7 +80,7 @@
 <div id="main">
 <div class="top"><br /></div>
 <div class="content">
-  <h3>Controller Overview</h3>
+  <h3>Controller Overview  <span class="counter state">${cInfo.driverCount}</span></h3>
   <p>
     <span class="grid">
       <span class="label"><strong>Name</strong>:</span>
@@ -107,7 +107,6 @@
       </tr>
     </#list>
   </table>
-  <p>There are ${cInfo.driverCount} drivers attached to the controller.</p>
   
   <div>
   	<p/>
@@ -161,14 +160,7 @@
   	<input type="hidden" name="cancel" value="yes">
   	<input type="button" onclick="cancelWorkloads();" value="Cancel">
   </form>
-  <p><a href="submit.html">submit new workloads</a></p>
-  <#if loadArch == false>
-  <p><a href="index.html?loadArch=true">load archived workloads</p>
-  <#elseif loadArch == true>
-  <p><a href="index.html?loadArch=false">unload archived workloads</p>
-  </#if>
-  <p><a href="config.html">config workloads</a></p>
-
+  
   <div>
    <h3>Historical Workloads  <span class="counter state">${hInfos?size}</span></h3>
     <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
@@ -199,9 +191,18 @@
       </#list>
     </table>
     
-    <#if loadArch == true>
+
     <h3>Archived Workloads  <span class="counter state">${archInfos?size}</span></h3>
     <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
+    <p>
+	    <#if loadArch == false>
+		  <p><a href="index.html?loadArch=true">load archived workloads</a></p>
+		  <#elseif loadArch == true>
+		  <p><a href="index.html?loadArch=false">unload archived workloads</a></p>
+	    </#if>
+    </p>
+    
+    <#if loadArch == true>
     <table class="info-table">
       <tr>
         <th style="width:5%;"><input type="checkbox" id="AllArchived" onclick="checkAll(event,'ArchivedWorkload')"></th>
@@ -228,11 +229,6 @@
         </tr>
       </#list>
     </table>
-    
-    <#else>
-    <#if (hInfos?size < 10) >
-      <p class="warn">There are ${hInfos?size} Historical workloads.</p>
-    </#if>
     </#if>
     
     <form id="resubmitForm" method="POST" action="index.html">
@@ -240,6 +236,7 @@
   		<input type="hidden" name="resubmit" value="yes">
   		<input type="button" onclick="resubmitWorkloads();" value="resubmit">
   	</form>
+  	
   </div>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
