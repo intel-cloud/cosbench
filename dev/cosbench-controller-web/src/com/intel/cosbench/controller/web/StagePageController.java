@@ -57,7 +57,7 @@ public class StagePageController extends AbstractController {
         StageInfo sInfo = wInfo.getStageInfo(sid);
         if (sInfo == null)
             throw new NotFoundException();
-		if (sInfo.getSnapshotRegistry().getSize() == 0)
+		if (controller.getloadArch() && sInfo.getSnapshotRegistry().getSize() == 0)
 			try {
 				controller.getWorkloadLoader().loadStagePageInfo(wInfo,
 						sInfo.getId());

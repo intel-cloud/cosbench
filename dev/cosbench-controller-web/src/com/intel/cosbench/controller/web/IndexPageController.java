@@ -52,6 +52,7 @@ public class IndexPageController extends AbstractController {
 		String cancel = req.getParameter("cancel");
 		String resubmitIds = req.getParameter("resubmitIds");
 		String resubmit = req.getParameter("resubmit");
+		String loadArch = req.getParameter("loadArch");
 		if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(up)) {
 			boolean isUp = up.equalsIgnoreCase("yes") ? true : false;
 			boolean changeOrderOk = controller.changeOrder(id, neighId,
@@ -72,10 +73,16 @@ public class IndexPageController extends AbstractController {
 				controller.fire(newId);
 			}
 		}
+		if (!StringUtils.isEmpty(loadArch) && loadArch.equals("true"))
+			controller.setloadArch(true);
+		else if (!StringUtils.isEmpty(loadArch) && loadArch.equals("false"))
+			controller.setloadArch(false);
+		
         result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("aInfos", controller.getActiveWorkloads());
         result.addObject("hInfos", controller.getHistoryWorkloads());
         result.addObject("archInfos", controller.getArchivedWorkloads());
+        result.addObject("loadArch", controller.getloadArch());
 		return result;
 	}
 }
