@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="demo" description="demo benchmark for no-op">
+
+  <!-- Mock Auth / Storage 
+  <auth type="mock" />
+  <storage type="mock" config="size=64000" />
+  -->
+  
+  <!-- Swift Storage -->
+  <!-- <storage type="swift" /> -->
+
+  <!-- Swift Authentication -->
+  <!-- <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.10.1:8080/auth/v1.0" /> -->
+
+  <!-- Keystone Authentication -->
+  <!-- <auth type="keystone" config="username=test;password=testing;tenant_name=test;auth_url=http://192.168.10.1:5000/v2.0;service=swift service" /> -->
+
+  <!-- Workflow -->
+  <workflow>
+
+    <!-- Initialization -->
+    <workstage name="init">
+      <work type="init" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+    <!-- Prepare Stage -->
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="containers=r(1,32);objects=r(1,50);sizes=c(64)KB" />
+    </workstage>
+
+    <!-- Main Benchmark Stage -->
+    <workstage name="main">
+      <work name="main" workers="8" runtime="300">
+        <operation type="read" ratio="80" config="containers=u(1,32);objects=u(1,50)" />
+        <operation type="write" ratio="20" config="containers=u(1,32);objects=u(51,100);sizes=c(64)KB" />
+      </work>
+    </workstage>
+
+    <!-- Clean Up Stage -->
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="containers=r(1,32);objects=r(1,100)" />
+    </workstage>
+
+    <!-- Disposal Stage -->
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="containers=r(1,32)" />
+    </workstage>
+
+  </workflow>
+
+</workload>
