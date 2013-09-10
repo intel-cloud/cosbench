@@ -51,7 +51,7 @@ public class WorkloadPageController extends AbstractController {
         WorkloadInfo info = controller.getWorkloadInfo(id);
         if (info == null)
             throw new NotFoundException();
-		if (info.getArchived() && info.getReport().getAllMetrics().length==0) {
+		if (controller.getloadArch() && info.getArchived() && info.getReport().getAllMetrics().length==0) {
 			try {
 				controller.getWorkloadLoader().loadWorkloadPageInfo(info);
 			} catch (IOException e) {

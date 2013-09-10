@@ -156,17 +156,19 @@
     </table>
   </div>
   
-  <#if (aInfos?size > 0) >
-	  <form id="cancelForm" method="POST" action="index.html">
-	  	<input id="cancelIds" type="hidden" name="cancelIds" value="">
-	  	<input type="hidden" name="cancel" value="yes">
-	  	<input type="button" onclick="cancelWorkloads();" value="Cancel">
-	  </form>
+  <form id="cancelForm" method="POST" action="index.html">
+  	<input id="cancelIds" type="hidden" name="cancelIds" value="">
+  	<input type="hidden" name="cancel" value="yes">
+  	<input type="button" onclick="cancelWorkloads();" value="Cancel">
+  </form>
+  <p><a href="submit.html">submit new workloads</a></p>
+  <#if loadArch == false>
+  <p><a href="index.html?loadArch=true">load archived workloads</p>
+  <#elseif loadArch == true>
+  <p><a href="index.html?loadArch=false">unload archived workloads</p>
   </#if>
-  
+  <p><a href="config.html">config workloads</a></p>
 
-
-  
   <div>
    <h3>Historical Workloads  <span class="counter state">${hInfos?size}</span></h3>
     <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
@@ -197,6 +199,7 @@
       </#list>
     </table>
     
+    <#if loadArch == true>
     <h3>Archived Workloads  <span class="counter state">${archInfos?size}</span></h3>
     <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
     <table class="info-table">
@@ -225,6 +228,12 @@
         </tr>
       </#list>
     </table>
+    
+    <#else>
+    <#if (hInfos?size < 10) >
+      <p class="warn">There are ${hInfos?size} Historical workloads.</p>
+    </#if>
+    </#if>
     
     <form id="resubmitForm" method="POST" action="index.html">
   		<input id="resubmitIds" type="hidden" name="resubmitIds" value="">

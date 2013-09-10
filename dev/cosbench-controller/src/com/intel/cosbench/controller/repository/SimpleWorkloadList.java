@@ -58,6 +58,11 @@ class SimpleWorkloadList implements WorkloadList {
         toBeRemoved.clear(); // end transaction
         return result;
     }
+    
+    @Override
+    public void remove(WorkloadContext workload) {
+    	list.remove(workload.getId());
+    }
 
     private void shrinkListSize() {
         Iterator<WorkloadContext> iter = list.values().iterator();
