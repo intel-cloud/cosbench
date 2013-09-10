@@ -56,5 +56,9 @@ public interface ControllerService {
     public File getWorkloadConfig(WorkloadInfo info);
     
     public WorkloadLoader getWorkloadLoader();
+    
+    public boolean getloadArch();
+    
+    public void setloadArch(boolean loadArch);
 
 }

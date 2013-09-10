@@ -79,6 +79,11 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         LOGGER.debug("workload {} has been saved in RAM", workload.getId());
         LOGGER.debug("{} workloads have been removed from RAM", removed.length);
     }
+    
+    @Override
+    public synchronized void removeWorkload(WorkloadContext workload) {
+    	workloads.remove(workload);
+    } 
 
     @Override
     public synchronized WorkloadContext getWorkload(String id) {

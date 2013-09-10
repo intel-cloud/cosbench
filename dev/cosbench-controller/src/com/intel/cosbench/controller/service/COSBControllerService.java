@@ -55,6 +55,8 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private WorkloadArchiver archiver = new SimpleWorkloadArchiver();
     private WorkloadLoader loader = new SimpleWorkloadLoader();
     private WorkloadRepository memRepo = new RAMWorkloadRepository();
+    
+    private boolean loadArch = false;
 
     public COSBControllerService() {
         /* empty */
@@ -74,11 +76,6 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
 						memRepo.getMaxCapacity(),
 						new OrderFutureComparator()));
-		try {
-			loadArchivedWorkload();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 	
 	public void loadArchivedWorkload() throws IOException {
@@ -87,6 +84,13 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			return;
 		for (WorkloadInfo workloadContext : workloadContexts)
 			memRepo.saveWorkload((WorkloadContext) workloadContext);
+	}
+	
+	public void unloadArchivedWorkload() {
+		for(WorkloadContext workload : memRepo.getArchivedWorkloads()) {
+			memRepo.removeWorkload(workload);
+			workload = null;
+		}
 	}
 	
 
@@ -128,6 +132,23 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     	return loader;
     }
 
+    public boolean getloadArch() {
+    	return loadArch;
+    }
+    
+    public void setloadArch(boolean loadArch) {
+    	this.loadArch = loadArch;
+    	if(getloadArch() == true)
+			try {
+				loadArchivedWorkload();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	else if(getloadArch() == false) {
+    		//
+    	}
+    }
+    
     private String generateWorkloadId() {
         return "w" + count.incrementAndGet();
     }

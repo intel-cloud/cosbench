@@ -24,6 +24,8 @@ public interface WorkloadRepository {
     public int getSize();
 
     public void saveWorkload(WorkloadContext workload);
+    
+    public void removeWorkload(WorkloadContext workload);
 
     public WorkloadContext getWorkload(String id);
 
