@@ -1,3 +1,13 @@
+  COSBench 0.3.3.0 beta1 (13-ww37.3)
+------------------------------------
+. #20: multiple same operations
+. #16: web console authentication
+. #34: 0% success on write
+. #11: job management
+. #70: multiple main stages
+. #30: no historical workloads after restart
+. add histogram selector to define histogram size distribution
+
   COSBench 0.3.1.2 (13-ww31.3)
 ------------------------------------
 1. add filewrite related configuration in UI and user guide
