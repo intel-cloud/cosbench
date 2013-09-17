@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 public class Stage implements Iterable<Work> {
 
     private String name;
+    private int closuredelay;
     private Auth auth;
     private Storage storage;
     private List<Work> works;
@@ -52,6 +53,16 @@ public class Stage implements Iterable<Work> {
             throw new ConfigException("stage name cannot be empty");
         this.name = name;
     }
+    
+	public int getClosuredelay() {
+		return closuredelay;
+	}
+
+	public void setClosuredelay(int closuredelay) {
+		if (closuredelay < 0)
+			throw new ConfigException("closure delay cannot be negative");
+		this.closuredelay = closuredelay;
+	} 
 
     public Auth getAuth() {
         return auth;

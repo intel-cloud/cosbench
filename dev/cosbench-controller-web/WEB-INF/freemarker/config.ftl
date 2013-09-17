@@ -120,6 +120,26 @@
 							</tbody>
 						</table>
 				</div>
+				
+				<div id="init.delay" class="a2">
+          			<input type="checkbox" name="init.delay.checked"  onClick="toggleDiv(document.getElementById('init.delay.work'));"><strong> Delay: </strong>
+        
+          			<div id="init.delay.work" class="a3" style="display:none">
+            			<table class="info-table">
+		              			<thead>
+		               				<th>closuredelay</th>
+		              			</thead>
+		              
+		              			<tbody>
+			                		<tr>
+			                  			<td>
+			                    			<input name="init.delay.closuredelay" type="number" style="width:30px" value="60"/>
+			                  			</td>
+			                		</tr>
+		              			</tbody>
+            			</table>
+          			</div>
+        		</div> 
 			</div>
 			<input type="button" id="addinit" value="Add Init Stage" onClick="addStage(0);" />
 			
@@ -168,6 +188,25 @@
 								</tr>
 							</tbody>							
 						</table>
+				</div>
+				<div id="prepare.delay" class="a2">
+						<input type="checkbox" name="prepare.delay.checked" onClick="toggleDiv(document.getElementById('prepare.delay.work'));"><strong> Delay: </strong>
+
+						<div id="prepare.delay.work" class="a3" style="display:none">
+							<table class="info-table">
+								<thead>
+									<th>closuredelay</th>
+								</thead>
+							
+								<tbody>
+									<tr>
+										<td>
+											<input name="prepare.delay.closuredelay" type="number" style="width:30px" value="60"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 				</div>
 			</div>
 			<input type="button" id="addprepare" value="Add Prepare Stage" onClick="addStage(1);" />
@@ -300,6 +339,25 @@
 						</p>
 					</div>
 				</div>
+					<div id="normal.delay" class="a2">
+							<input type="checkbox" name="normal.delay.checked" onClick="toggleDiv(document.getElementById('normal.delay.work'));"><strong> Delay: </strong>
+						
+							<div id="normal.delay.work" class="a3" style="display:none">
+									<table class="info-table">
+										<thead>
+											<th>closuredelay</th>
+										</thead>
+						
+										<tbody>
+											<tr>
+												<td>
+													<input name="normal.delay.closuredelay" type="number" style="width:30px" value="60"/>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+							</div>
+					</div>
 			</div>
 			<input type="button" id="addnormal" value="Add Main Stage" onClick="addStage(2);" /> 
 			
@@ -337,6 +395,25 @@
 							</tbody>							
 						</table>
 				</div>
+				<div id="cleanup.delay" class="a2">
+					<input type="checkbox" name="cleanup.delay.checked" onClick="toggleDiv(document.getElementById('cleanup.delay.work'));"><strong> Delay: </strong>
+					
+					<div id="cleanup.delay.work" class="a3" style="display:none">
+							<table class="info-table">
+								<thead>
+									<th>closuredelay</th>
+								</thead>
+					
+								<tbody>
+									<tr>
+										<td>
+											<input name="cleanup.delay.closuredelay" type="number" style="width:30px" value="60"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					</div>
+				</div>
 			</div>
 			<input type="button" id="addcleanup" value="Add Cleanup Stage" onClick="addStage(3);" />
 			
@@ -365,6 +442,25 @@
 							</tbody>
 						</table>
 				</div>
+					<div id="dispose.delay" class="a2">
+							<input type="checkbox" name="dispose.delay.checked" onClick="toggleDiv(document.getElementById('dispose.delay.work'));"><strong> Delay: </strong>
+							
+							<div id="dispose.delay.work" class="a3" style="display:none">
+									<table class="info-table">
+										<thead>
+											<th>closuredelay</th>
+										</thead>
+						
+										<tbody>
+											<tr>
+												<td>
+														<input name="dispose.delay.closuredelay" type="number" style="width:30px" value="60"/>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+							</div>
+					</div>
 			</div>
 			<input type="button" id="adddispose" value="Add Dispose Stage" onClick="addStage(4);" />
 		</div>

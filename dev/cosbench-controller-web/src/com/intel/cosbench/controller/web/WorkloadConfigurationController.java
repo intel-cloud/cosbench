@@ -102,9 +102,14 @@ public class WorkloadConfigurationController extends AbstractController {
 				String min = req.getParameterValues("init.containers.min")[i];
 				String max = req.getParameterValues("init.containers.max")[i];
 				config = "containers=" + selector + "(" + min + "," + max + ")";
+				
 				work.setConfig(config);
+				
 				stage.addWork(work);
+				
 				workStageList.add(stage);
+				
+				checkAndAddDelay(req, "init", workStageList, i);
 			}
 			return workStageList;
 		}
@@ -160,6 +165,8 @@ public class WorkloadConfigurationController extends AbstractController {
 				stage.addWork(work);
 
 				workStageList.add(stage);
+				
+				checkAndAddDelay(req,"prepare",workStageList,i);
 			}
 
 			return workStageList;
@@ -206,6 +213,8 @@ public class WorkloadConfigurationController extends AbstractController {
 				stage.addWork(work);
 
 				workStageList.add(stage);
+				
+				checkAndAddDelay(req, "cleanup", workStageList, i); 
 			}
 
 			return workStageList;
@@ -243,6 +252,8 @@ public class WorkloadConfigurationController extends AbstractController {
     	stage.addWork(work);
 
     	workStageList.add(stage);
+    	
+    	checkAndAddDelay(req, "dispose", workStageList, i);
     	}
 
     	return workStageList;
@@ -419,6 +430,8 @@ public class WorkloadConfigurationController extends AbstractController {
 				stage.addWork(work);
 
 				workStageList.add(stage);
+				
+				checkAndAddDelay(req, "normal", workStageList, i);
 			}
 			return workStageList;
 		}
@@ -435,6 +448,26 @@ public class WorkloadConfigurationController extends AbstractController {
 
 	private int getParmInt(String string) {
 		return Integer.parseInt(string);
+	}
+	
+	private void checkAndAddDelay(HttpServletRequest req, String stage,
+			ArrayList<Object> workStageList, int iteration) {
+		String delayChecked[] = req
+				.getParameterValues(stage + ".delay.checked");
+		if (delayChecked != null) {
+			boolean hasDelay = ("on".equalsIgnoreCase(delayChecked[iteration]));
+			if (hasDelay) {
+				Stage delayStage = new Stage("delay");
+				delayStage
+						.setClosuredelay(getParmInt(
+								req.getParameterValues("init.delay.closuredelay")[iteration],
+								60));
+				Work work = new Work("delay", "delay");
+				work.addOperation(new Operation("delay"));
+				delayStage.addWork(work);
+				workStageList.add(delayStage);
+			}
+		}
 	}
 	
     private Workload constructWorkloadFromPostData(HttpServletRequest req)
