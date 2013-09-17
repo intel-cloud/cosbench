@@ -82,135 +82,172 @@ public class WorkloadConfigurationController extends AbstractController {
         return createSuccResult(xml);
     }
 
-    private Stage constructInitStage(HttpServletRequest req)
+    private ArrayList<Object> constructInitStage(HttpServletRequest req)
     {
-    	boolean hasInit = ("on".equalsIgnoreCase(getParm(req, "init.checked")));
-    	if(hasInit)
-    	{
-    		Stage initStage = new Stage("init");
-    		Work work = new Work("init", "init");
-    		work.setWorkers(getParmInt(req, "init.workers", 1));
-    		work.setDivision("container");
-    		String config = "";
-    		String selector = getParm(req, "init.containers");
-    		String min = getParm(req, "init.containers.min");
-    		String max = getParm(req, "init.containers.max");
-    		config = "containers=" + selector + "(" + min + "," + max + ")";
-    		work.setConfig(config);
-    		
-    		initStage.addWork(work);
-    		
-    		return initStage;
-    	}
-    	
-    	return null;
+		String initChecked[] = req.getParameterValues("init.checked");
+		if (initChecked != null) {
+			String workStageName = new String("init");
+			ArrayList<Object> workStageList = new ArrayList<Object>();
+			for (int i = 0; i < initChecked.length; i++) {
+				if (i > 0) {
+					workStageName = new String("init" + i);
+				}
+				Stage stage = new Stage(workStageName);
+				Work work = new Work(workStageName, "init");
+				work.setWorkers(getParmInt(
+						req.getParameterValues("init.workers")[i], 1));
+				work.setDivision("container");
+				String config = "";
+				String selector = req.getParameterValues("init.containers")[i];
+				String min = req.getParameterValues("init.containers.min")[i];
+				String max = req.getParameterValues("init.containers.max")[i];
+				config = "containers=" + selector + "(" + min + "," + max + ")";
+				work.setConfig(config);
+				stage.addWork(work);
+				workStageList.add(stage);
+			}
+			return workStageList;
+		}
+		return null;
     }
     
-    private Stage constructPrepareStage(HttpServletRequest req)
+	private ArrayList<Object> constructPrepareStage(HttpServletRequest req) {
+		String prepareChecked[] = req.getParameterValues("prepare.checked");
+		if (prepareChecked != null) {
+			String workStageName = new String("prepare");
+			ArrayList<Object> workStageList = new ArrayList<Object>();
+			for (int i = 0; i < prepareChecked.length; i++) {
+				if (i > 0) {
+					workStageName = new String("prepare" + i);
+				}
+				Stage stage = new Stage(workStageName);
+				Work work = new Work(workStageName, "prepare");
+				work.setWorkers(getParmInt(
+						req.getParameterValues("prepare.workers")[i], 1));
+				work.setDivision("object");
+				String config = "";
+
+				// "containers" section in config
+				String cselector = req.getParameterValues("prepare.containers")[i];
+				String cmin = req.getParameterValues("prepare.containers.min")[i];
+				String cmax = req.getParameterValues("prepare.containers.max")[i];
+				config += "containers=" + cselector + "(" + cmin + "," + cmax
+						+ ");";
+
+				// "objects" section in config
+				String oselector = req.getParameterValues("prepare.objects")[i];
+				String omin = req.getParameterValues("prepare.objects.min")[i];
+				String omax = req.getParameterValues("prepare.objects.max")[i];
+				config += "objects=" + oselector + "(" + omin + "," + omax
+						+ ");";
+
+				// "sizes" section in config
+				String sselector = getParm(req, "prepare.sizes");
+				String smin = req.getParameterValues("prepare.sizes.min")[i];
+				String smax = req.getParameterValues("prepare.sizes.max")[i];
+				String sunit = req.getParameterValues("prepare.sizes.unit")[i];
+
+				String sexp = "";
+				if ("u".equals(sselector))
+					sexp = sselector + "(" + smin + "," + smax + ")" + sunit;
+				if ("c".equals(sselector))
+					sexp = sselector + "(" + smin + ")" + sunit;
+
+				config += "sizes=" + sexp;
+
+				work.setConfig(config);
+
+				stage.addWork(work);
+
+				workStageList.add(stage);
+			}
+
+			return workStageList;
+		}
+
+		return null;
+
+	}
+    
+    private ArrayList<Object> constructCleanupStage(HttpServletRequest req)
     {
-    	boolean checked = ("on".equalsIgnoreCase(getParm(req, "prepare.checked")));
-    	if(checked)
-    	{
-    		Stage stage = new Stage("prepare");
-    		Work work = new Work("prepare", "prepare");
-    		work.setWorkers(getParmInt(req, "prepare.workers", 1));
-    		work.setDivision("object");
-    		String config = "";
-    		
-    		// "containers" section in config
-    		String cselector = getParm(req, "prepare.containers");
-    		String cmin = getParm(req, "prepare.containers.min");
-    		String cmax = getParm(req, "prepare.containers.max");
-    		config += "containers=" + cselector + "(" + cmin + "," + cmax + ");";
-    		
-    		// "objects" section in config
-    		String oselector = getParm(req, "prepare.objects");
-    		String omin = getParm(req, "prepare.objects.min");
-    		String omax = getParm(req, "prepare.objects.max");
-    		config += "objects=" + oselector + "(" + omin + "," + omax + ");";
-    		
-    		// "sizes" section in config
-    		String sselector = getParm(req, "prepare.sizes");
-    		String smin = getParm(req, "prepare.sizes.min");
-    		String smax = getParm(req, "prepare.sizes.max");
-    		String sunit = getParm(req, "prepare.sizes.unit");
-    		
-    		String sexp = "";
-    		if("u".equals(sselector))
-    			sexp = sselector + "(" + smin + "," + smax + ")" + sunit ;
-    		if("c".equals(sselector))
-    			sexp = sselector + "(" + smin + ")" + sunit;
-    		
-    		config += "sizes=" + sexp;
-    		
-    		work.setConfig(config);
-    		
-    		stage.addWork(work);
-    		
-    		return stage;
-    	}
-    	
-    	return null;
+		String cleanupChecked[] = req.getParameterValues("cleanup.checked");
+		if (cleanupChecked != null) {
+			String workStageName = new String("cleanup");
+			ArrayList<Object> workStageList = new ArrayList<Object>();
+			for (int i = 0; i < cleanupChecked.length; i++) {
+				if (i > 0) {
+					workStageName = new String("cleanup" + i);
+				}
+				Stage stage = new Stage(workStageName);
+				Work work = new Work(workStageName, "cleanup");
+
+				work.setWorkers(getParmInt(
+						req.getParameterValues("cleanup.workers")[i], 1));
+				work.setDivision("object");
+				String config = "";
+
+				// "containers" section in config
+				String cselector = req.getParameterValues("cleanup.containers")[i];
+				String cmin = req.getParameterValues("cleanup.containers.min")[i];
+				String cmax = req.getParameterValues("cleanup.containers.max")[i];
+				config += "containers=" + cselector + "(" + cmin + "," + cmax
+						+ ");";
+
+				// "objects" section in config
+				String oselector = req.getParameterValues("cleanup.objects")[i];
+				String omin = req.getParameterValues("cleanup.objects.min")[i];
+				String omax = req.getParameterValues("cleanup.objects.max")[i];
+				config += "objects=" + oselector + "(" + omin + "," + omax
+						+ ");";
+
+				work.setConfig(config);
+
+				stage.addWork(work);
+
+				workStageList.add(stage);
+			}
+
+			return workStageList;
+		}
+
+		return null;
     }
     
-    private Stage constructCleanupStage(HttpServletRequest req)
+    private ArrayList<Object> constructDisposeStage(HttpServletRequest req)
     {
-    	boolean checked = ("on".equalsIgnoreCase(getParm(req, "cleanup.checked")));
-    	if(checked)
-    	{
-    		Stage stage = new Stage("cleanup");
-    		Work work = new Work("cleanup", "cleanup");
-    		work.setWorkers(getParmInt(req, "cleanup.workers", 1));
-    		work.setDivision("object");
-    		String config = "";
-    		
-    		// "containers" section in config
-    		String cselector = getParm(req, "cleanup.containers");
-    		String cmin = getParm(req, "cleanup.containers.min");
-    		String cmax = getParm(req, "cleanup.containers.max");
-    		config += "containers=" + cselector + "(" + cmin + "," + cmax + ");";
-    		
-    		// "objects" section in config
-    		String oselector = getParm(req, "cleanup.objects");
-    		String omin = getParm(req, "cleanup.objects.min");
-    		String omax = getParm(req, "cleanup.objects.max");
-    		config += "objects=" + oselector + "(" + omin + "," + omax + ");";
-    		
-    		work.setConfig(config);
-    		
-    		stage.addWork(work);
-    		
-    		return stage;
+    	String disposeChecked[] = req.getParameterValues("dispose.checked");
+    	if (disposeChecked != null) {
+    	String workStageName = new String("dispose");
+    	ArrayList<Object> workStageList = new ArrayList<Object>();
+    	for (int i = 0; i < disposeChecked.length; i++) {
+    	if (i > 0) {
+    	workStageName = new String("dispose" + i);
     	}
-    	
-    	return null;
-    }
-    
-    private Stage constructDisposeStage(HttpServletRequest req)
-    {
-    	boolean checked = ("on".equalsIgnoreCase(getParm(req, "dispose.checked")));
-    	if(checked)
-    	{
-    		Stage stage = new Stage("dispose");
-    		Work work = new Work("dispose", "dispose");
-    		work.setWorkers(getParmInt(req, "dispose.workers", 1));
-    		work.setDivision("container");
-    		String config = "";
-    		
-    		// "containers" section in config
-    		String cselector = getParm(req, "dispose.containers");
-    		String cmin = getParm(req, "dispose.containers.min");
-    		String cmax = getParm(req, "dispose.containers.max");
-    		config += "containers=" + cselector + "(" + cmin + "," + cmax + ");";
-    		
-   		
-    		work.setConfig(config);
-    		
-    		stage.addWork(work);
-    		
-    		return stage;
+    	Stage stage = new Stage(workStageName);
+    	Work work = new Work(workStageName, "dispose");
+    	work.setWorkers(getParmInt(
+    	req.getParameterValues("dispose.workers")[i], 1));
+    	work.setDivision("container");
+    	String config = "";
+
+    	// "containers" section in config
+    	String cselector = req.getParameterValues("dispose.containers")[i];
+    	String cmin = req.getParameterValues("dispose.containers.min")[i];
+    	String cmax = req.getParameterValues("dispose.containers.max")[i];
+    	config += "containers=" + cselector + "(" + cmin + "," + cmax
+    	+ ");";
+
+    	work.setConfig(config);
+
+    	stage.addWork(work);
+
+    	workStageList.add(stage);
     	}
-    	
+
+    	return workStageList;
+    	}
+
     	return null;
     }
     
@@ -227,26 +264,27 @@ public class WorkloadConfigurationController extends AbstractController {
 //    	return val;
 //    }
     
-    private int getParmInt(HttpServletRequest req, String parm)
-    {
-    	return Integer.parseInt(getParm(req, parm));
-    }
+//    private int getParmInt(HttpServletRequest req, String parm)
+//    {
+//    	return Integer.parseInt(getParm(req, parm));
+//    }
     
-    private int getParmInt(HttpServletRequest req, String parm, int defVal)
-    {
-    	String val = getParm(req, parm);
-    	if(val == null || val.isEmpty())
-    		return defVal;
-    	
-    	return Integer.parseInt(val);
-    }
+//    private int getParmInt(HttpServletRequest req, String parm, int defVal)
+//    {
+//    	String val = getParm(req, parm);
+//    	if(val == null || val.isEmpty())
+//    		return defVal;
+//    	
+//    	return Integer.parseInt(val);
+//    }
     
 	private ArrayList<Object> constructNormalStage(HttpServletRequest req) {
-		if (req.getParameterValues("normal.checked") != null) {
+		String normalChecked[] = req.getParameterValues("normal.checked");
+		if (normalChecked != null) {
 
 			String workStageName = new String("normal");
 			ArrayList<Object> workStageList = new ArrayList<Object>();
-			for (int i = 0; i < req.getParameterValues("normal.checked").length; i++) {
+			for (int i = 0; i < normalChecked.length; i++) {
 				if (i > 0) {
 					workStageName = new String("normal" + i);
 				}
@@ -416,11 +454,19 @@ public class WorkloadConfigurationController extends AbstractController {
 
     	Workflow workflow = new Workflow();
     	
-    	Stage initStage = constructInitStage(req);    	
-    	if(initStage != null) workflow.addStage(initStage);
+		ArrayList<Object> initStageList = constructInitStage(req);
+		if (initStageList != null) {
+			for (int i = 0; i < initStageList.size(); i++) {
+				workflow.addStage((Stage) initStageList.get(i));
+			}
+		}
     	
-    	Stage prepareStage = constructPrepareStage(req);    	
-    	if(prepareStage != null) workflow.addStage(prepareStage);    	
+		ArrayList<Object> prepareStageList = constructPrepareStage(req);
+		if (prepareStageList != null) {
+			for (int i = 0; i < prepareStageList.size(); i++) {
+				workflow.addStage((Stage) prepareStageList.get(i));
+			}
+		}   	
     	
 		ArrayList<Object> normalStageList = constructNormalStage(req);
 		if (normalStageList != null) {
@@ -429,11 +475,19 @@ public class WorkloadConfigurationController extends AbstractController {
 			}
 		}	
     	
-    	Stage cleanupStage = constructCleanupStage(req);    	
-    	if(cleanupStage != null) workflow.addStage(cleanupStage);    
+		ArrayList<Object> cleanupStageList = constructCleanupStage(req);
+		if (cleanupStageList != null) {
+			for (int i = 0; i < cleanupStageList.size(); i++) {
+				workflow.addStage((Stage) cleanupStageList.get(i));
+			}
+		}  
     	
-    	Stage disposeStage = constructDisposeStage(req);    	
-    	if(disposeStage != null) workflow.addStage(disposeStage);    
+		ArrayList<Object> disposeStageList = constructDisposeStage(req);
+		if (disposeStageList != null) {
+			for (int i = 0; i < disposeStageList.size(); i++) {
+				workflow.addStage((Stage) disposeStageList.get(i));
+			}
+		}    
     	
     	workload.setWorkflow(workflow);
     	
