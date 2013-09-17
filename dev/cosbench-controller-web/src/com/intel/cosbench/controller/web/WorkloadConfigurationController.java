@@ -309,11 +309,12 @@ public class WorkloadConfigurationController extends AbstractController {
 						.getParameterValues("normal.runtime")[i]));
 
 				// read operation
-				String rconfig = "";
-				Operation rOp = new Operation("read");
-
 				int rRatio = getParmInt(
 						req.getParameterValues("read.ratio")[i], 0);
+				
+				if (rRatio > 0) {
+				String rconfig = "";
+				Operation rOp = new Operation("read");
 				rOp.setRatio(rRatio);
 
 				String rcselector = req.getParameterValues("read.containers")[i];
@@ -331,13 +332,14 @@ public class WorkloadConfigurationController extends AbstractController {
 				rOp.setConfig(rconfig);
 
 				work.addOperation(rOp);
+				}
 
 				// write operation
-				String wconfig = "";
-				Operation wOp = new Operation("write");
-
 				int wRatio = getParmInt(
 						req.getParameterValues("write.ratio")[i], 0);
+				if (wRatio > 0) {
+				String wconfig = "";
+				Operation wOp = new Operation("write");
 				wOp.setRatio(wRatio);
 
 				String wcselector = req.getParameterValues("write.containers")[i];
@@ -371,13 +373,14 @@ public class WorkloadConfigurationController extends AbstractController {
 				wOp.setConfig(wconfig);
 
 				work.addOperation(wOp);
+				}
 
 				// filewrite operation
-				String fwconfig = "";
-				Operation fwOp = new Operation("filewrite");
-
 				int fwRatio = getParmInt(
 						req.getParameterValues("filewrite.ratio")[i], 0);
+				if (fwRatio > 0) {
+				String fwconfig = "";
+				Operation fwOp = new Operation("filewrite");
 				fwOp.setRatio(fwRatio);
 
 				// "containers" section in config
@@ -402,13 +405,16 @@ public class WorkloadConfigurationController extends AbstractController {
 				fwOp.setConfig(fwconfig);
 
 				work.addOperation(fwOp);
+				}
 
 				// delete operation
+				int dRatio = getParmInt(
+						req.getParameterValues("delete.ratio")[i], 0);
+				if (dRatio > 0) {
 				String dconfig = "";
 				Operation dOp = new Operation("delete");
 
-				int dRatio = getParmInt(
-						req.getParameterValues("delete.ratio")[i], 0);
+				
 				dOp.setRatio(dRatio);
 
 				String dcselector = req.getParameterValues("delete.containers")[i];
@@ -426,7 +432,8 @@ public class WorkloadConfigurationController extends AbstractController {
 				dOp.setConfig(dconfig);
 
 				work.addOperation(dOp);
-
+				}
+				
 				stage.addWork(work);
 
 				workStageList.add(stage);
