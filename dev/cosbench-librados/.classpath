@@ -5,5 +5,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="rados-0.1.1.jar" sourcepath="/rados-java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cosbench-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cosbench-config"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cosbench-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cosbench-log"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cosbench-log4j"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
