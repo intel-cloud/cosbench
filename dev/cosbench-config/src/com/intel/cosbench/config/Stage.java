@@ -89,6 +89,8 @@ public class Stage implements Iterable<Work> {
     
 	// method for removing nsroot config from prepare, normal and cleanup stages
 	private Storage removeNSROOTConfig(Storage storage) {
+		if(storage.getConfig() == null)
+			return storage;
 		if (!storage.getConfig().contains("nsroot"))
 			return storage;
 		else {
