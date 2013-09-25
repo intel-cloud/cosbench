@@ -128,7 +128,10 @@ class WorkloadProcessor {
         } catch (WorkloadException we) {
             terminateWorkload();
             return;
-        } catch (Exception e) {
+		} catch (InterruptedException e) {
+			terminateWorkload();
+			return;
+		} catch (Exception e) {
             LOGGER.error("unexpected exception", e);
             terminateWorkload();
             return;
@@ -141,7 +144,7 @@ class WorkloadProcessor {
      * 'current stage' set! However, this inconsistent window is left AS-IS for
      * performance consideration.
      */
-    private void processWorkload() {
+    private void processWorkload() throws InterruptedException {
         workloadContext.setState(PROCESSING);
         workloadContext.setStartDate(new Date());
         Iterator<StageContext> iter = queue.iterator();
@@ -162,13 +165,31 @@ class WorkloadProcessor {
         workloadContext.setState(FINISHED);
     }
 
-    private void runStage(StageContext stageContext) {
+    private void runStage(StageContext stageContext) throws InterruptedException {
         String id = stageContext.getId();
+        int closuredelay = stageContext.getStage().getClosuredelay();
         LOGGER.info("begin to run stage {}", id);
         workloadContext.setCurrentStage(stageContext);
-        executeStage(stageContext);
+		if (stageContext.getStage().getName().equals("delay")
+				&& closuredelay > 0) {
+			executeDelay(stageContext, closuredelay);
+		} else {
+			executeStage(stageContext);
+			if (closuredelay > 0)
+				executeDelay(stageContext, closuredelay);
+		} 
         LOGGER.info("successfully ran stage {}", id);
     }
+    
+	private void executeDelay(StageContext stageContext, int closuredelay)
+			throws InterruptedException {
+
+		LOGGER.info("sleeping for " + closuredelay + " seconds...");
+		stageContext.setState(StageState.SLEEPING);
+		Thread.sleep(closuredelay * 1000);
+		LOGGER.info("sleep complete.");
+		stageContext.setState(StageState.COMPLETED);
+	} 
 
     private void executeStage(StageContext stageContext) {
         StageRunner runner = createStageRunner(stageContext);

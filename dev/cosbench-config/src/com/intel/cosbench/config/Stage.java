@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 public class Stage implements Iterable<Work> {
 
     private String name;
+    private int closuredelay;
     private Auth auth;
     private Storage storage;
     private List<Work> works;
@@ -52,6 +53,16 @@ public class Stage implements Iterable<Work> {
             throw new ConfigException("stage name cannot be empty");
         this.name = name;
     }
+    
+	public int getClosuredelay() {
+		return closuredelay;
+	}
+
+	public void setClosuredelay(int closuredelay) {
+		if (closuredelay < 0)
+			throw new ConfigException("closure delay cannot be negative");
+		this.closuredelay = closuredelay;
+	} 
 
     public Auth getAuth() {
         return auth;
@@ -70,8 +81,32 @@ public class Stage implements Iterable<Work> {
     public void setStorage(Storage storage) {
         if (storage == null)
             throw new ConfigException("a stage must have a default storage");
-        this.storage = storage;
+        if(!name.equals("init") && !name.equals("dispose"))
+            this.storage=removeNSROOTConfig(storage);
+        else
+            this.storage = storage;
     }
+    
+	// method for removing nsroot config from prepare, normal and cleanup stages
+	private Storage removeNSROOTConfig(Storage storage) {
+		if(storage.getConfig() == null)
+			return storage;
+		if (!storage.getConfig().contains("nsroot"))
+			return storage;
+		else {
+			Storage newStorage = new Storage();
+			String configParams[] = storage.getConfig().split(";");
+			StringBuffer newConfig = new StringBuffer("");
+			for (String configParam : configParams) {
+				if (!configParam.toLowerCase().contains("nsroot"))
+					newConfig.append(configParam + ";");
+			}
+			newConfig.deleteCharAt(newConfig.length() - 1);
+			newStorage.setType(storage.getType());
+			newStorage.setConfig(newConfig.toString());
+			return newStorage;
+		}
+	}
 
     public List<Work> getWorks() {
         return works;

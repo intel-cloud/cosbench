@@ -295,6 +295,21 @@ public class Work implements Iterable<Operation> {
         op.setConfig(StringUtils.join(cfgs, ';'));
         setOperations(Collections.singletonList(op));
     }
+    
+	public void toDelayWork() {
+		if (name == null)
+			name = "delay";
+		setDivision("none");
+		setRuntime(0);
+		setTotalBytes(0);
+		setWorkers(1);
+		setTotalOps(getWorkers());
+		Operation op = new Operation();
+		op.setType("delay");
+		op.setRatio(100);
+		op.setConfig("");
+		setOperations(Collections.singletonList(op));
+	} 
 
     public void validate() {
         if (type.equals("prepare"))
@@ -305,6 +320,8 @@ public class Work implements Iterable<Operation> {
             toInitWork();
         else if (type.equals("dispose"))
             toDisposeWork();
+		else if (type.equals("delay"))
+			toDelayWork(); 
         setName(getName());
         setWorkers(getWorkers());
         if (runtime == 0 && totalOps == 0 && totalBytes == 0)
