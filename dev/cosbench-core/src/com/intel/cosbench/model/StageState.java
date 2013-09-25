@@ -22,6 +22,8 @@ import java.util.*;
 public enum StageState {
 
     WAITING,
+    
+    SLEEPING,
 
     BOOTING,
 
