@@ -29,4 +29,7 @@ public class WorkerRegistry extends ListRegistry<WorkerContext> {
         return getAllItems().toArray(new WorkerContext[getSize()]);
     }
 
+    public WorkerContext getWorkerByIndex(int index) {
+	return getItem(index);
+    }
 }
