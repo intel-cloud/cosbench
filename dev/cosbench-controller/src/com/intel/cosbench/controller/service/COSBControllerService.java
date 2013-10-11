@@ -167,9 +167,13 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
     @Override
     public void fire(String id) {
+    	if(id == null) {
+    		throw new IllegalStateException("invalid workload id.");
+    	}
         final WorkloadProcessor processor = processors.get(id);
-        if (processor == null)
-            throw new IllegalStateException();
+        if (processor == null) {
+            throw new IllegalStateException("workload processor is not initialized.");
+        }
         LOGGER.debug("[ CT ] - starting workload {} ...", id);
         /* for strong consistency: a lock should be employed here */
 		if (processor.getWorkloadContext().getFuture() != null)

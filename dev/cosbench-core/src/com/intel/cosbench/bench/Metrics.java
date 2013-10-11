@@ -191,10 +191,10 @@ public class Metrics implements Item, Cloneable {
         String[] types = type.split("\\.");
         Metrics metrics = new Metrics();
         metrics.setName(type);
-        metrics.setOpId(types[0]);
-        metrics.setOpType(types[1]);
-        metrics.setSampleType(types[2]);
-        metrics.setOpName(types[3]);
+        metrics.setOpId(types.length > 0? types[0] : "na");
+        metrics.setOpType(types.length > 1? types[1] : "na");
+        metrics.setSampleType(types.length > 2? types[2] : "na");
+        metrics.setOpName(types.length > 3? types[3] : "na");
         return metrics;
     }
 
