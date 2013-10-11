@@ -75,7 +75,7 @@ class CSVStageExporter extends AbstractStageExporter {
 
         if(report.getSize() == 0)
         {
-               report.addMetrics(Metrics.newMetrics("na-na"));
+               report.addMetrics(Metrics.newMetrics("na.na"));
         }
         
         /* Operation Count */
