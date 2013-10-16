@@ -21,18 +21,27 @@ import com.intel.cosbench.service.WorkloadLoader;
 public class SimpleWorkloadLoader implements WorkloadLoader {
 	private static final Logger LOGGER = LogFactory.getSystemLogger();
 
-	private static final File ROOT_DIR = new File("archive");
+	private static File ARCHIVE_DIR = new File("archive");
 
-	static {
-		if (!ROOT_DIR.exists())
-			ROOT_DIR.mkdirs();
-		String path = ROOT_DIR.getAbsolutePath();
-		LOGGER.info("using {} for loading workload archives", path);
-	}
+//	static {
+//		if (!ROOT_DIR.exists())
+//			ROOT_DIR.mkdirs();
+//		String path = ROOT_DIR.getAbsolutePath();
+//		LOGGER.info("using {} for loading workload archives", path);
+//	}
 
-	public SimpleWorkloadLoader() {
-		/* empty */
-	}
+    public SimpleWorkloadLoader() {
+    	this("archive");
+    }
+    
+    public SimpleWorkloadLoader(final String archive) {
+    	ARCHIVE_DIR = new File(archive);
+    	
+        if (!ARCHIVE_DIR.exists())
+        	ARCHIVE_DIR.mkdirs();
+        String path = ARCHIVE_DIR.getAbsolutePath();
+        LOGGER.info("loading workload archives from {}", path);
+    }
 
 	private static String getRunDirName(WorkloadInfo info) {
 		String name = info.getId();
@@ -42,7 +51,7 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 
 	@Override
 	public List<WorkloadInfo> loadWorkloadRun() throws IOException {
-		File file = new File(ROOT_DIR, "run-history.csv");
+		File file = new File(ARCHIVE_DIR, "run-history.csv");
 		if (!file.exists())
 			return null;
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -72,7 +81,7 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 	public static XmlConfig getWorkloadConfg(WorkloadInfo workloadContext)
 			throws FileNotFoundException {
 		File file = new File(
-				new File(ROOT_DIR, getRunDirName(workloadContext)),
+				new File(ARCHIVE_DIR, getRunDirName(workloadContext)),
 				"workload-config.xml");
 		if (!file.exists())
 			return null;
@@ -107,7 +116,7 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 	private void loadWorkloadFile(WorkloadInfo workloadContext)
 			throws IOException {
 		File file = new File(
-				new File(ROOT_DIR, getRunDirName(workloadContext)),
+				new File(ARCHIVE_DIR, getRunDirName(workloadContext)),
 				getWorkloadFileName(workloadContext) + ".csv");
 		if (!file.exists())
 			return;
@@ -127,7 +136,7 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 	public void loadStagePageInfo(WorkloadInfo workloadContext, String stageId)
 			throws IOException {
 		File file = new File(
-				new File(ROOT_DIR, getRunDirName(workloadContext)),
+				new File(ARCHIVE_DIR, getRunDirName(workloadContext)),
 				getStageFileName(workloadContext.getStageInfo(stageId))
 						+ ".csv");
 		if (!file.exists())
