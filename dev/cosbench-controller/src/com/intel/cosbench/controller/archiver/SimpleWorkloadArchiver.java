@@ -36,23 +36,34 @@ import com.intel.cosbench.model.*;
 public class SimpleWorkloadArchiver implements WorkloadArchiver {
 
     private static final Logger LOGGER = LogFactory.getSystemLogger();
+    
+    private File ARCHIVE_DIR = new File("archive");
 
-    private static final File ROOT_DIR = new File("archive");
+//    private static final File ROOT_DIR = new File("archive");
 
-    static {
-        if (!ROOT_DIR.exists())
-            ROOT_DIR.mkdirs();
-        String path = ROOT_DIR.getAbsolutePath();
+//    static {
+//        if (!ROOT_DIR.exists())
+//            ROOT_DIR.mkdirs();
+//        String path = ROOT_DIR.getAbsolutePath();
+//        LOGGER.info("using {} for storing workload archives", path);
+//    }
+
+    public SimpleWorkloadArchiver() {
+    	this("archive");
+    }
+    
+    public SimpleWorkloadArchiver(final String archive) {
+    	ARCHIVE_DIR = new File(archive);
+    	
+        if (!ARCHIVE_DIR.exists())
+        	ARCHIVE_DIR.mkdirs();
+        String path = ARCHIVE_DIR.getAbsolutePath();
         LOGGER.info("using {} for storing workload archives", path);
     }
 
-    public SimpleWorkloadArchiver() {
-        /* empty */
-    }
-
-    @Override
+	@Override
     public synchronized void archive(WorkloadInfo info) {
-        File runDir = new File(ROOT_DIR, getRunDirName(info));
+        File runDir = new File(ARCHIVE_DIR, getRunDirName(info));
         try {
             doArchive(info, runDir);
         } catch (Exception e) {
@@ -88,7 +99,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
     }
 
     private void exportWorkloadRun(WorkloadInfo info) throws IOException {
-        File file = new File(ROOT_DIR, "run-history.csv");
+        File file = new File(ARCHIVE_DIR, "run-history.csv");
         boolean ready = file.exists() && file.length() > 0;
         Writer writer = new BufferedWriter(new FileWriter(file, true));
         RunExporter exporter = Exporters.newRunExporter(info);
@@ -189,7 +200,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
 
     @Override
     public File getWorkloadConfig(WorkloadInfo info) {
-        File runDir = new File(ROOT_DIR, getRunDirName(info));
+        File runDir = new File(ARCHIVE_DIR, getRunDirName(info));
         return new File(runDir, "workload-config.xml");
     }
 
@@ -210,12 +221,12 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
 
     @Override
     public File getWorkloadLog(WorkloadInfo info) {
-        File runDir = new File(ROOT_DIR, getRunDirName(info));
+        File runDir = new File(ARCHIVE_DIR, getRunDirName(info));
         return new File(runDir, "workload.log");
     }
 
     private void exportPerformanceMatrix(WorkloadInfo info) throws IOException {
-        File file = new File(ROOT_DIR, "workloads.csv");
+        File file = new File(ARCHIVE_DIR, "workloads.csv");
         boolean ready = file.exists() && file.length() > 0;
         Writer writer = new BufferedWriter(new FileWriter(file, true));
         MatrixExporter exporter = Exporters.newMatrixExporter(info);
@@ -234,7 +245,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
 
     private void updateCount() throws IOException {
         int count = 0;
-        File file = new File(ROOT_DIR, ".meta");
+        File file = new File(ARCHIVE_DIR, ".meta");
         if (file.exists() && file.length() > 0) {
             Reader reader = new BufferedReader(new FileReader(file));
             try {
@@ -264,7 +275,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
     }
 
     private int retrieveCount() throws IOException {
-        File file = new File(ROOT_DIR, ".meta");
+        File file = new File(ARCHIVE_DIR, ".meta");
         if (!file.exists() || file.length() == 0)
             return 0;
         int count;

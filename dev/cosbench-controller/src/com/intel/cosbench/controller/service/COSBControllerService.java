@@ -67,6 +67,16 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     }
 
 	public void init() {
+		if(this.context == null) {
+			LOGGER.error("Controller Context is not initialized.");
+			System.exit(-1);
+		}
+		
+		// initialize workload archiver and loader
+		String archive_dir = context.getArchive_dir();
+		archiver = new SimpleWorkloadArchiver(archive_dir);
+	    loader = new SimpleWorkloadLoader(archive_dir);
+				
         count = new AtomicInteger(archiver.getTotalWorkloads());
         order = new AtomicInteger(0);
         processors = new HashMap<String, WorkloadProcessor>();

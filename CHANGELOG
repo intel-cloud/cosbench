@@ -9,6 +9,9 @@
 . add histogram selector to define histogram size distribution
 . #58: sleep between stage
 . #84: multiple init/prepare/cleanup/dispose from config UI
+. oen bug fix for java.lang.ArrayIndexOutOfBoundsException at data archiving
+. #118: file-write operation - percentile zero issue
+. #121: specify archive dir
 
   COSBench 0.3.1.2 (13-ww31.3)
 ------------------------------------

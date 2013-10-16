@@ -29,6 +29,7 @@ public class ControllerContext implements ControllerInfo {
 
     private String name;
     private String url;
+    private String archive_dir;
     private int concurrency;
     private DriverRegistry driverRegistry;
 
@@ -54,7 +55,15 @@ public class ControllerContext implements ControllerInfo {
         this.url = url;
     }
 
-    public int getConcurrency() {
+    public String getArchive_dir() {
+		return archive_dir;
+	}
+
+	public void setArchive_dir(String archive_dir) {
+		this.archive_dir = archive_dir;
+	}
+
+	public int getConcurrency() {
         return concurrency;
     }
 
