@@ -45,4 +45,4 @@ cp -f pkg.lst $1/
 
 echo "Build up adaptor example enviornment"
 mkdir $1/ext
-cp -f -R adaptor-dev/* $1/ext
+cp -f -R ext/* $1/ext
