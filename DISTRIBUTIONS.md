@@ -1,10 +1,3 @@
-As it's inconvenient to store the binary distribution package on github, one shared space is maintained to 
-contain all generated binaries.
+Github now can support to store binary packages in "releases" (https://github.com/intel-cloud/cosbench/releases), 
+so we will not maintain one separate space for binary packages.
 
-0.3.1.2:  *( https://s3-us-west-2.amazonaws.com/cosbench/0.3.1.2.zip )*
-
-0.3.1.1:  *( https://s3-us-west-2.amazonaws.com/cosbench/0.3.1.1.zip )*
-
-0.3.1.0:  *( https://s3-us-west-2.amazonaws.com/cosbench/0.3.1.0.zip )*
-
-0.3.0.0:  *( https://s3-us-west-2.amazonaws.com/cosbench/0.3.0.0.zip )*
