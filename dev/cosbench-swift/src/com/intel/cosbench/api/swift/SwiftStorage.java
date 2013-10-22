@@ -57,8 +57,8 @@ class SwiftStorage extends NoneStorage {
         super.init(config, logger);
 
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
-        token = config.get(AUTH_TOKEN_KEY);
-        storage_url = config.get(STORAGE_URL_KEY);
+        token = config.get(AUTH_TOKEN_KEY, AUTH_TOKEN_DEFAULT);
+        storage_url = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
         		
         parms.put(CONN_TIMEOUT_KEY, timeout);
         parms.put(AUTH_TOKEN_KEY, token);
