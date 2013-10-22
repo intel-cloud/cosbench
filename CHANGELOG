@@ -1,4 +1,4 @@
-  COSBench 0.3.3.0 pre1 (13-ww42.1)
+  COSBench 0.3.3.0 beta3 (13-ww43.2)
 ------------------------------------
 . #20: multiple same operations
 . #16: web console authentication
@@ -12,6 +12,7 @@
 . oen bug fix for java.lang.ArrayIndexOutOfBoundsException at data archiving
 . #118: file-write operation - percentile zero issue
 . #121: specify archive dir
+. #92: using swift storage without authentication
 
   COSBench 0.3.1.2 (13-ww31.3)
 ------------------------------------
