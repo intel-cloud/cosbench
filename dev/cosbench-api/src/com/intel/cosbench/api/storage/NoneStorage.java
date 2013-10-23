@@ -62,6 +62,12 @@ public class NoneStorage implements StorageAPI {
         /* empty */
     }
 
+	@Override
+	public AuthContext getAuthContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     @Override
     public void dispose() {
         /* empty */

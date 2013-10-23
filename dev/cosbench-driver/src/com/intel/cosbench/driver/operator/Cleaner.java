@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -101,6 +102,10 @@ class Cleaner extends AbstractOperator {
             session.getApi().deleteContainer(conName, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
+        } catch (StorageException se) {
+            String msg = "Error deleting container " +  conName; 
+            doLogWarn(session.getLogger(), msg);
+            // ignored
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform clean operation", e);
             throw new AgentException(); // mark error

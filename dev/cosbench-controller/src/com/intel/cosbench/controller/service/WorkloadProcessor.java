@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.controller.service;
 
 import static com.intel.cosbench.model.WorkloadState.*;
+import static java.util.concurrent.TimeUnit.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -165,21 +166,47 @@ class WorkloadProcessor {
         workloadContext.setState(FINISHED);
     }
 
+    private static String millisToHMS(long millis) {
+
+        long hrs = MILLISECONDS.toHours(millis) % 24;
+        long min = MILLISECONDS.toMinutes(millis) % 60;
+        long sec = MILLISECONDS.toSeconds(millis) % 60;
+
+        return hrs + ":" + min + "::" + sec;
+    }
+
     private void runStage(StageContext stageContext) throws InterruptedException {
         String id = stageContext.getId();
         int closuredelay = stageContext.getStage().getClosuredelay();
+
+        String stageName = stageContext.getStage().getName();
+        String work0Type = stageContext.getStage().getWorks().get(0).getType();
+
         LOGGER.info("begin to run stage {}", id);
+
+        LOGGER.info("============================================");
+        LOGGER.info("START WORK: {}", stageName);
+
+        long startStamp = System.currentTimeMillis();
+
         workloadContext.setCurrentStage(stageContext);
-		if (stageContext.getStage().getName().equals("delay")
-				&& closuredelay > 0) {
+        if (stageName.equals("delay") && closuredelay > 0) {
 			executeDelay(stageContext, closuredelay);
 		} else {
 			executeStage(stageContext);
-			if (closuredelay > 0)
+
+			long elapsedTime = System.currentTimeMillis() - startStamp;
+
+			LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
+			LOGGER.info("============================================");
+			LOGGER.info("");
+
+			if(closuredelay > 0)
 				executeDelay(stageContext, closuredelay);
-		} 
-        LOGGER.info("successfully ran stage {}", id);
-    }
+		}
+
+		LOGGER.info("successfully ran stage {}", id);
+	}
     
 	private void executeDelay(StageContext stageContext, int closuredelay)
 			throws InterruptedException {

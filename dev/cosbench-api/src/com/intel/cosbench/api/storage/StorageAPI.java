@@ -73,6 +73,11 @@ public interface StorageAPI {
     public void setAuthContext(AuthContext info);
 
     /**
+     * @return AuthContext instance associated with this Storage-API
+     */
+    public AuthContext getAuthContext();
+
+    /**
      * Downloads an object from a container.
      * 
      * @param container
