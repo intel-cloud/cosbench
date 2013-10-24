@@ -60,7 +60,7 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
     protected void writeMetrics(Writer writer, Metrics metrics, StageInfo stage)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(stage.getStage().getName()).append(',');
+        buffer.append(stage.getId()).append(',');
         String opt = metrics.getOpName();
         String spt = metrics.getSampleType();
         if (spt.equals(opt))

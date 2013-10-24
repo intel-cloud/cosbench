@@ -331,6 +331,13 @@ public class Work implements Iterable<Operation> {
         auth.validate();
         setStorage(getStorage());
         storage.validate();
+        List<Operation> tempOpList = new ArrayList<Operation>();
+        for (Operation op: operations) {
+        	if(op.getRatio() > 0) {
+        		tempOpList.add(op);
+        	}
+        }
+        operations = tempOpList;
         setOperations(getOperations());
         for (Operation op : operations)
             if (op.getDivision() == null)

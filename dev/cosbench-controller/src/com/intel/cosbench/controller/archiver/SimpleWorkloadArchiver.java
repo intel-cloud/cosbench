@@ -177,9 +177,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
     }
 
     private static String getStageFileName(StageInfo info) {
-        String name = info.getId();
-        name += "-" + info.getStage().getName();
-        return name;
+        return info.getId();
     }
 
     private void exportConfig(Workload workload, File parent)

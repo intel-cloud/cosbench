@@ -1,4 +1,4 @@
-  COSBench 0.3.3.0 beta3 (13-ww43.2)
+  COSBench 0.3.3.0 (13-ww43.5)
 ------------------------------------
 . #20: multiple same operations
 . #16: web console authentication
@@ -13,6 +13,9 @@
 . #118: file-write operation - percentile zero issue
 . #121: specify archive dir
 . #92: using swift storage without authentication
+. support auth token caching for swift testing
+. #128: Use workstage name from XML rather than generic names in logs
+
 
   COSBench 0.3.1.2 (13-ww31.3)
 ------------------------------------

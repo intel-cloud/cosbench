@@ -85,7 +85,7 @@ class WorkloadProcessor {
         StageRegistry registry = new StageRegistry();
         int index = 1;
         for (Stage stage : workloadContext.getWorkload().getWorkflow()) {
-            String id = "s" + index++;
+            String id = "s" + index++ + "-" + stage.getName();
             registry.addStage(createStageContext(id, stage));
         }
         workloadContext.setStageRegistry(registry);
@@ -180,7 +180,7 @@ class WorkloadProcessor {
         int closuredelay = stageContext.getStage().getClosuredelay();
 
         String stageName = stageContext.getStage().getName();
-        String work0Type = stageContext.getStage().getWorks().get(0).getType();
+//        String work0Type = stageContext.getStage().getWorks().get(0).getType();
 
         LOGGER.info("begin to run stage {}", id);
 

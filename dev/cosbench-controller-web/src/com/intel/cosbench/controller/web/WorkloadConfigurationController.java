@@ -313,98 +313,98 @@ public class WorkloadConfigurationController extends AbstractController {
 						req.getParameterValues("read.ratio")[i], 0);
 				
 				if (rRatio > 0) {
-				String rconfig = "";
-				Operation rOp = new Operation("read");
-				rOp.setRatio(rRatio);
-
-				String rcselector = req.getParameterValues("read.containers")[i];
-				String rcmin = req.getParameterValues("read.containers.min")[i];
-				String rcmax = req.getParameterValues("read.containers.max")[i];
-				rconfig += "containers=" + rcselector + "(" + rcmin + ","
-						+ rcmax + ");";
-
-				// "objects" section in config
-				String roselector = req.getParameterValues("read.objects")[i];
-				String romin = req.getParameterValues("read.objects.min")[i];
-				String romax = req.getParameterValues("read.objects.max")[i];
-				rconfig += "objects=" + roselector + "(" + romin + "," + romax
-						+ ");";
-				rOp.setConfig(rconfig);
-
-				work.addOperation(rOp);
+					String rconfig = "";
+					Operation rOp = new Operation("read");
+					rOp.setRatio(rRatio);
+	
+					String rcselector = req.getParameterValues("read.containers")[i];
+					String rcmin = req.getParameterValues("read.containers.min")[i];
+					String rcmax = req.getParameterValues("read.containers.max")[i];
+					rconfig += "containers=" + rcselector + "(" + rcmin + ","
+							+ rcmax + ");";
+	
+					// "objects" section in config
+					String roselector = req.getParameterValues("read.objects")[i];
+					String romin = req.getParameterValues("read.objects.min")[i];
+					String romax = req.getParameterValues("read.objects.max")[i];
+					rconfig += "objects=" + roselector + "(" + romin + "," + romax
+							+ ");";
+					rOp.setConfig(rconfig);
+	
+					work.addOperation(rOp);
 				}
 
 				// write operation
 				int wRatio = getParmInt(
 						req.getParameterValues("write.ratio")[i], 0);
 				if (wRatio > 0) {
-				String wconfig = "";
-				Operation wOp = new Operation("write");
-				wOp.setRatio(wRatio);
-
-				String wcselector = req.getParameterValues("write.containers")[i];
-				String wcmin = req.getParameterValues("write.containers.min")[i];
-				String wcmax = req.getParameterValues("write.containers.max")[i];
-				wconfig += "containers=" + wcselector + "(" + wcmin + ","
-						+ wcmax + ");";
-
-				// "objects" section in config
-				String woselector = req.getParameterValues("write.objects")[i];
-				String womin = req.getParameterValues("write.objects.min")[i];
-				String womax = req.getParameterValues("write.objects.max")[i];
-				wconfig += "objects=" + woselector + "(" + womin + "," + womax
-						+ ");";
-
-				// "sizes" section in config
-				String wsselector = req.getParameterValues("write.sizes")[i];
-				String wsmin = req.getParameterValues("write.sizes.min")[i];
-				String wsmax = req.getParameterValues("write.sizes.max")[i];
-				String wsunit = req.getParameterValues("write.sizes.unit")[i];
-
-				String wsexp = "";
-				if ("u".equals(wsselector) || "r".equals(wsselector))
-					wsexp = wsselector + "(" + wsmin + "," + wsmax + ")"
-							+ wsunit;
-				if ("c".equals(wsselector))
-					wsexp = wsselector + "(" + wsmin + ")" + wsunit;
-
-				wconfig += "sizes=" + wsexp;
-
-				wOp.setConfig(wconfig);
-
-				work.addOperation(wOp);
+					String wconfig = "";
+					Operation wOp = new Operation("write");
+					wOp.setRatio(wRatio);
+	
+					String wcselector = req.getParameterValues("write.containers")[i];
+					String wcmin = req.getParameterValues("write.containers.min")[i];
+					String wcmax = req.getParameterValues("write.containers.max")[i];
+					wconfig += "containers=" + wcselector + "(" + wcmin + ","
+							+ wcmax + ");";
+	
+					// "objects" section in config
+					String woselector = req.getParameterValues("write.objects")[i];
+					String womin = req.getParameterValues("write.objects.min")[i];
+					String womax = req.getParameterValues("write.objects.max")[i];
+					wconfig += "objects=" + woselector + "(" + womin + "," + womax
+							+ ");";
+	
+					// "sizes" section in config
+					String wsselector = req.getParameterValues("write.sizes")[i];
+					String wsmin = req.getParameterValues("write.sizes.min")[i];
+					String wsmax = req.getParameterValues("write.sizes.max")[i];
+					String wsunit = req.getParameterValues("write.sizes.unit")[i];
+	
+					String wsexp = "";
+					if ("u".equals(wsselector) || "r".equals(wsselector))
+						wsexp = wsselector + "(" + wsmin + "," + wsmax + ")"
+								+ wsunit;
+					if ("c".equals(wsselector))
+						wsexp = wsselector + "(" + wsmin + ")" + wsunit;
+	
+					wconfig += "sizes=" + wsexp;
+	
+					wOp.setConfig(wconfig);
+	
+					work.addOperation(wOp);
 				}
 
 				// filewrite operation
 				int fwRatio = getParmInt(
 						req.getParameterValues("filewrite.ratio")[i], 0);
 				if (fwRatio > 0) {
-				String fwconfig = "";
-				Operation fwOp = new Operation("filewrite");
-				fwOp.setRatio(fwRatio);
-
-				// "containers" section in config
-				String fwcselector = req
-						.getParameterValues("filewrite.containers")[i];
-				String fwcmin = req
-						.getParameterValues("filewrite.containers.min")[i];
-				String fwcmax = req
-						.getParameterValues("filewrite.containers.max")[i];
-				fwconfig += "containers=" + fwcselector + "(" + fwcmin + ","
-						+ fwcmax + ");";
-
-				// "objects" section in config
-				String fwoselector = req
-						.getParameterValues("filewrite.fileselection")[i];
-				fwconfig += "fileselection=" + fwoselector + ";";
-
-				// "files" section in config
-				String fwfselector = req.getParameterValues("filewrite.files")[i];
-				fwconfig += "files=" + fwfselector;
-
-				fwOp.setConfig(fwconfig);
-
-				work.addOperation(fwOp);
+					String fwconfig = "";
+					Operation fwOp = new Operation("filewrite");
+					fwOp.setRatio(fwRatio);
+	
+					// "containers" section in config
+					String fwcselector = req
+							.getParameterValues("filewrite.containers")[i];
+					String fwcmin = req
+							.getParameterValues("filewrite.containers.min")[i];
+					String fwcmax = req
+							.getParameterValues("filewrite.containers.max")[i];
+					fwconfig += "containers=" + fwcselector + "(" + fwcmin + ","
+							+ fwcmax + ");";
+	
+					// "objects" section in config
+					String fwoselector = req
+							.getParameterValues("filewrite.fileselection")[i];
+					fwconfig += "fileselection=" + fwoselector + ";";
+	
+					// "files" section in config
+					String fwfselector = req.getParameterValues("filewrite.files")[i];
+					fwconfig += "files=" + fwfselector;
+	
+					fwOp.setConfig(fwconfig);
+	
+					work.addOperation(fwOp);
 				}
 
 				// delete operation
