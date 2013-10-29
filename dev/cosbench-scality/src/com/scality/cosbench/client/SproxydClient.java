@@ -58,7 +58,6 @@ public class SproxydClient {
 
 	public void dispose() {
 		request = null;
-		client.getConnectionManager().shutdown();
 	}
 
 	public void abort() {

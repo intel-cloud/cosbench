@@ -15,31 +15,52 @@ limitations under the License.
 
 package com.scality.cosbench.api;
 
-import static com.scality.cosbench.client.SproxydConstants.*;
+import static com.scality.cosbench.client.SproxydConstants.BASE_PATH_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.BASE_PATH_KEY;
+import static com.scality.cosbench.client.SproxydConstants.CONN_TIMEOUT_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.CONN_TIMEOUT_KEY;
+import static com.scality.cosbench.client.SproxydConstants.HOSTS_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.HOSTS_KEY;
+import static com.scality.cosbench.client.SproxydConstants.LOGGING_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.LOGGING_KEY;
+import static com.scality.cosbench.client.SproxydConstants.POOL_SIZE_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.POOL_SIZE_KEY;
+import static com.scality.cosbench.client.SproxydConstants.PORT_DEFAULT;
+import static com.scality.cosbench.client.SproxydConstants.PORT_KEY;
 
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.SocketTimeoutException;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 
 import com.intel.cosbench.api.storage.NoneStorage;
 import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.api.storage.StorageTimeoutException;
-import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.config.ConfigException;
 import com.intel.cosbench.log.Logger;
 import com.scality.cosbench.client.SproxydClient;
 import com.scality.cosbench.client.SproxydClientException;
 
 public class SproxydStorage extends NoneStorage {
 
+	private static HttpClient httpClient;
+	private static int nbClients = 0;
 	private SproxydClient client;
 	private String basePath;
 	private String hosts;
 	private int port;
 	private int timeout;
+	private int maxTotal;
+	private int maxPerRoute;
 	private boolean logging;
 
 	@Override
@@ -48,17 +69,55 @@ public class SproxydStorage extends NoneStorage {
 		initParms(config);
 
 
-		HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+		HttpClient httpClient = createHttpClient(timeout, maxTotal, maxPerRoute);
 		client = new SproxydClient(httpClient, hosts, port, basePath, logging ? logger : null);
 		logger.debug("sproxyd client has been initialized");
 	}
+	
+	private static synchronized HttpClient createHttpClient(int timeout, int maxTotal, int maxPerRoute) {
+		if (httpClient == null) {
+			final ThreadSafeClientConnManager tscm = new ThreadSafeClientConnManager();
+			tscm.setMaxTotal(maxTotal);
+			tscm.setDefaultMaxPerRoute(maxPerRoute);
+			final HttpParams params = createDefaultHttpParams(timeout);
+			httpClient = new DefaultHttpClient(tscm, params);
+		}
+		nbClients++;
+		return httpClient;
+	}
+	
+	private static synchronized void disposeHttpClient() {
+		nbClients--;
+		if (nbClients == 0) {
+			httpClient.getConnectionManager().shutdown();
+			httpClient = null;
+		}
+	}
 
+    private static HttpParams createDefaultHttpParams(int timeout) {
+        HttpParams params = new BasicHttpParams();
+        /* default HTTP parameters */
+        DefaultHttpClient.setDefaultHttpParams(params);
+        /* connection/socket timeouts */
+        HttpConnectionParams.setSoTimeout(params, timeout);
+        HttpConnectionParams.setConnectionTimeout(params, timeout);
+        /* user agent */
+        HttpProtocolParams.setUserAgent(params, "cosbench/2.0");
+        return params;
+    }
 	private void initParms(Config config) {
 		basePath = config.get(BASE_PATH_KEY, BASE_PATH_DEFAULT);
 		hosts = config.get(HOSTS_KEY, HOSTS_DEFAULT);
 		port = config.getInt(PORT_KEY, PORT_DEFAULT);
 		timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
 		logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
+		final String poolSize[] = config.get(POOL_SIZE_KEY, POOL_SIZE_DEFAULT).split(",");
+		try {
+			maxTotal = Integer.parseInt(poolSize[0]);
+			maxPerRoute = poolSize.length > 1 ? Integer.parseInt(poolSize[1]) : 2;
+		} catch (NumberFormatException exc) {
+			throw new ConfigException("Invalid pool size, must be <int>,<int> or <int>", exc);
+		}
 		/* register all parameters */
 		parms.put(LOGGING_KEY, logging);
 
@@ -71,6 +130,7 @@ public class SproxydStorage extends NoneStorage {
 	public void dispose() {
 		super.dispose();
 		client.dispose();
+		disposeHttpClient();
 	}
 
 	@Override
