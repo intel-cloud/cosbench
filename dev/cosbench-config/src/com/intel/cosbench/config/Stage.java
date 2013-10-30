@@ -81,32 +81,32 @@ public class Stage implements Iterable<Work> {
     public void setStorage(Storage storage) {
         if (storage == null)
             throw new ConfigException("a stage must have a default storage");
-        if(!name.equals("init") && !name.equals("dispose"))
-            this.storage=removeNSROOTConfig(storage);
-        else
+//        if(!name.equals("init") && !name.equals("dispose"))
+//            this.storage=removeNSROOTConfig(storage);
+//        else
             this.storage = storage;
     }
     
 	// method for removing nsroot config from prepare, normal and cleanup stages
-	private Storage removeNSROOTConfig(Storage storage) {
-		if(storage.getConfig() == null)
-			return storage;
-		if (!storage.getConfig().contains("nsroot"))
-			return storage;
-		else {
-			Storage newStorage = new Storage();
-			String configParams[] = storage.getConfig().split(";");
-			StringBuffer newConfig = new StringBuffer("");
-			for (String configParam : configParams) {
-				if (!configParam.toLowerCase().contains("nsroot"))
-					newConfig.append(configParam + ";");
-			}
-			newConfig.deleteCharAt(newConfig.length() - 1);
-			newStorage.setType(storage.getType());
-			newStorage.setConfig(newConfig.toString());
-			return newStorage;
-		}
-	}
+//	private Storage removeNSROOTConfig(Storage storage) {
+//		if(storage.getConfig() == null)
+//			return storage;
+//		if (!storage.getConfig().contains("nsroot"))
+//			return storage;
+//		else {
+//			Storage newStorage = new Storage();
+//			String configParams[] = storage.getConfig().split(";");
+//			StringBuffer newConfig = new StringBuffer("");
+//			for (String configParam : configParams) {
+//				if (!configParam.toLowerCase().contains("nsroot"))
+//					newConfig.append(configParam + ";");
+//			}
+//			newConfig.deleteCharAt(newConfig.length() - 1);
+//			newStorage.setType(storage.getType());
+//			newStorage.setConfig(newConfig.toString());
+//			return newStorage;
+//		}
+//	}
 
     public List<Work> getWorks() {
         return works;

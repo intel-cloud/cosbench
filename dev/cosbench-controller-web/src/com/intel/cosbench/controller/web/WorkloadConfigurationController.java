@@ -477,6 +477,27 @@ public class WorkloadConfigurationController extends AbstractController {
 		}
 	}
 	
+	// method for removing nsroot config from prepare, normal and cleanup stages
+	private Storage removeNSROOTConfig(Storage storage) {
+		if(storage.getConfig() == null)
+			return storage;
+		if (!storage.getConfig().contains("nsroot"))
+			return storage;
+		else {
+			Storage newStorage = new Storage();
+			String configParams[] = storage.getConfig().split(";");
+			StringBuffer newConfig = new StringBuffer("");
+			for (String configParam : configParams) {
+				if (!configParam.toLowerCase().contains("nsroot"))
+					newConfig.append(configParam + ";");
+			}
+			newConfig.deleteCharAt(newConfig.length() - 1);
+			newStorage.setType(storage.getType());
+			newStorage.setConfig(newConfig.toString());
+			return newStorage;
+		}
+	}
+
     private Workload constructWorkloadFromPostData(HttpServletRequest req)
             throws Exception {
     	Workload workload = new Workload();
@@ -504,21 +525,27 @@ public class WorkloadConfigurationController extends AbstractController {
 		ArrayList<Object> prepareStageList = constructPrepareStage(req);
 		if (prepareStageList != null) {
 			for (int i = 0; i < prepareStageList.size(); i++) {
-				workflow.addStage((Stage) prepareStageList.get(i));
+				Stage stage = (Stage) prepareStageList.get(i);
+				stage.setStorage(removeNSROOTConfig(workload.getStorage()));
+				workflow.addStage(stage);
 			}
 		}   	
     	
 		ArrayList<Object> normalStageList = constructNormalStage(req);
 		if (normalStageList != null) {
 			for (int i = 0; i < normalStageList.size(); i++) {
-				workflow.addStage((Stage) normalStageList.get(i));
+				Stage stage = (Stage) normalStageList.get(i);
+				stage.setStorage(removeNSROOTConfig(workload.getStorage()));
+				workflow.addStage(stage);
 			}
 		}	
     	
 		ArrayList<Object> cleanupStageList = constructCleanupStage(req);
 		if (cleanupStageList != null) {
 			for (int i = 0; i < cleanupStageList.size(); i++) {
-				workflow.addStage((Stage) cleanupStageList.get(i));
+				Stage stage = (Stage) cleanupStageList.get(i);
+				stage.setStorage(removeNSROOTConfig(workload.getStorage()));
+				workflow.addStage(stage);
 			}
 		}  
     	
