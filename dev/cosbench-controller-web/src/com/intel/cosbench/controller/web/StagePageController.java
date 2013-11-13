@@ -19,6 +19,8 @@ package com.intel.cosbench.controller.web;
 
 import static com.intel.cosbench.model.StageState.*;
 
+import java.io.IOException;
+
 import javax.servlet.http.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +57,13 @@ public class StagePageController extends AbstractController {
         StageInfo sInfo = wInfo.getStageInfo(sid);
         if (sInfo == null)
             throw new NotFoundException();
+		if (controller.getloadArch() && sInfo.getSnapshotRegistry().getSize() == 0)
+			try {
+				controller.getWorkloadLoader().loadStagePageInfo(wInfo,
+						sInfo.getId());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         return process(wInfo, sInfo);
     }
 

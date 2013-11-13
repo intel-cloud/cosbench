@@ -22,7 +22,6 @@ import static org.apache.commons.lang.SystemUtils.IS_OS_WINDOWS;
 import java.io.File;
 
 import com.intel.cosbench.config.castor.CastorConfigTools;
-import com.intel.cosbench.controller.archiver.SimpleWorkloadArchiver;
 import com.intel.cosbench.controller.model.*;
 import com.intel.cosbench.service.*;
 
@@ -40,8 +39,8 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
     public COSBControllerServiceFactory() {
         /* loading workload XML mappings */
         CastorConfigTools.getWorkloadResolver();
-        /* creating workload archive directory */
-        new SimpleWorkloadArchiver();
+//        /* creating workload archive directory */
+//        new SimpleWorkloadArchiver();
     }
 
     @Override
@@ -74,6 +73,7 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
         ControllerContext context = new ControllerContext();
         context.setName(loadControllerName());
         context.setUrl(loadControllerUrl());
+        context.setArchive_dir(loadArchiveDir());
         context.setConcurrency(loadConcurrency());
         context.setDriverRegistry(getDriverRegistry());
         return context;
@@ -87,6 +87,10 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
         return config.get("controller.log_file", "log/system.log");
     }
 
+    private String loadArchiveDir() {
+    	return config.get("controller.archive_dir", "archive");
+    }
+    
     private String loadControllerName() {
         return config.get("controller.name", "N/A");
     }

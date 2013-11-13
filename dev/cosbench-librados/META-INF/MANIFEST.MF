@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Librados Storage Client Bundle
 Bundle-SymbolicName: cosbench-librados
-Bundle-Version: 0.3.1.0
+Bundle-Version: 0.3.3.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- rados-0.1.1.jar,
+ rados.jar,
  jna-3.5.2.jar
 import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,

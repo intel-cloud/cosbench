@@ -23,7 +23,10 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intel.cosbench.api.auth.*;
+import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.config.*;
 import com.intel.cosbench.config.castor.CastorConfigTools;
@@ -122,6 +125,7 @@ class MissionHandler {
     private void createOperators() {
         OperatorRegistry registry = new OperatorRegistry();
         Mission mission = missionContext.getMission();
+        initOpDefaultName(mission);
         for (Operation op : mission)
             registry.addOperator(createOperatorContext(op));
         missionContext.setOperatorRegistry(registry);
@@ -129,18 +133,38 @@ class MissionHandler {
 
     private static OperatorContext createOperatorContext(Operation op) {
         OperatorContext context = new OperatorContext();
-        String type = op.getType();
-        String division = op.getDivision();
         Config config = KVConfigParser.parse(op.getConfig());
-        context.setOperator(Operators.getOperator(type, division, config));
+        context.setOperator(Operators.getOperator(op, config));
         return context;
     }
+    
+	private void initOpDefaultName(Mission mission) {
+		Set<String> opTypes = new HashSet<String>();
+		for (Operation op : mission.getOperations()) {
+			opTypes.add(op.getType());
+		}
+		if (opTypes.size() == mission.getOperations().size())
+			return;
+		for (String opType : opTypes) {
+			int index = 0;
+			for (Operation op : mission.getOperations()) {
+				if (op.getType().equals(opType)) {
+					index++;
+					if (op.getConfig().indexOf("name") < 0) {
+						op.setConfig(StringUtils.join(new Object[] {
+								op.getConfig(), ";name=",
+								String.valueOf(index), "-", op.getType() }));
+					}
+				}
+			}
+		}
+	}
 
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();
         Mission mission = missionContext.getMission();
         for (Operation op : mission)
-            picker.addOperation(op.getType(), op.getRatio());
+        	picker.addOperation(op.getId(), op.getRatio());
         missionContext.setOperationPicker(picker);
     }
 
@@ -218,12 +242,35 @@ class MissionHandler {
 
     private void performLogin() {
         missionContext.setState(AUTHING);
-        List<Agent> agents = createAuthAgents();
+
+        // Use worker 0 for authentication (and use the same token for other workers)
+        WorkerContext worker0 = missionContext.getWorkerRegistry().getWorkerByIndex(0);
+        List<Agent> agents = createAuthAgentFromContext(worker0);
         executeAgents(agents, 0);
+
+        AuthContext authContext = worker0.getStorageApi().getAuthContext();
+        setAllWorkersAuthContext(authContext);
+
         missionContext.setState(AUTHED);
     }
 
-    private List<Agent> createAuthAgents() {
+    private void setAllWorkersAuthContext(AuthContext authContext) {
+	for (WorkerContext workerContext : missionContext.getWorkerRegistry())
+            workerContext.getStorageApi().setAuthContext(authContext);
+    }
+
+    /***
+     * Returns Size 1 list of Agents
+     * @param workerContext to create Agent for
+     */
+    private List<Agent> createAuthAgentFromContext(WorkerContext workerContext) {
+        List<Agent> agents = new ArrayList<Agent>();
+        agents.add(Agents.newAuthAgent(retry, workerContext));
+        return agents;
+    }
+
+    @SuppressWarnings("unused")
+	private List<Agent> createAuthAgents() {
         List<Agent> agents = new ArrayList<Agent>();
         for (WorkerContext workerContext : missionContext.getWorkerRegistry())
             agents.add(Agents.newAuthAgent(retry, workerContext));
@@ -314,6 +361,19 @@ class MissionHandler {
                     "mission should be in the state of finished");
         String id = missionContext.getId();
         missionContext.setState(ACCOMPLISHED);
+		for (int i = 0; i < missionContext.getReport().getAllMetrics().length; i++) {
+			LOGGER.debug("!!!! mission op: "
+					+ missionContext.getReport().getAllMetrics()[i].getOpType()
+					+ "-"
+					+ missionContext.getReport().getAllMetrics()[i].getOpType());
+			if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
+					&& missionContext.getReport().getAllMetrics()[i]
+							.getTotalSampleCount() > 0) {
+				missionContext.setState(FAILED);
+				LOGGER.debug("!!!! mission opt -> FAILED");
+				break;
+			}
+		}
         LOGGER.info("mission {} has been closed successfully", id);
     }
 

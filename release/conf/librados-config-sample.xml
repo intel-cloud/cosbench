@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="librados-sample" description="sample benchmark for librados">
+
+  <storage type="librados" config="accesskey=<accesskey>;secretkey=<scretkey>;endpoint=<endpoint>" /> 
+
+  <workflow>
+
+    <workstage name="init">
+      <work type="init" workers="1" config="containers=r(1,2)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="containers=r(1,2);objects=r(1,10);sizes=c(64)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="main" workers="8" runtime="30">
+        <operation type="read" ratio="80" config="containers=u(1,2);objects=u(1,10)" />
+        <operation type="write" ratio="20" config="containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="containers=r(1,2);objects=r(1,20)" />
+    </workstage>
+
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="containers=r(1,2)" />
+    </workstage>
+
+  </workflow>
+
+</workload>

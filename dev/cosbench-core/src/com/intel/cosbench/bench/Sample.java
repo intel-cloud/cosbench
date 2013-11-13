@@ -29,30 +29,44 @@ public class Sample {
 
     private Date timestamp;
 
+    private String opName;
     private boolean succ;
     private String opType;
+    private String opId;
     private String sampleType;
 
     private long time; /* response time */
     private long bytes; /* bytes transferred */
 
-    public Sample(Date timestamp, String opType, boolean succ) {
-        this(timestamp, opType, succ, 0L, 0L);
+	public Sample(Date timestamp, String opId, String opType,
+			String sampleType, String opName, boolean succ) {
+		this(timestamp, opId, opType, sampleType, opName, succ, 0L, 0L);
     }
 
-    public Sample(Date timestamp, String opType, boolean succ, long time,
-            long bytes) {
-        this.timestamp = timestamp;
-        this.succ = succ;
-        this.time = time;
-        this.bytes = bytes;
-        this.opType = opType;
-        this.sampleType = opType;
-    }
+	public Sample(Date timestamp, String opId, String opType,
+			String sampleType, String opName, boolean succ, long time,
+			long bytes) {
+		this.timestamp = timestamp;
+		this.succ = succ;
+		this.time = time;
+		this.bytes = bytes;
+		this.opType = opType;
+		this.sampleType = sampleType;
+		this.opName = opName;
+		this.opId = opId;
+	}
 
     public Date getTimestamp() {
         return timestamp;
     }
+    
+	public String getOpName() {
+		return opName;
+	}
+
+	public String getOpId() {
+		return opId;
+	}
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;

@@ -4,6 +4,12 @@
 	<comment></comment>
 	<projects>
 		<project>cosbench</project>
+		<project>cosbench-api</project>
+		<project>cosbench-config</project>
+		<project>cosbench-core</project>
+		<project>cosbench-http</project>
+		<project>cosbench-log</project>
+		<project>cosbench-log4j</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

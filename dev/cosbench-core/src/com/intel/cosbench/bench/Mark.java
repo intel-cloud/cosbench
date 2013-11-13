@@ -32,6 +32,8 @@ public class Mark implements Cloneable, Item {
 
     private String opType; /* operation type */
     private String sampleType; /* sample type */
+    private String opName; /* operation name */
+    private String opId; /* operation id */
 
     private int opCount; /* number of successful operations */
     private int sampleCount; /* number of successful samples */
@@ -60,6 +62,22 @@ public class Mark implements Cloneable, Item {
 
     public void setOpType(String opType) {
         this.opType = opType;
+    }
+    
+    public void setOpName(String opName){
+    	this.opName = opName;
+    }
+    
+    public String getOpName(){
+    	return opName;
+    }
+    
+    public void setOpId(String opId) {
+    	this.opId = opId;
+    }
+    
+    public String getOpId() {
+    	return opId;
     }
 
     public String getSampleType() {
@@ -144,16 +162,19 @@ public class Mark implements Cloneable, Item {
         totalOpCount += 1;
     }
 
-    public static String getMarkType(String opType, String sampleType) {
-        return opType + "-" + sampleType;
-    }
+	public static String getMarkType(String opId, String opType,
+			String sampleType, String opName) {
+		return opId + "." + opType + "." + sampleType + "." + opName;
+	}
 
     public static Mark newMark(String type) {
-        String[] types = type.split("-");
+        String[] types = type.split("\\.");
         Mark mark = new Mark();
         mark.setName(type);
-        mark.setOpType(types[0]);
-        mark.setSampleType(types[1]);
+        mark.setOpId(types[0]);
+        mark.setOpType(types[1]);
+        mark.setSampleType(types[2]);
+        mark.setOpName(types[3]);
         return mark;
     }
 }

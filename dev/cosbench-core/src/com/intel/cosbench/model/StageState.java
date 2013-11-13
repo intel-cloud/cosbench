@@ -22,6 +22,8 @@ import java.util.*;
 public enum StageState {
 
     WAITING,
+    
+    SLEEPING,
 
     BOOTING,
 
@@ -36,6 +38,8 @@ public enum StageState {
     CLOSING,
 
     COMPLETED,
+    
+    FAILED,
 
     TERMINATED,
 
@@ -47,6 +51,7 @@ public enum StageState {
 
     static {
         FINAL_STATES = new HashSet<StageState>();
+        FINAL_STATES.add(FAILED);
         FINAL_STATES.add(COMPLETED);
         FINAL_STATES.add(TERMINATED);
         FINAL_STATES.add(CANCELLED);

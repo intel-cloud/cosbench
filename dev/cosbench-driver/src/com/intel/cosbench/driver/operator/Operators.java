@@ -23,10 +23,9 @@ import com.intel.cosbench.config.*;
 
 public class Operators {
 
-    public static Operator getOperator(String type, String division,
-            Config config) {
-        AbstractOperator operator = createOperator(type);
-        operator.init(division, config);
+	public static Operator getOperator(Operation op, Config config) {
+        AbstractOperator operator = createOperator(op.getType());
+        operator.init(op.getId(), op.getRatio(), op.getDivision(), config);
         return operator;
     }
 

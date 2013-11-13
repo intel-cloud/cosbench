@@ -11,7 +11,7 @@
   </tr>
   <#list allMetrics as mInfo>
     <tr>
-      <td>${mInfo.opType}<#if mInfo.opType != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
+      <td>${mInfo.opName}<#if mInfo.opName != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
       <td>
         <#assign op = mInfo.sampleCount >
         <#if (op >= 1000) >
@@ -91,7 +91,7 @@
         <#if mInfo.totalSampleCount == 0 >
           N/A
         <#else>
-          <#assign sRatio = mInfo.sampleCount / mInfo.totalSampleCount >
+          <#assign sRatio = mInfo.ratio >
           ${sRatio?string("0.##%")}
         </#if>
       </td>
@@ -112,7 +112,7 @@
   </tr>
   <#list allMetrics as mInfo>
     <tr>
-      <td>${mInfo.opType}<#if mInfo.opType != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
+      <td>${mInfo.opName}<#if mInfo.opName != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
       <td>
         <#if !mInfo.latency._60?? >
           N/A

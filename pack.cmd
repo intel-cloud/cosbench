@@ -46,5 +46,5 @@ xcopy /Y 3rd-party-licenses.pdf %1
 xcopy /Y pkg.lst %1
 
 echo "Build up adaptor example enviornment"
-xcopy /Y /E adaptor-dev\* %1\ext\
+xcopy /Y /E ext\* %1\ext\
 

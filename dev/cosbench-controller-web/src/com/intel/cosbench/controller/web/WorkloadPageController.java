@@ -19,6 +19,8 @@ package com.intel.cosbench.controller.web;
 
 import static com.intel.cosbench.model.WorkloadState.*;
 
+import java.io.IOException;
+
 import javax.servlet.http.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +51,13 @@ public class WorkloadPageController extends AbstractController {
         WorkloadInfo info = controller.getWorkloadInfo(id);
         if (info == null)
             throw new NotFoundException();
+		if (controller.getloadArch() && info.getArchived() && info.getReport().getAllMetrics().length==0) {
+			try {
+				controller.getWorkloadLoader().loadWorkloadPageInfo(info);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
         return process(info);
     }
 

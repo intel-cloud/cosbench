@@ -10,6 +10,10 @@
   <auth type="keystone" config="username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service" /> 
   -->
 
+  <!-- bypass authentication, directly feed auth token  
+  <storage type="swift" config="token=AUTH_xxx;storage_url=http://192.168.10.1:8080/auth/v1.0" />	
+  -->
+	
   <workflow>
 
     <workstage name="init">

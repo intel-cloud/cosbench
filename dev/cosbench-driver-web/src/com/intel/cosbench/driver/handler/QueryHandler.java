@@ -29,8 +29,8 @@ public class QueryHandler extends MissionHandler {
 
     @Override
     protected Response process(MissionInfo info) {
-        if (isStopped(info.getState()))
-            return new Response(false, "mission aleady stopped");
+//        if (isStopped(info.getState()))
+//            return new Response(false, "mission aleady stopped");
         return getResponse(info);
     }
 

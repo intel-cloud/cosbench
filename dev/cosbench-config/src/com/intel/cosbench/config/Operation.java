@@ -32,6 +32,7 @@ public class Operation {
     private int ratio = 100;
     private String division;
     private String config;
+    private String id = "none"; /* will be inited in workloadProcessor.initStageOpId() */
 
     public Operation() {
         /* empty */
@@ -80,6 +81,16 @@ public class Operation {
         /* configuration might be empty */
         this.config = config;
     }
+    
+    
+    public String getId() {
+    	return id;
+    }
+    
+    public void setId(String id) {
+    	this.id = id;
+    }
+
 
     public void validate() {
         setType(getType());

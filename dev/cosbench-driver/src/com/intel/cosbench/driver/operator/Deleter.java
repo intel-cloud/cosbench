@@ -19,6 +19,7 @@ package com.intel.cosbench.driver.operator;
 
 import java.util.Date;
 
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -42,8 +43,8 @@ class Deleter extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+    	super.init(id, ratio, division, config);
         objPicker.init(division, config);
     }
 
@@ -55,15 +56,16 @@ class Deleter extends AbstractOperator {
     @Override
     protected void operate(int idx, int all, Session session) {
         String[] path = objPicker.pickObjPath(session.getRandom(), idx, all);
-        Sample sample = doDelete(path[0], path[1], config, session);
+        Sample sample = doDelete(path[0], path[1], config, session, this);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-        Result result = new Result(now, OP_TYPE, sample.isSucc());
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
-
+    
     public static Sample doDelete(String conName, String objName,
-            Config config, Session session) {
+            Config config, Session session, Operator op) {
         if (Thread.interrupted())
             throw new AbortedException();
 
@@ -73,15 +75,20 @@ class Deleter extends AbstractOperator {
             session.getApi().deleteObject(conName, objName, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
+        } catch (StorageException se) {
+            String msg = "Error deleting object " +  conName + ": " + objName; 
+            doLogWarn(session.getLogger(), msg);
         } catch (Exception e) {
             doLogErr(session.getLogger(), "fail to perform remove operation", e);
-            return new Sample(new Date(), OP_TYPE, false);
+            return new Sample(new Date(), op.getId(), op.getOpType(),
+					op.getSampleType(), op.getName(), false);
         }
 
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
-        return new Sample(now, OP_TYPE, true, end - start, 0L);
+        return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
+				op.getName(), true, end - start, 0L);
     }
 
 }

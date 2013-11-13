@@ -18,7 +18,8 @@
   <h2>Performance Matrix</h2>
   <h3>Filters</h3>
   <div class="form">
-    <form name="perf-matrix" action="matrix.html" method="GET" onreset="window.location.href='matrix.html?ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ'">
+    <form name="perf-matrix" action="matrix.html" method="GET" onreset="window.location.href='matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ'">
+      <input name="type" type="hidden" value="${type}">
       <span class="label">Operations:</span>
       <span class="checkbox"><input name="ops" type="checkbox" value="read"
         <#if allOps!false || read!false >checked="true"</#if> /></span> Read
@@ -251,7 +252,7 @@
               <#if mInfo.totalSampleCount == 0 >
                 N/A
               <#else>
-                <#assign sRatio = mInfo.sampleCount / mInfo.totalSampleCount >
+                <#assign sRatio = mInfo.ratio >
                 ${sRatio?string("0.##%")}
               </#if>
             </td>
@@ -279,9 +280,9 @@
     </#list>
   </table>
   <p>
-    <a href="matrix.html?ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&others=cfg">show RT only</a>
-    <a href="matrix.html?ops=read&ops=write&ops=delete&metrics=t&others=cfg">show T only</a>
-    <a href="matrix.html?ops=read&ops=write&ops=delete&metrics=bw&others=cfg">show BW only</a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&others=cfg">show RT only</a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=t&others=cfg">show T only</a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=bw&others=cfg">show BW only</a>
   </p>
   <p><a href="index.html">go back to index</a></p>
 </div> <#-- end of content -->

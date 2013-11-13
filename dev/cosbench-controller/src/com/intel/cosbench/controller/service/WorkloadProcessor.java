@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.controller.service;
 
 import static com.intel.cosbench.model.WorkloadState.*;
+import static java.util.concurrent.TimeUnit.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -84,18 +85,27 @@ class WorkloadProcessor {
         StageRegistry registry = new StageRegistry();
         int index = 1;
         for (Stage stage : workloadContext.getWorkload().getWorkflow()) {
-            String id = "s" + index++;
+            String id = "s" + index++ + "-" + stage.getName();
             registry.addStage(createStageContext(id, stage));
         }
         workloadContext.setStageRegistry(registry);
     }
 
     private static StageContext createStageContext(String id, Stage stage) {
+    	initStageOpId(stage);
         StageContext context = new StageContext();
         context.setId(id);
         context.setStage(stage);
         context.setState(StageState.WAITING);
         return context;
+    }
+    
+    private static void initStageOpId(Stage stage) {
+    	int index = 0;
+		for (Work work : stage.getWorks()) {
+			for (Operation op : work.getOperations())
+				op.setId("op" + String.valueOf(++index));
+		}
     }
 
     private void createExecutor() {
@@ -119,7 +129,10 @@ class WorkloadProcessor {
         } catch (WorkloadException we) {
             terminateWorkload();
             return;
-        } catch (Exception e) {
+		} catch (InterruptedException e) {
+			terminateWorkload();
+			return;
+		} catch (Exception e) {
             LOGGER.error("unexpected exception", e);
             terminateWorkload();
             return;
@@ -132,7 +145,7 @@ class WorkloadProcessor {
      * 'current stage' set! However, this inconsistent window is left AS-IS for
      * performance consideration.
      */
-    private void processWorkload() {
+    private void processWorkload() throws InterruptedException {
         workloadContext.setState(PROCESSING);
         workloadContext.setStartDate(new Date());
         Iterator<StageContext> iter = queue.iterator();
@@ -143,16 +156,67 @@ class WorkloadProcessor {
         }
         workloadContext.setStopDate(new Date());
         workloadContext.setCurrentStage(null);
+		for (StageContext stageContext : workloadContext.getStageRegistry()
+				.getAllItems()) {
+			if (stageContext.getState().equals(StageState.FAILED)) {
+				workloadContext.setState(FAILED);
+				return;
+			}
+		}
         workloadContext.setState(FINISHED);
     }
 
-    private void runStage(StageContext stageContext) {
-        String id = stageContext.getId();
-        LOGGER.info("begin to run stage {}", id);
-        workloadContext.setCurrentStage(stageContext);
-        executeStage(stageContext);
-        LOGGER.info("successfully ran stage {}", id);
+    private static String millisToHMS(long millis) {
+
+        long hrs = MILLISECONDS.toHours(millis) % 24;
+        long min = MILLISECONDS.toMinutes(millis) % 60;
+        long sec = MILLISECONDS.toSeconds(millis) % 60;
+
+        return hrs + ":" + min + "::" + sec;
     }
+
+    private void runStage(StageContext stageContext) throws InterruptedException {
+        String id = stageContext.getId();
+        int closuredelay = stageContext.getStage().getClosuredelay();
+
+        String stageName = stageContext.getStage().getName();
+//        String work0Type = stageContext.getStage().getWorks().get(0).getType();
+
+        LOGGER.info("begin to run stage {}", id);
+
+        LOGGER.info("============================================");
+        LOGGER.info("START WORK: {}", stageName);
+
+        long startStamp = System.currentTimeMillis();
+
+        workloadContext.setCurrentStage(stageContext);
+        if (stageName.equals("delay") && closuredelay > 0) {
+			executeDelay(stageContext, closuredelay);
+		} else {
+			executeStage(stageContext);
+
+			long elapsedTime = System.currentTimeMillis() - startStamp;
+
+			LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
+			LOGGER.info("============================================");
+			LOGGER.info("");
+
+			if(closuredelay > 0)
+				executeDelay(stageContext, closuredelay);
+		}
+
+		LOGGER.info("successfully ran stage {}", id);
+	}
+    
+	private void executeDelay(StageContext stageContext, int closuredelay)
+			throws InterruptedException {
+
+		LOGGER.info("sleeping for " + closuredelay + " seconds...");
+		stageContext.setState(StageState.SLEEPING);
+		Thread.sleep(closuredelay * 1000);
+		LOGGER.info("sleep complete.");
+		stageContext.setState(StageState.COMPLETED);
+	} 
 
     private void executeStage(StageContext stageContext) {
         StageRunner runner = createStageRunner(stageContext);

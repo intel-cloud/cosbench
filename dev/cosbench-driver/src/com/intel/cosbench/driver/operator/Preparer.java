@@ -54,8 +54,8 @@ class Preparer extends AbstractOperator {
     }
 
     @Override
-    protected void init(String division, Config config) {
-        super.init(division, config);
+    protected void init(String id, int ratio, String division, Config config) {
+    	super.init(id, ratio, division, config);
         objScanner.init(division, config);
         sizePicker.init(config);
         chunked = config.getBoolean("chunked", false);
@@ -92,13 +92,14 @@ class Preparer extends AbstractOperator {
             long len = chunked ? -1 : size;
             RandomInputStream in = new RandomInputStream(size, random,
                     isRandom, hashCheck);
-            Sample sample = doWrite(in, len, path[0], path[1], config, session);
+            Sample sample = doWrite(in, len, path[0], path[1], config, session, this);
             sample.setOpType(opTye);
             session.getListener().onSampleCreated(sample);
         }
 
         Date now = new Date();
-        Result result = new Result(now, opTye, getSampleType(), true);
+		Result result = new Result(now, getId(), getOpType(), getSampleType(),
+				getName(), true);
         session.getListener().onOperationCompleted(result);
     }
 

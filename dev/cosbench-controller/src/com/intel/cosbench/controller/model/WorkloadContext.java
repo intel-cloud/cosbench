@@ -38,11 +38,16 @@ public class WorkloadContext implements WorkloadInfo {
     private Workload workload;
     private transient volatile StageInfo currentStage;
     private StageRegistry stageRegistry;
+    private int order; /* workload order */
 
     /* Report will be available after the workload is finished */
     private volatile Report report = null; // will be merged from stage reports
 
     private transient List<WorkloadListener> listeners = new ArrayList<WorkloadListener>();
+    
+    private String[] opInfo;
+    
+    private boolean archived = false;
 
     public WorkloadContext() {
         /* empty */
@@ -55,6 +60,14 @@ public class WorkloadContext implements WorkloadInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public int getOrder(){
+    	return this.order;
+    }
+    
+    public void setOrder(int order){
+    	this.order = order;
     }
 
     @Override
@@ -91,16 +104,32 @@ public class WorkloadContext implements WorkloadInfo {
 
     public void setState(WorkloadState state) {
         this.state = state;
+    	if(this.archived)
+    		return;
         stateHistory.addState(state.name());
         if (WorkloadState.isRunning(state))
             fireWorkloadStarted();
         if (WorkloadState.isStopped(state))
             fireWorkloadStopped();
     }
+    
+    public void setState(String state, Date date){
+    	stateHistory.addState(state, date);
+    }
 
     private void fireWorkloadStarted() {
         for (WorkloadListener listener : listeners)
             listener.workloadStarted(this);
+    }
+    
+    @Override
+    public void setArchived(boolean archived) {
+    	this.archived = archived;
+    }
+    
+    @Override
+    public boolean getArchived() {
+    	return archived;
     }
 
     private void fireWorkloadStopped() {
@@ -154,15 +183,26 @@ public class WorkloadContext implements WorkloadInfo {
     public void setWorkload(Workload workload) {
         this.workload = workload;
     }
+    
+    public String[] getOpInfo(){
+    	return opInfo;
+    }
+    
+    public void setOpInfo(String[] opInfo){
+    	this.opInfo = opInfo;
+    }
 
     @Override
     public String[] getAllOperations() {
+    	if(opInfo == null) {
         Set<String> ops = new LinkedHashSet<String>();
         for (Stage stage : workload.getWorkflow())
             for (Work work : stage)
                 for (Operation op : work)
                     ops.add(op.getType());
-        return ops.toArray(new String[ops.size()]);
+        setOpInfo(ops.toArray(new String[ops.size()]));
+    	}
+        return getOpInfo();
     }
 
     @Override
@@ -225,6 +265,8 @@ public class WorkloadContext implements WorkloadInfo {
     }
 
     public void addListener(WorkloadListener listener) {
+    	if(listeners == null)
+    		return;
         listeners.add(listener);
     }
 

@@ -84,7 +84,7 @@ public class MissionContext implements MissionInfo {
     public void setState(MissionState state) {
         this.state = state;
         stateHistory.addState(state.name());
-        if (MissionState.isStopped(state))
+        if (MissionState.isStopped(state) && !state.equals(MissionState.FAILED))
             fireMissionStopped();
     }
 
@@ -102,7 +102,7 @@ public class MissionContext implements MissionInfo {
         Report report = merger.merge();
         OperatorRegistry registry = operatorRegistry;
         for (Metrics metrics : report) {
-            OperatorContext op = registry.getOperator(metrics.getOpType());
+            OperatorContext op = registry.getOperator(metrics.getOpId());
             metrics.setLatency(Histogram.convert(op.getCounter()));
         }
         return report;

@@ -29,6 +29,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.*;
 
 import com.intel.cosbench.client.http.HttpClientUtil;
+import com.intel.cosbench.log.*;
 
 public class SwiftClient {
 
@@ -119,13 +120,20 @@ public class SwiftClient {
             SwiftException {
         SwiftResponse response = null;
         try {
+		Logger logger = LogFactory.getSystemLogger();
+		logger.info("Creating container with auth_token " + authToken);
+
             method = HttpClientUtil.makeHttpPut(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
             response = new SwiftResponse(client.execute(method));
-            if (response.getStatusCode() == SC_CREATED)
+            if (response.getStatusCode() == SC_CREATED) {
+		logger.info("SUCCESS");
                 return;
-            if (response.getStatusCode() == SC_ACCEPTED)
+            }
+            if (response.getStatusCode() == SC_ACCEPTED) {
+		logger.info("SUCCESS");
                 return;
+            }
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());
         } finally {

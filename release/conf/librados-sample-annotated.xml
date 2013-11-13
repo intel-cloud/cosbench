@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="simple-librados-ceph-test" description="Test Workload for librados">
+
+	<storage type="librados" config="endpoint=HOSTNAME;accesskey=admin;secretkey=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" />
+	<!-- config for the connection. Enpoint could be e.g. the monitor node, secretkey is the Key from the admin Keyring-->
+
+	<!-- Dont use librados to create containers (pools), they will default to only have 64 pgs, which renders them pretty useless, see http://ceph.com/docs/master/rados/operations/pools/-->
+
+		<workstage name="write - 240t - 4MB">
+       <work name="write 4MB" workers="240" runtime="300">
+          <operation type="write" config="cprefix=radtest;containers=c(1);oprefix=4m240t_;objects=s(1,10000);sizes=c(4)MB" />
+       </work>
+	 	</workstage>
+		<!-- This will use 12 Threads and write 4MB Files for 300 seconds. It will put all of them into the pool radtest1 with names 4m12t_1 up to 4m12t_10000 and will then start over again. Atention: all drivers operate on the same namespace and will thus overwrite each others obejects-->
+
+		<workstage name="read - 240t - 4MB">
+       <work name="read 4MB" workers="240" runtime="30">
+          <operation type="read" config="cprefix=radtest;containers=c(1);oprefix=4m_;objects=s(1,1000)" />
+       </work>
+	 	</workstage>
+		<!-- Now reading files. Attention: You can only read files that exist. E.g. if 4m12t_905 does not exist, your Success Rate on reading will drop. -->
+	</workflow>
+</workload>

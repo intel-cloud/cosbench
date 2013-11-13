@@ -4,6 +4,8 @@ import static com.intel.cosbench.client.S3Stor.S3Constants.*;
 
 import java.io.*;
 
+import org.apache.http.HttpStatus;
+
 import com.amazonaws.*;
 import com.amazonaws.auth.*;
 import com.amazonaws.services.s3.*;
@@ -97,8 +99,10 @@ public class S3Storage extends NoneStorage {
     public void createContainer(String container, Config config) {
         super.createContainer(container, config);
         try {
-        	logger.info("Creating " + container);
-            client.createBucket(container);
+        	if(!client.doesBucketExist(container)) {
+	        	logger.info("Creating " + container);
+	            client.createBucket(container);
+        	}
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -124,8 +128,14 @@ public class S3Storage extends NoneStorage {
     public void deleteContainer(String container, Config config) {
         super.deleteContainer(container, config);
         try {
-        	logger.info("Deleting " + container);
-            client.deleteBucket(container);
+        	if(client.doesBucketExist(container)) {
+        		logger.info("Deleting " + container);
+        		client.deleteBucket(container);
+        	}
+        } catch(AmazonS3Exception awse) {
+        	if(awse.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(awse);
+        	}
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -137,6 +147,10 @@ public class S3Storage extends NoneStorage {
         try {
         	logger.info("Deleting " + container + "\\" + object);
             client.deleteObject(container, object);
+        } catch(AmazonS3Exception awse) {
+        	if(awse.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(awse);
+        	}
         } catch (Exception e) {
             throw new StorageException(e);
         }

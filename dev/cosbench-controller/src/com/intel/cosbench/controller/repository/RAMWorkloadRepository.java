@@ -53,8 +53,9 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         WorkloadList workloads = new SimpleWorkloadList(getMaxCapacity());
         this.workloads = workloads;
     }
-
-    private int getMaxCapacity() {
+    
+    @Override
+    public int getMaxCapacity() {
         int maxCapacity = MAX_WORKLOAD_DEFAULT;
         String config = System.getProperty(MAX_WORKLOAD_KEY);
         if (!StringUtils.isEmpty(config))
@@ -78,6 +79,11 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         LOGGER.debug("workload {} has been saved in RAM", workload.getId());
         LOGGER.debug("{} workloads have been removed from RAM", removed.length);
     }
+    
+    @Override
+    public synchronized void removeWorkload(WorkloadContext workload) {
+    	workloads.remove(workload);
+    } 
 
     @Override
     public synchronized WorkloadContext getWorkload(String id) {
@@ -103,7 +109,16 @@ public class RAMWorkloadRepository implements WorkloadRepository,
     public synchronized WorkloadContext[] getInactiveWorkloads() {
         List<WorkloadContext> result = new ArrayList<WorkloadContext>();
         for (WorkloadContext workload : workloads.values())
-            if (WorkloadState.isStopped(workload.getState()))
+            if (WorkloadState.isStopped(workload.getState()) && !workload.getArchived())
+                result.add(workload);
+        return result.toArray(new WorkloadContext[result.size()]);
+    }
+    
+    @Override
+    public synchronized WorkloadContext[] getArchivedWorkloads() {
+    	List<WorkloadContext> result = new ArrayList<WorkloadContext>();
+        for (WorkloadContext workload : workloads.values())
+            if (workload.getArchived())
                 result.add(workload);
         return result.toArray(new WorkloadContext[result.size()]);
     }

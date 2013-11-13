@@ -48,6 +48,10 @@ public class StateRegistry extends ListRegistry<StateInfo> {
     public void addState(String name) {
         addItem(new StateItem(name, new Date()));
     }
+    
+    public void addState(String name, Date date) {
+    	addItem(new StateItem(name, date));
+    }
 
     public StateInfo getState(int index) {
         return getItem(index);

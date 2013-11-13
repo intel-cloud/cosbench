@@ -136,6 +136,14 @@ class StageRunner implements StageCallable {
         if (Thread.interrupted())
             throw new CancelledException();
         closeTasks();
+        
+		TaskRegistry tasks = stageContext.getTaskRegistry();
+		for (TaskContext task : tasks) {
+			if (task.getState().equals(TaskState.FAILED)) {
+				stageContext.setState(FAILED);
+				return;
+			}
+		}
         stageContext.setState(COMPLETED);
     }
 

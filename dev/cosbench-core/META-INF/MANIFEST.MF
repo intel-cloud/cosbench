@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Core Bundle
 Bundle-SymbolicName: cosbench-core
-Bundle-Version: 0.3.1.0
+Bundle-Version: 0.3.3.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.intel.cosbench.bench,
  com.intel.cosbench.exporter,
- com.intel.cosbench.model,
  com.intel.cosbench.protocol,
+ com.intel.cosbench.model,
  com.intel.cosbench.service,
  com.intel.cosbench.utils
 Import-Package: com.intel.cosbench.config,
