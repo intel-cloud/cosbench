@@ -36,6 +36,8 @@ public class S3Storage extends NoneStorage {
     	endpoint = config.get(ENDPOINT_KEY, ENDPOINT_DEFAULT);
         accessKey = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
+
+        boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
         
 		String proxyHost = config.get(PROXY_HOST_KEY, "");
 		String proxyPort = config.get(PROXY_PORT_KEY, "");
@@ -43,6 +45,7 @@ public class S3Storage extends NoneStorage {
         parms.put(ENDPOINT_KEY, endpoint);
     	parms.put(AUTH_USERNAME_KEY, accessKey);
     	parms.put(AUTH_PASSWORD_KEY, secretKey);
+    	parms.put(PATH_STYLE_ACCESS_KEY, pathStyleAccess);
     	parms.put(PROXY_HOST_KEY, proxyHost);
     	parms.put(PROXY_PORT_KEY, proxyPort);
 
@@ -59,6 +62,7 @@ public class S3Storage extends NoneStorage {
         AWSCredentials myCredentials = new BasicAWSCredentials(accessKey, secretKey);
         client = new AmazonS3Client(myCredentials, clientConf);
         client.setEndpoint(endpoint);
+        client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(pathStyleAccess));
         
         logger.debug("S3 client has been initialized");
     }

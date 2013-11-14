@@ -30,6 +30,12 @@ public interface S3Constants {
     String PROXY_PORT_KEY = "proxyport";    
     
     // --------------------------------------------------------------------------
+    // PATH STYLE ACCESS
+    // --------------------------------------------------------------------------
+    String PATH_STYLE_ACCESS_KEY = "path_style_access";
+    boolean PATH_STYLE_ACCESS_DEFAULT = false;
+
+    // --------------------------------------------------------------------------
     // CONTEXT NEEDS FROM AUTH MODULE
     // --------------------------------------------------------------------------
     String S3CLIENT_KEY = "s3client";
