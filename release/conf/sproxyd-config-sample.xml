@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <workload name="sproxyd-sample" description="sample benchmark for sproxyd">
 
-  <storage type="sproxyd" config="hosts=sn1,sn2,sn3,sn4,sn5,sn6;port=81;base_path=/proxy/bp" />  
+  <storage type="sproxyd" config="hosts=sn1,sn2,sn3,sn4,sn5,sn6;port=81;base_path=/proxy/bp;pool_size=60,10" />
 
   <workflow>
 
