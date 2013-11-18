@@ -36,4 +36,11 @@ public interface SproxydConstants {
 
 	String PORT_KEY = "port";
 	int PORT_DEFAULT = 81;
+
+	String POOL_SIZE_KEY = "pool_size";
+	/**
+	 * MaxTotal,MaxPerRoute for the HTTP connection manager pool
+	 */
+	String POOL_SIZE_DEFAULT = "60,10";
+
 }
