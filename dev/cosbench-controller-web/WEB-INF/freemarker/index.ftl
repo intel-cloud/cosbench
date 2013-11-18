@@ -112,6 +112,7 @@
   	<p/>
     <p><a href="submit.html">submit new workloads</a></p>
   	<p><a href="config.html">config workloads</a></p>
+  	<p><a href="advanced-config.html">advanced config for workloads</a></p>
   	<p/>
   </div>
   

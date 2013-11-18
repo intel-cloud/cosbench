@@ -186,6 +186,48 @@ a:visited {
 }
 
 
+.rwd-table {
+	width: 30%;
+	text-align: center;
+	border-bottom: solid 1px #E1E1E1;
+	border-collapse: collapse;
+}
+
+.rwd-table th {
+	padding: 2px;
+	color: #FFFFFF;
+	background-color: #555555;
+}
+.rwd-table th:hover {
+	background-color: #333333;
+}
+
+.rwd-table th.id {
+	color: #555555;
+	background: #BBBBAA;
+}
+
+.rwd-table th.id:hover {
+	background-color: #E1E1E1;
+}
+
+.rwd-table td {
+	padding: 2px;
+	border-top: solid 1px #E1E1E1;
+	background-color: #FFFFFF;
+}
+
+.rwd-table tr.high-light td {
+	background: #F4F4F4;
+}
+
+.rwd-table tr.nohover:hover td{
+	background-color: #FFFFFF;
+}
+
+.rwd-table tr:hover td {
+	background-color: #CCD9E9;
+}
 
 /* ---------------------------------------
  * Text Styles
