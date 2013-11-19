@@ -63,6 +63,7 @@ public class ObjectPicker {
     }
 
     public String[] pickObjPath(Random random, int idx, int all) {
+    	synchronized(this) {
         if (division.equals(OBJECT))
             return new String[] { conNmGen.next(random),
                     objNmGen.next(random, idx, all) };
@@ -70,6 +71,7 @@ public class ObjectPicker {
             return new String[] { conNmGen.next(random, idx, all),
                     objNmGen.next(random) };
         return new String[] { conNmGen.next(random), objNmGen.next(random) };
+    	}
     }
 
 }
