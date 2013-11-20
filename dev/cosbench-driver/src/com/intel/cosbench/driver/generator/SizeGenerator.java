@@ -15,19 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 */ 
 
-package com.intel.cosbench.driver.random;
+package com.intel.cosbench.driver.generator;
 
-import java.io.IOException;
+import java.util.Random;
 
-public class StreamUtils {
+public interface SizeGenerator {
 
-    public static byte[] stream2bytes(RandomInputStream stream)
-            throws IOException {
-        long size = stream.getSize();
-        long position = stream.getPosition();
-        byte[] bytes = new byte[(int) (size - position)];
-        stream.read(bytes);
-        return bytes;
-    }
+    public long next(Random random); // in bytes
 
 }

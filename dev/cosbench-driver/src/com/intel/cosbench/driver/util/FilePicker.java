@@ -20,8 +20,8 @@ package com.intel.cosbench.driver.util;
 import java.util.Random;
 
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.Generators;
-import com.intel.cosbench.driver.random.NameGenerator;
+import com.intel.cosbench.driver.generator.Generators;
+import com.intel.cosbench.driver.generator.NameGenerator;
 
 /**
  * This class encapsulates logic to pick integers for identififaction of files / objects

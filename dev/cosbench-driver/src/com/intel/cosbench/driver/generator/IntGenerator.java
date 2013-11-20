@@ -15,16 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 */ 
 
-package com.intel.cosbench.driver.random;
+package com.intel.cosbench.driver.generator;
 
 import java.util.Random;
 
-public interface NameGenerator {
+interface IntGenerator {
 
-    public String next(Random random);
+    public int next(Random random);
 
-    public String next(Random random, int idx, int all);
-
-    int nextKey(Random random);
+    public int next(Random random, int idx, int all);
 
 }

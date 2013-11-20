@@ -23,7 +23,7 @@ import static com.intel.cosbench.driver.util.Division.*;
 import java.util.Random;
 
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.*;
+import com.intel.cosbench.driver.generator.*;
 
 /**
  * This class encapsulates logic to pick up objects.

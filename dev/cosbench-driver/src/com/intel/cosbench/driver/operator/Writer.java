@@ -26,7 +26,7 @@ import org.apache.commons.io.input.CountingInputStream;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.RandomInputStream;
+import com.intel.cosbench.driver.generator.RandomInputStream;
 import com.intel.cosbench.driver.util.*;
 import com.intel.cosbench.service.AbortedException;
 
