@@ -37,7 +37,7 @@ public class Context {
 
     public Object get(String key, Object defVal) {
         Object val = params.get(key);
-        return val == null ? defVal : val.toString();
+        return val == null ? defVal : val;
     }
 
     public String getStr(String key) {
