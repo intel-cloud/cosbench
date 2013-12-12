@@ -51,8 +51,8 @@
 		<property name="controller" ref="controller" />
 	</bean>
 	
-	<bean id="worklaodMetricConfigurationController" name="/advanced-config-workload.do"
-		class="com.intel.cosbench.controller.web.WorkloadMetricConfigurationController">
+	<bean id="workloadMatrixConfigurationController" name="/advanced-config-workload.do"
+		class="com.intel.cosbench.controller.web.WorkloadMatrixConfigurationController">
 		<property name="controller" ref="controller" />
 	</bean>
 

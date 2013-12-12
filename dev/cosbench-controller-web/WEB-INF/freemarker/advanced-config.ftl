@@ -11,7 +11,7 @@
 <div class="top"><br /></div>
 <div class="content">
   <h3>Workload Matrix Configuration</h3>
-    <h5>(You can configure workload metric file from here. You can also create and submit generated workload configs.)</h5>
+    <h5>(You can configure workload matrix from here. You can also create and submit generated workload configs.)</h5>
   <div>
     <form action="advanced-config-workload.do" method="post" class="content" >
 	  <#if error?? >
@@ -99,9 +99,9 @@
 		<div id="workload" class="a1">
 				
 			
-			<input id="workload-checkbox" type="checkbox" name="workload.metric.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling.nextElementSibling);" style="float:left">
+			<input id="workload-checkbox" type="checkbox" name="workload.matrix.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling.nextElementSibling);" style="float:left">
 			<label for="workload-checkbox" class="a2">Workload:</label>
-			<div name="workload.metric" id="workload.metric" class="a2" >
+			<div name="workload.matrix" id="workload.matrix" class="a2" >
 					<table class="info-table">
 						<thead>
 							<tr>
@@ -141,8 +141,8 @@
 						</tbody>
 					</table>
 					
-					<div name="read.write.delete.metric" id="read.write.delete.metric" class="a2" >
-					<input type="checkbox" name="read.write.delete.metric.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling);" style="float:left">
+					<div name="read.write.delete.matrix" id="read.write.delete.matrix" class="a2" >
+					<input type="checkbox" name="read.write.delete.matrix.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling);" style="float:left">
 					<table class="rwd-table">
 						<thead>
 							<tr>
@@ -169,22 +169,21 @@
 					</table>
 					</div>
 					
-					<input type="button" id="addRWDMetricLine" value="Add RWD Ratio" onClick="addRWDMetricRow(this.previousElementSibling);" />
+					<input type="button" id="addRWDMatrixLine" value="Add RWD Ratio" onClick="addRWDMatrixRow(this.previousElementSibling);" />
 					
 					<br><br>
-					<a  href="javascript:void(0);" onclick="deleteMetricRow(this.parentNode.parentNode);"> remove workload </a>
+					<a  href="javascript:void(0);" onclick="deleteMatrixRow(this.parentNode.parentNode);"> remove workload </a>
 			</div>
 			
 		</div>
 		
 		<div class="a2">
-			<input type="button" id="addMetricLine" value="Add Workload" onClick="addMetricRow();" />
+			<input type="button" id="addMatrixLine" value="Add Workload" onClick="addMatrixRow();" />
 		</div>
 		
 		<div class="a1">
 			<br><br><br><br>
 			<input name='generate-workload' type="submit" value="Generate Workload File/s">
-			<input name="config" type="file" id="config" style="width:500px" />
 			<br><br>
 			OR
 			<br><br>
@@ -204,32 +203,32 @@
 	var previousWorkloadDiv=document.getElementById('workload');
 	var firstWorkloadCloneDiv = previousWorkloadDiv.cloneNode(true);
 	
-	var previousRWDRatioDiv=document.getElementById('read.write.delete.metric');
+	var previousRWDRatioDiv=document.getElementById('read.write.delete.Matrix');
 	var firstRWDRatioCloneDiv = previousRWDRatioDiv.cloneNode(true);
 	
 	
-	function deleteMetricRow(divElement) 
+	function deleteMatrixRow(divElement) 
 	{
     	previousWorkloadDiv = divElement.previousElementSibling;
         divElement.parentNode.removeChild(divElement);
 	}
 
-	function addMetricRow()
+	function addMatrixRow()
 	{
 	    var cloneDiv = firstWorkloadCloneDiv.cloneNode(true); 
-	   	setRWDElementNames(getRWDMetricElement(cloneDiv));
+	   	setRWDElementNames(getRWDMatrixElement(cloneDiv));
 	    previousWorkloadDiv.parentNode.insertBefore(cloneDiv, previousWorkloadDiv.nextElementSibling);
 	    previousWorkloadDiv = cloneDiv;
 	}
 	
-	function getRWDMetricElement(divElement)
+	function getRWDMatrixElement(divElement)
 	{
-		var workloadMetricElements = divElement.getElementsByTagName('div');
-		var rwdMetricElements = workloadMetricElements[0].getElementsByTagName('div');
-		return rwdMetricElements[0];
+		var workloadMatrixElements = divElement.getElementsByTagName('div');
+		var rwdMatrixElements = workloadMatrixElements[0].getElementsByTagName('div');
+		return rwdMatrixElements[0];
 	}
 	
-	function addRWDMetricRow(divElement)
+	function addRWDMatrixRow(divElement)
 	{
 	    var cloneDiv = divElement.cloneNode(true);
 	    previousElement = divElement.previousElementSibling;
