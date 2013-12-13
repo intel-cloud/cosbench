@@ -106,6 +106,7 @@ class SwiftAuth extends NoneAuth {
         AuthContext context = new AuthContext();
         context.put(AUTH_TOKEN_KEY, client.getAuthToken());
         context.put(STORAGE_URL_KEY, client.getStorageURL());
+        logger.debug("login is succeed with returned values: token = " + client.getAuthToken() + ", url = " + client.getStorageURL());
         return context;
     }
 
