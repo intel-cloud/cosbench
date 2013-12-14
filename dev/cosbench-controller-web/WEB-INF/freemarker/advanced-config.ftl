@@ -17,7 +17,8 @@
 	  <#if error?? >
         <p><span class="error"><strong>Note</strong>: ${error}!</span></p>
       </#if>
-      	<h3>Workload Matrix</h3>
+      	<label for="workload.matrix.name" >Workload Matrix Name:</label>
+        <input id="workload.matrix.name" name="workload.matrix.name" size="15" maxlength="30"/>
       	<div id="workload-common-configuration" class="a1">
       	<div id="workload.as" class="a2">
 					<table class="info-table">
@@ -99,8 +100,9 @@
 		<div id="workload" class="a1">
 				
 			
-			<input id="workload-checkbox" type="checkbox" name="workload.matrix.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling.nextElementSibling);" style="float:left">
-			<label for="workload-checkbox" class="a2">Workload:</label>
+			<input id="workload-checkbox" type="checkbox" name="workload.matrix.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling.nextElementSibling.nextElementSibling);" style="float:left">
+			<label for="workload-checkbox" class="a2">Workload Name:</label>
+			<input name="workload.name" size="15" maxlength="30"/>
 			<div name="workload.matrix" id="workload.matrix" class="a2" >
 					<table class="info-table">
 						<thead>

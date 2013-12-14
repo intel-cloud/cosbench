@@ -32,31 +32,32 @@ public class WorkloadConfigGenerator {
 	private String storage_type;
 	private String storage_config;
 	private boolean generateWorkloadFiles;
-
+	private File WORKLOAD_CONFIG_DIR;
 	protected ControllerService controller;
 
 	private static final Logger LOGGER = LogFactory.getSystemLogger();
 
-	private static final File WORKLOAD_CONFIG_DIR = new File("workload-configs");
 
 	public WorkloadConfigGenerator(ControllerService controller) {
 		this.controller = controller;
 	}
 
-	static {
-		if (!WORKLOAD_CONFIG_DIR.exists())
-			WORKLOAD_CONFIG_DIR.mkdirs();
-		String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
-		LOGGER.info("using {} for storing generated workload configs", path);
-	}
 
 	public void createWorkloadFiles(HttpServletRequest req) {
 
 		// Set common workload parameters
 		setWorkloadParams(req);
+		
+		String workloadMatrixName = req.getParameter("workload.matrix.name");
+		if(workloadMatrixName == null)
+			workloadMatrixName = "workload-configs";
+		WORKLOAD_CONFIG_DIR = new File(workloadMatrixName);
+		if (!WORKLOAD_CONFIG_DIR.exists())
+			WORKLOAD_CONFIG_DIR.mkdirs();
+		String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
+		LOGGER.info("using {} for storing generated workload configs", path);
 
 		String objectSizeStrings[] = req.getParameterValues("object-sizes");
-		
 
 		if (objectSizeStrings == null)
 			return;
@@ -98,10 +99,14 @@ public class WorkloadConfigGenerator {
 			
 			workload.validate();
 				
-			String workloadName = "objSizes-"+objectSizeString+unit;
-
+			String workloadName = req.getParameterValues("workload.name")[i];
+			if(workloadName == null)
+				workloadName = "objSizes-"+objectSizeString+unit;
+			
 			if (generateWorkloadFiles)
-				printWorkloadConfigXML(workload, workloadName);
+				{
+					printWorkloadConfigXML(workload, workloadName);
+				}
 			else
 				submitWorkload(workload);
 
@@ -132,7 +137,10 @@ public class WorkloadConfigGenerator {
 		try {
 			String workloadXml = CastorConfigTools.getWorkloadWriter()
 					.toXmlString(workload);
-			PrintWriter out = new PrintWriter(new File(WORKLOAD_CONFIG_DIR,workloadName+ ".xml"));
+			File singleWorkloadDirectory = new File(WORKLOAD_CONFIG_DIR+"/"+workloadName);
+			if (!singleWorkloadDirectory.exists())
+				singleWorkloadDirectory.mkdirs();
+			PrintWriter out = new PrintWriter(new File(singleWorkloadDirectory,workloadName+ ".xml"));
 			out.print(workloadXml);
 			out.close();
 		} catch (FileNotFoundException e) {
