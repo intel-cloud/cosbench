@@ -1,4 +1,4 @@
-package com.intel.cosbench.client.cdmi;
+package com.intel.cosbench.client.cdmi.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,7 +101,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 		System.out.println("Pre Length = " + bytes.length);
 		
 		outstream.write(bytes);
-		outstream.flush();
+//		outstream.flush();
 				
 		return bytes.length;
 	 }
@@ -112,7 +112,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			 byte[] bytes = buffer.toString().getBytes("UTF-8");
 			 
 			 outstream.write(bytes);
-			 outstream.flush();
+//			 outstream.flush();
 			 
 			 System.out.println("Post Length = " + bytes.length);
 			 
@@ -164,7 +164,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 		             if(l == -1)
 		                 break;
 		             outstream.write(buffer, 0, l);	
-		             outstream.flush();
+//		             outstream.flush();
 		             valueLen += l;
 		             remaining -= l;
 		         } while(true);

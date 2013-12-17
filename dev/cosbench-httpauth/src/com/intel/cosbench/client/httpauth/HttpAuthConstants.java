@@ -29,16 +29,13 @@ public interface HttpAuthConstants {
     // CONTEXT NEEDS FROM AUTH MODULE
     // --------------------------------------------------------------------------
     String AUTH_CLIENT_KEY = "client";
+    String STORAGE_URL_KEY = "storage_url";
 
     // --------------------------------------------------------------------------
     // AUTHENTICATION
     // --------------------------------------------------------------------------
-    String AUTH_PROTOCOL_KEY = "protocol";
-    String AUTH_PROTOCOL_DEFAULT = "http";
-    String AUTH_HOST_KEY = "host";
-    String AUTH_HOST_DEFAULT = "localhost";
-    String AUTH_PORT_KEY = "port";
-    int AUTH_PORT_DEFAULT = 80;
+    String AUTH_URL_KEY = "auth_url";
+    String AUTH_URL_DEFAULT = "http://127.0.0.1:80";
     String AUTH_USERNAME_KEY = "username";
     String AUTH_USERNAME_DEFAULT = "";
     String AUTH_PASSWORD_KEY = "password";

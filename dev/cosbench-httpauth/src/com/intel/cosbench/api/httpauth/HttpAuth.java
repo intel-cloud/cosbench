@@ -21,23 +21,31 @@ import static com.intel.cosbench.client.httpauth.HttpAuthConstants.*;
 
 import java.io.InterruptedIOException;
 import java.net.SocketTimeoutException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.auth.*;
+import org.apache.http.auth.AUTH;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.protocol.*;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.apache.http.auth.params.*;
 
-import com.intel.cosbench.api.auth.*;
+import com.intel.cosbench.api.auth.AuthException;
+import com.intel.cosbench.api.auth.AuthInterruptedException;
+import com.intel.cosbench.api.auth.AuthTimeoutException;
+import com.intel.cosbench.api.auth.NoneAuth;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.config.Config;
@@ -53,9 +61,7 @@ class HttpAuth extends NoneAuth {
 	private AbstractHttpClient client = null;
 	
     /* account info */
-	private String protocol; // http or https
-    private String host;
-    private int port;
+    private String auth_url;
     private String username;
     private String password;
 
@@ -66,9 +72,10 @@ class HttpAuth extends NoneAuth {
         /* empty */
     }
     
-    public HttpAuth(String host, int port, String username, String password, int timeout) {
-    	this.host = host;
-    	this.port = port;
+    public HttpAuth(String url, String username, String password, int timeout) {
+//    	this.host = host;
+//    	this.port = port;
+    	this.auth_url = url;
     	this.username = username;
     	this.password = password;
     	this.timeout = timeout;
@@ -81,9 +88,10 @@ class HttpAuth extends NoneAuth {
     public void init(Config config, Logger logger) {
         super.init(config, logger);
 
-        protocol = config.get(AUTH_PROTOCOL_KEY, AUTH_PROTOCOL_DEFAULT);
-        host = config.get(AUTH_HOST_KEY, AUTH_HOST_DEFAULT);
-        port = config.getInt(AUTH_PORT_KEY, AUTH_PORT_DEFAULT);
+//        protocol = config.get(AUTH_PROTOCOL_KEY, AUTH_PROTOCOL_DEFAULT);
+//        host = config.get(AUTH_HOST_KEY, AUTH_HOST_DEFAULT);
+//        port = config.getInt(AUTH_PORT_KEY, AUTH_PORT_DEFAULT);
+        auth_url = config.get(AUTH_URL_KEY, AUTH_URL_DEFAULT);
         username = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         password = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);        
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
@@ -105,12 +113,22 @@ class HttpAuth extends NoneAuth {
     public AuthContext login() {
         super.login();
 
-        HttpHost targetHost = new HttpHost(host, port, protocol);
+//        HttpHost host = new HttpHost();
+//        HttpHost targetHost = new HttpHost(host, port, protocol);
 
-		HttpGet method = new HttpGet(targetHost.toURI());
+        
+		URI uri;
+		
+		try {
+			uri = new URI(auth_url);
+		}catch(URISyntaxException use) {
+			throw new AuthException(use);
+		}
+		
+		HttpGet method = new HttpGet(auth_url);
 		method.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, timeout);
 
-        client.getCredentialsProvider().setCredentials(new AuthScope(this.host, this.port), 
+        client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), 
     			new UsernamePasswordCredentials(this.username, this.password));
         
         HttpContext localContext = new BasicHttpContext();        
@@ -150,15 +168,14 @@ class HttpAuth extends NoneAuth {
     			method.abort();
     	}
         
-        return null;
+        return createContext();
     }
  
     
     private AuthContext createContext() {
         AuthContext context = new AuthContext();
         context.put(AUTH_CLIENT_KEY, client);
-        context.put(AUTH_HOST_KEY, host);
-        context.put(AUTH_PORT_KEY, port);
+        context.put(STORAGE_URL_KEY, auth_url);
         
         return context;
     }

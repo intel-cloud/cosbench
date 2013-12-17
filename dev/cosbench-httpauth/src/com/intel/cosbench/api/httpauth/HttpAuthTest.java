@@ -35,16 +35,16 @@ class HttpAuthTest {
 	private AbstractHttpClient client = null;
 	
     /* account info */
-    private String host;
-    private int port;
+    private String storage_url;
 
     public boolean getObject(AuthContext context, String conName, String objName) {
-    	host = context.getStr(AUTH_HOST_KEY);
-    	port = context.getInt(AUTH_PORT_KEY);
+//    	host = context.getStr(AUTH_HOST_KEY);
+//    	port = context.getInt(AUTH_PORT_KEY);
+    	storage_url = context.getStr(STORAGE_URL_KEY);
     	client = (AbstractHttpClient)context.get(AUTH_CLIENT_KEY);
     	
-        HttpHost targetHost = new HttpHost(host, port);
-        String url = targetHost.toURI() + "/" + conName + "/" + objName;
+        
+        String url = storage_url + "/" + conName + "/" + objName;
 
 		HttpGet method = new HttpGet(url);
 
@@ -101,7 +101,7 @@ class HttpAuthTest {
     public static void main(String[] args) {
     	HttpAuthTest test = new HttpAuthTest();
     	
-    	HttpAuth auth = new HttpAuth("localhost", 8080, "cdmi", "mypass", 3000);
+    	HttpAuth auth = new HttpAuth("http://localhost:8080", "cdmi", "mypass", 3000);
     	
     	test.getObject(auth.login(), "cdmi-test", "abc.txt");
     }

@@ -12,8 +12,14 @@ import org.apache.http.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.util.*;
 
-import com.intel.cosbench.client.cdmi.CdmiJsonInputStreamEntity;
+import com.intel.cosbench.client.cdmi.util.CdmiJsonInputStreamEntity;
 
+/**
+ * This class encapsulates operations to access swift through cdmi middleware (https://github.com/osaddon/cdmi).
+ * 
+ * @author ywang19
+ *
+ */
 public class CdmiSwiftClient {
     private static boolean REPORT_DELETE_ERROR = false;
     private HttpClient client;
@@ -68,7 +74,7 @@ public class CdmiSwiftClient {
         HttpResponse response = null;
     	try {
             // Create the request
-            HttpDelete method = new HttpDelete(storageUrl + "/" + encodeURL(container)); // "http://localhost:8080/cdmi-server/TestContainer");
+            HttpDelete method = new HttpDelete(storageUrl + "/" + encodeURL(container)); 
             
             method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             method.setHeader(X_AUTH_TOKEN, authToken);
