@@ -144,7 +144,7 @@ class FileWriter extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            session.getLogger().error("fail to perform write operation", e);
+            doLogErr(session.getLogger(), "fail to perform filewrite operation", e);
             return new Sample(new Date(), getId(), getOpType(), getSampleType(),
     				getName(), false);
         } finally {
