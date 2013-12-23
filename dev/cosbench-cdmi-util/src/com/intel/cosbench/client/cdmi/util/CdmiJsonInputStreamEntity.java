@@ -98,7 +98,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			buffer.append(" \"value\": \"");
 		}
 		byte[] bytes = buffer.toString().getBytes("utf-8");
-		System.out.println("Pre Length = " + bytes.length);
+//		System.out.println("Pre Length = " + bytes.length);
 		
 		outstream.write(bytes);
 //		outstream.flush();
@@ -114,7 +114,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			 outstream.write(bytes);
 //			 outstream.flush();
 			 
-			 System.out.println("Post Length = " + bytes.length);
+//			 System.out.println("Post Length = " + bytes.length);
 			 
 			 return bytes.length;
 		 }else
@@ -192,7 +192,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 				 instream.close();
 	     }
 	     
-	     System.out.println("Transfer length = " + transferLen);	
+//	     System.out.println("Transfer length = " + transferLen);	
 	 }
 	
 	 public boolean isStreaming()
@@ -245,7 +245,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 	public static void main(String[] args) {
 		try{
 			// entity without data value
-			System.out.println("=== Test Entity without value stream ===");
+//			System.out.println("=== Test Entity without value stream ===");
 			FileOutputStream out_none = new FileOutputStream(new File("output_none.txt"));
 			CdmiJsonInputStreamEntity entity_none = new CdmiJsonInputStreamEntity(null, 1000);
 			entity_none.addMetadata("author", "ywang");
@@ -253,7 +253,7 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			entity_none.writeTo(out_none);	
 			
 			// entity with data value
-			System.out.println("=== Test Entity with value stream from file ===");
+//			System.out.println("=== Test Entity with value stream from file ===");
 			FileInputStream in_file = new FileInputStream(new File("in_file.txt"));
 			FileOutputStream out_file = new FileOutputStream(new File("out_file.txt"));
 			CdmiJsonInputStreamEntity entity_file = new CdmiJsonInputStreamEntity(in_file, 1024);	        
