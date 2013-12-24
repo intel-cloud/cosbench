@@ -11,7 +11,7 @@
 <div class="top"><br /></div>
 <div class="content">
 <h2>404 Not Found</h2>
-<p><span class="error"><strong>Note</strong>: The resource you are looking for cannot be found!</span></p>
+<p><span class="error"><strong>Note</strong>: The resource [ ${resource} ] you are looking for cannot be found!</span></p>
 <p><a href="index.html">go back to index</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>

@@ -46,6 +46,8 @@ public abstract class AbstractController implements Controller {
             return new ModelAndView("400");
         } catch (NotFoundException nfe) {
             return new ModelAndView("404");
+        } catch (FileNotFoundException fnfe) {
+        	return new ModelAndView("404", "resource", fnfe.getMessage());
         } catch (Exception e) {
             StringWriter writer = new StringWriter();
             e.printStackTrace(new PrintWriter(writer));

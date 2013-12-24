@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.controller.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -128,7 +129,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		LOGGER.debug(
 				"[ CT ] - workload {} resubmitted failed, has no workload config",
 				id);
-		return null;
+		throw new FileNotFoundException("configuration file for workload " + id);
 	}
 
     private WorkloadContext createWorkloadContext(XmlConfig config) {
