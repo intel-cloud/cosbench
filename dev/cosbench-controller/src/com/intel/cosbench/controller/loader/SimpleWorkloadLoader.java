@@ -73,9 +73,13 @@ public class SimpleWorkloadLoader implements WorkloadLoader {
 	private void loadWorkloadConfig(WorkloadInfo workloadContext)
 			throws FileNotFoundException {
 		XmlConfig config = getWorkloadConfg(workloadContext);
-		WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
-		workloadContext.setWorkload(resolver.toWorkload(config));
-		createStages(workloadContext);
+		if(config != null) {
+			WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
+			workloadContext.setWorkload(resolver.toWorkload(config));
+			createStages(workloadContext);
+		}else {
+			((WorkloadContext) workloadContext).setStageRegistry(new StageRegistry());
+		}		
 	}
 
 	public static XmlConfig getWorkloadConfg(WorkloadInfo workloadContext)

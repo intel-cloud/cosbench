@@ -57,6 +57,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     private WorkloadRepository memRepo = new RAMWorkloadRepository();
     
     private boolean loadArch = false;
+    private boolean loaded = false;
 
     public COSBControllerService() {
         /* empty */
@@ -94,6 +95,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			return;
 		for (WorkloadInfo workloadContext : workloadContexts)
 			memRepo.saveWorkload((WorkloadContext) workloadContext);
+		loaded = true;
 	}
 	
 	public void unloadArchivedWorkload() {
@@ -101,6 +103,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 			memRepo.removeWorkload(workload);
 			workload = null;
 		}
+		loaded = false;
 	}
 	
 
@@ -148,15 +151,13 @@ class COSBControllerService implements ControllerService, WorkloadListener {
     
     public void setloadArch(boolean loadArch) {
     	this.loadArch = loadArch;
-    	if(getloadArch() == true)
+    	
+    	if(getloadArch() && !loaded)
 			try {
 				loadArchivedWorkload();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-    	else if(getloadArch() == false) {
-    		//
-    	}
     }
     
     private String generateWorkloadId() {
