@@ -98,10 +98,8 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			buffer.append(" \"value\": \"");
 		}
 		byte[] bytes = buffer.toString().getBytes("utf-8");
-//		System.out.println("Pre Length = " + bytes.length);
 		
 		outstream.write(bytes);
-//		outstream.flush();
 				
 		return bytes.length;
 	 }
@@ -112,13 +110,14 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			 byte[] bytes = buffer.toString().getBytes("UTF-8");
 			 
 			 outstream.write(bytes);
-//			 outstream.flush();
-			 
-//			 System.out.println("Post Length = " + bytes.length);
+			 outstream.flush();
 			 
 			 return bytes.length;
-		 }else
+		 }else {
+			 outstream.flush();
+
 			 return length;
+		 }
 	 }
 	 
 	public boolean isChunked()
@@ -164,7 +163,6 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 		             if(l == -1)
 		                 break;
 		             outstream.write(buffer, 0, l);	
-//		             outstream.flush();
 		             valueLen += l;
 		             remaining -= l;
 		         } while(true);
@@ -191,8 +189,6 @@ public class CdmiJsonInputStreamEntity extends AbstractHttpEntity
 			 if(instream != null)
 				 instream.close();
 	     }
-	     
-//	     System.out.println("Transfer length = " + transferLen);	
 	 }
 	
 	 public boolean isStreaming()
