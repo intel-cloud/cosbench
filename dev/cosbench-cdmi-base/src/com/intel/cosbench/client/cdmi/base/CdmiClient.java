@@ -11,6 +11,7 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.*;
 
@@ -52,12 +53,14 @@ public class CdmiClient {
         HttpResponse response = null;
         try {
             // Create the request
-            HttpPut method = new HttpPut(uri + "/" + encodeURL(container));
+            HttpPut method = new HttpPut(uri + "/" + encodeURL(container) + "/");
             
             method.setHeader("Accept", "application/cdmi-container");
             method.setHeader("Content-Type", "application/cdmi-container");
             method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
+            
+            method.setEntity(new StringEntity("{}"));
             
             response = client.execute(method);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -79,7 +82,7 @@ public class CdmiClient {
         HttpResponse response = null;
     	try {
             // Create the request
-            HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container)); // "http://localhost:8080/cdmi-server/TestContainer");
+            HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container) + "/"); // "http://localhost:8080/cdmi-server/TestContainer/");
             
             method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
