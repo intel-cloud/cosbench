@@ -26,7 +26,7 @@ import org.apache.commons.io.input.CountingInputStream;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.RandomInputStream;
+import com.intel.cosbench.driver.generator.RandomInputStream;
 import com.intel.cosbench.driver.util.*;
 import com.intel.cosbench.service.AbortedException;
 
@@ -97,7 +97,7 @@ class Writer extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            session.getLogger().error("fail to perform write operation", e);
+            doLogErr(session.getLogger(), "fail to perform write operation", e);
 			return new Sample(new Date(), op.getId(), op.getOpType(),
 					op.getSampleType(), op.getName(), false);
         } finally {

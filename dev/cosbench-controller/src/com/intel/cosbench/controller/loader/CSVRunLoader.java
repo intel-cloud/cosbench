@@ -59,9 +59,12 @@ class CSVRunLoader extends AbstractRunLoader {
 			workload.setName(columns[1]);
 			workloadContext.setWorkload(workload);
 			try {
-				workloadContext.setSubmitDate(DATETIME.parse(columns[2]));
-				workloadContext.setStartDate(DATETIME.parse(columns[3]));
-				workloadContext.setStopDate(DATETIME.parse(columns[4]));
+				if(!columns[2].isEmpty())
+					workloadContext.setSubmitDate(DATETIME.parse(columns[2]));
+				if(!columns[3].isEmpty())
+					workloadContext.setStartDate(DATETIME.parse(columns[3]));
+				if(!columns[4].isEmpty())
+					workloadContext.setStopDate(DATETIME.parse(columns[4]));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -79,7 +82,8 @@ class CSVRunLoader extends AbstractRunLoader {
 				String stateName = str[0].trim();
 				Date stateDate = null;
 				try {
-					stateDate = DATETIME.parse(str[1].trim());
+					if(str.length > 1)
+						stateDate = DATETIME.parse(str[1].trim());
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}

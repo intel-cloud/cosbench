@@ -3,13 +3,14 @@ Web-ContextPath: controller
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Controller Web Bundle
 Bundle-SymbolicName: cosbench-controller-web
-Bundle-Version: 0.3.3.0
+Bundle-Version: 0.4.0.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.intel.cosbench.bench,
  com.intel.cosbench.config,
  com.intel.cosbench.config.castor,
  com.intel.cosbench.exporter,
+ com.intel.cosbench.log,
  com.intel.cosbench.model,
  com.intel.cosbench.service,
  com.intel.cosbench.utils,

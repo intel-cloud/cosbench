@@ -1,0 +1,57 @@
+package com.intel.cosbench.controller.web;
+
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+import org.springframework.web.servlet.ModelAndView;
+
+import com.intel.cosbench.model.WorkloadInfo;
+import com.intel.cosbench.service.ControllerService;
+import com.intel.cosbench.web.AbstractController;
+
+public class WorkloadMatrixConfigurationController extends AbstractController {    
+
+    protected ControllerService controller;
+
+    public void setController(ControllerService controller) {
+        this.controller = controller;
+    }
+    
+    @Override
+    protected ModelAndView process(HttpServletRequest req,
+            HttpServletResponse res) {
+        
+        try {
+            constructWorkloadConfigsFromPostData(req);             
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return createErrResult(e.getMessage());
+        }
+
+        return createSuccResult();
+    }
+
+	private void constructWorkloadConfigsFromPostData(HttpServletRequest req) {
+		
+		WorkloadConfigGenerator wlConfGen = new WorkloadConfigGenerator(controller);
+		wlConfGen.createWorkloadFiles(req);
+		
+	}
+	
+	 private ModelAndView createErrResult(String msg) {
+	        ModelAndView result = new ModelAndView("advanced-config");
+	        result.addObject("error", "ERROR: " + msg);
+	        return result;
+	    }
+
+	    private ModelAndView createSuccResult() {    	
+	        WorkloadInfo[] aInfos = controller.getActiveWorkloads();
+	        return new ModelAndView("submit", "aInfos", aInfos);
+	    }
+	    
+
+}

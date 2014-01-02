@@ -20,7 +20,7 @@ package com.intel.cosbench.driver.util;
 import java.util.Random;
 
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.*;
+import com.intel.cosbench.driver.generator.*;
 
 /**
  * This class encapsulates logic to pick up object sizes.

@@ -23,7 +23,7 @@ import static com.intel.cosbench.driver.util.Division.*;
 import java.util.Random;
 
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.random.*;
+import com.intel.cosbench.driver.generator.*;
 
 /**
  * This class encapsulates logic to pick up objects.
@@ -63,6 +63,7 @@ public class ObjectPicker {
     }
 
     public String[] pickObjPath(Random random, int idx, int all) {
+    	synchronized(this) {
         if (division.equals(OBJECT))
             return new String[] { conNmGen.next(random),
                     objNmGen.next(random, idx, all) };
@@ -70,6 +71,7 @@ public class ObjectPicker {
             return new String[] { conNmGen.next(random, idx, all),
                     objNmGen.next(random) };
         return new String[] { conNmGen.next(random), objNmGen.next(random) };
+    	}
     }
 
 }

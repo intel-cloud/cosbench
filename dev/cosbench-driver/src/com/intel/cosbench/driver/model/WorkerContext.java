@@ -181,8 +181,8 @@ public class WorkerContext implements WorkerInfo {
         storageApi.dispose();
         storageApi = null;
         random = null;
-        snapshot = new Snapshot();
-        logger = null;
+//        snapshot = new Snapshot();
+//        logger = null;
     }
 
 }

@@ -66,6 +66,10 @@ abstract class AbstractClientHandler implements Controller {
             message = ise.getMessage();
         } catch (ConfigException ce) {
             message = ce.getMessage();
+        } catch(FileNotFoundException fnfe) {
+        	message = fnfe.getMessage();
+        } catch(IOException ie) {
+        	message = ie.getMessage();
         } catch (Exception e) {
             StringWriter writer = new StringWriter();
             e.printStackTrace(new PrintWriter(writer));
