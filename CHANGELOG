@@ -1,3 +1,12 @@
+  COSBench 0.4.0.a1 (14-ww1.4)
+------------------------------------
+. #137: when there are large # of archive jobs, exception will raise from archive list on web portal.
+. #139: NullPointerException when a mission is aborted
+. support http BASIC and DIGEST authentication
+. add cdmi base and util bundle
+. add cdmi adapter for swift+cdmi middleware
+
+
   COSBench 0.3.3.0 (13-ww44.5)
 ------------------------------------
 . #20: multiple same operations
