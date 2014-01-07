@@ -3,46 +3,33 @@ package com.intel.cosbench.client.cdmi.base;
 import static org.apache.http.HttpStatus.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Map;
 
-import org.apache.http.client.HttpClient;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.*;
 
-import com.intel.cosbench.client.cdmi.util.CdmiJsonInputStreamEntity;
 
 /**
- * This class encapsulates operations to access cdmi compatible server with cdmi content type.
+ * This class encapsulates operations to access cdmi compatible server with non-cdmi content type.
  * 
  * @author ywang19
  *
  */
-public class CdmiClient extends BaseCdmiClient {
-//    private boolean raise_delete_errors = false;
-//	private HttpClient client;
+public class NonCdmiClient extends BaseCdmiClient{
+//    private HttpClient client;
 //    private String uri;
 //    private ArrayList<Header> custom_headers = new ArrayList<Header> ();
     
-    private final static String cdmi_ver = "1.0.1";
+    public NonCdmiClient() {
+    	super();
+    }
 
-//    public CdmiClient(boolean flag) {
-//        this.raise_delete_errors = flag;
-//    }
-    
-    public CdmiClient() {
-		super();
-	}
-
-//    public void init(HttpClient httpClient, String uri, Map<String, String> headerKV, boolean flag) {
+//    public void init(HttpClient httpClient, String uri, Map<String, String> headerKV) {
 //    	this.client = httpClient;
 //        this.uri = uri;
-//        this.raise_delete_errors = flag;
 //        
 //        for(String key: headerKV.keySet())
 //        	this.custom_headers.add(new BasicHeader(key, headerKV.get(key)));    
@@ -64,12 +51,7 @@ public class CdmiClient extends BaseCdmiClient {
             // Create the request
             HttpPut method = new HttpPut(uri + "/" + encodeURL(container) + "/");
             
-            method.setHeader("Accept", "application/cdmi-container");
-            method.setHeader("Content-Type", "application/cdmi-container");
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
-            
-            method.setEntity(new StringEntity("{}"));
             
             response = client.execute(method);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -92,8 +74,7 @@ public class CdmiClient extends BaseCdmiClient {
     	try {
             // Create the request
             HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container) + "/"); // "http://localhost:8080/cdmi-server/TestContainer/");
-            
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
+
             setCustomHeaders(method);
             
             response = client.execute(method);
@@ -123,9 +104,7 @@ public class CdmiClient extends BaseCdmiClient {
         // Create the request
         HttpGet method = new HttpGet(uri + "/" + encodeURL(container)
                 + "/" + encodeURL(object)); 
-        
-        method.setHeader("Accept", "application/cdmi-object");
-        method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
+
         setCustomHeaders(method);
         
         response = client.execute(method);        
@@ -178,13 +157,9 @@ public class CdmiClient extends BaseCdmiClient {
             method = new HttpPut(uri + "/" + encodeURL(container)
                     + "/" + encodeURL(object)); 
             
-            method.setHeader("Accept", "application/cdmi-object");
-            method.setHeader("Content-Type", "application/cdmi-object");
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
+            method.setHeader("Content-Type", "application/octet-stream");
             setCustomHeaders(method);
-            
-            CdmiJsonInputStreamEntity entity = new CdmiJsonInputStreamEntity(data, length);
-            
+            InputStreamEntity entity = new InputStreamEntity(data, length);
             if (length < 0)
                 entity.setChunked(true);
             else {
@@ -192,7 +167,7 @@ public class CdmiClient extends BaseCdmiClient {
             }
             
             method.setEntity(entity);
-
+            
             response = client.execute(method);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_CREATED) {
@@ -221,7 +196,6 @@ public class CdmiClient extends BaseCdmiClient {
             HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container)
                     + "/" + encodeURL(object)); 
             
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
             
             response = client.execute(method);

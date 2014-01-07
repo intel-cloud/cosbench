@@ -23,11 +23,12 @@ public class CDMIStorage extends NoneStorage {
     // below parameters expect to get from configuration file.
     private int timeout;
     private String rootPath;
+    private String type; 
     private String headers;
     private boolean flag;
     
     // local variables
-    private CdmiClient client;
+    private BaseCdmiClient client;
     private String[] header_list;
     
     @Override
@@ -35,7 +36,7 @@ public class CDMIStorage extends NoneStorage {
         super.init(config, logger);
         initParms(config);
 
-        client = new CdmiClient(false);
+        client = CdmiClientFactory.getClient(type);
     }
 
     private void initParms(Config config) {
@@ -43,11 +44,13 @@ public class CDMIStorage extends NoneStorage {
         timeout = config.getInt(TIMEOUT_KEY, TIMEOUT_DEFAULT);
         headers = config.get(CUSTOM_HEADERS_KEY, CUSTOM_HEADERS_DEFAULT);
         flag = config.getBoolean(RAISE_DELETE_ERRORS_KEY, RAISE_DELETE_ERRORS_DEFAULT);
+        type = config.get(CDMI_CONTENT_TYPE_KEY, CDMI_CONTENT_TYPE_DEFAULT);
         header_list = headers.split(",");
                 
         parms.put(ROOT_PATH_KEY, rootPath);
     	parms.put(TIMEOUT_KEY, timeout);
     	parms.put(RAISE_DELETE_ERRORS_KEY, flag);    	
+    	parms.put(CDMI_CONTENT_TYPE_KEY, type);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class CDMIStorage extends NoneStorage {
             }
                         
             logger.debug("httpclient =" + httpClient + ", url = " + url);
-            client.init(httpClient, url, headerKV);
+            client.init(httpClient, url, headerKV, false);
         } catch (Exception e) {
             throw new StorageException(e);
         }
