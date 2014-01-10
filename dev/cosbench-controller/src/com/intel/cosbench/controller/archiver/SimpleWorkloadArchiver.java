@@ -69,13 +69,12 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         } catch (Exception e) {
             LOGGER.error("fail to archive workload", e);
             return;
-        } finally {
-            try {
-                updateCount();
-            } catch (Exception e) {
-                LOGGER.error("cannot update workload count", e);
-            }
         }
+        try {
+			updateCount(info);
+		} catch (Exception e) {
+			LOGGER.error("fail to update count", e);
+		}
         String id = info.getId();
         LOGGER.info("workload {} has been successfully archived", id);
     }
@@ -240,21 +239,21 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         String msg = "perf details of workload {} has been added to {}";
         LOGGER.debug(msg, id, path);
     }
-
-    private void updateCount() throws IOException {
+ 
+    private void updateCount(WorkloadInfo info) throws IOException {
         int count = 0;
         File file = new File(ARCHIVE_DIR, ".meta");
-        if (file.exists() && file.length() > 0) {
-            Reader reader = new BufferedReader(new FileReader(file));
-            try {
-                count = new Scanner(reader).nextInt();
-            } finally {
-                reader.close();
-            }
-        }
+        String workloadId = null;
+        workloadId = info.getId();
+        try {
+    		count = parseID(workloadId);			
+		} catch (Exception e) {
+			LOGGER.error("cannot parse workloadId", e);
+		}
+        
         Writer writer = new BufferedWriter(new FileWriter(file));
         try {
-            writer.write(String.valueOf(++count));
+            writer.write(String.valueOf(count));
         } finally {
             writer.close();
         }
@@ -286,5 +285,15 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         LOGGER.debug("workload count has been retrieved as {}", count);
         return count;
     }
+    
+	private int parseID(String workloadID) throws NumberFormatException, IndexOutOfBoundsException {
+		int count = 0;
+		try {
+			count = Integer.parseInt(workloadID.substring(1)); 
+		} catch (Exception e) {
+			LOGGER.error("cannot extract count from workloadId", e);
+		}
+		return count;
+	}
 
 }
