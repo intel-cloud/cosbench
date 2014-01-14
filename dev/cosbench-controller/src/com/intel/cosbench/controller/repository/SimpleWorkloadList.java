@@ -51,7 +51,7 @@ class SimpleWorkloadList implements WorkloadList {
     public WorkloadContext[] add(WorkloadContext workload) {
         toBeRemoved.clear(); // begin transaction
         list.put(workload.getId(), workload);
-        capacity += 1;
+        capacity = count(); // size of list	
         shrinkListSize();
         WorkloadContext[] result = new WorkloadContext[toBeRemoved.size()];
         result = toBeRemoved.toArray(result);
