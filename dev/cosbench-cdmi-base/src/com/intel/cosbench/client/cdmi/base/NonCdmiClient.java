@@ -53,7 +53,7 @@ public class NonCdmiClient extends BaseCdmiClient{
             
             setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
  
 			if (statusCode == SC_CREATED || statusCode == SC_ACCEPTED) {
@@ -77,7 +77,7 @@ public class NonCdmiClient extends BaseCdmiClient{
 
             setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)
                 return;
@@ -107,7 +107,7 @@ public class NonCdmiClient extends BaseCdmiClient{
 
         setCustomHeaders(method);
         
-        response = client.execute(method);        
+        response = client.execute(method, httpContext);        
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode == SC_OK)
             return response.getEntity().getContent();
@@ -168,7 +168,7 @@ public class NonCdmiClient extends BaseCdmiClient{
             
             method.setEntity(entity);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_CREATED) {
                 return;
@@ -198,7 +198,7 @@ public class NonCdmiClient extends BaseCdmiClient{
             
             setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)
