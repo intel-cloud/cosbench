@@ -1,18 +1,22 @@
 package com.intel.cosbench.client.cdmi.base;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import org.apache.http.Header;
-import org.apache.http.client.HttpClient;
+import org.apache.http.auth.params.AuthPNames;
+import org.apache.http.client.*;
+import org.apache.http.client.params.AuthPolicy;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.*;
 
 
 public abstract class BaseCdmiClient {
     protected boolean raise_delete_errors = false;
-	protected HttpClient client;
+    protected HttpClient client;
+    protected HttpContext httpContext;
     protected String uri;
     protected ArrayList<Header> custom_headers = new ArrayList<Header> ();
 //    
@@ -21,7 +25,12 @@ public abstract class BaseCdmiClient {
 //    }
     
     public void init(HttpClient httpClient, String uri, Map<String, String> headerKV, boolean flag) {
-    	this.client = httpClient;
+        this.client = httpClient;
+        this.httpContext = new BasicHttpContext();
+        httpContext.setAttribute(AuthPNames.TARGET_AUTH_PREF, Arrays.asList(new String[] {AuthPolicy.BASIC, AuthPolicy.DIGEST}));
+
+        final AuthCache authCache = new BasicAuthCache();
+        httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
         this.uri = uri;
         this.raise_delete_errors = flag;
         
