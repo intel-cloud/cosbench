@@ -104,12 +104,6 @@ class HttpAuth extends NoneAuth {
     }
     
     @Override
-    public void dispose() {
-        super.dispose();
-        HttpClientUtil.disposeHttpClient(client);
-    }
-    
-    @Override
     public AuthContext login() {
         super.login();
 
