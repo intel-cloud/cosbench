@@ -3,23 +3,21 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="com.amazonaws-1.0.0.jar"/>
 	<classpathentry kind="lib" path="aspectjrt.jar"/>
 	<classpathentry kind="lib" path="aspectjweaver.jar"/>
 	<classpathentry kind="lib" path="commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="freemarker-2.3.18.jar"/>
+	<classpathentry kind="lib" path="httpclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="httpcore-4.1.jar"/>
+	<classpathentry kind="lib" path="jackson-core-asl-1.8.7.jar"/>
+	<classpathentry kind="lib" path="jackson-mapper-asl-1.8.7.jar"/>
 	<classpathentry kind="lib" path="mail-1.4.3.jar"/>
 	<classpathentry kind="lib" path="spring-beans-3.0.7.jar"/>
 	<classpathentry kind="lib" path="spring-context-3.0.7.jar"/>
 	<classpathentry kind="lib" path="spring-core-3.0.7.jar"/>
 	<classpathentry kind="lib" path="stax-1.2.0.jar"/>
 	<classpathentry kind="lib" path="stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="aws-java-sdk-1.6.12.jar"/>
-	<classpathentry kind="lib" path="httpclient-4.2.3.jar"/>
-	<classpathentry kind="lib" path="httpcore-4.2.jar"/>
-	<classpathentry kind="lib" path="jackson-annotations-2.1.1.jar"/>
-	<classpathentry kind="lib" path="jackson-core-2.1.1.jar"/>
-	<classpathentry kind="lib" path="jackson-databind-2.1.1.jar"/>
-	<classpathentry kind="lib" path="joda-time-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
