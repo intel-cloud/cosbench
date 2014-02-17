@@ -92,6 +92,7 @@ class Writer extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
+        	doLogDebug(session.getLogger(), "Write Object " + conName + "/" + objName);
             session.getApi()
                     .createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {

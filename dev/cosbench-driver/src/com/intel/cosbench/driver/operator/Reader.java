@@ -43,6 +43,8 @@ class Reader extends AbstractOperator {
     private boolean hashCheck = false;
 
     private ObjectPicker objPicker = new ObjectPicker();
+    
+    private byte buffer[] = new byte[1024*1024];
 
     public Reader() {
         /* empty */
@@ -83,9 +85,10 @@ class Reader extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
+        	doLogDebug(session.getLogger(), "Read Object " + conName + "/" + objName);
             in = session.getApi().getObject(conName, objName, config);
-            if (!hashCheck)
-                IOUtils.copyLarge(in, cout);
+            if (!hashCheck) 
+            	copyLarge(in, cout);
             else if (!validateChecksum(conName, objName, session, in, cout))
 				return new Sample(new Date(), getId(), getOpType(),
 						getSampleType(), getName(), false);
@@ -106,6 +109,17 @@ class Reader extends AbstractOperator {
 				getName(), true, end - start, cout.getByteCount());
     }
 
+    public OutputStream copyLarge(InputStream input, OutputStream output)
+            throws IOException
+    {
+            for(int n = 0; -1 != (n = input.read(buffer));)
+            {
+                output.write(buffer, 0, n);
+            }
+
+            return output;
+    }
+    
     private static boolean validateChecksum(String conName, String objName,
             Session session, InputStream in, OutputStream out)
             throws IOException {
