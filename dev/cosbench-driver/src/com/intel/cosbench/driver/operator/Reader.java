@@ -81,12 +81,16 @@ class Reader extends AbstractOperator {
         CountingOutputStream cout = new CountingOutputStream(out);
 
         long start = System.currentTimeMillis();
-
+        long xferTime = 0L;
+        long xferTimeCheck = 0L;
         try {
             in = session.getApi().getObject(conName, objName, config);
-            if (!hashCheck)
+            long xferStart = System.currentTimeMillis();
+            if (!hashCheck){
                 IOUtils.copyLarge(in, cout);
-            else if (!validateChecksum(conName, objName, session, in, cout))
+            	long xferEnd = System.currentTimeMillis();
+            	xferTime = xferEnd - xferStart;
+            } else if (!validateChecksum(conName, objName, session, in, cout, xferTimeCheck))
 				return new Sample(new Date(), getId(), getOpType(),
 						getSampleType(), getName(), false);
         } catch (StorageInterruptedException sie) {
@@ -98,16 +102,15 @@ class Reader extends AbstractOperator {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(cout);
         }
-
         long end = System.currentTimeMillis();
 
         Date now = new Date(end);
 		return new Sample(now, getId(), getOpType(), getSampleType(),
-				getName(), true, end - start, cout.getByteCount());
+				getName(), true, end - start, hashCheck ? xferTimeCheck : xferTime, cout.getByteCount());
     }
 
     private static boolean validateChecksum(String conName, String objName,
-            Session session, InputStream in, OutputStream out)
+            Session session, InputStream in, OutputStream out, long xferTimeCheck)
             throws IOException {
         HashUtil util;
         try {
@@ -119,6 +122,8 @@ class Reader extends AbstractOperator {
 
             String storedHash = new String();
             String calculatedHash = new String();
+            
+            long xferStart = System.currentTimeMillis();
             int br1 = in.read(buf1);
 
             if (br1 <= hashLen) {
@@ -155,7 +160,8 @@ class Reader extends AbstractOperator {
                     br1 = br2;
                 }
             }
-
+            xferTimeCheck = System.currentTimeMillis() - xferStart;
+            
             if (!calculatedHash.equals(storedHash)) {
                 if (storedHash.startsWith(HashUtil.GUARD)) {
                     String err =

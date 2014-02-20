@@ -25,12 +25,12 @@ import java.util.Date;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CountingInputStream;
 
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.Result;
 import com.intel.cosbench.bench.Sample;
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.driver.generator.XferCountingInputStream;
 import com.intel.cosbench.driver.util.ContainerPicker;
 import com.intel.cosbench.driver.util.FilePicker;
 import com.intel.cosbench.driver.util.HashUtil;
@@ -135,7 +135,7 @@ class FileWriter extends AbstractOperator {
         if (Thread.interrupted())
             throw new AbortedException();
 
-        CountingInputStream cin = new CountingInputStream(in);
+        XferCountingInputStream cin = new XferCountingInputStream(in);
 
         long start = System.currentTimeMillis();
 
@@ -155,6 +155,6 @@ class FileWriter extends AbstractOperator {
 
         Date now = new Date(end);
         return new Sample(now,  getId(), getOpType(), getSampleType(),
-				getName(), true, end - start, cin.getByteCount());
+				getName(), true, end - start, cin.getXferTime(), cin.getByteCount());
     }
 }
