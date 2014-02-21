@@ -88,7 +88,7 @@ class Deleter extends AbstractOperator {
 
         Date now = new Date(end);
         return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
-				op.getName(), true, end - start, 0L);
+				op.getName(), true, end - start, 0L, 0L);
     }
 
 }

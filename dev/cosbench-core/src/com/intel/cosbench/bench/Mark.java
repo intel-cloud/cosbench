@@ -41,6 +41,7 @@ public class Mark implements Cloneable, Item {
     private int totalSampleCount; /* number of total samples */
 
     private long rtSum; /* total response time */
+    private long xtSum; /* total transfer time */
     private long byteCount; /* total bytes transferred */
 
     public Mark() {
@@ -128,6 +129,14 @@ public class Mark implements Cloneable, Item {
         this.rtSum = rtSum;
     }
 
+    public long getXtSum() {
+		return xtSum;
+	}
+
+    public void setXtSum(long xtSum) {
+		this.xtSum = xtSum;
+	}
+
     public long getByteCount() {
         return byteCount;
     }
@@ -142,6 +151,7 @@ public class Mark implements Cloneable, Item {
         totalOpCount = 0;
         totalSampleCount = 0;
         rtSum = 0;
+        xtSum = 0;
         byteCount = 0;
     }
 
@@ -150,6 +160,7 @@ public class Mark implements Cloneable, Item {
         {
             sampleCount += 1;
             rtSum += sample.getTime();
+            xtSum += sample.getXferTime();
             byteCount += sample.getBytes();
         }
         

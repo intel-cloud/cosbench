@@ -71,9 +71,9 @@ class CSVSnapshotLoader extends AbstractSnapshotLoader {
 				e.printStackTrace();
 			}
 			Snapshot snapshot = new Snapshot(loadReport(columns), timestamp);
-			snapshot.setMinVersion(Integer.valueOf(columns[1 + opNum * 6]));
-			snapshot.setVersion(Integer.valueOf(columns[2 + opNum * 6]));
-			snapshot.setMaxVersion(Integer.valueOf(columns[3 + opNum * 6]));
+			snapshot.setMinVersion(Integer.valueOf(columns[1 + opNum * 7]));
+			snapshot.setVersion(Integer.valueOf(columns[2 + opNum * 7]));
+			snapshot.setMaxVersion(Integer.valueOf(columns[3 + opNum * 7]));
 			stageContext.getSnapshotRegistry().addItem(snapshot);
 		}
 	}
@@ -102,12 +102,13 @@ class CSVSnapshotLoader extends AbstractSnapshotLoader {
 			metric.setSampleCount(getIntValue(columns[i + 1]));
 			metric.setByteCount(getLongValue(columns[i + opNum + 1]));
 			metric.setAvgResTime(getDoubleValue(columns[i + opNum * 2 + 1]));
-			metric.setThroughput(getDoubleValue(columns[i + opNum * 3 + 1]));
-			metric.setBandwidth(getDoubleValue(columns[i + opNum * 4 + 1]));
+			metric.setAvgXferTime(getDoubleValue(columns[i + opNum * 3 + 1]));
+			metric.setThroughput(getDoubleValue(columns[i + opNum * 4 + 1]));
+			metric.setBandwidth(getDoubleValue(columns[i + opNum * 5 + 1]));
 //			metric.setRatio(columns[i + opNum * 5 + 1].equalsIgnoreCase("N/A") ? 0D
 //					: Double.valueOf(columns[i + opNum * 5 + 1].substring(0,
 //							columns[i + opNum * 5 + 1].length() - 1)) / 100.0);
-			setRatio(columns[i + opNum * 5 + 1], metric);
+			setRatio(columns[i + opNum * 6 + 1], metric);
 			metrics.add(metric);
 		}
 		return metrics;
