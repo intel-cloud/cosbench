@@ -42,6 +42,7 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
         buffer.append("Byte-Count").append(',');
         buffer.append("Worker-Count").append(',');
         buffer.append("Avg-ResTime").append(',');
+        buffer.append("Avg-XferTime").append(',');
         buffer.append("60%-ResTime").append(',');
         buffer.append("80%-ResTime").append(',');
         buffer.append("90%-ResTime").append(',');
@@ -77,6 +78,14 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
         else
             buffer.append("N/A");
         buffer.append(',');
+
+        double xt = metrics.getAvgXferTime();
+        if (xt > 0)
+        	buffer.append(NUM.format(xt));
+        else
+        	buffer.append("N/A");
+        buffer.append(',');
+
         writeLatencyInfo(buffer, metrics.getLatency());
         buffer.append(NUM.format(metrics.getThroughput())).append(',');
         buffer.append(NUM.format(metrics.getBandwidth())).append(',');
