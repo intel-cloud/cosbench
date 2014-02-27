@@ -47,7 +47,7 @@ class CSVStageExporter extends AbstractStageExporter {
         buffer.append("Op-Count").append(suffix);
         buffer.append("Byte-Count").append(suffix);
         buffer.append("Avg-ResTime").append(suffix);
-        buffer.append("Avg-XferTime").append(suffix);
+        buffer.append("Avg-ProcTime").append(suffix);
         buffer.append("Throughput").append(suffix);
         buffer.append("Bandwidth").append(suffix);
         buffer.append("Succ-Ratio").append(suffix);
@@ -96,9 +96,9 @@ class CSVStageExporter extends AbstractStageExporter {
         }
         /* Transfer Time */
         for (Metrics metrics : report) {
-            double xt = metrics.getAvgXferTime();
-            if (xt > 0)
-                buffer.append(NUM.format(xt));
+            double pt = metrics.getAvgResTime() - metrics.getAvgXferTime();
+            if (pt > 0)
+                buffer.append(NUM.format(pt));
             else
                 buffer.append("N/A");
             buffer.append(',');

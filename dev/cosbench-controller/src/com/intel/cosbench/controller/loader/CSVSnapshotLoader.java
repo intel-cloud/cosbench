@@ -101,8 +101,10 @@ class CSVSnapshotLoader extends AbstractSnapshotLoader {
 			}
 			metric.setSampleCount(getIntValue(columns[i + 1]));
 			metric.setByteCount(getLongValue(columns[i + opNum + 1]));
-			metric.setAvgResTime(getDoubleValue(columns[i + opNum * 2 + 1]));
-			metric.setAvgXferTime(getDoubleValue(columns[i + opNum * 3 + 1]));
+			double rt = getDoubleValue(columns[i + opNum * 2 + 1]);
+			metric.setAvgResTime(rt);
+			double pt = getDoubleValue(columns[i + opNum * 3 + 1]);
+			metric.setAvgXferTime(rt - pt);
 			metric.setThroughput(getDoubleValue(columns[i + opNum * 4 + 1]));
 			metric.setBandwidth(getDoubleValue(columns[i + opNum * 5 + 1]));
 //			metric.setRatio(columns[i + opNum * 5 + 1].equalsIgnoreCase("N/A") ? 0D
