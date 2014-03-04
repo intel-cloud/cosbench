@@ -34,6 +34,7 @@ class UniformIntGenerator implements IntGenerator {
 
     private int lower;
     private int upper;
+    private static  int MAXupper = 10240; //Integer.MAX_VALUE;
 
     public UniformIntGenerator(int lower, int upper) {
         if (lower <= 0 || upper <= 0 || lower > upper)
@@ -74,8 +75,12 @@ class UniformIntGenerator implements IntGenerator {
         pattern = StringUtils.substringBetween(pattern, "(", ")");
         String[] args = StringUtils.split(pattern, ',');
         int lower = Integer.parseInt(args[0]);
-        int upper = Integer.parseInt(args[1]);
+        int upper = (args.length == 2) ? Integer.parseInt(args[1]) : MAXupper;
         return new UniformIntGenerator(lower, upper);
     }
+
+    public static int getMAXupper () {
+		return MAXupper;
+	}
 
 }
