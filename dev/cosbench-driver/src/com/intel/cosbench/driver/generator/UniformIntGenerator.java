@@ -34,7 +34,7 @@ class UniformIntGenerator implements IntGenerator {
 
     private int lower;
     private int upper;
-    private static  int MAXupper = 10240; //Integer.MAX_VALUE;
+    private static  int MAXupper = Integer.MAX_VALUE;
 
     public UniformIntGenerator(int lower, int upper) {
         if (lower <= 0 || upper <= 0 || lower > upper)
