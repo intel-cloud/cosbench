@@ -23,4 +23,8 @@ public interface DriverInfo {
 
     public String getUrl();
 
+    public void setAliveState(boolean aliveState);
+    
+    public boolean getAliveState();
+    
 }

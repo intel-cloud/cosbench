@@ -29,6 +29,7 @@ public class DriverContext implements DriverInfo {
 
     private String name;
     private String url;
+    private boolean aliveState;
 
     public DriverContext() {
         /* empty */
@@ -48,6 +49,14 @@ public class DriverContext implements DriverInfo {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setAliveState(boolean aliveState) {
+		this.aliveState = aliveState;
+	}
+
+    public boolean getAliveState(){
+    	return aliveState;
     }
 
 }

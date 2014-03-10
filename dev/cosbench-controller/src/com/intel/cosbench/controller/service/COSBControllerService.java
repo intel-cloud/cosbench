@@ -65,6 +65,11 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 
     public void setContext(ControllerContext context) {
         this.context = context;
+
+        // ping drivers and set alive state
+		Thread pingDriverThread = new Thread(
+				new PingDriverRunner(context.getDriverInfos()));
+		pingDriverThread.start();
     }
 
 	public void init() {
@@ -87,6 +92,7 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 				TimeUnit.MILLISECONDS, new PriorityBlockingQueue<Runnable>(
 						memRepo.getMaxCapacity(),
 						new OrderFutureComparator()));
+
     }
 	
 	public void loadArchivedWorkload() throws IOException {

@@ -96,6 +96,7 @@
       <th>Driver</th>
       <th>Name</th>
       <th>URL</th>
+      <th>IsAlive</th>
       <th style="width:15%;">Link</th>
     </tr>
     <#list cInfo.driverInfos as dInfo >
@@ -103,6 +104,11 @@
         <td>${dInfo_index + 1}</td>
         <td>${dInfo.name}</td>
         <td>${dInfo.url}</td>
+        <#if dInfo.aliveState>
+        	<td><div class="alive"></div></td>
+        <#else>
+        	<td><div class="dead"></div></td>
+        </#if>
         <td><a href="${dInfo.url}" target="_blank">view details</a></td>
       </tr>
     </#list>

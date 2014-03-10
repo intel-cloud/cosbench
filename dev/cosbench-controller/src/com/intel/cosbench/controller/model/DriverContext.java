@@ -30,6 +30,7 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
 
     private String name;
     private String url;
+    private boolean aliveState;
 
     public DriverContext() {
         /* empty */
@@ -51,6 +52,16 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public void setAliveState(boolean aliveState) {
+        this.aliveState = aliveState;
+    }
+
+    @Override
+    public boolean getAliveState(){
+    	return aliveState;
     }
 
 }

@@ -117,6 +117,7 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
         DriverContext context = new DriverContext();
         context.setName(loadDriverName(index));
         context.setUrl(loadDriverUrl(index));
+        context.setAliveState(false);
         return context;
     }
 
