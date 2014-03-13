@@ -45,7 +45,11 @@
 		<field name="totalBytes" type="long">
 			<bind-xml name="totalBytes" node="attribute" />
 		</field>
-
+		
+		<field name="afr" type="integer">
+			<bind-xml name="afr" node="attribute" />
+		</field>
+		
 		<field name="driver" type="string">
 			<bind-xml name="driver" node="attribute" />
 		</field>

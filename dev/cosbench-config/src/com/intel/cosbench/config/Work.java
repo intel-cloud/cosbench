@@ -44,7 +44,10 @@ public class Work implements Iterable<Operation> {
     private String driver;
     private String config;
     private Auth auth;
-    private Storage storage;
+    private Storage storage;    
+    // Acceptable Failure Rate in micro (10^-6) unit. 
+    // e.g., afr=1, means if the failure rate is equal to or lower than 0.0001%, the work could be acceptable as successful, otherwise, it should be marked as failed.
+    private int afr = 0; 
     private List<Operation> operations;
 
     public Work() {
@@ -204,6 +207,16 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a work must have its storge");
         this.storage = storage;
     }
+    
+    public int getAfr() {
+        return afr;
+    }
+
+    public void setAfr(int afr) {
+        if (afr > 1000000 || afr < 0)
+            throw new ConfigException("afr should be at 0 to 1000000 range");
+        this.afr = afr;
+    }    
 
     public List<Operation> getOperations() {
         return operations;
