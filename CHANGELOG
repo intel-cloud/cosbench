@@ -1,3 +1,16 @@
+  COSBench 0.4.0.b1 (14-ww11.4)
+------------------------------------
+. #166: show driver alive state on controller index page
+. #158: Extend "histogram" selector to support "open ranges"
+. #165: enable Open range for object size in uniform and histogram
+. #136: 1 GB Object Reads Fail due to IllegalArgumentException
+. #99 (#152): measure and report the time for first and last byte in or out
+. #159: Extend "histogram" selector to support "floating point" weights/percentages
+. #143: at loading archived workloads, even there are 100 workloads, the UI shows only 98.
+. #140: duplicated workload id generated 
+. #151: avoid being challenged for each request
+
+
   COSBench 0.4.0.a1 (14-ww1.4)
 ------------------------------------
 . #137: when there are large # of archive jobs, exception will raise from archive list on web portal.
