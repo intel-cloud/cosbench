@@ -39,6 +39,7 @@ public class Work implements Iterable<Operation> {
     private int runtime = 0;
     private int rampup = 0;
     private int rampdown = 0;
+    private int afr = 0; // acceptable failure ratio, the unit is samples per one million, default is 0.
     private int totalOps = 0;
     private long totalBytes = 0;
     private String driver;
@@ -133,6 +134,16 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("illegal ramp up time: " + rampup);
         this.rampup = rampup;
     }
+    
+    public int getAfr() {
+		return afr;
+	}
+
+	public void setAfr(int afr) {
+		if (afr < 0)
+			throw new ConfigException("illegal afr: " + afr);
+		this.afr = afr;
+	}
 
     public int getRampdown() {
         return rampdown;
@@ -204,6 +215,14 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a work must have its storge");
         this.storage = storage;
     }
+    
+    public List<String> getOperationIDs() {
+		List<String> opIds = new ArrayList<String>();
+		for (Operation operation : operations) {
+			opIds.add(operation.getId());
+		}
+		return opIds;
+	}
 
     public List<Operation> getOperations() {
         return operations;
@@ -233,6 +252,7 @@ public class Work implements Iterable<Operation> {
             name = "prepare";
         setDivision("object");
         setRuntime(0);
+        setAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -252,6 +272,7 @@ public class Work implements Iterable<Operation> {
             name = "cleanup";
         setDivision("object");
         setRuntime(0);
+        setAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -271,6 +292,7 @@ public class Work implements Iterable<Operation> {
             name = "init";
         setDivision("container");
         setRuntime(0);
+        setAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -286,6 +308,7 @@ public class Work implements Iterable<Operation> {
             name = "dispose";
         setDivision("container");
         setRuntime(0);
+        setAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -301,6 +324,7 @@ public class Work implements Iterable<Operation> {
 			name = "delay";
 		setDivision("none");
 		setRuntime(0);
+		setAfr(0);
 		setTotalBytes(0);
 		setWorkers(1);
 		setTotalOps(getWorkers());
