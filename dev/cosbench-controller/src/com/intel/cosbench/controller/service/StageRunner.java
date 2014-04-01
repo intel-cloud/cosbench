@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.intel.cosbench.bench.Metrics;
-import com.intel.cosbench.bench.Sample;
-import com.intel.cosbench.config.Operation;
 import com.intel.cosbench.config.Stage;
 import com.intel.cosbench.config.Work;
 import com.intel.cosbench.controller.model.*;
@@ -158,11 +156,12 @@ class StageRunner implements StageCallable {
     
     private boolean reachAFRGoal() {
     	String id = stageContext.getId();
+    	boolean bool = true;
 		stageContext.setReport(stageContext.mergeReport());
 		for (Work work : stageContext.getStage().getWorks()) {
 			List<String> operationIDs = work.getOperationIDs();
-			int sumSampleCount = 0;
-			int sumTotalSampleCount = 0;
+			long sumSampleCount = 0;
+			long sumTotalSampleCount = 0;
 			for (Metrics metric : stageContext.getReport().getAllMetrics()) {
 				if (operationIDs.contains(metric.getOpId())) {
 					sumSampleCount +=
@@ -171,15 +170,17 @@ class StageRunner implements StageCallable {
 							metric.getTotalSampleCount() > 0 ? metric.getTotalSampleCount() : 0;
 				}
 			}
-			LOGGER.debug("succ-ratio of work {} = {}", id+"-"+work.getName(), 
-					sumTotalSampleCount > 0 ? (double)sumSampleCount / sumTotalSampleCount : "N/A");
-			if (sumTotalSampleCount - sumSampleCount > sumTotalSampleCount * work.getAfr() / 1000000) {
+			LOGGER.info("acceptable failure ratio of work {} = {}", id+"-"+work.getName(), (double)work.getAfr() / 1000000);
+			LOGGER.info("real failure ratio of work {} = {}", id+"-"+work.getName(), 
+					sumTotalSampleCount > 0 ? (double)(sumTotalSampleCount - sumSampleCount) / sumTotalSampleCount : "N/A");
+			if ((sumTotalSampleCount - sumSampleCount) > sumTotalSampleCount * work.getAfr() / 1000000) {
 				LOGGER.info("fail to reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
-				return false;
+				bool = false;
+				continue;
 			}
 			LOGGER.info("successfully reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
 		}
-		return true;
+		return bool;
 	}
 
     private void bootTasks() {

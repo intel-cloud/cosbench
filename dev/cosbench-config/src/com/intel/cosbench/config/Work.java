@@ -140,7 +140,7 @@ public class Work implements Iterable<Operation> {
 	}
 
 	public void setAfr(int afr) {
-		if (afr < 0)
+		if (afr < 0 || afr > 1000000)
 			throw new ConfigException("illegal afr: " + afr);
 		this.afr = afr;
 	}
