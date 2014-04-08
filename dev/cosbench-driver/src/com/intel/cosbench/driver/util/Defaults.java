@@ -19,11 +19,11 @@ package com.intel.cosbench.driver.util;
 
 interface Defaults {
 
-    String CONTAINER_PREFIX = "mycontainers_";
+    String CONTAINER_PREFIX = "mycontainers";
 
     String CONTAINER_SUFFIX = null;
 
-    String OBJECT_PREFIX = "myobjects_";
+    String OBJECT_PREFIX = "myobjects";
 
     String OBJECT_SUFFIX = null;
 
