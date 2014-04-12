@@ -43,24 +43,34 @@ public class WorkloadConfigGenerator {
 	}
 
 
-	public void createWorkloadFiles(HttpServletRequest req) {
+	public void createWorkloadFiles(HttpServletRequest req) throws Exception {
 
 		// Set common workload parameters
 		setWorkloadParams(req);
 		
 		String workloadMatrixName = req.getParameter("workload.matrix.name");
-		if(workloadMatrixName == null)
-			workloadMatrixName = "workload-configs";
+		if(!workloadMatrixName.matches("[a-zA-Z0-9\\_\\-#\\.\\(\\)\\/%&]{3,50}"))
+			throw new Exception("Workload Matrix Name incorrect. Please use alphabets or numbers. Special characters allowed are _ - # . ( ) / % &. "
+								+ "Length should be between 3 to 50 characters.");
+		String objectSizeStrings[] = req.getParameterValues("object-sizes");
+		if (objectSizeStrings == null)
+			return;
+		
+		for (int i = 0; i < objectSizeStrings.length; i++) {
+			String workloadName = req.getParameterValues("workload.name")[i];
+			if(!workloadName.matches("[a-zA-Z0-9\\_\\-#\\.\\(\\)\\/%&]{3,50}"))
+				throw new Exception("Workload Name incorrect. Please use alphabets or numbers. Special characters allowed are _ - # . ( ) / % &. "
+								+ "Length should be between 3 to 50 characters.");
+		}
 		WORKLOAD_CONFIG_DIR = new File(workloadMatrixName);
 		if (!WORKLOAD_CONFIG_DIR.exists())
 			WORKLOAD_CONFIG_DIR.mkdirs();
 		String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
 		LOGGER.info("using {} for storing generated workload configs", path);
 
-		String objectSizeStrings[] = req.getParameterValues("object-sizes");
+		
 
-		if (objectSizeStrings == null)
-			return;
+		
 
 		for (int i = 0; i < objectSizeStrings.length; i++) {
 			String objectSizes[], unit;
