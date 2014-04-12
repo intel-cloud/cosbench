@@ -33,6 +33,7 @@ public class WorkloadConfigGenerator {
 	private String storage_config;
 	private boolean generateWorkloadFiles;
 	private File WORKLOAD_CONFIG_DIR;
+	private static final String workloadConfigFilesRoot = "workloads";
 	protected ControllerService controller;
 
 	private static final Logger LOGGER = LogFactory.getSystemLogger();
@@ -104,7 +105,7 @@ public class WorkloadConfigGenerator {
 			
 			if (generateWorkloadFiles)
 				{
-					WORKLOAD_CONFIG_DIR = new File(workloadMatrixName);
+					WORKLOAD_CONFIG_DIR = new File(workloadConfigFilesRoot+"/"+workloadMatrixName);
 					if (!WORKLOAD_CONFIG_DIR.exists())
 						WORKLOAD_CONFIG_DIR.mkdirs();
 					String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
@@ -142,7 +143,7 @@ public class WorkloadConfigGenerator {
 		try {
 			String workloadXml = CastorConfigTools.getWorkloadWriter()
 					.toXmlString(workload);
-			PrintWriter out = new PrintWriter(new File(workloadName+ ".xml"));
+			PrintWriter out = new PrintWriter(new File(WORKLOAD_CONFIG_DIR+"/"+workloadName+ ".xml"));
 			out.print(workloadXml);
 			out.close();
 		} catch (FileNotFoundException e) {
