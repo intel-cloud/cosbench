@@ -142,10 +142,7 @@ public class WorkloadConfigGenerator {
 		try {
 			String workloadXml = CastorConfigTools.getWorkloadWriter()
 					.toXmlString(workload);
-			File singleWorkloadDirectory = new File(WORKLOAD_CONFIG_DIR+"/"+workloadName);
-			if (!singleWorkloadDirectory.exists())
-				singleWorkloadDirectory.mkdirs();
-			PrintWriter out = new PrintWriter(new File(singleWorkloadDirectory,workloadName+ ".xml"));
+			PrintWriter out = new PrintWriter(new File(workloadName+ ".xml"));
 			out.print(workloadXml);
 			out.close();
 		} catch (FileNotFoundException e) {
