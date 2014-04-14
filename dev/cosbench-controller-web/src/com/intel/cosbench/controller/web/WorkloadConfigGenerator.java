@@ -114,8 +114,10 @@ public class WorkloadConfigGenerator {
 					printWorkloadConfigXML(workload, workloadName);
 				}
 			else
+			{
+				workload.setName(workloadName);
 				submitWorkload(workload);
-
+			}
 		}
 	}
 
