@@ -33,6 +33,7 @@ public class WorkloadConfigGenerator {
 	private String storage_config;
 	private boolean generateWorkloadFiles;
 	private File WORKLOAD_CONFIG_DIR;
+	private static final String workloadConfigFilesRoot = "workloads";
 	protected ControllerService controller;
 
 	private static final Logger LOGGER = LogFactory.getSystemLogger();
@@ -43,25 +44,26 @@ public class WorkloadConfigGenerator {
 	}
 
 
-	public void createWorkloadFiles(HttpServletRequest req) {
+	public void createWorkloadFiles(HttpServletRequest req) throws Exception {
 
 		// Set common workload parameters
 		setWorkloadParams(req);
 		
 		String workloadMatrixName = req.getParameter("workload.matrix.name");
-		if(workloadMatrixName == null)
-			workloadMatrixName = "workload-configs";
-		WORKLOAD_CONFIG_DIR = new File(workloadMatrixName);
-		if (!WORKLOAD_CONFIG_DIR.exists())
-			WORKLOAD_CONFIG_DIR.mkdirs();
-		String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
-		LOGGER.info("using {} for storing generated workload configs", path);
-
+		if(!workloadMatrixName.matches("[a-zA-Z0-9\\_\\-#\\.\\(\\)\\/%&]{3,50}"))
+			throw new Exception("Workload Matrix Name incorrect. Please use alphabets or numbers. Special characters allowed are _ - # . ( ) / % &. "
+								+ "Length should be between 3 to 50 characters.");
 		String objectSizeStrings[] = req.getParameterValues("object-sizes");
-
 		if (objectSizeStrings == null)
 			return;
-
+		
+		for (int i = 0; i < objectSizeStrings.length; i++) {
+			String workloadName = req.getParameterValues("workload.name")[i];
+			if(!workloadName.matches("[a-zA-Z0-9\\_\\-#\\.\\(\\)\\/%&]{3,50}"))
+				throw new Exception("Workload Name incorrect. Please use alphabets or numbers. Special characters allowed are _ - # . ( ) / % &. "
+								+ "Length should be between 3 to 50 characters.");
+		}
+		
 		for (int i = 0; i < objectSizeStrings.length; i++) {
 			String objectSizes[], unit;
 			boolean isRange;
@@ -100,11 +102,15 @@ public class WorkloadConfigGenerator {
 			workload.validate();
 				
 			String workloadName = req.getParameterValues("workload.name")[i];
-			if(workloadName == null)
-				workloadName = "objSizes-"+objectSizeString+unit;
 			
 			if (generateWorkloadFiles)
 				{
+					WORKLOAD_CONFIG_DIR = new File(workloadConfigFilesRoot+"/"+workloadMatrixName);
+					if (!WORKLOAD_CONFIG_DIR.exists())
+						WORKLOAD_CONFIG_DIR.mkdirs();
+					String path = WORKLOAD_CONFIG_DIR.getAbsolutePath();
+					LOGGER.info("using {} for storing generated workload configs", path);
+				
 					printWorkloadConfigXML(workload, workloadName);
 				}
 			else
@@ -137,10 +143,7 @@ public class WorkloadConfigGenerator {
 		try {
 			String workloadXml = CastorConfigTools.getWorkloadWriter()
 					.toXmlString(workload);
-			File singleWorkloadDirectory = new File(WORKLOAD_CONFIG_DIR+"/"+workloadName);
-			if (!singleWorkloadDirectory.exists())
-				singleWorkloadDirectory.mkdirs();
-			PrintWriter out = new PrintWriter(new File(singleWorkloadDirectory,workloadName+ ".xml"));
+			PrintWriter out = new PrintWriter(new File(WORKLOAD_CONFIG_DIR+"/"+workloadName+ ".xml"));
 			out.print(workloadXml);
 			out.close();
 		} catch (FileNotFoundException e) {
