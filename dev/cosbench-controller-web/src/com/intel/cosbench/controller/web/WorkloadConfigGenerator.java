@@ -64,10 +64,12 @@ public class WorkloadConfigGenerator {
 								+ "Length should be between 3 to 50 characters.");
 		}
 		
-		for (int i = 0; i < objectSizeStrings.length; i++) {
+		String workloadNumbers[] = req.getParameterValues("workload-number");
+		for (int i = 0; i < workloadNumbers.length; i++) {
 			String objectSizes[], unit;
 			boolean isRange;
-
+			
+			int workloadNumber = Integer.parseInt(workloadNumbers[i]);
 			String objectSizeString = objectSizeStrings[i];
 			// if input is range of object sizes
 			if (objectSizeString.contains("-")) {
@@ -90,7 +92,8 @@ public class WorkloadConfigGenerator {
 					.split(",");
 			
 			//Get read, write and delete ratios for one workload in string array.
-			String rWDRatios[] = getRWDRatios(req,i);
+			
+			String rWDRatios[] = getRWDRatios(req,workloadNumber+"");
 
 			// parsing comma separated worker values
 			String workers[] = req.getParameterValues("workers")[i].split(",");
@@ -101,7 +104,7 @@ public class WorkloadConfigGenerator {
 			
 			workload.validate();
 				
-			String workloadName = req.getParameterValues("workload.name")[i];
+			String workloadName = req.getParameterValues("workload.name")[workloadNumber];
 			
 			if (generateWorkloadFiles)
 				{
@@ -121,7 +124,7 @@ public class WorkloadConfigGenerator {
 		}
 	}
 
-	private String[] getRWDRatios(HttpServletRequest req, int workloadNumber) {
+	private String[] getRWDRatios(HttpServletRequest req, String workloadNumber) {
 		String[] readRatios = req.getParameterValues("read-ratio"+workloadNumber);
 		String[] writeRatios = req.getParameterValues("write-ratio"+workloadNumber);
 		String[] deleteRatios = req.getParameterValues("delete-ratio"+workloadNumber);

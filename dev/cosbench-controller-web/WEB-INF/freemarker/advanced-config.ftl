@@ -106,6 +106,7 @@
 			<label for="workload-checkbox" class="a2">Workload Name:</label>
 			<input name="workload.name" size="15" maxlength="30"/>
 			<div name="workload.matrix" id="workload.matrix" class="a2" >
+					<input type="hidden" id="workload-number" name="workload-number" value="0">
 					<table class="info-table">
 						<thead>
 							<tr>
@@ -204,6 +205,7 @@
 <script>
 
 	var rwdDivCount = 1;
+	var workloadDivCount=1;
 	var previousWorkloadDiv=document.getElementById('workload');
 	var firstWorkloadCloneDiv = previousWorkloadDiv.cloneNode(true);
 	
@@ -221,8 +223,16 @@
 	{
 	    var cloneDiv = firstWorkloadCloneDiv.cloneNode(true); 
 	   	setRWDElementNames(getRWDMatrixElement(cloneDiv));
+	   	setWorkloadNumberElement(getWorkloadNumberElement(cloneDiv));
 	    previousWorkloadDiv.parentNode.insertBefore(cloneDiv, previousWorkloadDiv.nextElementSibling);
 	    previousWorkloadDiv = cloneDiv;
+	}
+	
+	function getWorkloadNumberElement(divElement)
+	{
+		var insideDivs = divElement.getElementsByTagName('div');
+		var inputDivs = insideDivs[0].getElementsByTagName('input');
+		return inputDivs[0];
 	}
 	
 	function getRWDMatrixElement(divElement)
@@ -243,11 +253,27 @@
 	{
         if(divElement.style.display == 'none'){
         divElement.style.display = '';
+        toggleDisabled(divElement);
         }else {
         divElement.style.display = 'none';
+        toggleDisabled(divElement);
         }
         return false;
 	}
+	
+	function toggleDisabled(element) 
+	{
+        try {
+            element.disabled = element.disabled ? false : true;
+        }
+        catch(E){}
+        
+        if (element.childNodes && element.childNodes.length > 0) {
+            for (var i = 0; i < element.childNodes.length; i++) {
+                toggleDisabled(element.childNodes[i]);
+            }
+        }
+     }
 	
 	function insertAfter(newElement,targetElement) {
     
@@ -266,6 +292,11 @@
 		rwdElements[2].name = 'write-ratio'+ rwdDivCount;
 		rwdElements[3].name = 'delete-ratio' + rwdDivCount;
 		rwdDivCount++;
+	}
+	
+	function setWorkloadNumberElement (workloadNumberElement) {		
+		workloadNumberElement.value = workloadDivCount;
+		workloadDivCount++;
 	}
 </script>
 </body>
