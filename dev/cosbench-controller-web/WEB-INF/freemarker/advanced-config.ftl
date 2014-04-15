@@ -11,7 +11,9 @@
 <div class="top"><br /></div>
 <div class="content">
   <h3>Workload Matrix Configuration</h3>
-    <h5>(You can configure workload matrix from here. You can also create and submit generated workload configs.)</h5>
+    <h5>You can configure workload matrix from here. You can generate or submit workloads directly. With 'Generate Workload File/s' option,
+        files will be generated and placed at 'workloads' directory inside COSBench installation directory. No workload files will be generated when
+        'Submit Workload/s' option is chosen and workloads will be submitted directly.</h5>
   <div>
     <form action="advanced-config-workload.do" method="post" class="content" >
 	  <#if error?? >
