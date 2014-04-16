@@ -49,7 +49,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private long interval; /* interval between check points */
 
     private int totalOps; /* total operations to be performed */
-    private int op_count;
+//    private int op_count;
     private long totalBytes; /* total bytes to be transferred */
 
     private OperationPicker operationPicker;

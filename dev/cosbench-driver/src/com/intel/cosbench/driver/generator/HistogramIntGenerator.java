@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 
 import com.intel.cosbench.config.ConfigException;
-import com.intel.cosbench.driver.generator.RangeIntGenerator.TestThread;
+//import com.intel.cosbench.driver.generator.RangeIntGenerator.TestThread;
 
 /**
  * 
