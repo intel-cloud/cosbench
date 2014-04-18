@@ -49,7 +49,8 @@ abstract class AbstractCommandTasklet<T extends Response> extends
     }
 
     protected void issueCommand(String command) {
-        issueCommand(command, null);
+        long timeStamp = System.currentTimeMillis();
+        issueCommand(command, String.valueOf(timeStamp));
     }
 
     protected void issueCommand(String command, String content) {
