@@ -42,8 +42,9 @@ class Authenticator extends AbstractCommandTasklet<LoginResponse> {
     }
 
     @Override
-    protected void handleResponse(LoginResponse response) {
+    protected long handleResponse(LoginResponse response) {
         /* empty */
+    	return 0;
     }
 
 }

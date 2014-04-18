@@ -33,7 +33,7 @@ abstract class AbstractCommandTasklet<T extends Response> extends
 
     private Class<T> clazz;
 
-    protected abstract void handleResponse(T response);
+    protected abstract long handleResponse(T response);
 
     public AbstractCommandTasklet(TaskContext context, Class<T> clazz) {
         super(context);
@@ -49,11 +49,24 @@ abstract class AbstractCommandTasklet<T extends Response> extends
     }
 
     protected void issueCommand(String command) {
-        long timeStamp = System.currentTimeMillis();
-        issueCommand(command, String.valueOf(timeStamp));
+    	int count = 3;
+    	int tolerableTimeDrift = 300; /* tolerable time drift between controller and driver */
+    	long timeDrift = 0;
+    	long timeStamp = System.currentTimeMillis();
+    	while (--count >= 0) {
+    		timeDrift = issueCommand(command, String.valueOf(timeStamp));
+    		if (Math.abs(timeDrift) < tolerableTimeDrift)
+				break;
+    		timeStamp = System.currentTimeMillis() + timeDrift / 2;
+		}
+    	LOGGER.info("time drift between controller and driver-{} is {} mSec",
+				getDriver().getName(), timeDrift);
+    	if (count < 0)
+			LOGGER.warn("time drift is still longer than tolerable time drift {} mSec after 3 times of synchronization",
+					tolerableTimeDrift);
     }
 
-    protected void issueCommand(String command, String content) {
+    protected long issueCommand(String command, String content) {
         T response = null;
         String body = issueHttpRequest(command, content);
         try {
@@ -67,7 +80,7 @@ abstract class AbstractCommandTasklet<T extends Response> extends
             LOGGER.error(msg, response.getCode(), response.getError());
             throw new TaskletException(); // mark termination
         }
-        handleResponse(response); // specific response handling
+        return handleResponse(response); // specific response handling
     }
 
 }
