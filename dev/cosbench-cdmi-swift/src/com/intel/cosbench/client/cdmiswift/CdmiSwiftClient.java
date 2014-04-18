@@ -124,6 +124,7 @@ public class CdmiSwiftClient {
                 response.getAllHeaders(), response.getStatusLine());
     }
     
+    @SuppressWarnings("unused")
     private void dumpMethod(HttpRequestBase method) {
     	System.out.println("==== METHOD BEGIN ====");
     	System.out.println(method.getMethod());
@@ -134,6 +135,7 @@ public class CdmiSwiftClient {
         System.out.println("==== METHOD END ====");
     }
     
+    @SuppressWarnings("unused")
     private void dumpResponse(HttpResponse response) {
     	System.out.println("==== RESPONSE BEGIN ====");
         Header[] hdr = response.getAllHeaders();

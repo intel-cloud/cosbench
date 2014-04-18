@@ -20,7 +20,6 @@ package com.intel.cosbench.api.httpauth;
 import static com.intel.cosbench.client.httpauth.HttpAuthConstants.*;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.*;

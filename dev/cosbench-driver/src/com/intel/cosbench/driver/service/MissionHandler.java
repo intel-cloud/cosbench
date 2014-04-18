@@ -218,7 +218,7 @@ class MissionHandler {
         /* for strong consistency: a lock should be employed here */
         if (!missionContext.getState().equals(SUBMITTED))
             throw new IllegalStateException(
-                    "mission should be in the state of submitted");
+                    "mission should be in the state of submitted but " + missionContext.getState().name());
         String id = missionContext.getId();
         LOGGER.debug("begin to auth mission {}", id);
         try {

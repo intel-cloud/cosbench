@@ -3,16 +3,12 @@ package com.intel.cosbench.client.cdmi.base;
 import static org.apache.http.HttpStatus.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Map;
 
-import org.apache.http.client.HttpClient;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.util.*;
 
 import com.intel.cosbench.client.cdmi.util.CdmiJsonInputStreamEntity;
@@ -141,6 +137,7 @@ public class CdmiClient extends BaseCdmiClient {
                 response.getAllHeaders(), response.getStatusLine());
     }
     
+    @SuppressWarnings("unused")
     private void dumpMethod(HttpRequestBase method) {
     	System.out.println("==== METHOD BEGIN ====");
     	System.out.println(method.getMethod());
@@ -151,6 +148,7 @@ public class CdmiClient extends BaseCdmiClient {
         System.out.println("==== METHOD END ====");
     }
     
+    @SuppressWarnings("unused")
     private void dumpResponse(HttpResponse response) {
     	System.out.println("==== RESPONSE BEGIN ====");
         Header[] hdr = response.getAllHeaders();

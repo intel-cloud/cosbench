@@ -120,6 +120,7 @@ public class NonCdmiClient extends BaseCdmiClient{
                 response.getAllHeaders(), response.getStatusLine());
     }
     
+    @SuppressWarnings("unused")
     private void dumpMethod(HttpRequestBase method) {
     	System.out.println("==== METHOD BEGIN ====");
     	System.out.println(method.getMethod());
@@ -130,6 +131,7 @@ public class NonCdmiClient extends BaseCdmiClient{
         System.out.println("==== METHOD END ====");
     }
     
+    @SuppressWarnings("unused")
     private void dumpResponse(HttpResponse response) {
     	System.out.println("==== RESPONSE BEGIN ====");
         Header[] hdr = response.getAllHeaders();
