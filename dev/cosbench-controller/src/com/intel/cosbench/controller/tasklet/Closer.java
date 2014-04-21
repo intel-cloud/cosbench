@@ -47,14 +47,13 @@ class Closer extends AbstractCommandTasklet<CloseResponse> {
     }
 
     @Override
-    protected long handleResponse(CloseResponse response) {
+    protected void handleResponse(CloseResponse response) {
         Report report = new Report();
         for (Metrics metrics : response.getReport())
             report.addMetrics(metrics);
         context.setReport(report);
         context.setLog(response.getDriverLog());
         context.setState(response.getState());
-        return 0;
     }
 
 }
