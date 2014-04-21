@@ -105,6 +105,7 @@ public class WorkloadConfigGenerator {
 			workload.validate();
 				
 			String workloadName = req.getParameterValues("workload.name")[workloadNumber];
+			workload.setName(workloadName);
 			
 			if (generateWorkloadFiles)
 				{
@@ -118,7 +119,6 @@ public class WorkloadConfigGenerator {
 				}
 			else
 			{
-				workload.setName(workloadName);
 				submitWorkload(workload);
 			}
 		}
