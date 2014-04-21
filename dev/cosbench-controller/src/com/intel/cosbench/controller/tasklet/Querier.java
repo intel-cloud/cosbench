@@ -62,10 +62,10 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
     }
 
     @Override
-    protected long handleResponse(QueryResponse response) {
+    protected void handleResponse(QueryResponse response) {
     	if (response == null) {
     		LOGGER.warn("no response gets from driver");
-    		return 0;
+    		return;
     	}
     	
         if (!response.isRunning())
@@ -79,7 +79,6 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
         snapshot.setMinVersion(response.getMinVersion());
         snapshot.setMaxVersion(response.getMaxVersion());
         context.setSnapshot(snapshot);
-        return 0;
     }
 
 }

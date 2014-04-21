@@ -43,9 +43,8 @@ class Launcher extends AbstractCommandTasklet<LaunchResponse> {
     }
 
     @Override
-    protected long handleResponse(LaunchResponse response) {
+    protected void handleResponse(LaunchResponse response) {
         context.setInterval(response.getInterval());
-        return 0;
     }
 
 }

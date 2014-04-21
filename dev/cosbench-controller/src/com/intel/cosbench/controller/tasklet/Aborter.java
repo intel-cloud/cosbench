@@ -60,9 +60,8 @@ class Aborter extends AbstractCommandTasklet<AbortResponse> {
     }
 
     @Override
-    protected long handleResponse(AbortResponse response) {
+    protected void handleResponse(AbortResponse response) {
         context.setLog(response.getDriverLog());
-        return 0;
     }
 
 }

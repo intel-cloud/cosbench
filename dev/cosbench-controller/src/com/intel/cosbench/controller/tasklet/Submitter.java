@@ -67,10 +67,9 @@ class Submitter extends AbstractCommandTasklet<SubmitResponse> {
     }
 
     @Override
-    protected long handleResponse(SubmitResponse response) {
+    protected void handleResponse(SubmitResponse response) {
         String id = response.getId();
         context.setMissionId(id);
-        return 0;
     }
 
 }
