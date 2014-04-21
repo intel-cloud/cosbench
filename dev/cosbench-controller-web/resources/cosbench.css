@@ -263,6 +263,28 @@ a:visited {
 /* ---------------------------------------
  * State Styles
  * --------------------------------------- */
+.alive {
+	width: 16px;
+	height: 16px;
+	background: #33CC00;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	margin:0px auto;
+	text-align:center;
+}
+
+.dead {
+	width: 16px;
+	height: 16px;
+	background: #FF0000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	margin:0px auto;
+	text-align:center;
+}
+ 
 .state {
 	padding: 2px;
 	color: #FFFFFF;

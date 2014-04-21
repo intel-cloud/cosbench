@@ -3,41 +3,46 @@ package com.intel.cosbench.client.cdmi.base;
 import static org.apache.http.HttpStatus.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Map;
 
-import org.apache.http.client.HttpClient;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.util.*;
 
 import com.intel.cosbench.client.cdmi.util.CdmiJsonInputStreamEntity;
 
-
-public class CdmiClient {
-    private boolean raise_delete_errors = false;
-    
-    private HttpClient client;
-    private String uri;
-    private ArrayList<Header> custom_headers = new ArrayList<Header> ();
+/**
+ * This class encapsulates operations to access cdmi compatible server with cdmi content type.
+ * 
+ * @author ywang19
+ *
+ */
+public class CdmiClient extends BaseCdmiClient {
+//    private boolean raise_delete_errors = false;
+//	private HttpClient client;
+//    private String uri;
+//    private ArrayList<Header> custom_headers = new ArrayList<Header> ();
     
     private final static String cdmi_ver = "1.0.1";
 
-    public CdmiClient(boolean flag) {
-        this.raise_delete_errors = flag;
-    }
+//    public CdmiClient(boolean flag) {
+//        this.raise_delete_errors = flag;
+//    }
+    
+    public CdmiClient() {
+		super();
+	}
 
-    public void init(HttpClient httpClient, String uri, Map<String, String> headerKV) {
-    	this.client = httpClient;
-        this.uri = uri;
-        
-        for(String key: headerKV.keySet())
-        	this.custom_headers.add(new BasicHeader(key, headerKV.get(key)));    
-    }
+//    public void init(HttpClient httpClient, String uri, Map<String, String> headerKV, boolean flag) {
+//    	this.client = httpClient;
+//        this.uri = uri;
+//        this.raise_delete_errors = flag;
+//        
+//        for(String key: headerKV.keySet())
+//        	this.custom_headers.add(new BasicHeader(key, headerKV.get(key)));    
+//    }
 
     public void dispose() {
         client.getConnectionManager().shutdown();
@@ -62,7 +67,7 @@ public class CdmiClient {
             
             method.setEntity(new StringEntity("{}"));
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
  
 			if (statusCode == SC_CREATED || statusCode == SC_ACCEPTED) {
@@ -87,7 +92,7 @@ public class CdmiClient {
             method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)
                 return;
@@ -119,7 +124,7 @@ public class CdmiClient {
         method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
         setCustomHeaders(method);
         
-        response = client.execute(method);        
+        response = client.execute(method, httpContext);
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode == SC_OK)
             return response.getEntity().getContent();
@@ -132,6 +137,7 @@ public class CdmiClient {
                 response.getAllHeaders(), response.getStatusLine());
     }
     
+    @SuppressWarnings("unused")
     private void dumpMethod(HttpRequestBase method) {
     	System.out.println("==== METHOD BEGIN ====");
     	System.out.println(method.getMethod());
@@ -142,6 +148,7 @@ public class CdmiClient {
         System.out.println("==== METHOD END ====");
     }
     
+    @SuppressWarnings("unused")
     private void dumpResponse(HttpResponse response) {
     	System.out.println("==== RESPONSE BEGIN ====");
         Header[] hdr = response.getAllHeaders();
@@ -184,7 +191,7 @@ public class CdmiClient {
             
             method.setEntity(entity);
 
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_CREATED) {
                 return;
@@ -215,7 +222,7 @@ public class CdmiClient {
             method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
             setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)

@@ -43,6 +43,8 @@
         <#if allMetrics!false || bc!false >checked="true"</#if> /></span> Byte Count
       <span class="checkbox"><input name="metrics" type="checkbox" value="rt"
         <#if allMetrics!false || rt!false >checked="true"</#if> /></span> Avg ResTime
+      <span class="checkbox"><input name="metrics" type="checkbox" value="pt"
+        <#if allMetrics!false || pt!false >checked="true"</#if> /></span> Avg ProcTime
       <span class="checkbox"><input name="metrics" type="checkbox" value="t"
         <#if allMetrics!false || t!false >checked="true"</#if> /></span> Throughput
       <span class="checkbox"><input name="metrics" type="checkbox" value="bw"
@@ -86,6 +88,7 @@
       <#if _95rt!false ><th>95%-ResTime</th></#if>
       <#if _99rt!false ><th>99%-ResTime</th></#if>
       <#if _100rt!false ><th>100%-ResTime</th></#if>
+      <#if allMetrics!false || pt!false ><th>Avg-ProcTime</th></#if>
       <#if allMetrics!false || t!false ><th>Throughput</th></#if>
       <#if allMetrics!false || bw!false ><th>Bandwidth</th></#if>
       <#if allMetrics!false || succ!false ><th>Succ-Ratio</th></#if>
@@ -220,6 +223,16 @@
                 N/A
               <#else>
                 &lt; ${mInfo.latency._100[1]} ms
+              </#if>
+            </td>
+            </#if>
+            <#if allMetrics!false || pt!false >
+            <td>
+              <#assign procTime = mInfo.avgResTime - mInfo.avgXferTime>
+              <#if procTime == 0>
+                N/A
+              <#else>
+                ${procTime?string("0.##")} ms
               </#if>
             </td>
             </#if>

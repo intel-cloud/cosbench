@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <workload name="swift-sample" description="sample benchmark for swift">
 
-  <storage type="cdmi" />
+  <storage type="cdmi" config="type=cdmi" />
   
   <!-- MODIFY ME -->
-  <auth type="httpauth" config="username=test;password=testing;auth_url=http://10.10.10.11:8080/" />
+  <auth type="httpauth" config="username=test;password=testing;auth_url=http://192.168.10.1:8080/cdmi" />
 
   <workflow>
 

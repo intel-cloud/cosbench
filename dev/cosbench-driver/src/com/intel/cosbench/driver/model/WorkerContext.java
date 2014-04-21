@@ -180,7 +180,7 @@ public class WorkerContext implements WorkerInfo {
         authApi = null;
         storageApi.dispose();
         storageApi = null;
-        random = null;
+//        random = null;
 //        snapshot = new Snapshot();
 //        logger = null;
     }

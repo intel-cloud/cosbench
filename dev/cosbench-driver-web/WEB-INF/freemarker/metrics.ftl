@@ -5,6 +5,7 @@
     <th>Op-Count</th>
     <th>Byte-Count</th>
     <th>Avg-ResTime</th>
+    <th>Avg-ProcTime</th>
     <th>Throughput</th>
     <th>Bandwidth</th>
     <th>Succ-Ratio</th>
@@ -65,6 +66,14 @@
           N/A
         <#else>
           ${mInfo.avgResTime?string("0.##")} ms
+        </#if>
+      </td>
+      <td>
+        <#assign procTime = mInfo.avgResTime - mInfo.avgXferTime>
+        <#if procTime == 0>
+          N/A
+        <#else>
+          ${procTime?string("0.##")} ms
         </#if>
       </td>
       <td>${mInfo.throughput?string("0.##")} op/s</td>

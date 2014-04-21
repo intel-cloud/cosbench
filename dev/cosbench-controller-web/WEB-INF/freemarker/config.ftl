@@ -58,32 +58,35 @@
 							<tr>
 								<td >Authentication</td>
 								<td >
-									<select name="auth.type">
-									  <option value="swauth" selected="true">swauth</option>
+									<select name="auth.type" id="auth.type" onChange="changeAuth()">
+									  <option value="swauth" selected="true">swauth/tempauth</option>
 									  <option value="keystone">keystone</option>
+									  <option value="httpauth">basic/digest</option>									
 									  <option value="mock">mock</option>
 									  <option value="none">none</option>
 									</select>
 								</td>
 								<td >
-									<input name="auth.config" type="text" style="width:500px" value="username=test:tester;password=testing;url=http://192.168.10.1:8080/auth/v1.0" 
-					title="different auth system has different parameters: &#10;[swauth]: username=<account:username>;password=<password>;url=<url> &#10;[keystone]: username=<account:username>;password=<password>;url=<url> &#10;[mock]: delay=<time> &#10;[none]: " /> 
+									<input name="auth.config" id="auth.config" type="text" style="width:500px" value="username=<username>;password=<password>;auth_url=<url>" /> 
 								</td>
 							</tr>
 							
 							<tr>
 								<td >Storage</td>
 								<td >
-									<select name="storage.type">
-									  <option value="swift" selected="true">swift</option>
-									  <option value="ampli">amplistor</option>
+									<select name="storage.type" id="storage.type" onChange="changeStorage()">
+									  <option value="swift" selected="true">Swift</option>
+									  <option value="ampli">Amplistor</option>
+									  <option value="s3">S3</option>
+									  <option value="librados">Ceph LibRados</option>
+									  <option value="cdmi">CDMI</option>
+									  <option value="cdmi_swift">CDMI for Swift</option>
 									  <option value="mock">mock</option>
 									  <option value="none">none</option>
 									</select>
 								</td>
 								<td >
-									<input name="storage.config" type="text" style="width:500px" value=""
-					title="different storage system has different parameters: &#10 [swift]:  &#10 [ampli]: host=<host>;port=<port>;nsroot=<namespace root>;policy=<policy id> &#10; [mock]: delay=<time>;&#10 [none]: " /> 
+									<input name="storage.config" id="storage.config" type="text" style="width:500px" value="" /> 
 								</td>
 							</tr>
 						</tbody>
@@ -538,6 +541,83 @@
         numOfClonesInStage[stageNum]++;
         previousDivs[stageNum] = cloneDiv;
     } 	
+    
+    function changeAuth()
+    {
+    	var select=document.getElementById("auth.type");
+		var selected=select.options[select.selectedIndex].value;
+		var config=document.getElementById("auth.config");
+		
+		switch(selected)
+		{
+			case "swauth":
+				config.value="username=<account:username>;password=<password>;auth_url=<url>";
+				config.title="e.g., &#10;    username=test:tester;password=testing;auth_url=http://192.168.0.1:8080/auth/v1.0";
+				break;
+			case "keystone":
+				config.value="username=<username>;password=<password>;tenant_name=<tenant name>;auth_url=<url>;service=<service>";
+				config.title="e.g., &#10;    username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service";
+				break;
+			case "httpauth":
+				config.value="username=<username>;password=<password>;auth_url=<url>";
+				config.title="e.g., &#10;    username=tester;password=testing;auth_url=http://192.168.10.1:8080/cdmi";
+				break;
+			case "mock":
+				config.value="delay=<time>";
+				break;		
+			case "none":
+				config.value="";
+				break;	
+			default:
+				config.value="";
+		}				
+    }
+    
+    function changeStorage()
+    {
+    	var select=document.getElementById("storage.type");
+		var selected=select.options[select.selectedIndex].value;
+		var config=document.getElementById("storage.config");
+		
+		switch(selected)
+		{
+			case "swift":
+				config.value="";
+				config.title="";
+				break;
+			case "ampli":
+				config.value="host=<host>;port=<port>;nsroot=<namespace root>;policy=<policy id>";
+				config.title="where nsroot and policy are optional, but policy is mandatory at init stage."
+				break;
+			case "s3":
+				config.value="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>";
+				config.title="where proxyhost, proxyport and endpoint are optional.";
+				break;
+			case "librados":
+				config.value="accesskey=<accesskey>;secretkey=<scretkey>;endpoint=<endpoint>";
+				config.title="";
+				break;		
+			case "cdmi":
+				config.value="type=<cdmi content type>";
+				config.title="where type could be cdmi or non-cdmi to map to cdmi content type and non-cdmi content type.";
+				break;			
+			case "cdmi_swift":
+				config.value="";
+				config.title="The storage type is a CDMI extension specially for token-based authentication like Swift.";
+				break;
+			case "mock":
+				config.value="delay=<delay>;size=<object size>;errors=<error rate>;printing=<true|false>;profiling=<true|false>";
+				config.title="The storage type is specially used for self-test and demo only, no storage target is required."
+				break;
+			case "none":
+				config.value="";
+				config.title="The storage type is specially used to evaluate the program itself's overhead, especially at high volumes.";
+				break;	
+			default:
+				config.value="";
+				config.title="";
+		}		
+	}
  </script>
 </body>  
 </html>

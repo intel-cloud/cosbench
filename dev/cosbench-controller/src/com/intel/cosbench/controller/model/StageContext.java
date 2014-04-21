@@ -89,7 +89,7 @@ public class StageContext implements StageInfo {
             listener.stageStopped(this);
     }
 
-    private Report mergeReport() {
+    public Report mergeReport() {
         if (taskRegistry == null)
             return new Report();
         ReportMerger merger = new ReportMerger();

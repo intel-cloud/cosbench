@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 
 import com.intel.cosbench.config.ConfigException;
+//import com.intel.cosbench.driver.generator.RangeIntGenerator.TestThread;
 
 /**
  * 
@@ -101,13 +102,22 @@ public class HistogramIntGenerator implements IntGenerator {
 		String[] args = StringUtils.split(pattern, ',');
 		ArrayList<Bucket> bucketsList = new ArrayList<Bucket>();
 		for (String arg : args) {
+			int v1 = StringUtils.indexOf(arg, '|');
+			int v2 = StringUtils.lastIndexOf(arg, '|');
+			boolean isOpenRange = ((v2 - v1) == 1) ? true : false;
 			String[] values = StringUtils.split(arg, '|');
-			if (values.length != 3) {
+			int lower,upper,weight;
+			if (isOpenRange) {
+				lower = Integer.parseInt(values[0]);
+				upper = UniformIntGenerator.getMAXupper();
+				weight = Integer.parseInt(values[1]);
+			} else if (values.length != 3) {
 				throw new IllegalArgumentException();
+			} else {
+				lower = Integer.parseInt(values[0]);
+				upper = Integer.parseInt(values[1]);
+				weight = Integer.parseInt(values[2]);
 			}
-			int lower = Integer.parseInt(values[0]);
-			int upper = Integer.parseInt(values[1]);
-			int weight = Integer.parseInt(values[2]);
 			bucketsList.add(new Bucket(lower, upper, weight));
 		}
 		if (bucketsList.isEmpty()) {

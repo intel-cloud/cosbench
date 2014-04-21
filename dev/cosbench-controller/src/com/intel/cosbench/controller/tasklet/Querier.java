@@ -44,7 +44,11 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
         String id = context.getMissionId();
         do {
             sleep();
-            issueCommand("query", id);
+            try{
+            	issueCommand("query", id);
+            }catch(TaskletException tle) {
+            	LOGGER.warn("some unexpected exception occurs when ping drivers.", tle);
+            }
         } while (!context.getState().equals(FINISHED));
     }
 
@@ -58,7 +62,12 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
     }
 
     @Override
-    protected void handleResponse(QueryResponse response) {
+    protected long handleResponse(QueryResponse response) {
+    	if (response == null) {
+    		LOGGER.warn("no response gets from driver");
+    		return 0;
+    	}
+    	
         if (!response.isRunning())
             context.setState(FINISHED); // stop querying
         Date time = response.getTime();
@@ -70,6 +79,7 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
         snapshot.setMinVersion(response.getMinVersion());
         snapshot.setMaxVersion(response.getMaxVersion());
         context.setSnapshot(snapshot);
+        return 0;
     }
 
 }

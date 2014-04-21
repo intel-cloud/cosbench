@@ -49,6 +49,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private long interval; /* interval between check points */
 
     private int totalOps; /* total operations to be performed */
+//    private int op_count;
     private long totalBytes; /* total bytes to be transferred */
 
     private OperationPicker operationPicker;
@@ -168,6 +169,9 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     }
 
     private void performOperation() {
+    	if(workerContext.getAuthApi() == null || workerContext.getStorageApi() == null) 
+    		throw new AbortedException();
+    		
         lbegin = System.currentTimeMillis();
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
@@ -214,11 +218,13 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public void onOperationCompleted(Result result) {
         curr = result.getTimestamp().getTime();
+/* */
 		String type = getMarkType(result.getOpId(), result.getOpType(),
 				result.getSampleType(), result.getOpName());
         currMarks.getMark(type).addOperation(result);
         if (lop >= begin && lop < end && curr > begin && curr <= end)
             globalMarks.getMark(type).addOperation(result);
+/* */
         lop = curr; // last operation performed
         trySummary(); // make a summary report if necessary
     }
@@ -233,14 +239,18 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     }
 
     private void doSummary() {
+/* */
         long window = lrsample - frsample;
         Report report = new Report();
         for (Mark mark : globalMarks)
             report.addMetrics(Metrics.convert(mark, window));
         workerContext.setReport(report);
+/* */
     }
 
     private int getTotalOps() {
+//    	return ++op_count;
+    	
         int sum = 0;
         for (Mark mark : globalMarks)
             sum += mark.getTotalOpCount();

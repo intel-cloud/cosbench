@@ -218,7 +218,7 @@ class MissionHandler {
         /* for strong consistency: a lock should be employed here */
         if (!missionContext.getState().equals(SUBMITTED))
             throw new IllegalStateException(
-                    "mission should be in the state of submitted");
+                    "mission should be in the state of submitted but " + missionContext.getState().name());
         String id = missionContext.getId();
         LOGGER.debug("begin to auth mission {}", id);
         try {
@@ -255,6 +255,7 @@ class MissionHandler {
         missionContext.setState(AUTHED);
     }
 
+    @SuppressWarnings("unused")
     private void setAllWorkersAuthContext(AuthContext authContext) {
 	for (WorkerContext workerContext : missionContext.getWorkerRegistry())
             workerContext.getStorageApi().setAuthContext(authContext);
@@ -264,13 +265,13 @@ class MissionHandler {
      * Returns Size 1 list of Agents
      * @param workerContext to create Agent for
      */
+    @SuppressWarnings("unused")
     private List<Agent> createAuthAgentFromContext(WorkerContext workerContext) {
         List<Agent> agents = new ArrayList<Agent>();
         agents.add(Agents.newAuthAgent(retry, workerContext));
         return agents;
     }
 
-    @SuppressWarnings("unused")
 	private List<Agent> createAuthAgents() {
         List<Agent> agents = new ArrayList<Agent>();
         for (WorkerContext workerContext : missionContext.getWorkerRegistry())

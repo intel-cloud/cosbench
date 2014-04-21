@@ -37,6 +37,9 @@ public interface SwiftConstants {
     String STORAGE_URL_KEY = "storage_url";
     String STORAGE_URL_DEFAULT = "http://127.0.0.1:8080/auth/v1.0";
     
+    String POLICY_KEY = "policy";
+    String POLICY_DEFAULT = null;
+    
     // --------------------------------------------------------------------------
     // Swift RESTful API
     // --------------------------------------------------------------------------
@@ -44,6 +47,8 @@ public interface SwiftConstants {
     String X_STORAGE_URL = "X-Storage-Url";
 
     String X_AUTH_TOKEN = "X-Auth-Token";
+    
+    String X_STORAGE_POLICY = "X-Storage-Policy";
 
     String X_CONTAINER_OBJECT_COUNT = "X-Container-Object-Count";
 

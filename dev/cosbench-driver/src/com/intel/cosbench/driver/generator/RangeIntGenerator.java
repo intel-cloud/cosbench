@@ -31,15 +31,15 @@ public class RangeIntGenerator implements IntGenerator {
     private int lower;
     private int upper;
 
-    private AtomicInteger cursor;
+    private AtomicInteger cursors[] = null;
 
     static class TestThread extends Thread {
         private int all;
         private int idx;
-        private RangeIntGenerator generator;
+        private IntGenerator generator;
         private Random rnd;
 
-        public TestThread(RangeIntGenerator gen, int idx, int all) {
+        public TestThread(IntGenerator gen, int idx, int all) {
             this.all = all;
             this.idx = idx;
             this.setName("Thread[" + idx + "]");
@@ -60,7 +60,7 @@ public class RangeIntGenerator implements IntGenerator {
                         System.out.println(this.getName() + ": " + answer + " I did get this before!");
                     }
                     results.add(answer);
-                    sleep(1);
+                    sleep(5);
                 }
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -69,7 +69,7 @@ public class RangeIntGenerator implements IntGenerator {
     }
 
     public static void main(String[] args) {
-        final String pattern = "r(50,100)";
+        final String pattern = "r(51,1000)";
         final int all = 5;
         int i = 0;
         Vector<TestThread> threads = new Vector<TestThread>();
@@ -95,10 +95,20 @@ public class RangeIntGenerator implements IntGenerator {
             throw new IllegalArgumentException();
         this.lower = lower;
         this.upper = upper;
-
-        this.cursor = new AtomicInteger(0);
+  
     }
 
+    private synchronized void init(int all) {
+    	if(cursors != null) 
+    		return;
+    	
+      	this.cursors = new AtomicInteger[all];
+
+		for (int i = 0; i<all; i++) {
+			cursors[i] = new AtomicInteger(0);
+		}
+    }
+    
     @Override
     public int next(Random random) {
         return next(random, 1, 1);
@@ -106,15 +116,16 @@ public class RangeIntGenerator implements IntGenerator {
 
     @Override
     public int next(Random random, int idx, int all) {
+    	if(cursors == null)
+    		init(all);
+    		
         int range = upper - lower + 1;
         int base = range / all;
         int extra = range % all;
         int offset = base * (idx - 1) + (extra >= idx - 1 ? idx - 1 : extra);
         int segment = base + (extra >= idx ? 1 : 0);
-
-        cursor.set(cursor.get() % (segment));
-
-        return lower + offset + cursor.getAndIncrement();
+        
+    	return lower + offset + cursors[idx-1].getAndIncrement() % segment;
     }
 
     public static RangeIntGenerator parse(String pattern) {

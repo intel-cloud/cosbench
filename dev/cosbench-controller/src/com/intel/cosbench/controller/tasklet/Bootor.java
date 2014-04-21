@@ -47,12 +47,20 @@ class Bootor extends AbstractCommandTasklet<PingResponse> {
     }
 
     @Override
-    protected void handleResponse(PingResponse response) {
-        DriverInfo driver = getDriver();
-        if (StringUtils.equals(response.getName(), driver.getName()))
-            return;
-        String msg = "expetect driver name {} dose not match the real name {}";
-        LOGGER.debug(msg, driver.getName(), response.getName());
+    protected long handleResponse(PingResponse response) {
+    	long driverTime = 0;
+    	DriverInfo driver = getDriver();
+    	try {
+			driverTime = Long.parseLong(response.getTimeStamp());
+		} catch (NumberFormatException e) {
+			LOGGER.debug("time stamp of driver {} can not be formated", driver.getName());
+		}
+        long timeDrift = System.currentTimeMillis() - driverTime;
+    	if (!StringUtils.equals(response.getName(), driver.getName())){
+    		String msg = "expetect driver name {} dose not match the real name {}";
+    		LOGGER.debug(msg, driver.getName(), response.getName());
+    	}
+        return timeDrift;
     }
 
 }

@@ -27,8 +27,9 @@ public class PingResponse extends Response {
 
     private String name; /* driver name */
     private String address; /* driver address */
+    private String timeStamp; /* driver current time */
 
-    public PingResponse() {
+	public PingResponse() {
         /* empty */
     }
 
@@ -47,5 +48,13 @@ public class PingResponse extends Response {
     public void setAddress(String address) {
         this.address = address;
     }
+    
+    public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
 
 }
