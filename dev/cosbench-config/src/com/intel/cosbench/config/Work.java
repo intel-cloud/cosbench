@@ -39,7 +39,8 @@ public class Work implements Iterable<Operation> {
     private int runtime = 0;
     private int rampup = 0;
     private int rampdown = 0;
-    private int afr = 0; // acceptable failure ratio, the unit is samples per one million, default is 0.
+    private int afr = 200000; /* acceptable failure ratio, the unit is samples per one million,
+     * default is 200000 for normal work, and 0 for init/prepare/cleanup/dispose/delay work */
     private int totalOps = 0;
     private long totalBytes = 0;
     private String driver;
