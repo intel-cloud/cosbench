@@ -41,7 +41,7 @@ public class AmpliClient {
 
     private HttpClient client = null;
     /* current operation */
-    private volatile HttpUriRequest request;
+    private volatile HttpUriRequest method;
     private int port;
     private String host;
     private String nsRoot;
@@ -54,20 +54,20 @@ public class AmpliClient {
     }
 
     public void dispose() {
-    	request = null;
+    	method = null;
         HttpClientUtil.disposeHttpClient(client);
     }
 
     public void abort() {
-        if (request != null)
-            request.abort();
-        request = null;
+        if (method != null)
+            method.abort();
+        method = null;
     }
     
     public boolean login() throws IOException, HttpException {
         String storageUrl = "http://" + this.host + ":" + this.port;
 
-        HttpHead method = HttpClientUtil.makeHttpHead(storageUrl);
+        method = HttpClientUtil.makeHttpHead(storageUrl);
         HttpResponse response = null;
         try {
             response = client.execute(method);
@@ -89,7 +89,6 @@ public class AmpliClient {
             AmpliException {
         File file = new File(sourceFilename);
 
-        HttpPut method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -97,7 +96,7 @@ public class AmpliClient {
             method = HttpClientUtil.makeHttpPut(storageUrl + "/" + HttpClientUtil.encodeURL(ampliNamespace)
                     + "/" + HttpClientUtil.encodeURL(ampliFilename));
 
-            method.setEntity(new FileEntity(file, "application/octet-stream"));
+            ((HttpPut)method).setEntity(new FileEntity(file, "application/octet-stream"));
 
             response = client.execute(method);
 
@@ -127,7 +126,6 @@ public class AmpliClient {
     public String StoreStreamedObject(InputStream stream, long length,
             String ampliNamespace, String ampliFilename) throws IOException,
             HttpException, AmpliException {
-        HttpPut method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -143,7 +141,7 @@ public class AmpliClient {
                 entity.setChunked(false);
             }
 
-            method.setEntity(entity);
+            ((HttpPut)method).setEntity(entity);
 
             response = client.execute(method);
 
@@ -191,7 +189,6 @@ public class AmpliClient {
             String ampliFilename) throws IOException, HttpException,
             AmpliException {
         // int len = data.length;
-        HttpPut method = null;
         String storageUrl = "http://" + this.host + ":" + this.port + nsRoot;
         method = HttpClientUtil.makeHttpPut(storageUrl + "/" + HttpClientUtil.encodeURL(ampliNamespace) + "/"
                 + HttpClientUtil.encodeURL(ampliFilename));
@@ -200,7 +197,7 @@ public class AmpliClient {
         
         HttpResponse response = null;
         try {
-            method.setEntity(new ByteArrayEntity(data));
+            ((HttpPut)method).setEntity(new ByteArrayEntity(data));
             response = client.execute(method);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_CREATED) {
                 return response.getFirstHeader("ETag").getValue();
@@ -222,7 +219,7 @@ public class AmpliClient {
             throws IOException, HttpException, AmpliException {
         String storageUrl = "http://" + this.host + ":" + this.port + nsRoot;
 
-        HttpGet method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
+        method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
                 + "/" + HttpClientUtil.encodeURL(objName));
 
         HttpResponse response = null;
@@ -249,7 +246,7 @@ public class AmpliClient {
             throws IOException, HttpException, AmpliException {
         String storageUrl = "http://" + this.host + ":" + this.port + nsRoot;
 
-        HttpGet method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
+        method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
                 + "/" + HttpClientUtil.encodeURL(objName));
 
         HttpResponse response = null;
@@ -272,7 +269,6 @@ public class AmpliClient {
     public boolean deleteObject(String ampliNamespace, String name)
             throws HttpException, IOException, AmpliException {
 
-        HttpDelete method = null;
         HttpResponse response = null;
         
         try {
@@ -302,7 +298,6 @@ public class AmpliClient {
     public AmpliPolicy createPolicy(AmpliPolicy policy) throws HttpException,
             IOException, AmpliException {
 
-        HttpPut method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -336,7 +331,6 @@ public class AmpliClient {
     public AmpliPolicy getPolicy(String policyId) throws HttpException,
             IOException, AmpliException {
 
-        HttpGet method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -366,13 +360,13 @@ public class AmpliClient {
 
     public AmpliNamespace createNamespace(AmpliNamespace namespace)
             throws HttpException, IOException, AmpliException {
-        HttpPut method = null;
-        HttpResponse response = null;
+
+    	HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
                     + nsRoot;
 
-            method = new HttpPut(storageUrl);
+            method = HttpClientUtil.makeHttpGet(storageUrl);
 
             method.setHeader("Content-Type", "text/plain");
 
@@ -405,7 +399,7 @@ public class AmpliClient {
             String storageUrl = "http://" + this.host + ":" + this.port
                     + nsRoot;
 
-            method = new HttpPut(storageUrl);
+            method = HttpClientUtil.makeHttpPut(storageUrl);
 
             method.setHeader("Content-Type", "text/plain");
 
@@ -438,7 +432,6 @@ public class AmpliClient {
     public AmpliNamespace getNamespace(String name) throws HttpException,
             IOException, AmpliException {
 
-        HttpGet method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -469,7 +462,6 @@ public class AmpliClient {
     public boolean isNamespaceExisted(String name) throws HttpException,
             IOException, AmpliException {
 
-        HttpHead method = null;
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -497,7 +489,7 @@ public class AmpliClient {
 
     public boolean deleteNamespace(String namespace) throws HttpException,
             IOException, AmpliException {
-        HttpDelete method = null;
+
         HttpResponse response = null;
         try {
             String storageUrl = "http://" + this.host + ":" + this.port
@@ -525,7 +517,7 @@ public class AmpliClient {
             String objName) throws IOException, HttpException, AmpliException {
         String storageUrl = "http://" + this.host + ":" + this.port + nsRoot;
 
-        HttpGet method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
+        method = HttpClientUtil.makeHttpGet(storageUrl + "/" + HttpClientUtil.encodeURL(namespace)
                 + "/" + HttpClientUtil.encodeURL(objName) + "?meta=http");
 
         HttpResponse response = null;
