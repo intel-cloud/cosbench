@@ -47,6 +47,7 @@ public class Metrics implements Item, Cloneable {
     /* Metrics */
 
     private double avgResTime; /* average response time */
+    private double avgXferTime; /* average transfer time */
     private double throughput; /* operation throughput */
     private double bandwidth; /* network bandwidth */
 
@@ -141,6 +142,14 @@ public class Metrics implements Item, Cloneable {
         this.avgResTime = avgResTime;
     }
 
+    public double getAvgXferTime() {
+    	return avgXferTime;
+    }
+
+    public void setAvgXferTime(double avgXferTime) {
+    	this.avgXferTime = avgXferTime;
+    }
+    
     public double getThroughput() {
         return throughput;
     }
@@ -202,6 +211,7 @@ public class Metrics implements Item, Cloneable {
         int sps = mark.getSampleCount();
         int tsps = mark.getTotalSampleCount();
         long rtSum = mark.getRtSum();
+        long xtSum = mark.getXtSum();
         long bytes = mark.getByteCount();
 		String type = getMetricsType(mark.getOpId(), mark.getOpType(),
 				mark.getSampleType(), mark.getOpName());
@@ -213,6 +223,7 @@ public class Metrics implements Item, Cloneable {
         metrics.setByteCount(bytes);
         metrics.setWorkerCount(1);
         metrics.setAvgResTime(rtSum > 0 ? ((double) rtSum) / sps : 0);
+        metrics.setAvgXferTime(xtSum > 0 ? ((double) xtSum) / sps : 0);
         metrics.setThroughput(sps > 0 ? ((double) sps) / window * 1000 : 0);
         metrics.setBandwidth(bytes > 0 ? ((double) bytes) / window * 1000 : 0);
         return metrics;

@@ -75,7 +75,7 @@ abstract class AbstractCommandHandler implements Controller {
         try {
             response = process(req, res);
         } catch (BadRequestException bre) {
-            response = new Response(400, "unrecognized request");
+            response = new Response(400, "unrecognized request: " + req.toString());
         } catch (NotFoundException nfe) {
             response = new Response(404, "mission not found");
         } catch (IllegalStateException ise) {

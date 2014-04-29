@@ -49,12 +49,13 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private long interval; /* interval between check points */
 
     private int totalOps; /* total operations to be performed */
+//    private int op_count;
     private long totalBytes; /* total bytes to be transferred */
 
     private OperationPicker operationPicker;
     private OperatorRegistry operatorRegistry;
 
-    private boolean isFinished = false;
+//    private boolean isFinished = false;
     private WatchDog dog = new WatchDog();
 
     private Status currMarks = new Status(); /* for snapshots */
@@ -156,25 +157,28 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
     private void doWork() {
         doSnapshot();
-        while (!isFinished)
+        while (!workerContext.isFinished())
             try {
                 performOperation();
             } catch (AbortedException ae) {
                 if (lrsample > frsample)
                     doSummary();
-                isFinished = true;
+                workerContext.setFinished(true);
             }
         doSnapshot();
     }
 
     private void performOperation() {
+    	if(workerContext.getAuthApi() == null || workerContext.getStorageApi() == null) 
+    		throw new AbortedException();
+    		
         lbegin = System.currentTimeMillis();
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
         OperatorContext context = operatorRegistry.getOperator(op);
         context.getOperator().operate(this);
     }
-
+    
     @Override
     public void onSampleCreated(Sample sample) {
         curr = sample.getTimestamp().getTime();
@@ -214,11 +218,13 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public void onOperationCompleted(Result result) {
         curr = result.getTimestamp().getTime();
+/* */
 		String type = getMarkType(result.getOpId(), result.getOpType(),
 				result.getSampleType(), result.getOpName());
         currMarks.getMark(type).addOperation(result);
         if (lop >= begin && lop < end && curr > begin && curr <= end)
             globalMarks.getMark(type).addOperation(result);
+/* */
         lop = curr; // last operation performed
         trySummary(); // make a summary report if necessary
     }
@@ -229,18 +235,23 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
                 && (totalBytes <= 0 || getTotalBytes() < totalBytes)) // bytes
             return; // not finished
         doSummary();
-        isFinished = true;
+        
+        workerContext.setFinished(true);
     }
 
     private void doSummary() {
+/* */
         long window = lrsample - frsample;
         Report report = new Report();
         for (Mark mark : globalMarks)
             report.addMetrics(Metrics.convert(mark, window));
         workerContext.setReport(report);
+/* */
     }
 
     private int getTotalOps() {
+//    	return ++op_count;
+    	
         int sum = 0;
         for (Mark mark : globalMarks)
             sum += mark.getTotalOpCount();

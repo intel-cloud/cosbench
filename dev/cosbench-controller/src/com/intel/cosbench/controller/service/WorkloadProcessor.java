@@ -118,7 +118,7 @@ class WorkloadProcessor {
         /* for strong consistency: a lock should be employed here */
         if (!workloadContext.getState().equals(QUEUING))
             throw new IllegalStateException(
-                    "workload should be in the state of queuing");
+                    "workload should be in the state of queuing but " + workloadContext.getState().name());
         String id = workloadContext.getId();
         LOGGER.info("begin to process workload {}", id);
         try {

@@ -28,14 +28,13 @@ public class WorkloadMatrixConfigurationController extends AbstractController {
             constructWorkloadConfigsFromPostData(req);             
 
         } catch (Exception e) {
-        	e.printStackTrace();
             return createErrResult(e.getMessage());
         }
 
         return createSuccResult();
     }
 
-	private void constructWorkloadConfigsFromPostData(HttpServletRequest req) {
+	private void constructWorkloadConfigsFromPostData(HttpServletRequest req) throws Exception {
 		
 		WorkloadConfigGenerator wlConfGen = new WorkloadConfigGenerator(controller);
 		wlConfGen.createWorkloadFiles(req);

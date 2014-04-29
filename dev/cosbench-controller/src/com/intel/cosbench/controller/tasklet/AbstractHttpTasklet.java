@@ -45,10 +45,10 @@ abstract class AbstractHttpTasklet extends AbstractTasklet {
         context.setHttpClient(client);
     }
 
-    protected void closeHttpClient() {
+    protected synchronized void closeHttpClient() {
         HttpClient client = context.getHttpClient();
         HttpClientUtil.disposeHttpClient(client);
-        context.setHttpClient(null);
+//        context.setHttpClient(null);
     }
 
     protected String issueHttpRequest(String command, String content) {

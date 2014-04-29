@@ -15,9 +15,9 @@ import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.message.BasicHeader;
 
 /**
- * This class encapsulates an inputstream which can handle the json structure adopted by cdmi content type.
+ * This class encapsulates an input stream which can handle the json structure adopted by cdmi content type.
  * 
- * @author ywang19, qzheng7
+ * @author ywang19
  * 
  */
 public class CdmiJsonInputStreamEntity extends AbstractHttpEntity

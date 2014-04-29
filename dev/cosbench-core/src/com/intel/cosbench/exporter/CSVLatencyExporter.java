@@ -22,6 +22,8 @@ import static com.intel.cosbench.exporter.Formats.RATIO;
 import java.io.*;
 
 import com.intel.cosbench.bench.*;
+import com.intel.cosbench.config.Work;
+import com.intel.cosbench.model.StageInfo;
 
 /**
  * This class is to export response time histogram data into CSV format.
@@ -35,20 +37,32 @@ class CSVLatencyExporter extends AbstractLatencyExporter {
     protected void writeHeader(Writer writer) throws IOException {
         StringBuilder buffer = new StringBuilder();
         buffer.append("ResTime").append(',');
-        for (Metrics metrics : workload.getReport())
-            writeOpType(buffer, metrics);
+        for (StageInfo stage : workload.getStageInfos()) {
+        	writeOpType(buffer, stage);
+        }
+
         buffer.setCharAt(buffer.length() - 1, '\n');
         writer.write(buffer.toString());
     }
 
-    private static void writeOpType(StringBuilder buffer, Metrics metrics) {
-        String opt = metrics.getOpName();
-        String spt = metrics.getSampleType();
-        if (spt.equals(opt))
-            buffer.append(opt);
-        else
-        	buffer.append(opt + '-' + spt);
-        buffer.append(',').append("(%)").append(',');
+    private static void writeOpType(StringBuilder buffer, StageInfo stage) {
+        for (Metrics metrics : stage.getReport()) {
+        	String opt = metrics.getOpName();
+        	String spt = metrics.getSampleType();
+        	if (spt.equals(opt)){ /*just append normal stage*/
+        		String workName = null;
+        		int workIdx = 1;
+        		for (Work work : stage.getStage().getWorks()){
+        			if (work.getOperationIDs().contains(metrics.getOpId())) {
+						workName = "w" + workIdx + "-" + work.getName();
+						break;
+					}
+        			workIdx++;
+        		}
+        		buffer.append(stage.getId() + "-" + workName + "-" + opt);
+        		buffer.append(',').append("(%)").append(',');
+	        }
+        }
     }
 
     @Override
@@ -61,14 +75,20 @@ class CSVLatencyExporter extends AbstractLatencyExporter {
         else
             buffer.append("+INF");
         buffer.append(',');
-        int metricsIdx = 0;
-        for (Metrics metrics : workload.getReport()) {
-            int count = metrics.getLatency().getHistoData()[idx];
-            buffer.append(count).append(',');
-            accs[metricsIdx] += count;
-            double per = accs[metricsIdx] / ((double) sums[metricsIdx]);
-            buffer.append(RATIO.format(per)).append(',');
-            metricsIdx++;
+        int metricsIdx = -1;
+        for (StageInfo stage : workload.getStageInfos()) {
+        	for (Metrics metrics : stage.getReport()) {
+        		metricsIdx++;
+        		if (!metrics.getOpName().equals(metrics.getSampleType())) {
+        			continue; /*skip for special work*/
+        		}
+        		int count = metrics.getLatency().getHistoData()[idx];
+        		buffer.append(count).append(',');
+        		accs[metricsIdx] += count;
+        		double per = sums[metricsIdx] != 0 ?
+        				accs[metricsIdx] / ((double) sums[metricsIdx]) : 0;
+        		buffer.append(RATIO.format(per)).append(',');
+        	}
         }
         buffer.setCharAt(buffer.length() - 1, '\n');
         writer.write(buffer.toString());

@@ -6,6 +6,7 @@
       <th colspan="${size}">Op-Count</th>
       <th colspan="${size}">Byte-Count</th>
       <th colspan="${size}">Avg-ResTime</th>
+      <th colspan="${size}">Avg-ProcTime</th>
       <th colspan="${size}">Throughput</th>
       <th colspan="${size}">Bandwidth</th>
       <th colspan="${size}">Succ-Ratio</th>
@@ -99,6 +100,15 @@
             N/A
           <#else>
             ${mInfo.avgResTime?string("0.##")} ms</td>
+          </#if>
+      </#list>
+      <#list allMetrics as mInfo >
+        <td>
+          <#assign procTime = mInfo.avgResTime - mInfo.avgXferTime>
+          <#if procTime == 0 >
+            N/A
+          <#else>
+            ${procTime?string("0.##")} ms</td>
           </#if>
       </#list>
       <#list allMetrics as mInfo >

@@ -47,13 +47,14 @@ class CSVStageExporter extends AbstractStageExporter {
         buffer.append("Op-Count").append(suffix);
         buffer.append("Byte-Count").append(suffix);
         buffer.append("Avg-ResTime").append(suffix);
+        buffer.append("Avg-ProcTime").append(suffix);
         buffer.append("Throughput").append(suffix);
         buffer.append("Bandwidth").append(suffix);
         buffer.append("Succ-Ratio").append(suffix);
         buffer.append("Version-Info");
         buffer.append(',').append(',').append('\n').append(',');
-        for (int i = 0; i < 6; i++)
-            // 6 metrics
+        for (int i = 0; i < 7; i++)
+            // 7 metrics
             for (Metrics metrics : snapshots[0].getReport())
 				buffer.append(
 						StringUtils.join(new Object[] {
@@ -89,6 +90,15 @@ class CSVStageExporter extends AbstractStageExporter {
             double r = metrics.getAvgResTime();
             if (r > 0)
                 buffer.append(NUM.format(r));
+            else
+                buffer.append("N/A");
+            buffer.append(',');
+        }
+        /* Transfer Time */
+        for (Metrics metrics : report) {
+            double pt = metrics.getAvgResTime() - metrics.getAvgXferTime();
+            if (pt > 0)
+                buffer.append(NUM.format(pt));
             else
                 buffer.append("N/A");
             buffer.append(',');

@@ -47,6 +47,7 @@ class SwiftStorage extends NoneStorage {
     private int timeout; // connection and socket timeout
     private String token;
     private String storage_url;
+    private String policy;
 
     public SwiftStorage() {
         /* empty */
@@ -59,10 +60,12 @@ class SwiftStorage extends NoneStorage {
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
         token = config.get(AUTH_TOKEN_KEY, AUTH_TOKEN_DEFAULT);
         storage_url = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
+        policy = config.get(POLICY_KEY, POLICY_DEFAULT);
         		
         parms.put(CONN_TIMEOUT_KEY, timeout);
         parms.put(AUTH_TOKEN_KEY, token);
         parms.put(STORAGE_URL_KEY, storage_url);
+        parms.put(POLICY_KEY, policy);
 
         logger.debug("using storage config: {}", parms);
 
@@ -81,11 +84,17 @@ class SwiftStorage extends NoneStorage {
         }
         
         try {
-            client.init(token, storage_url);
+            client.init(token, storage_url, policy);
         } catch (Exception e) {
             throw new StorageException(e);
         }
-        logger.debug("using auth token: {}, storage url: {}", token, storage_url);
+        logger.debug(new StringBuffer()
+        		.append("using auth token: ")
+        		.append(token)
+        		.append(", storage url: ")
+        		.append(storage_url)
+        		.append(", storage policy: ")
+        		.append(policy).toString());
     }
 
     @Override

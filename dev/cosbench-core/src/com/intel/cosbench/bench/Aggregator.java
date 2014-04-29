@@ -65,6 +65,7 @@ public class Aggregator {
         metrics.setThroughput(getThroughput());
         metrics.setBandwidth(getBandwidth());
         metrics.setAvgResTime(getAvgResTime());
+        metrics.setAvgXferTime(getAvgXferTime());
         metrics.setLatency(getLatency());
 		metrics.setRatio(metrics.getTotalSampleCount() > 0 ? (double) metrics
 				.getSampleCount() / metrics.getTotalSampleCount() : 0D);
@@ -93,6 +94,15 @@ public class Aggregator {
             sum += metrics.getAvgResTime() * metrics.getSampleCount();
         return sum / sampleCount;
     }
+
+    private double getAvgXferTime() {
+		if (sampleCount == 0)
+			return 0D;
+		double sum = 0D;
+		for (Metrics metrics : children)
+			sum += metrics.getAvgXferTime() * metrics.getSampleCount();
+		return sum / sampleCount;
+	}
 
     private Histogram getLatency() {
         if (!containsLatency)

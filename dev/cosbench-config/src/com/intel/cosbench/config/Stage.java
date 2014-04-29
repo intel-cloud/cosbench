@@ -51,6 +51,8 @@ public class Stage implements Iterable<Work> {
     public void setName(String name) {
         if (StringUtils.isEmpty(name))
             throw new ConfigException("stage name cannot be empty");
+        if (StringUtils.containsAny(name, ConfigConstants.DELIMITER))
+        	throw new ConfigException("stage name cannot contain delimiter '" + ConfigConstants.DELIMITER + "'");
         this.name = name;
     }
     

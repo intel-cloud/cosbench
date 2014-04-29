@@ -129,11 +129,13 @@ public class TaskContext implements TaskInfo {
 
     @Override
     public void disposeRuntime() {
-        httpClient = null;
-        mapper = null;
-        report = null;
-        log = null;
-        snapshot = new Snapshot();
+    	if(TaskState.isStopped(state)) {
+	        httpClient = null;
+	        mapper = null;
+	        report = null;
+	        log = null;
+	        snapshot = new Snapshot();
+    	}
     }
 
 }

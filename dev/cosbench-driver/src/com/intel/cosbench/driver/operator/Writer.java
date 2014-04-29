@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CountingInputStream;
 
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.driver.generator.XferCountingInputStream;
 import com.intel.cosbench.driver.generator.RandomInputStream;
 import com.intel.cosbench.driver.util.*;
 import com.intel.cosbench.service.AbortedException;
@@ -86,12 +86,12 @@ class Writer extends AbstractOperator {
             String objName, Config config, Session session, Operator op) {
         if (Thread.interrupted())
             throw new AbortedException();
-
-        CountingInputStream cin = new CountingInputStream(in);
-
+        
+        XferCountingInputStream cin = new XferCountingInputStream(in);	
         long start = System.currentTimeMillis();
 
         try {
+        	doLogDebug(session.getLogger(), "Write Object " + conName + "/" + objName);
             session.getApi()
                     .createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
@@ -105,10 +105,9 @@ class Writer extends AbstractOperator {
         }
 
         long end = System.currentTimeMillis();
-
         Date now = new Date(end);
 		return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
-				op.getName(), true, end - start, cin.getByteCount());
+				op.getName(), true, end - start, cin.getXferTime(), cin.getByteCount());
     }
     /*
      * public static Sample doWrite(byte[] data, String conName, String objName,

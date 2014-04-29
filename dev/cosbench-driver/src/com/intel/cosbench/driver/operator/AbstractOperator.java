@@ -70,6 +70,20 @@ abstract class AbstractOperator implements Operator {
         int all = session.getTotalWorkers();
         operate(idx, all, session);
     }
+    
+    protected static void doLogInfo(Logger logger, String message) {
+        if (logger != null)
+            logger.info(message);
+        else
+            AbstractOperator.LOGGER.info(message);
+    }
+    
+    protected static void doLogDebug(Logger logger, String message) {
+        if (logger != null)
+            logger.debug(message);
+        else
+            AbstractOperator.LOGGER.debug(message);
+    }
 
     protected static void doLogWarn(Logger logger, String message) {
         if (logger != null)

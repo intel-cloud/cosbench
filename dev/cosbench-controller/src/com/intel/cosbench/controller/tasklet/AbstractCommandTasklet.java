@@ -32,6 +32,8 @@ abstract class AbstractCommandTasklet<T extends Response> extends
         AbstractHttpTasklet {
 
     private Class<T> clazz;
+    protected long timeDrift = 0; /* real time drift between controller and driver */
+    private static int tolerableTimeDrift = 300; /* tolerable time drift between controller and driver */
 
     protected abstract void handleResponse(T response);
 
@@ -49,7 +51,19 @@ abstract class AbstractCommandTasklet<T extends Response> extends
     }
 
     protected void issueCommand(String command) {
-        issueCommand(command, null);
+    	int count = 3;
+    	long timeStamp = System.currentTimeMillis();
+    	while (--count >= 0) {
+    		issueCommand(command, String.valueOf(timeStamp));
+    		if (Math.abs(timeDrift) < tolerableTimeDrift)
+				break;
+    		timeStamp = System.currentTimeMillis() + timeDrift / 2;
+		}
+    	LOGGER.info("time drift between controller and driver-{} is {} mSec",
+				getDriver().getName(), timeDrift);
+    	if (count < 0)
+			LOGGER.warn("time drift is still longer than tolerable time drift {} mSec after 3 times of synchronization",
+					tolerableTimeDrift);
     }
 
     protected void issueCommand(String command, String content) {

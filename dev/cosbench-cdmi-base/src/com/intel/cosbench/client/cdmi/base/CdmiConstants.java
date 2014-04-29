@@ -17,6 +17,9 @@ public interface CdmiConstants {
     String CUSTOM_HEADERS_KEY = "custom_headers";
     String CUSTOM_HEADERS_DEFAULT = "";
     
+    String CDMI_CONTENT_TYPE_KEY = "type";
+    String CDMI_CONTENT_TYPE_DEFAULT = "cdmi";
+    
     // --------------------------------------------------------------------------
     // CONNECTION
     // --------------------------------------------------------------------------

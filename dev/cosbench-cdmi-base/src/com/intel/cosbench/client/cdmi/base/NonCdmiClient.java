@@ -1,66 +1,65 @@
-package com.intel.cosbench.client.cdmiswift;
+package com.intel.cosbench.client.cdmi.base;
 
-import static com.intel.cosbench.client.cdmiswift.CdmiSwiftConstants.*;
 import static org.apache.http.HttpStatus.*;
 
 import java.io.*;
 
-import org.apache.http.client.HttpClient;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.*;
 
-import com.intel.cosbench.client.cdmi.util.CdmiJsonInputStreamEntity;
 
 /**
- * This class encapsulates operations to access swift through cdmi middleware (https://github.com/osaddon/cdmi).
+ * This class encapsulates operations to access cdmi compatible server with non-cdmi content type.
  * 
  * @author ywang19
  *
  */
-public class CdmiSwiftClient {
-    private static boolean REPORT_DELETE_ERROR = false;
-    private HttpClient client;
-
-    private String authToken;
-    private String storageUrl;
+public class NonCdmiClient extends BaseCdmiClient{
+//    private HttpClient client;
+//    private String uri;
+//    private ArrayList<Header> custom_headers = new ArrayList<Header> ();
     
-    private final static String cdmi_ver = "1.0.1";
-
-    public CdmiSwiftClient(HttpClient client) {
-        this.client = client;
+    public NonCdmiClient() {
+    	super();
     }
 
-    public void init(String authToken, String storageURL) {
-        this.authToken = authToken;
-        this.storageUrl = storageURL;
-    }
+//    public void init(HttpClient httpClient, String uri, Map<String, String> headerKV) {
+//    	this.client = httpClient;
+//        this.uri = uri;
+//        
+//        for(String key: headerKV.keySet())
+//        	this.custom_headers.add(new BasicHeader(key, headerKV.get(key)));    
+//    }
 
     public void dispose() {
         client.getConnectionManager().shutdown();
     }
+    
+    private void setCustomHeaders(HttpRequest method) {
+    	for(Header header : custom_headers)
+    		method.setHeader(header);
+    }
 
     public void createContainer(String container) throws IOException,
-            SwiftException {
+            CdmiException {
         HttpResponse response = null;
         try {
             // Create the request
-            HttpPut method = new HttpPut(storageUrl + "/" + encodeURL(container));
+            HttpPut method = new HttpPut(uri + "/" + encodeURL(container) + "/");
             
-            method.setHeader("Accept", "application/cdmi-container");
-            method.setHeader("Content-Type", "application/cdmi-container");
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
-            method.setHeader(X_AUTH_TOKEN, authToken);
+            setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
  
 			if (statusCode == SC_CREATED || statusCode == SC_ACCEPTED) {
 			    return;
 			}
-			throw new SwiftException("unexpected return from server",
+			throw new CdmiException("unexpected return from server",
 			    response.getAllHeaders(), response.getStatusLine());
         }finally {
         	if (response != null)
@@ -69,29 +68,28 @@ public class CdmiSwiftClient {
     }
 
     public void deleteContainer(String container) throws IOException,
-    SwiftException {
+    CdmiException {
     	// add storage access logic here.    	
         HttpResponse response = null;
     	try {
             // Create the request
-            HttpDelete method = new HttpDelete(storageUrl + "/" + encodeURL(container)); 
+            HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container) + "/"); // "http://localhost:8080/cdmi-server/TestContainer/");
+
+            setCustomHeaders(method);
             
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
-            method.setHeader(X_AUTH_TOKEN, authToken);
-            
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)
                 return;
             if (statusCode == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("container not found: "
+                throw new CdmiFileNotFoundException("container not found: "
                         + container, response.getAllHeaders(),
                         response.getStatusLine());
             if (statusCode == SC_CONFLICT)
-                throw new SwiftConflictException(
+                throw new CdmiConflictException(
                         "cannot delete an non-empty container",
                         response.getAllHeaders(), response.getStatusLine());
-            throw new SwiftException("unexpected return from server",
+            throw new CdmiException("unexpected return from server",
                     response.getAllHeaders(), response.getStatusLine());
         } finally {
             if (response != null)
@@ -100,27 +98,25 @@ public class CdmiSwiftClient {
     }
 
     public InputStream getObjectAsStream(String container, String object)
-            throws IOException, SwiftException {
+            throws IOException, CdmiException {
     	
     	HttpResponse response = null;
         // Create the request
-        HttpGet method = new HttpGet(storageUrl + "/" + encodeURL(container)
+        HttpGet method = new HttpGet(uri + "/" + encodeURL(container)
                 + "/" + encodeURL(object)); 
-        
-        method.setHeader("Accept", "application/cdmi-object");
-        method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
-        method.setHeader(X_AUTH_TOKEN, authToken);
 
-        response = client.execute(method);        
+        setCustomHeaders(method);
+        
+        response = client.execute(method, httpContext);        
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode == SC_OK)
             return response.getEntity().getContent();
         
         if (statusCode == SC_NOT_FOUND)
-            throw new SwiftFileNotFoundException("object not found: "
+            throw new CdmiFileNotFoundException("object not found: "
                     + container + "/" + object, response.getAllHeaders(),
                     response.getStatusLine());
-        throw new SwiftException("unexpected result from server",
+        throw new CdmiException("unexpected result from server",
                 response.getAllHeaders(), response.getStatusLine());
     }
     
@@ -154,22 +150,18 @@ public class CdmiSwiftClient {
     }
     
     public void storeStreamedObject(String container, String object,
-            InputStream data, long length) throws IOException, CdmiSwiftClientException {
+            InputStream data, long length) throws IOException, CdmiClientException {
     	// add storage access logic here.
     	HttpPut method = null;
         // Create the request
         HttpResponse response = null;
         try {
-            method = new HttpPut(storageUrl + "/" + encodeURL(container)
+            method = new HttpPut(uri + "/" + encodeURL(container)
                     + "/" + encodeURL(object)); 
             
-            method.setHeader("Accept", "application/cdmi-object");
-            method.setHeader("Content-Type", "application/cdmi-object");
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
-            method.setHeader(X_AUTH_TOKEN, authToken);
-
-            CdmiJsonInputStreamEntity entity = new CdmiJsonInputStreamEntity(data, length);
-            
+            method.setHeader("Content-Type", "application/octet-stream");
+            setCustomHeaders(method);
+            InputStreamEntity entity = new InputStreamEntity(data, length);
             if (length < 0)
                 entity.setChunked(true);
             else {
@@ -177,8 +169,8 @@ public class CdmiSwiftClient {
             }
             
             method.setEntity(entity);
-
-            response = client.execute(method);
+            
+            response = client.execute(method, httpContext);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_CREATED) {
                 return;
@@ -188,7 +180,7 @@ public class CdmiSwiftClient {
                 throw new FileNotFoundException("container not found: "
                         + container);
             else {
-                throw new CdmiSwiftClientException(statusCode, "Unexpected Server Response: "
+                throw new CdmiClientException(statusCode, "Unexpected Server Response: "
                         + response.getStatusLine(), response.getAllHeaders(),
                         response.getStatusLine());
             }
@@ -199,28 +191,27 @@ public class CdmiSwiftClient {
     }
   
     public void deleteObject(String container, String object)
-            throws IOException, SwiftException {
+            throws IOException, CdmiException {
     	HttpResponse response = null;
         try {
             // Create the request      
-            HttpDelete method = new HttpDelete(storageUrl + "/" + encodeURL(container)
+            HttpDelete method = new HttpDelete(uri + "/" + encodeURL(container)
                     + "/" + encodeURL(object)); 
             
-            method.setHeader("X-CDMI-Specification-Version", cdmi_ver);
-            method.setHeader(X_AUTH_TOKEN, authToken);
+            setCustomHeaders(method);
             
-            response = client.execute(method);
+            response = client.execute(method, httpContext);
             
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == SC_NO_CONTENT)
                 return;
-            if (!REPORT_DELETE_ERROR)
+            if (!raise_delete_errors)
                 return;
             if (statusCode == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("object not found: "
+                throw new CdmiFileNotFoundException("object not found: "
                         + container + "/" + object,
                         response.getAllHeaders(), response.getStatusLine());
-            throw new SwiftException("unexpected return from server",
+            throw new CdmiException("unexpected return from server",
                     response.getAllHeaders(), response.getStatusLine());
         } finally {
             if (response != null)

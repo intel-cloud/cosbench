@@ -204,14 +204,16 @@ public class MissionContext implements MissionInfo {
 
     @Override
     public void disposeRuntime() {
-        for (WorkerContext worker : workerRegistry)
-            worker.disposeRuntime();
-        config = null;
-        future = null;
-        operationPicker = null;
-        operatorRegistry = null;
-        listeners = null;
-        logManager.dispose();
+    	if(MissionState.isStopped(state)) {
+	        for (WorkerContext worker : workerRegistry)
+	            worker.disposeRuntime();
+	        config = null;
+	        future = null;
+	        operationPicker = null;
+	        operatorRegistry = null;
+	        listeners = null;
+	        logManager.dispose();
+    	}
     }
 
 }
