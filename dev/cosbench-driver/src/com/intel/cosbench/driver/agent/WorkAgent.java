@@ -55,7 +55,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private OperationPicker operationPicker;
     private OperatorRegistry operatorRegistry;
 
-    private boolean isFinished = false;
+//    private boolean isFinished = false;
     private WatchDog dog = new WatchDog();
 
     private Status currMarks = new Status(); /* for snapshots */
@@ -157,13 +157,13 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
     private void doWork() {
         doSnapshot();
-        while (!isFinished)
+        while (!workerContext.isFinished())
             try {
                 performOperation();
             } catch (AbortedException ae) {
                 if (lrsample > frsample)
                     doSummary();
-                isFinished = true;
+                workerContext.setFinished(true);
             }
         doSnapshot();
     }
@@ -178,7 +178,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         OperatorContext context = operatorRegistry.getOperator(op);
         context.getOperator().operate(this);
     }
-
+    
     @Override
     public void onSampleCreated(Sample sample) {
         curr = sample.getTimestamp().getTime();
@@ -235,7 +235,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
                 && (totalBytes <= 0 || getTotalBytes() < totalBytes)) // bytes
             return; // not finished
         doSummary();
-        isFinished = true;
+        
+        workerContext.setFinished(true);
     }
 
     private void doSummary() {
