@@ -44,6 +44,8 @@ public class WorkerContext implements WorkerInfo {
 
     private volatile boolean error = false;
     private volatile boolean aborted = false;
+    private volatile boolean finished = false;
+    
     /* Each worker starts with an empty snapshot */
     private transient volatile Snapshot snapshot = new Snapshot();
     /* Each worker starts with an empty report */
@@ -53,6 +55,7 @@ public class WorkerContext implements WorkerInfo {
     /* Each worker has its private required version */
     private volatile int version = 0;
     private volatile int runlen = 0;
+
     
     public WorkerContext() {
         /* empty */
@@ -174,12 +177,25 @@ public class WorkerContext implements WorkerInfo {
         return random;
     }
 
+    public boolean isFinished() {
+    	return finished;
+    }
+    
+    public void setFinished(boolean finished) {
+    	this.finished = finished;
+    }
+    
     @Override
-    public void disposeRuntime() {
-        authApi.dispose();
-        authApi = null;
-        storageApi.dispose();
-        storageApi = null;
+    public synchronized void disposeRuntime() {
+    	if(authApi != null) {
+	        authApi.dispose();
+	        authApi = null;
+    	}
+    	if(storageApi != null) {
+	        storageApi.dispose();
+	        storageApi = null;
+    	}
+    	finished = true;
 //        random = null;
 //        snapshot = new Snapshot();
 //        logger = null;
