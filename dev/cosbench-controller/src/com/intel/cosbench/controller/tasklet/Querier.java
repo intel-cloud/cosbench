@@ -46,8 +46,8 @@ class Querier extends AbstractCommandTasklet<QueryResponse> {
             sleep();
             try{
             	issueCommand("query", id);
-            }catch(TaskletException tle) {
-            	LOGGER.warn("some unexpected exception occurs when ping drivers.", tle);
+            }catch(Exception tle) {
+            	LOGGER.warn("some unexpected exception occurs when ping drivers, but it's ignorable.", tle);
             }
         } while (!context.getState().equals(FINISHED));
     }
