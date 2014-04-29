@@ -292,7 +292,7 @@ class MissionHandler {
             /* no need to shutdown agents again */
             boolean shutdownNow = false;
             abortAgents(shutdownNow);
-            missionContext.setState(ABORTED);
+//            missionContext.setState(ABORTED);
             return;
         } catch (AbortedException ae) {
             /* have to shutdown agents now */
@@ -399,21 +399,27 @@ class MissionHandler {
 
     private void abortAgents(boolean shutdownNow) {
         Thread.interrupted(); // clear interruption status
-        if (shutdownNow)
-            executor.shutdownNow(); // abort agents
-        else
-        	executor.shutdown();
-        if (!awaitTermination(5) && !awaitTermination(10))
-            awaitTermination(30);
-        String id = missionContext.getId();
-        if (!executor.isTerminated())
-            LOGGER.warn("fail to abort agents for mission {}", id);
-        else
-            LOGGER.info("all agents have been aborted in mission {}", id);
-        /*
-         * Consider the mission aborted even if its agents have not.
-         */
-        LOGGER.info("mission {} appears to be aborted", id); // agents aborted
+        
+    	executor.shutdown(); 
+    	try {     
+    		// Wait a few seconds for existing tasks to terminate    
+    		if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {       
+    			executor.shutdownNow();
+    			
+    	        String id = missionContext.getId();
+    			
+    	        if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30)) 
+    				LOGGER.warn("fail to abort agents for mission {}", id);
+    			else
+    				LOGGER.info("all agents have been aborted in mission {}", id);
+
+    	        LOGGER.info("mission {} appears to be aborted", id); // agents aborted
+    		}   
+
+    	} catch (InterruptedException ie) {     
+    			executor.shutdownNow();     
+    			Thread.currentThread().interrupt();   
+    	} 
     }
 
     private boolean awaitTermination(int seconds) {
