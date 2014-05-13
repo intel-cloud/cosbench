@@ -238,7 +238,7 @@ class StageRunner implements StageCallable {
         TaskRegistry tasks = stageContext.getTaskRegistry();
         List<Tasklet> tasklets = Tasklets.newQueriers(tasks);
         executeTasklets(tasklets);
-        LOGGER.info("successfully queried all tasks in stage {}", id);
+        LOGGER.info("successfully queied all tasks in stage {}", id);
     }
 
     private void closeTasks() {
