@@ -2,13 +2,13 @@ TODO
 ----
 COSBench is an ongoing project, in next six months, we plan to make below improvements:
 
-1. more storage interface support, e.g. s3 and cdmi
+1. more storage interface support, list is TBD.
 
-2. async http request
+2. authentication caching
 
-3. usability enhancement, e.g. xml validator, error handling.
+3. LIST operation
 
-4. document improvement
+4. workload packages shipped
 
 
 If you have any other suggestions or you want to work with us together. please contact us at yaguang.wang@intel.com.
