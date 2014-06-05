@@ -18,7 +18,9 @@ limitations under the License.
 package com.intel.cosbench.driver.handler;
 
 import java.io.IOException;
+import java.util.Arrays;
 
+import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.model.MissionInfo;
 import com.intel.cosbench.protocol.*;
 
@@ -33,6 +35,8 @@ public class AbortHandler extends MissionHandler {
 
     private Response getResponse(MissionInfo info) {
         AbortResponse response = new AbortResponse();
+        Report report = info.getReport();
+        response.setReport(Arrays.asList(report.getAllMetrics()));
         String log = null;
         try {
             log = info.getLogManager().getLogAsString();
