@@ -290,13 +290,18 @@ class WorkloadProcessor {
     private void cancelWorkload() {
         String id = workloadContext.getId();
         LOGGER.info("begin to cancel workload {}", id);
-        executor.shutdownNow();
+        executor.shutdown();
         if (Thread.interrupted())
-            LOGGER.warn("get cancelled when canceling workload");
+            LOGGER.warn("get cancelled when canceling workload {}", id);
         try {
-            executor.awaitTermination(5, TimeUnit.SECONDS);
+        	if (!executor.awaitTermination(5, TimeUnit.SECONDS)
+        			&& !executor.awaitTermination(5, TimeUnit.SECONDS))
+				executor.shutdownNow();
+            if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30))
+            	LOGGER.warn("get cancelled when canceling workload {}", id);
         } catch (InterruptedException e) {
-            LOGGER.warn("get cancelled when canceling workload");
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
         }
         if (!executor.isTerminated())
             LOGGER.warn("fail to cancel current stage for workload {}", id);
@@ -308,6 +313,18 @@ class WorkloadProcessor {
         workloadContext.setStopDate(new Date());
         workloadContext.setState(CANCELLED);
         LOGGER.info("successfully cancelled workload {}", id);
+    }
+    
+    private boolean awaitTermination(int seconds) {
+        try {
+            if (!executor.isTerminated()) {
+                LOGGER.info("wait {} seconds for workload to cancel ...", seconds);
+                executor.awaitTermination(seconds, TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException e) {
+            LOGGER.debug("get cancelled when canceling workload");
+        }
+        return executor.isTerminated();
     }
 
 }
