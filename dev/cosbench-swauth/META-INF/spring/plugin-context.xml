@@ -9,6 +9,7 @@
          http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
 	<bean name="authFactory" class="com.intel.cosbench.api.swauth.SwiftAuthFactory" />
+	<bean name="swiftTokenCacheImpl" class="com.intel.cosbench.client.swauth.utils.SwiftTokenCacheImpl" />
 
 	<osgi:service ref="authFactory" context-class-loader="service-provider"
 		interface="com.intel.cosbench.api.auth.AuthAPIFactory">

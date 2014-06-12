@@ -64,7 +64,7 @@ class WatchDog extends TimerTask {
             secs -= 5;
         }
         if (!cancel) {
-//            workerContext.getStorageApi().abort();
+            workerContext.getStorageApi().abort();
         	workerContext.disposeRuntime();
         	
             LOGGER.debug("work agent {} has been alerted for timeout", idx);
