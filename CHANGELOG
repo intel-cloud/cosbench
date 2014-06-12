@@ -1,4 +1,4 @@
-  COSBench 0.4.0.0 (14-ww21.5)
+  COSBench 0.4.0.b2 (14-ww17.1)
 ------------------------------------
 . #57: time synchronization
 . #96: Creating Web UI facility for generating different workload configuration files
@@ -8,6 +8,10 @@
 . #167: storage policy supporting for openstack swift
 . #37: support CDMI interface
 . #139: NullPointerException when a mission is aborted
+
+
+  COSBench 0.4.0.b1 (14-ww11.4)
+------------------------------------
 . #166: show driver alive state on controller index page
 . #158: Extend "histogram" selector to support "open ranges"
 . #165: enable Open range for object size in uniform and histogram
@@ -17,6 +21,10 @@
 . #143: at loading archived workloads, even there are 100 workloads, the UI shows only 98.
 . #140: duplicated workload id generated 
 . #151: avoid being challenged for each request
+
+
+  COSBench 0.4.0.a1 (14-ww1.4)
+------------------------------------
 . #137: when there are large # of archive jobs, exception will raise from archive list on web portal.
 . #139: NullPointerException when a mission is aborted
 . support http BASIC and DIGEST authentication
