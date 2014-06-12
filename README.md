@@ -66,6 +66,8 @@ Mailing list: (http://cosbench.1094679.n5.nabble.com/)
 
 Other related projects
 ----------------------
+COSBench-Workload-Generator: (https://github.com/giteshnandre/COSBench-Workload-Generator)
+
 COSBench-Plot: (https://github.com/icclab/cosbench-plot)
 
 
