@@ -17,6 +17,10 @@ limitations under the License.
 
 package com.intel.cosbench.protocol;
 
+import java.util.List;
+
+import com.intel.cosbench.bench.Metrics;
+
 
 /**
  * The response to get log from driver when aborted.
@@ -27,6 +31,7 @@ package com.intel.cosbench.protocol;
 public class AbortResponse extends Response {
 
     private String driverLog; /* driver log */
+    private List<Metrics> report; /* metrics report */
 
     public AbortResponse() {
         /* empty */
@@ -38,6 +43,14 @@ public class AbortResponse extends Response {
 
     public void setDriverLog(String driverLog) {
         this.driverLog = driverLog;
+    }
+    
+    public List<Metrics> getReport() {
+        return report;
+    }
+
+    public void setReport(List<Metrics> report) {
+        this.report = report;
     }
 
 }
