@@ -19,6 +19,8 @@ package com.intel.cosbench.controller.tasklet;
 
 import static com.intel.cosbench.model.TaskState.*;
 
+import com.intel.cosbench.bench.Metrics;
+import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.controller.model.TaskContext;
 import com.intel.cosbench.protocol.AbortResponse;
 
@@ -61,6 +63,10 @@ class Aborter extends AbstractCommandTasklet<AbortResponse> {
 
     @Override
     protected void handleResponse(AbortResponse response) {
+    	Report report = new Report();
+        for (Metrics metrics : response.getReport())
+            report.addMetrics(metrics);
+        context.setReport(report);
         context.setLog(response.getDriverLog());
     }
 
