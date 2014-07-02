@@ -196,11 +196,14 @@ public class WorkloadConfigGenerator {
 			objectSizesLength = objectSizes.length;
 
 		// Adding multiple init stages
-		addInitStages(workflow, objectSizesLength, containers);
+		String init_workers = num_of_drivers;
+		addInitStages(workflow, objectSizesLength, containers, objectSizes,
+				objects, isRange, unit, init_workers);
 
 		// Adding multiple prepare stages
+
 		addPrepareStages(workflow, objectSizesLength, objectSizes, objects,
-				containers, isRange, unit);
+				containers, isRange, unit, workers);
 
 		// Adding multiple normal stages
 		addNormalStages(workflow, objectSizesLength, objectSizes, objects,
@@ -272,8 +275,7 @@ public class WorkloadConfigGenerator {
 
 	private void addNormalStages(Workflow workflow, int objectSizesLength,
 			String[] objectSizes, String[] objects, String[] containers,
-			boolean isRange, String unit, String[] workers,
-			String[] rwdRatios) {
+			boolean isRange, String unit, String[] workers, String[] rwdRatios) {
 		int previousContainerValue = 0;
 		int previousObjectValue = 0;
 		for (int i = 0; i < objectSizesLength; i++) {
@@ -299,17 +301,18 @@ public class WorkloadConfigGenerator {
 					previousObjectValue = Integer.valueOf(to_object);
 
 					for (int w = 0; w < workers.length; w++) {
-						for (int r=0 ; r < rwdRatios.length; r++)
-						{
-							String[] readWriteDeleteRatios = rwdRatios[r].split(",");
+						for (int r = 0; r < rwdRatios.length; r++) {
+							String[] readWriteDeleteRatios = rwdRatios[r]
+									.split(",");
 							String readRatio = readWriteDeleteRatios[0];
 							String writeRatio = readWriteDeleteRatios[1];
 							String deleteRatio = readWriteDeleteRatios[2];
-							
-							Stage stage = createNormalWorkstage(workflow, workers[w],
-									runtime, readRatio, writeRatio, deleteRatio,
-									isRange, from_container, to_container,
-									from_object, to_object, sizeString);
+
+							Stage stage = createNormalWorkstage(workflow,
+									workers[w], runtime, readRatio, writeRatio,
+									deleteRatio, isRange, from_container,
+									to_container, from_object, to_object,
+									sizeString);
 							workflow.addStage(stage);
 						}
 					}
@@ -319,10 +322,11 @@ public class WorkloadConfigGenerator {
 
 	}
 
+	
+	
 	private void addPrepareStages(Workflow workflow, int objectSizesLength,
 			String[] objectSizes, String[] objects, String[] containers,
-			boolean isRange, String unit) {
-
+			boolean isRange, String unit, String[] workers) {
 		int previousContainerValue = 0;
 		int previousObjectValue = 0;
 		for (int i = 0; i < objectSizesLength; i++) {
@@ -348,16 +352,38 @@ public class WorkloadConfigGenerator {
 					previousObjectValue = Integer.valueOf(to_object);
 
 					if (isRange) {
-						Stage stage = createWorkstage(workflow, "prepare",
-								"prepare", Integer.valueOf(objects[k])
-										/ Integer.valueOf(num_of_drivers) + "",
-								"containers=r(" + from_container + ","
-										+ to_container + ");objects=r("
-										+ from_object + "," + to_object
-										+ ");sizes=u" + sizeString);
+
+						int numworkers = Integer.valueOf(objects[k]) / Integer.valueOf(num_of_drivers);
+						int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
+						int numobjects = (Integer.valueOf(to_object) - Integer.valueOf(from_object) + 1);
+						
+						String stageName = "w" + sizeString 
+								+ "_c" + numcontainers 
+								+ "_o" + numobjects
+								+ "_prepare_" + numworkers;
+						
+						String configLine = "containers=r("
+								+ from_container + "," + to_container + ");objects=r("
+								+ from_object + "," + to_object
+								+ ");sizes=u" + sizeString; 
+						
+						Stage stage = createAWorkstage(workflow, stageName, "prepare", numworkers + "", configLine);
+
 						workflow.addStage(stage);
+
 					} else {
-						Stage stage = createWorkstage(workflow, "prepare",
+
+						Stage stage = createAWorkstage(workflow, "w"
+										+ sizeString
+										+ "_c"
+										+ (Integer.valueOf(to_container)
+												- Integer.valueOf(from_container) + 1)
+										+ "_o"
+										+ (Integer.valueOf(to_object)
+												- Integer.valueOf(from_object) + 1)
+										+ "_prepare_"
+										+ Integer.valueOf(objects[k])
+										/ Integer.valueOf(num_of_drivers) + "_",
 								"prepare", Integer.valueOf(objects[k])
 										/ Integer.valueOf(num_of_drivers) + "",
 								"containers=r(" + from_container + ","
@@ -365,6 +391,7 @@ public class WorkloadConfigGenerator {
 										+ from_object + "," + to_object
 										+ ");sizes=c" + sizeString);
 						workflow.addStage(stage);
+
 					}
 				}
 			}
@@ -372,23 +399,45 @@ public class WorkloadConfigGenerator {
 	}
 
 	private void addInitStages(Workflow workflow, int objectSizesLength,
-			String[] containers) {
+			String[] containers, String[] objectSizes, String[] objects,
+			boolean isRange, String unit, String init_workers) {
 		int previousContainerValue = 0;
 		for (int i = 0; i < objectSizesLength; i++) {
 			for (int j = 0; j < containers.length; j++) {
+
 				String containerString = containers[j];
 				String from_container = previousContainerValue
 						+ Integer.valueOf(containerString) + "";
 				String to_container = Integer.valueOf(from_container)
 						+ Integer.valueOf(containerString) - 1 + "";
 				previousContainerValue = Integer.valueOf(to_container);
-				Stage stage = createWorkstage(workflow, "init", "init", "1",
-						"containers=r(" + from_container + "," + to_container
-								+ ")");
+				String sizeString;
+				if (isRange)
+					sizeString = "(" + objectSizes[0] + "," + objectSizes[1] + ")" + unit;
+				else
+					sizeString = "(" + objectSizes[i] + ")" + unit;
+
+				int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
+				
+				String stageName = "w" + sizeString + "_c" + numcontainers + "_init_" + init_workers;
+				String config = "containers=r(" + from_container + "," + to_container + ")";
+				Stage stage = createAWorkstage(workflow, stageName, "init", init_workers, config);
+
 				workflow.addStage(stage);
+
 			}
 		}
+	}
 
+	private Stage createAWorkstage(Workflow workflow, String stageName,
+			String stageType, String workers, String config) {
+		Stage stage = new Stage(stageName);
+		Work work = new Work(stageName, stageType);
+		work.setType(stageType);
+		work.setWorkers(Integer.parseInt(workers));
+		work.setConfig(config);
+		stage.addWork(work);
+		return stage;
 	}
 
 	private Stage createNormalWorkstage(Workflow workflow,
