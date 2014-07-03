@@ -3,6 +3,10 @@
 
   <storage type="swift" />
   
+  <!-- Storage policies feature: http://docs.openstack.org/developer/swift/overview_architecture.html
+	<storage type="swift" config="policy=chicken" />
+  -->
+  
   <!-- MODIFY ME -->
   <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.10.1:8080/auth/v1.0" />
 
