@@ -13,13 +13,15 @@
   <h3>Workload Matrix Configuration</h3>
     <h5>You can configure workload matrix from here. You can generate or submit workloads directly. With 'Generate Workload File/s' option,
         files will be generated and placed at 'workloads' directory inside COSBench installation directory. No workload files will be generated when
-        'Submit Workload/s' option is chosen and workloads will be submitted directly.</h5>
+        'Submit Workload/s' option is chosen and workloads will be submitted directly.
+        <br>(Note: * marked fields are mandatory.)</br>
+    </h5>
   <div>
     <form action="advanced-config-workload.do" method="post" class="content" >
 	  <#if error?? >
         <p><span class="error"><strong>Note</strong>: ${error}!</span></p>
       </#if>
-      	<label for="workload.matrix.name" >Workload Matrix Name:</label>
+      	<label for="workload.matrix.name" ><strong>*</strong>Workload Matrix Name:</label>
         <input id="workload.matrix.name" name="workload.matrix.name" size="15" maxlength="30"/>
       	<div id="workload-common-configuration" class="a1">
       	<div id="workload.as" class="a2">
@@ -103,7 +105,7 @@
 				
 			
 			<input id="workload-checkbox" type="checkbox" name="workload.matrix.checked" checked="checked" onClick="toggleDiv(this.nextElementSibling.nextElementSibling.nextElementSibling);" style="float:left">
-			<label for="workload-checkbox" class="a2">Workload Name:</label>
+			<label for="workload-checkbox" class="a2">*Workload Name:</label>
 			<input name="workload.name" size="15" maxlength="30"/>
 			<div name="workload.matrix" id="workload.matrix" class="a2" >
 					<input type="hidden" id="workload-number" name="workload-number" value="0">
