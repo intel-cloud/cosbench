@@ -29,6 +29,8 @@ import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.client.swauth.*;
+import com.intel.cosbench.client.swauth.utils.SwiftTokenCache;
+import com.intel.cosbench.client.swauth.utils.SwiftTokenCacheImpl;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
 
@@ -86,28 +88,10 @@ class SwiftAuth extends NoneAuth {
     @Override
     public AuthContext login() {
         super.login();
-        try {
-            client.login();
-        } catch (SocketTimeoutException ste) {
-            throw new AuthTimeoutException(ste);
-        } catch (ConnectTimeoutException cte) {
-            throw new AuthTimeoutException(cte);
-        } catch (InterruptedIOException ie) {
-            throw new AuthInterruptedException(ie);
-        } catch (SwiftAuthClientException se) {
-            throw new AuthException(se.getMessage(), se);
-        } catch (Exception e) {
-            throw new AuthException(e);
-        }
-        return createContext();
+    	AuthContext authContext = new AuthContext();
+    	SwiftTokenCache tokenCache = SwiftTokenCacheImpl.getSwiftTokenCache(client);
+    	authContext.put("token",tokenCache.getToken());
+        authContext.put("storage_url", tokenCache.getStorageURL());
+    	return authContext;
     }
-
-    private AuthContext createContext() {
-        AuthContext context = new AuthContext();
-        context.put(AUTH_TOKEN_KEY, client.getAuthToken());
-        context.put(STORAGE_URL_KEY, client.getStorageURL());
-        logger.debug("login is succeed with returned values: token = " + client.getAuthToken() + ", url = " + client.getStorageURL());
-        return context;
-    }
-
 }
