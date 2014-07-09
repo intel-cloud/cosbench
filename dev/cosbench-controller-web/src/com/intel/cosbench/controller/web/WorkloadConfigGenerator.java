@@ -214,7 +214,7 @@ public class WorkloadConfigGenerator {
 				containers, isRange, unit);
 
 		// multiple dispose stages
-		addDisposeStages(workflow, objectSizesLength, containers);
+		addDisposeStages(workflow, objectSizesLength, objectSizes, containers, isRange, unit);
 
 		workload.setWorkflow(workflow);
 
@@ -222,21 +222,35 @@ public class WorkloadConfigGenerator {
 	}
 
 	private void addDisposeStages(Workflow workflow, int objectSizesLength,
-			String[] containers) {
-
+			String[] objectSizes,  String[] containers,
+			boolean isRange, String unit) {
+		
 		int previousContainerValue = 0;
 		for (int i = 0; i < objectSizesLength; i++) {
 			for (int j = 0; j < containers.length; j++) {
-				String containerString = containers[j];
-				String from_container = previousContainerValue
-						+ Integer.valueOf(containerString) + "";
-				String to_container = Integer.valueOf(from_container)
-						+ Integer.valueOf(containerString) - 1 + "";
-				previousContainerValue = Integer.valueOf(to_container);
-				Stage stage = createWorkstage(workflow, "dispose", "dispose", "1",
-						"containers=r(" + from_container + "," + to_container
-								+ ")");
-				workflow.addStage(stage);
+				
+					String containerString = containers[j];
+					String from_container = previousContainerValue + Integer.valueOf(containerString) + "";
+					String to_container = Integer.valueOf(from_container) + Integer.valueOf(containerString) - 1 + "";
+					previousContainerValue = Integer.valueOf(to_container);
+
+					String sizeString;
+					if (isRange)
+						sizeString = "(" + objectSizes[0] + "," + objectSizes[1] + ")" + unit;
+					else
+						sizeString = "(" + objectSizes[i] + ")" + unit;
+
+					String numworkers = num_of_drivers;
+					int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
+									
+					String stageName = "w" + sizeString + "_c" + numcontainers + "_dispose_" + numworkers;
+
+					String configLine = "containers=r(" + from_container + "," + to_container + ")";
+
+					Stage stage = createAWorkstage(workflow, stageName, "dispose", numworkers + "", configLine);
+
+					workflow.addStage(stage);
+			
 			}
 		}
 	}
@@ -251,28 +265,40 @@ public class WorkloadConfigGenerator {
 			for (int j = 0; j < containers.length; j++) {
 				for (int k = 0; k < objects.length; k++) {
 					String containerString = containers[j];
-					String from_container = previousContainerValue
-							+ Integer.valueOf(containerString) + "";
-					String to_container = Integer.valueOf(from_container)
-							+ Integer.valueOf(containerString) - 1 + "";
+					String from_container = previousContainerValue + Integer.valueOf(containerString) + "";
+					String to_container = Integer.valueOf(from_container) + Integer.valueOf(containerString) - 1 + "";
 					previousContainerValue = Integer.valueOf(to_container);
 
 					String from_object = previousObjectValue + 1 + "";
-					String to_object = Integer.valueOf(from_object)
-							+ Integer.valueOf(objects[k]) - 1 + "";
+					String to_object = Integer.valueOf(from_object) + Integer.valueOf(objects[k]) - 1 + "";
 					previousObjectValue = Integer.valueOf(to_object);
-
-					Stage stage = createWorkstage(workflow, "cleanup",
-							"cleanup", "1", "containers=r(" + from_container
-									+ "," + to_container + ");objects=r("
-									+ from_object + "," + to_object + ")");
+					
+					String sizeString;
+					if (isRange)
+						sizeString = "(" + objectSizes[0] + "," + objectSizes[1] + ")" + unit;
+					else
+						sizeString = "(" + objectSizes[i] + ")" + unit;
+					
+					String numworkers = num_of_drivers;
+					int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
+					int numobjects = (Integer.valueOf(to_object) - Integer.valueOf(from_object) + 1);
+					
+					String stageName = "w" + sizeString + "_c" + numcontainers + "_o" + numobjects + "_cleanup_" + numworkers;
+					
+					String configLine = "containers=r(" + from_container + ","
+							+ to_container + ");objects=r(" + from_object + ","
+							+ to_object + ")";
+					
+					Stage stage = createAWorkstage(workflow, stageName, "cleanup", numworkers + "", configLine);
+					
 					workflow.addStage(stage);
+
 				}
 			}
 		}
 
 	}
-
+	
 	private void addNormalStages(Workflow workflow, int objectSizesLength,
 			String[] objectSizes, String[] objects, String[] containers,
 			boolean isRange, String unit, String[] workers, String[] rwdRatios) {
@@ -287,7 +313,6 @@ public class WorkloadConfigGenerator {
 								+ objectSizes[1] + ")" + unit;
 					else
 						sizeString = "(" + objectSizes[i] + ")" + unit;
-
 					String containerString = containers[j];
 					String from_container = previousContainerValue
 							+ Integer.valueOf(containerString) + "";
@@ -299,7 +324,6 @@ public class WorkloadConfigGenerator {
 					String to_object = Integer.valueOf(from_object)
 							+ Integer.valueOf(objects[k]) - 1 + "";
 					previousObjectValue = Integer.valueOf(to_object);
-
 					for (int w = 0; w < workers.length; w++) {
 						for (int r = 0; r < rwdRatios.length; r++) {
 							String[] readWriteDeleteRatios = rwdRatios[r]
