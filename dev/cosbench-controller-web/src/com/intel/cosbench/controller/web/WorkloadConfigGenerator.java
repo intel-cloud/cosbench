@@ -332,13 +332,6 @@ public class WorkloadConfigGenerator {
 		for (int i = 0; i < objectSizesLength; i++) {
 			for (int j = 0; j < containers.length; j++) {
 				for (int k = 0; k < objects.length; k++) {
-					String sizeString;
-					if (isRange)
-						sizeString = "(" + objectSizes[0] + ","
-								+ objectSizes[1] + ")" + unit;
-					else
-						sizeString = "(" + objectSizes[i] + ")" + unit;
-
 					String containerString = containers[j];
 					String from_container = previousContainerValue
 							+ Integer.valueOf(containerString) + "";
@@ -351,48 +344,33 @@ public class WorkloadConfigGenerator {
 							+ Integer.valueOf(objects[k]) - 1 + "";
 					previousObjectValue = Integer.valueOf(to_object);
 
+					int numworkers = Integer.valueOf(objects[k]) / Integer.valueOf(num_of_drivers);
+					int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
+					int numobjects = (Integer.valueOf(to_object) - Integer.valueOf(from_object) + 1);
+					
+					String sizeString;
+					String sizeSpec = "";
 					if (isRange) {
-
-						int numworkers = Integer.valueOf(objects[k]) / Integer.valueOf(num_of_drivers);
-						int numcontainers = (Integer.valueOf(to_container) - Integer.valueOf(from_container) + 1);
-						int numobjects = (Integer.valueOf(to_object) - Integer.valueOf(from_object) + 1);
-						
-						String stageName = "w" + sizeString 
-								+ "_c" + numcontainers 
-								+ "_o" + numobjects
-								+ "_prepare_" + numworkers;
-						
-						String configLine = "containers=r("
-								+ from_container + "," + to_container + ");objects=r("
-								+ from_object + "," + to_object
-								+ ");sizes=u" + sizeString; 
-						
-						Stage stage = createAWorkstage(workflow, stageName, "prepare", numworkers + "", configLine);
-
-						workflow.addStage(stage);
-
+						sizeString = "(" + objectSizes[0] + "-" + objectSizes[1] + ")" + unit;
+						sizeSpec = "u";
 					} else {
-
-						Stage stage = createAWorkstage(workflow, "w"
-										+ sizeString
-										+ "_c"
-										+ (Integer.valueOf(to_container)
-												- Integer.valueOf(from_container) + 1)
-										+ "_o"
-										+ (Integer.valueOf(to_object)
-												- Integer.valueOf(from_object) + 1)
-										+ "_prepare_"
-										+ Integer.valueOf(objects[k])
-										/ Integer.valueOf(num_of_drivers) + "_",
-								"prepare", Integer.valueOf(objects[k])
-										/ Integer.valueOf(num_of_drivers) + "",
-								"containers=r(" + from_container + ","
-										+ to_container + ");objects=r("
-										+ from_object + "," + to_object
-										+ ");sizes=c" + sizeString);
-						workflow.addStage(stage);
-
+						sizeString = "(" + objectSizes[i] + ")" + unit;
+						sizeSpec = "c";
 					}
+
+					String stageName = "w" + sizeString 
+							+ "_c" + numcontainers 
+							+ "_o" + numobjects
+							+ "_prepare_" + numworkers;
+
+					String configLine = 
+						"containers=r(" + from_container + "," + to_container 
+						+ ");objects=r(" + from_object + "," + to_object
+						+ ");sizes=" + sizeSpec + sizeString; 
+					
+					Stage stage = createAWorkstage(workflow, stageName, "prepare", numworkers + "", configLine);
+
+					workflow.addStage(stage);
 				}
 			}
 		}
