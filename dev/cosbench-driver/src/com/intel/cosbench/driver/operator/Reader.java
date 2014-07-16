@@ -99,7 +99,7 @@ class Reader extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform read operation", e);
+            doLogErr(session.getLogger(), "fail to perform read operation " + conName + "/" + objName, e);
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
             IOUtils.closeQuietly(in);
