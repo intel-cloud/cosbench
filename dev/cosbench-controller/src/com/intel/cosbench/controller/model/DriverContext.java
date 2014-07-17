@@ -17,6 +17,9 @@ limitations under the License.
 
 package com.intel.cosbench.controller.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.intel.cosbench.model.DriverInfo;
 import com.intel.cosbench.utils.MapRegistry;
 
@@ -31,8 +34,9 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
     private String name;
     private String url;
     private boolean aliveState;
+    private Map<String, String> pIDMap = new HashMap<String, String>();
 
-    public DriverContext() {
+	public DriverContext() {
         /* empty */
     }
 
@@ -64,4 +68,16 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
     	return aliveState;
     }
 
+
+	public String getPIDMap(String scriptName) {
+		String pid = pIDMap.remove(scriptName);		
+		return (pid == null) ? "0" : pid;
+	}
+
+	public void putPIDMap(String scriptName, String pid) {
+		if (pid == null)
+			pIDMap.put(scriptName, "0");
+		pIDMap.put(scriptName, pid);
+	}
+	
 }

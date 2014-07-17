@@ -32,7 +32,8 @@ public class Stage implements Iterable<Work> {
 
     private String name;
     private int closuredelay;
-    private Auth auth;
+    private String trigger=null;
+	private Auth auth;
     private Storage storage;
     private List<Work> works;
 
@@ -58,6 +59,14 @@ public class Stage implements Iterable<Work> {
     
 	public int getClosuredelay() {
 		return closuredelay;
+	}
+	
+    public String getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(String trigger) {
+		this.trigger = trigger;
 	}
 
 	public void setClosuredelay(int closuredelay) {
