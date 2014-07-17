@@ -107,7 +107,7 @@ class Cleaner extends AbstractOperator {
             doLogWarn(session.getLogger(), msg);
             // ignored
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform clean operation", e);
+            doLogErr(session.getLogger(), "fail to perform clean operation " + conName, e);
             throw new AgentException(); // mark error
         }
 
