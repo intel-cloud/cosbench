@@ -27,6 +27,7 @@ import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.driver.generator.XferCountingInputStream;
 import com.intel.cosbench.driver.generator.RandomInputStream;
+import com.intel.cosbench.driver.model.ErrorStatistics;
 import com.intel.cosbench.driver.util.*;
 import com.intel.cosbench.service.AbortedException;
 
@@ -91,15 +92,21 @@ class Writer extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
-        	doLogDebug(session.getLogger(), "Write Object " + conName + "/" + objName);
+        	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " Write Object " + conName + "/" + objName);
             session.getApi()
                     .createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform write operation", e);
+        	/**
+        	 * previous implementation method 
+        	 */
+       //     doLogErr(session.getLogger(), "worker "+ session.getIndex() +  "fail to perform write operation " + conName + "/" + objName, e);
+        	
+        	errorStatisticsHandle(e, session, conName + "/" + objName);
 			return new Sample(new Date(), op.getId(), op.getOpType(),
 					op.getSampleType(), op.getName(), false);
+			
         } finally {
             IOUtils.closeQuietly(cin);
         }

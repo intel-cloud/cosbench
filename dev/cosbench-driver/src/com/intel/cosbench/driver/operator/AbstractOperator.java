@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.driver.operator;
 
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.driver.model.ErrorStatistics;
 import com.intel.cosbench.log.*;
 
 /**
@@ -107,5 +108,15 @@ abstract class AbstractOperator implements Operator {
     }
 
     protected abstract void operate(int idx, int all, Session session);
+    
+    public static void errorStatisticsHandle(Exception e, Session session, String target){
+    	String message = e.getMessage();
+    	message = (e.getCause() == null ? message : message + e.getCause().getMessage());
+    	if (!session.getErrorStatistics().getMessageAndExceptionStack().containsKey(message)){
+    		doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform read operation " + target , e);
+    		session.getErrorStatistics().getMessageAndExceptionStack().put(message, e);
+    	}
+    	session.getErrorStatistics().addMessageAndTargets(message, target);
+    }
 
 }
