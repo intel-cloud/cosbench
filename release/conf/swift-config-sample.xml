@@ -4,7 +4,7 @@
   <storage type="swift" />
   
   <!-- Storage policies feature: http://docs.openstack.org/developer/swift/overview_architecture.html
-	<storage type="swift" config="policy=chicken" />
+	<storage type="swift" config="policy=gold" />
   -->
   
   <!-- MODIFY ME -->

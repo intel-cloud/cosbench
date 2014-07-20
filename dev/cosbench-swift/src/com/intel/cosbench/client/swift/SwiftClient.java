@@ -180,8 +180,7 @@ public class SwiftClient {
             return response.getResponseBodyAsStream();
         response.consumeResposeBody();
         if (response.getStatusCode() == SC_NOT_FOUND)
-            throw new SwiftFileNotFoundException("object not found: "
-                    + container + "/" + object, response.getResponseHeaders(),
+            throw new SwiftFileNotFoundException("object not found", response.getResponseHeaders(),
                     response.getStatusLine());
         throw new SwiftException("unexpected result from server",
                 response.getResponseHeaders(), response.getStatusLine());
@@ -203,8 +202,7 @@ public class SwiftClient {
             if (response.getStatusCode() == SC_ACCEPTED)
                 return;
             if (response.getStatusCode() == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("container not found: "
-                        + container, response.getResponseHeaders(),
+                throw new SwiftFileNotFoundException("container not found", response.getResponseHeaders(),
                         response.getStatusLine());
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());
@@ -233,8 +231,8 @@ public class SwiftClient {
             if (response.getStatusCode() == SC_ACCEPTED)
                 return;
             if (response.getStatusCode() == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("container not found: "
-                        + container, response.getResponseHeaders(),
+                throw new SwiftFileNotFoundException("container not found"
+                        , response.getResponseHeaders(),
                         response.getStatusLine());
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());
@@ -256,8 +254,7 @@ public class SwiftClient {
             if (!REPORT_DELETE_ERROR)
                 return;
             if (response.getStatusCode() == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("object not found: "
-                        + container + "/" + object,
+                throw new SwiftFileNotFoundException("object not found",
                         response.getResponseHeaders(), response.getStatusLine());
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());

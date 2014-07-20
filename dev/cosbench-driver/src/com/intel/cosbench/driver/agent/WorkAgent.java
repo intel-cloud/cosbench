@@ -103,6 +103,10 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     public Logger getLogger() {
         return workerContext.getLogger();
     }
+    
+    public ErrorStatistics getErrorStatistics(){
+    	return workerContext.getErrorStatistics();
+    }
 
     @Override
     public OperationListener getListener() {

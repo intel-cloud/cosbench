@@ -86,7 +86,7 @@ class Reader extends AbstractOperator {
         long xferTime = 0L;
         long xferTimeCheck = 0L;
         try {
-        	doLogDebug(session.getLogger(), "Read Object " + conName + "/" + objName);
+        	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " Read Object " + conName + "/" + objName);
             in = session.getApi().getObject(conName, objName, config);
             long xferStart = System.currentTimeMillis();
             if (!hashCheck){
@@ -99,7 +99,14 @@ class Reader extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform read operation " + conName + "/" + objName, e);
+
+        	/**
+        	 * previous implementation method
+        	 */
+         //   doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform read operation " + conName + "/" + objName , e);
+        	
+        	errorStatisticsHandle(e, session, conName + "/" + objName);
+
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
             IOUtils.closeQuietly(in);
