@@ -46,6 +46,8 @@ public class Mission implements Iterable<Operation> {
     private Auth auth = DEFAULT_AUTH;
     private Storage storage = DEFAULT_STORAGE;
     private List<Operation> operations;
+    
+    
 
     public Mission() {
         /* empty */
