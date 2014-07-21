@@ -44,9 +44,10 @@ public class MissionContext implements MissionInfo {
 
     private Mission mission;
     private LogManager logManager;
+    private ErrorStatistics errorStatistics;
     private transient OperationPicker operationPicker;
     private transient OperatorRegistry operatorRegistry;
-
+    
     private WorkerRegistry workerRegistry;
 
     /* Report will be available after the mission is accomplished */
@@ -55,7 +56,7 @@ public class MissionContext implements MissionInfo {
     private transient List<MissionListener> listeners = new ArrayList<MissionListener>();
 
     public MissionContext() {
-        /* empty */
+        errorStatistics = new ErrorStatistics();
     }
 
     @Override
@@ -146,8 +147,18 @@ public class MissionContext implements MissionInfo {
     public void setLogManager(LogManager logManager) {
         this.logManager = logManager;
     }
+    
+    
 
-    public OperationPicker getOperationPicker() {
+    public ErrorStatistics getErrorStatistics() {
+		return errorStatistics;
+	}
+
+	public void setErrorStatistics(ErrorStatistics errorStatistics) {
+		this.errorStatistics = errorStatistics;
+	}
+
+	public OperationPicker getOperationPicker() {
         return operationPicker;
     }
 
