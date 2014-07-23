@@ -39,6 +39,7 @@ public class WorkerContext implements WorkerInfo {
     private int index;
     private Mission mission;
     private transient Logger logger;
+    private ErrorStatistics errorStatistics;
     private transient AuthAPI authApi;
     private transient StorageAPI storageApi;
 
@@ -185,7 +186,15 @@ public class WorkerContext implements WorkerInfo {
     	this.finished = finished;
     }
     
-    @Override
+    public ErrorStatistics getErrorStatistics() {
+		return errorStatistics;
+	}
+
+	public void setErrorStatistics(ErrorStatistics errorStatistics) {
+		this.errorStatistics = errorStatistics;
+	}
+
+	@Override
     public synchronized void disposeRuntime() {
     	if(authApi != null) {
 	        authApi.dispose();

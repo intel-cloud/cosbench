@@ -112,7 +112,8 @@ class Preparer extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform prepare operation", e);
+    //        doLogErr(session.getLogger(), "fail to perform prepare operation", e);
+            errorStatisticsHandle(e, session, conName);
             throw new AgentException(); // mark error
         }
 
