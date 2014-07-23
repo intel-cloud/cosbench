@@ -63,9 +63,11 @@ public class PingHandler extends AbstractCommandHandler {
     	String[] cmd = {"date", "-s", dateTime.format(new Date(ctrTime))};
     	String osType = System.getProperty("os.name").toLowerCase();
     	if (osType.contains("linux")) {
+    		LOGGER.debug("setting system time {} on driver {}", ctrTime, driver.getDriverInfo().getName());
     		Runtime.getRuntime().exec(cmd);
 		} else {
-			/* skip for non linux system */
+			LOGGER.warn("os type on driver {} is {}!", 
+					driver.getDriverInfo().getName(), osType);
 		}
 	}
 

@@ -149,11 +149,14 @@ class WorkloadProcessor {
         workloadContext.setState(PROCESSING);
         workloadContext.setStartDate(new Date());
         Iterator<StageContext> iter = queue.iterator();
+        String trigger = workloadContext.getWorkload().getTrigger();
+        executeTrigger(trigger, true);
         while (iter.hasNext()) {
             StageContext stageContext = iter.next();
             iter.remove();
             runStage(stageContext);
         }
+        executeTrigger(trigger, false);
         workloadContext.setStopDate(new Date());
         workloadContext.setCurrentStage(null);
 		for (StageContext stageContext : workloadContext.getStageRegistry()
@@ -204,7 +207,6 @@ class WorkloadProcessor {
 			if(closuredelay > 0)
 				executeDelay(stageContext, closuredelay);
 		}
-
 		LOGGER.info("successfully ran stage {}", id);
 	}
     
@@ -222,12 +224,16 @@ class WorkloadProcessor {
         StageRunner runner = createStageRunner(stageContext);
         StageChecker checker = createStageChecker(stageContext);
         StageCallable[] callables = new StageCallable[] { runner, checker };
+        String trigger = stageContext.getStage().getTrigger();
+        executeTrigger(trigger, true);
         try {
             executor.invokeAll(Arrays.asList(callables));
         } catch (InterruptedException ie) {
+        	executeTrigger(trigger, false);
             throw new CancelledException(); // workload cancelled
         }
         runner.dispose(); // early dispose runner
+        executeTrigger(trigger, false);
         if (!stageContext.getState().equals(StageState.TERMINATED))
             return;
         String id = stageContext.getId();
@@ -254,10 +260,18 @@ class WorkloadProcessor {
         LOGGER.info("begin to terminate workload {}", id);
         for (StageContext stageContext : queue)
             stageContext.setState(StageState.ABORTED);
+        executeTrigger(workloadContext.getWorkload().getTrigger(), false);
         workloadContext.setStopDate(new Date());
         workloadContext.setState(TERMINATED);
         LOGGER.info("successfully terminated workload {}", id);
     }
+    
+    private void executeTrigger(String trigger, boolean isEnable) {
+    	if (trigger == null || trigger.isEmpty())
+			return;
+    	TriggerRunner runner = new TriggerRunner(controllerContext.getDriverRegistry());
+		runner.runTrigger(isEnable, trigger, workloadContext.getId());
+	}
 
     public void cancel() {
         String id = workloadContext.getId();
@@ -310,6 +324,7 @@ class WorkloadProcessor {
          */
         for (StageContext stageContext : queue)
             stageContext.setState(StageState.CANCELLED);
+        executeTrigger(workloadContext.getWorkload().getTrigger(), false);
         workloadContext.setStopDate(new Date());
         workloadContext.setState(CANCELLED);
         LOGGER.info("successfully cancelled workload {}", id);
