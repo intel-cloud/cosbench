@@ -17,9 +17,12 @@ limitations under the License.
 
 package com.intel.cosbench.driver.operator;
 
+import java.util.HashMap;
+
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.driver.model.ErrorStatistics;
-import com.intel.cosbench.log.*;
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 
 /**
  * The base class encapsulates different operations.
@@ -110,13 +113,19 @@ abstract class AbstractOperator implements Operator {
     protected abstract void operate(int idx, int all, Session session);
     
     public static void errorStatisticsHandle(Exception e, Session session, String target){
-    	String message = e.getMessage();
-    	message = (e.getCause() == null ? message : message + e.getCause().getMessage());
-    	if (!session.getErrorStatistics().getMessageAndExceptionStack().containsKey(message)){
-    		doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform read operation " + target , e);
-    		session.getErrorStatistics().getMessageAndExceptionStack().put(message, e);
-    	}
-    	session.getErrorStatistics().addMessageAndTargets(message, target);
+    		String trace = e.getStackTrace()[0].toString();
+    		trace = e.getCause() == null ? trace : trace + e.getCause().getStackTrace()[0].toString();
+    		ErrorStatistics errorStatistics = session.getErrorStatistics();
+    		HashMap<String, String> stackTraceAndTargets = errorStatistics.getStackTraceAndTargets();
+    		synchronized (stackTraceAndTargets) {
+    			if(! stackTraceAndTargets.containsKey(trace)){
+    				errorStatistics.getStackTraceAndException().put(trace, e);
+    				stackTraceAndTargets.put(trace, target);
+    				doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform operation " + target, e);
+    			}
+    			String targets = stackTraceAndTargets.get(trace);
+    			stackTraceAndTargets.put(trace, targets + ", "+target);
+    		}
     }
 
 }

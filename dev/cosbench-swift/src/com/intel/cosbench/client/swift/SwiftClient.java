@@ -161,7 +161,7 @@ public class SwiftClient {
                         response.getStatusLine());
             if (response.getStatusCode() == SC_CONFLICT)
                 throw new SwiftConflictException(
-                        "cannot delete an non-empty container",
+                        "cannot delete an non-empty container " + container,
                         response.getResponseHeaders(), response.getStatusLine());
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());
@@ -180,7 +180,7 @@ public class SwiftClient {
             return response.getResponseBodyAsStream();
         response.consumeResposeBody();
         if (response.getStatusCode() == SC_NOT_FOUND)
-            throw new SwiftFileNotFoundException("object not found", response.getResponseHeaders(),
+            throw new SwiftFileNotFoundException("object not found " + container + " / " + object, response.getResponseHeaders(),
                     response.getStatusLine());
         throw new SwiftException("unexpected result from server",
                 response.getResponseHeaders(), response.getStatusLine());
@@ -231,7 +231,7 @@ public class SwiftClient {
             if (response.getStatusCode() == SC_ACCEPTED)
                 return;
             if (response.getStatusCode() == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("container not found"
+                throw new SwiftFileNotFoundException("container not found " + container  + "/" + object
                         , response.getResponseHeaders(),
                         response.getStatusLine());
             throw new SwiftException("unexpected return from server",
@@ -254,7 +254,7 @@ public class SwiftClient {
             if (!REPORT_DELETE_ERROR)
                 return;
             if (response.getStatusCode() == SC_NOT_FOUND)
-                throw new SwiftFileNotFoundException("object not found",
+                throw new SwiftFileNotFoundException("object not found " + container + "/" + object,
                         response.getResponseHeaders(), response.getStatusLine());
             throw new SwiftException("unexpected return from server",
                     response.getResponseHeaders(), response.getStatusLine());

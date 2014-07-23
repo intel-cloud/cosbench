@@ -18,17 +18,19 @@ limitations under the License.
 package com.intel.cosbench.driver.operator;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 
 import com.intel.cosbench.api.storage.StorageInterruptedException;
-import com.intel.cosbench.bench.*;
+import com.intel.cosbench.bench.Result;
+import com.intel.cosbench.bench.Sample;
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.generator.XferCountingInputStream;
 import com.intel.cosbench.driver.generator.RandomInputStream;
-import com.intel.cosbench.driver.model.ErrorStatistics;
-import com.intel.cosbench.driver.util.*;
+import com.intel.cosbench.driver.generator.XferCountingInputStream;
+import com.intel.cosbench.driver.util.ObjectPicker;
+import com.intel.cosbench.driver.util.SizePicker;
 import com.intel.cosbench.service.AbortedException;
 
 /**

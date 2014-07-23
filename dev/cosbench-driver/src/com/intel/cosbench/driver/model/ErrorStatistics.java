@@ -18,54 +18,50 @@ package com.intel.cosbench.driver.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.intel.cosbench.log.Logger;
 
-
 public class ErrorStatistics {
-	private ConcurrentHashMap<String, Exception> messageAndExceptionStack;
-	private HashMap<String, String> messageAndTargets;
+	private HashMap<String, Exception> stackTraceAndException;
+	private HashMap<String, String> stackTraceAndTargets;
 	
 	public ErrorStatistics(){
-		messageAndExceptionStack = new ConcurrentHashMap<String, Exception>();
-		messageAndTargets = new HashMap<String, String>();
+		stackTraceAndException = new HashMap<String, Exception>();
+		stackTraceAndTargets = new HashMap<String, String>(); 
 	}
-	public  void addMessageAndTargets(String message,String target){
-		synchronized (messageAndTargets) {
-			if(messageAndTargets.containsKey(message)){
-				String targets = messageAndTargets.get(message);
-				targets += target;
-				messageAndTargets.put(message, targets);
-			}
-			else{
-				messageAndTargets.put(message, target);
-			}
+
+
+	public HashMap<String, Exception> getStackTraceAndException() {
+		return stackTraceAndException;
+	}
+
+	public HashMap<String, String> getStackTraceAndTargets() {
+		return stackTraceAndTargets;
+	}
+
+	public void summary(Logger logger){
+		Exception e = null;
+		String message = null;
+		String code = null;
+		Integer codeNumber;
+		for(Map.Entry<String, String> entry : stackTraceAndTargets.entrySet()){
+			e = stackTraceAndException.get(entry.getKey());
+			if (e != null)
+				message = e.getMessage();
+			if (message != null)
+				code = message.substring(9, 12);
+			codeNumber = getCodeNumber(entry.getValue());	
+			logger.error("error code: " + code + " occurred " +codeNumber + " times, fail to operate: " + entry.getValue(), stackTraceAndException.get(entry.getKey()));			
 		}
 	}
-	public ConcurrentHashMap<String, Exception> getMessageAndExceptionStack() {
-		return messageAndExceptionStack;
+	public Integer getCodeNumber(String targets){
+		if (targets == null)
+			return null;
+		int codeNumber = targets.split(",").length;
+		return codeNumber;
 	}
-
-	public void setMessageAndExceptionStack(
-			ConcurrentHashMap<String, Exception> messageAndExceptionStack) {
-		this.messageAndExceptionStack = messageAndExceptionStack;
-	}
-
-	public HashMap<String, String> getMessageAndTargets() {
-		return messageAndTargets;
-	}
-
-	public void setMessageAndTargets(HashMap<String, String> messageAndTargets) {
-		this.messageAndTargets = messageAndTargets;
-	}
-	public void summary(Logger logger) {
-		for (Map.Entry<String, Exception> entry : messageAndExceptionStack.entrySet()){
-			String targets = messageAndTargets.get(entry.getKey());
-			logger.error("fail to operate "+targets, entry.getValue());
-		}
-		
-	}
+	
+	
 	
 	
 }

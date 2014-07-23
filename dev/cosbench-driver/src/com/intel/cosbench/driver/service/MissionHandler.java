@@ -322,7 +322,7 @@ class MissionHandler {
         int timeout = m.getRampup() + m.getRuntime() + m.getRampdown();
         executeAgents(agents, timeout == 0 ? 0 : timeout + 60);
         missionContext.setState(FINISHED);
-        missionContext.getErrorStatistics().summary(LOGGER);
+        missionContext.getErrorStatistics().summary(missionContext.getLogManager().getLogger());
     }
 
     private List<Agent> createWorkAgents() {
