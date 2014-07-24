@@ -39,6 +39,7 @@ public class WorkloadContext implements WorkloadInfo {
     private transient volatile StageInfo currentStage;
     private StageRegistry stageRegistry;
     private int order; /* workload order */
+    private DriverRegistry driverRegistry;
 
     /* Report will be available after the workload is finished */
     private volatile Report report = null; // will be merged from stage reports
@@ -48,6 +49,8 @@ public class WorkloadContext implements WorkloadInfo {
     private String[] opInfo;
     
     private boolean archived = false;
+    
+	
 
     public WorkloadContext() {
         /* empty */
@@ -278,6 +281,19 @@ public class WorkloadContext implements WorkloadInfo {
         future = null;
         currentStage = null;
         listeners = null;
+    }
+
+    public DriverRegistry getDriverRegistry() {
+        return driverRegistry;
+    }
+
+    public void setDriverRegistry(DriverRegistry driverRegistry) {
+        this.driverRegistry = driverRegistry;
+    }
+    
+    @Override
+    public DriverInfo[] getDriverInfos() {
+        return driverRegistry.getAllDrivers();
     }
 
 }

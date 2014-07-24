@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -40,7 +41,8 @@ public class TriggerHandler extends AbstractCommandHandler {
 	private boolean isEnable = false;
 	protected static String scriptsDir = "scripts/";
 	protected DriverService driver;
-	private String wID = null;
+	protected String scriptLog;
+	
 	
     public void setDriver(DriverService driver) {
         this.driver = driver;
@@ -49,6 +51,7 @@ public class TriggerHandler extends AbstractCommandHandler {
     @Override
     protected Response process(HttpServletRequest req, HttpServletResponse res)
             throws Exception {
+    	scriptLog = "";
     	Scanner scanner = new Scanner(req.getInputStream());
     	String trigger = getTrigger(scanner);
     	runTrigger(trigger);
@@ -66,23 +69,28 @@ public class TriggerHandler extends AbstractCommandHandler {
 	}
     
     private void runTrigger(String trigger) {
-		String cmdLine = getCmdLine(trigger);
-		if (cmdLine == null || cmdLine.isEmpty()) {
-			LOGGER.error("trigger command line is empty!");
+		String[] cmdArr = getCmdArray(trigger);
+		if (cmdArr == null) {
 			return;
 		}
-		LOGGER.debug("executing trigger command line : {}", cmdLine);
+		LOGGER.info("executing trigger command line : {} on {}", cmdArr, getDriverName());
 		String osType = System.getProperty("os.name").toLowerCase();
     	if (osType.contains("linux")) {
     		try {
-    			Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmdLine});
+    			Process process = Runtime.getRuntime().exec(cmdArr);
     			getPID(process);
+    			InputStream is = process.getInputStream();
+   	         	BufferedReader buff = new BufferedReader(new InputStreamReader(is));  
+   	         	String line = null;
+   	         	while ((line = buff.readLine()) != null)
+   	         		scriptLog += line + "\n";
+   	         	process.waitFor();
 			} catch (Exception e) {
 				LOGGER.error("execute trigger command failed!");
 				return;
 			}
 		} else {
-			LOGGER.warn("can not execute trigger, the OS type({}) isn't linux!", osType);
+			LOGGER.warn("can not execute trigger on {}, the OS type({}) isn't linux!", getDriverName(), osType);
 			return;
 		}
     	if (!isEnable) {
@@ -94,10 +102,7 @@ public class TriggerHandler extends AbstractCommandHandler {
 		}
 	}
     
-    private String getCmdLine(String trigger) {
-    	String cmdLine = null;
-    	String fileName = null;
-    	
+    private String[] getCmdArray(String trigger) {
     	trigger.replace(" ", "");
     	String[] triggerArr = StringUtils.split(trigger, ',');
     	if (triggerArr == null) {
@@ -106,33 +111,39 @@ public class TriggerHandler extends AbstractCommandHandler {
 		}
     	if (triggerArr[0].equals("killTrigger")) {
     		this.isEnable = false;
-    		if (triggerArr.length != 4) {
+    		if (triggerArr.length != 3) {
     			LOGGER.error("kill-trigger command line is illegal!");
 				return null;
 			}
     		xferPID = parsePID(triggerArr[1]);
-    		fileName = triggerArr[2];
-    		this.wID = triggerArr[3];
-    		cmdLine = "/bin/sh " + scriptsDir + fileName + " -k";
+    		String fileName = triggerArr[2];
+    		String filePath = scriptsDir + fileName;
+        	File tempPath = new File(filePath);
+        	if (!tempPath.exists() || !tempPath.isFile()) {
+    			LOGGER.warn("trigger file {} dosen't exist on {}!", filePath, getDriverName());
+    			return null;
+        	}
+    		return new String[]{"/bin/sh", filePath, "-k"};
 		} else if (triggerArr[0].equals("enableTrigger")) {
 			this.isEnable = true;
-			fileName = triggerArr[1];
-			cmdLine = "/bin/sh " + scriptsDir + fileName;
-			for (int i = 2; i < triggerArr.length - 1; i++)
-				cmdLine += " " + triggerArr[i];
-			this.wID = triggerArr[triggerArr.length-1];
+			String fileName = triggerArr[1];
+			String filePath = scriptsDir + fileName;
+	    	File tempPath = new File(filePath);
+	    	if (!tempPath.exists() || !tempPath.isFile()) {
+				LOGGER.warn("trigger file {} dosen't exist on {}!", filePath, getDriverName());
+				return null;
+	    	}
+			String[] cmdArr = new String[triggerArr.length];
+			cmdArr[0] = "/bin/sh";
+			cmdArr[1] = filePath;
+			for (int i = 2; i < triggerArr.length; i++) {
+				cmdArr[i] = triggerArr[i];
+			}
+			return cmdArr;
 		} else {
 			LOGGER.error("trigger command line is illegal!");
 			return null;
 		}
-    	String filePath = scriptsDir + fileName;
-    	File tempPath = new File(filePath);
-    	if (!tempPath.exists() || !tempPath.isFile()) {
-			LOGGER.error("trigger file {} dosen't exist in {}!", filePath);
-			return null;
-    	}
-    	cmdLine += " >> " + scriptsDir + "log/" + wID + "_" + fileName + ".log";
-    	return cmdLine;
 	}
     
     private int parsePID(String str) {
@@ -220,7 +231,7 @@ public class TriggerHandler extends AbstractCommandHandler {
 		pidList.remove(pidList.size()-1);
 		return pidList;
 	}
-    
+
     private void runKill9(int pid) {
     	String osType = System.getProperty("os.name").toLowerCase();
 		if (osType.contains("linux")) {
@@ -231,14 +242,27 @@ public class TriggerHandler extends AbstractCommandHandler {
 				LOGGER.error("run <kill -9 {}> failed!", pid);
 			}
 		} else {
-			LOGGER.warn("can not run kill command, the OS type({}) isn't linux!", osType);
+			LOGGER.warn("can not run kill command on {}, the OS type({}) isn't linux!", getDriverName(), osType);
 		}
+	}
+    
+    private String getDriverName() {
+		String name = driver.getDriverInfo().getName();
+		if ( name != null && !name.isEmpty())
+			return name;
+		try {
+			name = InetAddress.getLocalHost().getHostName();
+		} catch (Exception e) {
+			LOGGER.warn("can not get local hostname on {}", driver.getDriverInfo().getUrl());
+		}
+		return name;
 	}
     
     private Response createResponse() {
         TriggerResponse response = new TriggerResponse();
         response.setPID(isEnable ? Integer.toString(xferPID) : "0");
+        response.setScriptLog(scriptLog);
         return response;
-    }
+    }   
 
 }

@@ -19,7 +19,8 @@ limitations under the License.
 package com.intel.cosbench.protocol;
 
 public class TriggerResponse extends Response{
-	private String PID;//int(check)/string default
+	private String PID;
+	private String scriptLog;
 
 	public TriggerResponse() {
 		/*empty*/
@@ -30,8 +31,15 @@ public class TriggerResponse extends Response{
 	}
 
 	public void setPID(String pID) {
-		//check
-		PID = pID;
+		this.PID = pID;
+	}
+
+	public String getScriptLog() {
+		return scriptLog;
+	}
+
+	public void setScriptLog(String scriptLog) {
+		this.scriptLog = scriptLog;
 	}
 
 }
