@@ -54,6 +54,7 @@ class Closer extends AbstractCommandTasklet<CloseResponse> {
         context.setReport(report);
         context.setLog(response.getDriverLog());
         context.setState(response.getState());
+        context.setErrorStatistics(response.getErrorStatistics());
     }
 
 }

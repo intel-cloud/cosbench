@@ -17,6 +17,8 @@ limitations under the License.
 
 package com.intel.cosbench.controller.model;
 
+import java.util.HashMap;
+
 import org.apache.http.client.HttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -41,6 +43,10 @@ public class TaskContext implements TaskInfo {
     private transient volatile Report report = new Report();
     /* Each task starts with an empty log */
     private volatile transient String log = "[N/A]";
+ 
+    /* Each task starts with an empty error statistics log*/
+    private volatile transient HashMap<String, Integer> errorStatistics = new HashMap<String, Integer>();
+    
 
     public TaskContext() {
         /* empty */
@@ -126,8 +132,17 @@ public class TaskContext implements TaskInfo {
     public void setLog(String log) {
         this.log = log;
     }
+   
 
-    @Override
+    public HashMap<String, Integer> getErrorStatistics() {
+		return errorStatistics;
+	}
+
+	public void setErrorStatistics(HashMap<String, Integer> errorStatistics) {
+		this.errorStatistics = errorStatistics;
+	}
+
+	@Override
     public void disposeRuntime() {
     	if(TaskState.isStopped(state)) {
 	        httpClient = null;

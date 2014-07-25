@@ -63,19 +63,19 @@ class WorkloadProcessor {
         this.controllerContext = controllerContext;
     }
 
-    public void dispose() {
-        if (executor != null)
-            executor.shutdown();
-        executor = null;
-    }
-
     public void init() {
         resolveWorklaod();
         createStages();
         createExecutor();
     }
 
-    private void resolveWorklaod() {
+    public void dispose() {
+	    if (executor != null)
+	        executor.shutdown();
+	    executor = null;
+	}
+
+	private void resolveWorklaod() {
         XmlConfig config = workloadContext.getConfig();
         WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
         workloadContext.setWorkload(resolver.toWorkload(config));
@@ -137,6 +137,7 @@ class WorkloadProcessor {
             terminateWorkload();
             return;
         }
+        workloadContext.logErrorStatistics(LOGGER);
         LOGGER.info("sucessfully processed workload {}", id);
     }
 
@@ -156,6 +157,7 @@ class WorkloadProcessor {
         }
         workloadContext.setStopDate(new Date());
         workloadContext.setCurrentStage(null);
+        workloadContext.mergeErrorStatistics();
 		for (StageContext stageContext : workloadContext.getStageRegistry()
 				.getAllItems()) {
 			if (stageContext.getState().equals(StageState.FAILED)) {
