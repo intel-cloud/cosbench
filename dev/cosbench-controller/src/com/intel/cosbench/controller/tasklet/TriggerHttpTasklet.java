@@ -28,9 +28,9 @@ abstract class TriggerHttpTasklet implements Tasklet{
     private transient ObjectMapper mapper;
     protected DriverContext driver;
     protected String trigger = null;
-    protected boolean isEnable; //true=enableTrigger; false=killTrigger
-    protected String wID = null;
+    protected boolean isEnable; // true=enableTrigger; false=killTrigger
     protected String scriptName = null;
+    protected String wsId = null;
 
 	Class<TriggerResponse> clazz = TriggerResponse.class;
     
@@ -40,11 +40,11 @@ abstract class TriggerHttpTasklet implements Tasklet{
     protected abstract void execute();
     protected abstract void handleResponse(TriggerResponse response);
     
-    public TriggerHttpTasklet(DriverContext driver, String trigger, boolean option, String wid) {
+    public TriggerHttpTasklet(DriverContext driver, String trigger, boolean option, String wsId) {
 		this.driver = driver;
 		this.trigger = trigger;
 		this.isEnable = option;
-		this.wID = wid;
+		this.wsId = wsId;		
 	}
     
     protected void initObjectMapper() {
@@ -74,11 +74,11 @@ abstract class TriggerHttpTasklet implements Tasklet{
             HttpResponse response = client.execute(request);
             body = fetchResponseBody(response);
         } catch (SocketTimeoutException ste) {
-            LOGGER.error("fail to POST driver while execute trigger", ste);
+            LOGGER.error("fail to POST driver while execute trigger");
         } catch (ConnectTimeoutException cte) {
-            LOGGER.error("fail to POST driver while execute trigger", cte);
+            LOGGER.error("fail to POST driver while execute trigger");
         } catch (Exception e) {
-            LOGGER.error("fail to POST driver while execute trigger", e);
+            LOGGER.error("fail to POST driver while execute trigger");
         }
         return body; // HTTP response body retrieved
     }
@@ -121,10 +121,14 @@ abstract class TriggerHttpTasklet implements Tasklet{
     protected void issueCommand(String command, String content) {
         TriggerResponse response = null;
         String body = issueHttpRequest(command, content);
+        if (body == null) {
+        	LOGGER.error("TriggerResponse body is null");
+        	return;
+        }
         try {
             response = this.mapper.readValue(body, clazz);
         } catch (Exception e) {
-            LOGGER.error("cannot parse TriggerResponse body", e);
+            LOGGER.error("can not parse TriggerResponse body", e);
             return;
         }
         if (!response.isSucc()) {
@@ -139,7 +143,6 @@ abstract class TriggerHttpTasklet implements Tasklet{
     public Tasklet call() {
         try {
         	execute();
-            LOGGER.debug("{}-trigger executes normally", isEnable ? "enable" : "kill");
         } catch (Exception e) {
             LOGGER.error("unexpected exception of trigger", e);
         }

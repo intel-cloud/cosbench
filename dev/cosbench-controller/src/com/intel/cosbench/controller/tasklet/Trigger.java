@@ -7,8 +7,8 @@ import com.intel.cosbench.protocol.TriggerResponse;
 
 
 public class Trigger extends TriggerHttpTasklet {
-	public Trigger(DriverContext driver, String trigger, boolean option, String wid) {
-		super(driver, trigger, option, wid);
+	public Trigger(DriverContext driver, String trigger, boolean option, String wsId) {
+		super(driver, trigger, option, wsId);
 	}
 	
     @Override
@@ -30,23 +30,29 @@ public class Trigger extends TriggerHttpTasklet {
 	    trigger.replace(" ", "");
 	    int idxLeft = StringUtils.indexOf(trigger, '(');
 	    int idxRight = StringUtils.indexOf(trigger, ')');
-	    if (idxLeft < 3 || ( idxRight != trigger.length()-1)){ 
-	    	LOGGER.error("can't enable trigger, the format is illegal!");
+	    if (idxLeft < 3 || ( idxRight != trigger.length()-1)
+	    		|| !StringUtils.substring(trigger, idxLeft-3, idxLeft).equals(".sh")){ 
+	    	LOGGER.error("trigger format is illegal, it should be like trigger=\"*.sh(arg1, arg2,...)\"");
 	    	return null;
 	    }
 	    scriptName =  StringUtils.left(trigger, idxLeft);
 	    String argStr = StringUtils.substring(trigger, idxLeft+1, idxRight);
-	    return isEnable ? ("enableTrigger," + scriptName + "," + argStr + "," + wID)
-	    		: ("killTrigger," + driver.getPIDMap(scriptName) + "," + scriptName + "," + wID);
+	    return isEnable ? ("enableTrigger," + scriptName + "," + argStr)
+	    		: ("killTrigger," + driver.getPidMapValue(scriptName) + "," + scriptName);
 	}
     
     @Override
     protected void handleResponse(TriggerResponse response) {
-        if (!isEnable) {
-        	driver.putPIDMap(scriptName, "0");
+         driver.putPidMap(scriptName, response.getPID());
+    	String log = response.getScriptLog();
+    	if (log == null || log.isEmpty())
+    		LOGGER.warn("no log for {} on {}", (isEnable ? "enable ":"kill ") + scriptName, driver.getName());
+    	if (!isEnable) {
+			String enableLog = driver.getLogMapValue(wsId);
+			driver.putLogMap(wsId, enableLog + log);
 			return;
 		}
-        driver.putPIDMap(scriptName, response.getPID());
+    	driver.putLogMap(wsId, scriptName + ";" + log);
     }
     
 }
