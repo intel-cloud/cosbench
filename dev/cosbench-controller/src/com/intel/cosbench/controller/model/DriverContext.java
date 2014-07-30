@@ -34,7 +34,10 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
     private String name;
     private String url;
     private boolean aliveState;
-    private Map<String, String> pIDMap = new HashMap<String, String>();
+    // pIDMap<scriptName, pid>
+	private Map<String, String> pidMap = new HashMap<String, String>();
+	// logMap<'wId'+'sId', ScriptLog>
+	private Map<String, String> scriptsLog = new HashMap<String, String>();
 
 	public DriverContext() {
         /* empty */
@@ -68,16 +71,30 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
     	return aliveState;
     }
 
-
-	public String getPIDMap(String scriptName) {
-		String pid = pIDMap.remove(scriptName);		
+	public String getPidMapValue(String scriptName) {
+		String pid = pidMap.remove(scriptName);		
 		return (pid == null) ? "0" : pid;
 	}
 
-	public void putPIDMap(String scriptName, String pid) {
+	public void putPidMap(String scriptName, String pid) {
 		if (pid == null)
-			pIDMap.put(scriptName, "0");
-		pIDMap.put(scriptName, pid);
+			pidMap.put(scriptName, "0");
+		pidMap.put(scriptName, pid);
+	}
+
+	@Override
+	public Map<String, String> getLogMap() {
+		return scriptsLog;
+	}
+
+	public void putLogMap(String wsId, String ScriptLog) {
+		if (wsId == null || wsId.isEmpty())
+			return;
+		scriptsLog.put(wsId, ScriptLog);
+	}
+	
+	public String getLogMapValue(String wsId) {
+		return scriptsLog.remove(wsId);
 	}
 	
 }

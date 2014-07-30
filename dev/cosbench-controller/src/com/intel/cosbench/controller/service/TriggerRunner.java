@@ -20,10 +20,10 @@ public class TriggerRunner {
 		createExecutor();
 	}
 	
-	public void runTrigger(boolean option, String trigger, String wid) {
-		List<Tasklet> tasklets = Tasklets.newTriggers(trigger, registry, option, wid);
+	public void runTrigger(boolean option, String trigger, String wsId) {
+		List<Tasklet> tasklets = Tasklets.newTriggers(trigger, registry, option, wsId);
 		executeTasklets(tasklets, option);
-		dispose();//shutdown too quick?
+		dispose();
 	}
 
     private void createExecutor() {
