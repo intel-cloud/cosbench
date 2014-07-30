@@ -86,7 +86,6 @@ class Reader extends AbstractOperator {
         long xferTime = 0L;
         long xferTimeCheck = 0L;
         try {
-        	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " Read Object " + conName + "/" + objName);
             in = session.getApi().getObject(conName, objName, config);
             long xferStart = System.currentTimeMillis();
             if (!hashCheck){
