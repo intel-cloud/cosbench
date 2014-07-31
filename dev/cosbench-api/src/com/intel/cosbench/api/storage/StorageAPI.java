@@ -18,7 +18,6 @@ limitations under the License.
 package com.intel.cosbench.api.storage;
 
 import java.io.InputStream;
-
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
@@ -90,6 +89,18 @@ public interface StorageAPI {
     public InputStream getObject(String container, String object, Config config);
 
     /**
+     * Gets a list of containers/objects
+     * 
+     * @param container
+     *            - the name of a container.
+     * @param object
+     *            - the name of an object.
+     * @param config
+     *            - the configuration used for this operation.
+     */
+    public InputStream getList(String container, String object, Config config);
+    
+    /**
      * Creates a new container.
      * 
      * @param container
@@ -138,10 +149,10 @@ public interface StorageAPI {
      */
     public void deleteObject(String container, String object, Config config);
 
-    // public Map<String, String> getMetadata(String container, String object,
-    // Config config);
-    //
-    // public void createMetadata(String container, String object, Map<String,
-    // String> map, Config config);
+//    public Map<String, String> getMetadata(String container, String object,
+//     Config config);
+//    
+//    public void createMetadata(String container, String object, Map<String,
+//     String> map, Config config);
 
 }
