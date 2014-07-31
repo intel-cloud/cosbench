@@ -107,6 +107,18 @@ class MockStorage extends NoneStorage {
         MockUtils.sleep(delay);
         return new NullInputStream(size);
     }
+    
+    @Override
+    public InputStream getList(String container, String object, Config config) {
+        super.getList(container, object, config);
+        if (profiling && logger.isDebugEnabled())
+            stats.addEvent("LIST", container + "/" + object); //###
+        if (random.nextDouble() < errors)
+            throw new StorageException("error injection");
+        thread = Thread.currentThread();
+        MockUtils.sleep(delay);
+        return new NullInputStream(0); //###
+    }
 
     @Override
     public void createContainer(String container, Config config) {
