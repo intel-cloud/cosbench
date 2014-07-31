@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.*;
+import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.*;
 
 public class WorkloadContext implements WorkloadInfo {
@@ -50,8 +51,7 @@ public class WorkloadContext implements WorkloadInfo {
     
     private boolean archived = false;
     
-	
-
+    private HashMap<String, HashMap<String, Integer>> errorStatistics = new HashMap<String, HashMap<String,Integer>>();
     public WorkloadContext() {
         /* empty */
     }
@@ -272,8 +272,44 @@ public class WorkloadContext implements WorkloadInfo {
     		return;
         listeners.add(listener);
     }
+    
 
-    @Override
+    public HashMap<String, HashMap<String, Integer>> getErrorStatistics() {
+		return errorStatistics;
+	}
+    
+    public void mergeErrorStatistics(){
+    	for(StageContext stageContext : stageRegistry){
+    		for(TaskContext taskContext : stageContext.getTaskRegistry()){
+    			String driverUrl = taskContext.getSchedule().getDriver().getUrl();
+    			if (! errorStatistics.containsKey(driverUrl))
+    				errorStatistics.put(driverUrl, taskContext.getErrorStatistics());
+    			else {
+    				HashMap<String, Integer> source = new HashMap<String, Integer>();
+    				source = taskContext.getErrorStatistics();
+    				HashMap<String, Integer> merge = errorStatistics.get(driverUrl);
+    				for(Map.Entry<String, Integer> entry : source.entrySet()){
+    					if (!merge.containsKey(entry.getKey())){
+    						merge.put(entry.getKey(), entry.getValue());
+    					}
+    					else{
+    						Integer value = merge.get(entry.getKey()) + entry.getValue();
+    						merge.put(entry.getKey(), value);
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    public void logErrorStatistics(Logger logger){
+    	for (Map.Entry<String, HashMap<String, Integer>> driverEntry : errorStatistics.entrySet()){
+    		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().entrySet()){
+    			logger.error(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
+    		}
+    	}
+    }
+
+	@Override
     public void disposeRuntime() {
         for (StageContext stage : stageRegistry)
             stage.disposeRuntime();
@@ -282,6 +318,7 @@ public class WorkloadContext implements WorkloadInfo {
         currentStage = null;
         listeners = null;
     }
+	
 
     public DriverRegistry getDriverRegistry() {
         return driverRegistry;

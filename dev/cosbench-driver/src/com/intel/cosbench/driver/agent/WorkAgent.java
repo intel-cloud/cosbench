@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.driver.agent;
 
 import static com.intel.cosbench.bench.Mark.*;
+import com.intel.cosbench.bench.ErrorStatistics;
 
 import java.util.*;
 
