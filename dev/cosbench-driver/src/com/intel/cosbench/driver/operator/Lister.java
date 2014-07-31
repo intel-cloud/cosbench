@@ -20,7 +20,6 @@ package com.intel.cosbench.driver.operator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -30,15 +29,12 @@ import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.Result;
 import com.intel.cosbench.bench.Sample;
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.util.HashUtil;
 import com.intel.cosbench.driver.util.ObjectPicker;
 import com.intel.cosbench.service.AbortedException;
 
 public class Lister extends AbstractOperator {
 
     public static final String OP_TYPE = "list";
-    
-    private boolean hashCheck = false;
 
     private ObjectPicker objPicker = new ObjectPicker();
     
@@ -52,7 +48,6 @@ public class Lister extends AbstractOperator {
     protected void init(String id, int ratio, String division, Config config) {
         super.init(id, ratio, division, config);
         objPicker.init4Lister(division, config);
-        hashCheck = config.getBoolean("hashCheck", false);
     }
 
     @Override
@@ -82,17 +77,12 @@ public class Lister extends AbstractOperator {
         doLogWarn(session.getLogger(), "listerrr: "+ conName + "/" + objName);//###
         long start = System.currentTimeMillis();
         long xferTime = 0L;
-        long xferTimeCheck = 0L;
         try {
         	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);      	
 	        in = session.getApi().getList(conName, objName, config);
 	        long xferStart = System.currentTimeMillis();
-	        if (!hashCheck){
-	        	copyLarge(in, cout);
-	        	xferTime = System.currentTimeMillis() - xferStart;
-	        } else if (!validateChecksum(conName, objName, session, in, cout, xferTimeCheck))
-				return new Sample(new Date(), getId(), getOpType(), 
-						getSampleType(), getName(), false);
+	        copyLarge(in, cout);
+	        xferTime = System.currentTimeMillis() - xferStart;
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
@@ -113,7 +103,7 @@ public class Lister extends AbstractOperator {
 
         Date now = new Date(end);
 		return new Sample(now, getId(), getOpType(), getSampleType(),
-				getName(), true, end - start, hashCheck ? xferTimeCheck : xferTime, cout.getByteCount());
+				getName(), true, end - start, xferTime, cout.getByteCount());
     }
 
     public OutputStream copyLarge(InputStream input, OutputStream output)
@@ -125,79 +115,6 @@ public class Lister extends AbstractOperator {
             }
 
             return output;
-    }
-    
-    private static boolean validateChecksum(String conName, String objName,
-            Session session, InputStream in, OutputStream out, long xferTimeCheck)
-            throws IOException {
-        HashUtil util;
-        try {
-            util = new HashUtil();
-            int hashLen = util.getHashLen();
-
-            byte buf1[] = new byte[4096];
-            byte buf2[] = new byte[4096];
-
-            String storedHash = new String();
-            String calculatedHash = new String();
-            
-            long xferStart = System.currentTimeMillis();
-            int br1 = in.read(buf1);
-
-            if (br1 <= hashLen) {
-                out.write(buf1, 0, br1);
-                String warn = "The size is too small to embed checksum, will skip integrity checking.";
-                doLogWarn(session.getLogger(), warn);
-            }
-
-            while (br1 > hashLen) { // hash is attached in the end.
-                int br2 = in.read(buf2);
-
-                if (br2 < 0) { // reach end of stream
-                    out.write(buf1, 0, br1);
-                    util.update(buf1, 0, br1 - hashLen);
-
-                    calculatedHash = util.calculateHash();
-                    storedHash = new String(buf1, br1 - hashLen, hashLen);
-
-                    br1 = 0;
-                } else if (br2 <= hashLen) {
-                    out.write(buf1, 0, br1 + br2);
-                    util.update(buf1, 0, br1 + br2 - hashLen);
-
-                    calculatedHash = util.calculateHash();
-                    storedHash = new String(buf1, br1 + br2 - hashLen, hashLen - br2) + new String(buf2, 0, br2);
-
-                    br1 = 0;
-                } else {
-                    out.write(buf1, 0, br1);
-                    util.update(buf1, 0, br1);
-
-                    System.arraycopy(buf2, 0, buf1, 0, br2);
-
-                    br1 = br2;
-                }
-            }
-            xferTimeCheck = System.currentTimeMillis() - xferStart;
-            
-            if (!calculatedHash.equals(storedHash)) {
-                if (storedHash.startsWith(HashUtil.GUARD)) {
-                    String err =
-                            "Inconsistent Hashes for " + conName + "\\" + objName + ": calculated=" + calculatedHash
-                                    + ", stored=" + storedHash;
-                    doLogErr(session.getLogger(), err);
-                    return false;
-                } else {
-                    String warn = "No checksum embedded in " + conName + "\\" + objName;
-                    doLogWarn(session.getLogger(), warn);
-                }
-            }
-
-            return true; /* checksum - okay */
-        } catch (NoSuchAlgorithmException e) {
-            doLogErr(session.getLogger(), "Alogrithm not found", e);
-        }
-        return false; // if we reach this, something went wrong when trying to calculate the hash
     }
 
 }
