@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.protocol;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.intel.cosbench.bench.Metrics;
@@ -33,6 +34,7 @@ public class CloseResponse extends Response {
     private List<Metrics> report; /* metrics report */
     private String driverLog; /* driver log */
     private TaskState state;
+    private HashMap<String, Integer> errorStatistics; /* mission error statistics*/
 
     public CloseResponse() {
         /* empty */
@@ -62,4 +64,12 @@ public class CloseResponse extends Response {
         this.driverLog = log;
     }
 
+	public HashMap<String, Integer> getErrorStatistics() {
+		return errorStatistics;
+	}
+
+	public void setErrorStatistics(HashMap<String, Integer> errorStatistics) {
+		this.errorStatistics = errorStatistics;
+	}
+    
 }

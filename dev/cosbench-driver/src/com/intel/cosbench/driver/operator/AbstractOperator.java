@@ -20,7 +20,7 @@ package com.intel.cosbench.driver.operator;
 import java.util.HashMap;
 
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.model.ErrorStatistics;
+import com.intel.cosbench.bench.ErrorStatistics;
 import com.intel.cosbench.log.LogFactory;
 import com.intel.cosbench.log.Logger;
 
