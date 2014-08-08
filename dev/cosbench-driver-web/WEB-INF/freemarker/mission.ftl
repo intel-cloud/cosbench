@@ -7,6 +7,7 @@
   <#elseif !isStopped >
     <meta http-equiv="refresh" content="10; url=mission.html?id=${info.id}">
   </#if>
+  <script type="text/javascript" src="resources/jscharts.js"></script>
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
   <title>Mission Details</title>
 </head>
@@ -218,6 +219,35 @@
         </tr>
       </#list>
     </table>
+  </p>
+  <#if isStopped>
+    <#if showErrorStatistics> 
+    <h3>Error Statistics</h3>
+    <table class="info-table">
+        <tr>
+          <th style="width:20%;">Error Code</th>
+          <th>Num</th>
+        </tr>
+        <#list info.errorStatistics.errorCodeAndNum?keys as code>
+          <#if code_has_next >
+            <tr>
+          <#else>
+            <tr class="high-light">
+          </#if>
+            <td>${code}</td>
+            <td>${info.errorStatistics.errorCodeAndNum[code]}</td>
+          </tr>
+        </#list>
+      </table>
+       
+  
+      <p><a href="mission.html?id=${info.id}">hide error statistics details</a></p>
+    <#else>
+      <p><a href="mission.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
+    </#if>
+  </#if>
+
+
   </p>
   <h3>Actions</h3>
   <p>
