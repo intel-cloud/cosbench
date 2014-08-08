@@ -24,10 +24,12 @@ import com.intel.cosbench.log.Logger;
 public class ErrorStatistics {
 	private HashMap<String, Exception> stackTraceAndException;
 	private HashMap<String, String> stackTraceAndTargets;
+	private HashMap<String, Integer> errorCodeAndNum;
 	
 	public ErrorStatistics(){
 		stackTraceAndException = new HashMap<String, Exception>();
 		stackTraceAndTargets = new HashMap<String, String>(); 
+		errorCodeAndNum = new HashMap<String, Integer>();
 	}
 
 
@@ -38,6 +40,12 @@ public class ErrorStatistics {
 	public HashMap<String, String> getStackTraceAndTargets() {
 		return stackTraceAndTargets;
 	}
+	
+
+	public HashMap<String, Integer> getErrorCodeAndNum() {
+		return errorCodeAndNum;
+	}
+
 
 	public void summaryToMission(Logger logger){
 		Exception e = null;
@@ -50,27 +58,10 @@ public class ErrorStatistics {
 				message = e.getMessage();
 			if (message != null)
 				code = message.substring(9, 12);
-			codeNumber = getCodeNumber(entry.getValue());	
+			codeNumber = getCodeNumber(entry.getValue());
+			errorCodeAndNum.put(code, codeNumber);
 			logger.error("error code: " + code + " occurred " +codeNumber + " times, fail to operate: " + entry.getValue(), stackTraceAndException.get(entry.getKey()));			
 		}
-	}
-	
-	public HashMap<String, Integer> summaryToResponse(){
-		HashMap<String, Integer> codeAndNumber = new HashMap<String, Integer>();
-		Exception e = null;
-		String message = null;
-		String code = null;
-		Integer codeNumber;
-		for(Map.Entry<String, String> entry : stackTraceAndTargets.entrySet()){
-			e = stackTraceAndException.get(entry.getKey());
-			if (e != null)
-				message = e.getMessage();
-			if (message != null)
-				code = message.substring(9, 12);
-			codeNumber = getCodeNumber(entry.getValue());
-			codeAndNumber.put(code, codeNumber);
-		}
-		return codeAndNumber;
 	}
 	
 	public Integer getCodeNumber(String targets){
@@ -79,9 +70,5 @@ public class ErrorStatistics {
 		int codeNumber = targets.split(",").length;
 		return codeNumber;
 	}
-	
-	
-	
-	
-	
+
 }
