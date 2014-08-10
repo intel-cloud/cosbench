@@ -123,7 +123,7 @@ public class SwiftClient {
         SwiftResponse response = null;
         try {
 		Logger logger = LogFactory.getSystemLogger();
-		logger.info("Creating container with auth_token " + authToken);
+		logger.debug("Creating container with auth_token " + authToken);
 
             method = HttpClientUtil.makeHttpPut(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
@@ -131,11 +131,11 @@ public class SwiftClient {
             	method.setHeader(X_STORAGE_POLICY, policy);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_CREATED) {
-		logger.info("SUCCESS");
+            	logger.debug("Creating container "+container+" SUCCESS");
                 return;
             }
             if (response.getStatusCode() == SC_ACCEPTED) {
-		logger.info("SUCCESS");
+            	logger.debug("Creating container "+container+" SUCCESS");
                 return;
             }
             throw new SwiftException("unexpected return from server",
