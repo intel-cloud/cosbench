@@ -204,10 +204,8 @@ class WorkloadProcessor {
 
 			long elapsedTime = System.currentTimeMillis() - startStamp;
 
-			LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
+			LOGGER.debug("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
 			LOGGER.info("============================================");
-			LOGGER.info("");
-
 			if(closuredelay > 0)
 				executeDelay(stageContext, closuredelay);
 		}

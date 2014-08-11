@@ -60,6 +60,7 @@ public class ErrorStatistics {
 				code = message.substring(9, 12);
 			codeNumber = getCodeNumber(entry.getValue());
 			errorCodeAndNum.put(code, codeNumber);
+			errorCodeAndNum.put("500", 4567);
 			logger.error("error code: " + code + " occurred " +codeNumber + " times, fail to operate: " + entry.getValue(), stackTraceAndException.get(entry.getKey()));			
 		}
 	}
