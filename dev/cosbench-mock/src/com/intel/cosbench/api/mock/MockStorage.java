@@ -126,7 +126,7 @@ class MockStorage extends NoneStorage {
         if (random.nextDouble() < errors)
             throw new StorageException("error injection");
         if (printing)
-            logger.info("content to upload: " + MockUtils.toString(data));
+            logger.debug("content to upload: " + MockUtils.toString(data));
         thread = Thread.currentThread();
         MockUtils.sleep(delay);
     }
@@ -140,7 +140,7 @@ class MockStorage extends NoneStorage {
         if (random.nextDouble() < errors)
             throw new StorageException("error injection");
         if (printing)
-            logger.info("content to upload: " + MockUtils.toString(data));
+            logger.debug("content to upload: " + MockUtils.toString(data));
         else
             MockUtils.consume(data);
         thread = Thread.currentThread();
