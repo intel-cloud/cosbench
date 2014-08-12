@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.driver.agent;
 
 import static com.intel.cosbench.bench.Mark.*;
+import com.intel.cosbench.bench.ErrorStatistics;
 
 import java.util.*;
 
@@ -102,6 +103,10 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public Logger getLogger() {
         return workerContext.getLogger();
+    }
+    
+    public ErrorStatistics getErrorStatistics(){
+    	return workerContext.getErrorStatistics();
     }
 
     @Override

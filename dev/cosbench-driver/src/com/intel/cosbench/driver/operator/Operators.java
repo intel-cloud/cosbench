@@ -34,6 +34,8 @@ public class Operators {
             return new Reader();
         if (StringUtils.equals(type, Writer.OP_TYPE))
             return new Writer();
+        if (StringUtils.equals(type, Lister.OP_TYPE))
+            return new Lister();
         if (StringUtils.equals(type, FileWriter.OP_TYPE))
             return new FileWriter();
         if (StringUtils.equals(type, Preparer.OP_TYPE))
