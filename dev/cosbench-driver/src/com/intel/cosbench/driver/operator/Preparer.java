@@ -108,7 +108,7 @@ class Preparer extends AbstractOperator {
             throw new AbortedException();
 
         try {
-            session.getApi().createContainer(conName, config);
+        	session.getApi().createContainer(conName, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {

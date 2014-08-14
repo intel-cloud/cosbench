@@ -185,6 +185,28 @@ public class SwiftClient {
         throw new SwiftException("unexpected result from server",
                 response.getResponseHeaders(), response.getStatusLine());
     }
+    
+    public InputStream getTargetList(String container, String object) throws IOException, SwiftException {
+    	if (object.isEmpty())
+    		method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
+		else
+			method = HttpClientUtil.makeHttpHead(getObjectPath(container, object));
+        method.setHeader(X_AUTH_TOKEN, authToken);
+        SwiftResponse response = new SwiftResponse(client.execute(method));
+        
+        if (response.getStatusCode() == SC_OK) {
+        	if (!object.isEmpty() && response != null)
+				response.consumeResposeBody();
+            return object.isEmpty() ? response.getResponseBodyAsStream()
+            		: new ByteArrayInputStream(new byte[] {});
+        }
+        response.consumeResposeBody();
+        if (response.getStatusCode() == SC_NOT_FOUND)
+            throw new SwiftFileNotFoundException("list target not found " + container + " / " 
+            		+ object, response.getResponseHeaders(), response.getStatusLine());
+        throw new SwiftException("unexpected result from server",
+                response.getResponseHeaders(), response.getStatusLine());
+	}
 
     public void storeObject(String container, String object, byte[] data)
             throws IOException, SwiftException {

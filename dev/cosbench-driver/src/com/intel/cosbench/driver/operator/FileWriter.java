@@ -140,7 +140,7 @@ class FileWriter extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
-            session.getApi().createObject(conName, objName, cin, length, config);
+              session.getApi().createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {

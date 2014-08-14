@@ -57,5 +57,7 @@ public interface WorkloadInfo extends LifeCycle, Benchmark {
 	public void setArchived(boolean archived);
 	
 	public boolean getArchived();
+	
+	public DriverInfo[] getDriverInfos();
 
 }

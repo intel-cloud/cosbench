@@ -144,7 +144,6 @@ public class SproxydStorage extends NoneStorage {
 		super.getObject(container, object, config);
 		InputStream stream;
 		try {
-			logger.info("Retrieving " + container + "\\" + object);
 			stream = client.getObjectAsStream(container, object);
 		} catch (SocketTimeoutException te) {
 			throw new StorageTimeoutException(te);
@@ -163,7 +162,6 @@ public class SproxydStorage extends NoneStorage {
 	public void createContainer(String container, Config config) {
 		super.createContainer(container, config);
 		try {
-			logger.info("Creating " + container);
 			client.createContainer(container);
 		} catch (SocketTimeoutException te) {
 			throw new StorageTimeoutException(te);
@@ -182,7 +180,6 @@ public class SproxydStorage extends NoneStorage {
 			long length, Config config) {
 		super.createObject(container, object, data, length, config);
 		try {
-			logger.info("Creating " + container + "\\" + object + " with length=" + length + " Bytes");
 			client.storeStreamedObject(container, object, data, length);
 		} catch (SocketTimeoutException te) {
 			throw new StorageTimeoutException(te);
@@ -200,7 +197,6 @@ public class SproxydStorage extends NoneStorage {
 	public void deleteContainer(String container, Config config) {
 		super.deleteContainer(container, config);
 		try {
-			logger.info("Deleting " + container);
 			client.deleteContainer(container);
 		} catch (SocketTimeoutException te) {
 			throw new StorageTimeoutException(te);
@@ -218,7 +214,6 @@ public class SproxydStorage extends NoneStorage {
 	public void deleteObject(String container, String object, Config config) {
 		super.deleteObject(container, object, config);
 		try {
-			logger.info("Deleting " + container + "\\" + object);
 			client.deleteObject(container, object);
 		} catch (SocketTimeoutException te) {
 			throw new StorageTimeoutException(te);

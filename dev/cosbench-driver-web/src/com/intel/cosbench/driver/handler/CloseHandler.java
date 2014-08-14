@@ -22,6 +22,7 @@ import static com.intel.cosbench.model.MissionState.FAILED;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.model.MissionInfo;
@@ -54,6 +55,8 @@ public class CloseHandler extends MissionHandler {
             log = "[N/A]";
         }
         response.setDriverLog(log);
+        HashMap<String, Integer> errorStatistics = info.getErrorStatistics().summaryToResponse();
+        response.setErrorStatistics(errorStatistics);
         return response;
     }
 

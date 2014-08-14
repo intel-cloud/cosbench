@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
 */ 
-package com.intel.cosbench.driver.model;
+package com.intel.cosbench.bench;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class ErrorStatistics {
 		return stackTraceAndTargets;
 	}
 
-	public void summary(Logger logger){
+	public void summaryToMission(Logger logger){
 		Exception e = null;
 		String message = null;
 		String code = null;
@@ -54,12 +54,32 @@ public class ErrorStatistics {
 			logger.error("error code: " + code + " occurred " +codeNumber + " times, fail to operate: " + entry.getValue(), stackTraceAndException.get(entry.getKey()));			
 		}
 	}
+	
+	public HashMap<String, Integer> summaryToResponse(){
+		HashMap<String, Integer> codeAndNumber = new HashMap<String, Integer>();
+		Exception e = null;
+		String message = null;
+		String code = null;
+		Integer codeNumber;
+		for(Map.Entry<String, String> entry : stackTraceAndTargets.entrySet()){
+			e = stackTraceAndException.get(entry.getKey());
+			if (e != null)
+				message = e.getMessage();
+			if (message != null)
+				code = message.substring(9, 12);
+			codeNumber = getCodeNumber(entry.getValue());
+			codeAndNumber.put(code, codeNumber);
+		}
+		return codeAndNumber;
+	}
+	
 	public Integer getCodeNumber(String targets){
 		if (targets == null)
 			return null;
 		int codeNumber = targets.split(",").length;
 		return codeNumber;
 	}
+	
 	
 	
 	

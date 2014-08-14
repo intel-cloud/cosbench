@@ -23,6 +23,7 @@ import static com.intel.cosbench.driver.util.Division.*;
 import java.util.Random;
 
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.config.ConfigException;
 import com.intel.cosbench.driver.generator.*;
 
 /**
@@ -43,20 +44,32 @@ public class ObjectPicker {
     }
 
     public void init(String division, Config config) {
-        conNmGen = getConNmGen(config);
-        objNmGen = getObjNmGen(config);
+        conNmGen = getConNmGen(config, Boolean.FALSE);
+        objNmGen = getObjNmGen(config, Boolean.FALSE);
         this.division = Division.getDivision(division);
     }
+    
+    public void init4Lister(String division, Config config) {
+        conNmGen = getConNmGen(config, Boolean.TRUE);
+        objNmGen = getObjNmGen(config, Boolean.TRUE);
+        this.division = Division.getDivision(division);
+	}
 
-    private static NameGenerator getConNmGen(Config config) {
-        String pattern = config.get("containers");
+    private static NameGenerator getConNmGen(Config config, boolean isLister) {
+        String pattern = isLister ? config.get("containers", null)
+        		: config.get("containers");
+        if (pattern == null)
+			return null;
         String prefix = config.get("cprefix", CONTAINER_PREFIX);
         String suffix = config.get("csuffix", CONTAINER_SUFFIX);
         return Generators.getNameGenerator(pattern, prefix, suffix);
     }
 
-    private static NameGenerator getObjNmGen(Config config) {
-        String pattern = config.get("objects");
+    private static NameGenerator getObjNmGen(Config config, boolean isLister) {
+        String pattern = isLister ? config.get("objects", null)
+        		: config.get("objects");
+        if (pattern == null)
+			return null;
         String prefix = config.get("oprefix", OBJECT_PREFIX);
         String suffix = config.get("osuffix", OBJECT_SUFFIX);
         return Generators.getNameGenerator(pattern, prefix, suffix);
@@ -73,5 +86,20 @@ public class ObjectPicker {
         return new String[] { conNmGen.next(random), objNmGen.next(random) };
     	}
     }
+    
+    /* a path picker for Lister */
+    public String[] pickTargetPath(Random random, int idx, int all) {
+		synchronized (this) {
+			if (conNmGen == null && objNmGen != null) {
+				throw new ConfigException("no such key defined: " + "containers"); 
+			} else if (conNmGen == null && objNmGen == null) {
+				return new String[] { "", "" };
+			} else if (objNmGen == null) {
+				return new String[] { conNmGen.next(random, idx, all), "" };
+			} else {
+				return new String[] { conNmGen.next(random), objNmGen.next(random) };
+			}
+		}
+	}
 
 }
