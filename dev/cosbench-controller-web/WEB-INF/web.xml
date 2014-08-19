@@ -146,7 +146,4 @@
   	<security-role>
     	<role-name>cosbench</role-name>
   	</security-role>
-  	
-
-
 </web-app>

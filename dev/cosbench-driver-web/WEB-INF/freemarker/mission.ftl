@@ -6,8 +6,7 @@
     <meta http-equiv="refresh" content="${info.mission.interval}; url=mission.html?id=${info.id}">
   <#elseif !isStopped >
     <meta http-equiv="refresh" content="10; url=mission.html?id=${info.id}">
-  </#if>
-  <script type="text/javascript" src="resources/jscharts.js"></script>
+  </#if>  
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
   <title>Mission Details</title>
 </head>
@@ -225,21 +224,25 @@
     <h3>Error Statistics</h3>
     <table class="info-table">
         <tr>
-          <th style="width:20%;">Error Code</th>
-          <th>Num</th>
+          <th>Error Message</th>
+          <th>Error Code</th>
+          <th>Occurence Number</th>
+          <th>StatckTrace</th>  
         </tr>
-        <#list info.errorStatistics.errorCodeAndNum?keys as code>
-          <#if code_has_next >
+        <#list info.errorStatistics.stackTraceAndMessage?keys as trace>
+          <#if trace_has_next >
             <tr>
           <#else>
             <tr class="high-light">
           </#if>
-            <td>${code}</td>
-            <td>${info.errorStatistics.errorCodeAndNum[code]}</td>
-          </tr>
+            <td class="id" style="width:13%">${info.errorStatistics.stackTraceAndMessage[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndErrorCode[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndNum[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndEntireTrace[trace]?substring(0,50)+"......"}</td>
+       </tr>
         </#list>
       </table>
-       
+
   
       <p><a href="mission.html?id=${info.id}">hide error statistics details</a></p>
     <#else>

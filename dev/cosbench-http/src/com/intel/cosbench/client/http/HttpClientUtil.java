@@ -166,5 +166,4 @@ public class HttpClientUtil {
             return str;
         }
     }
-
 }
