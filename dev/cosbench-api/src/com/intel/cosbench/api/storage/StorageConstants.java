@@ -21,6 +21,6 @@ public interface StorageConstants {
 
     String LOGGING_KEY = "logging";
 
-    Boolean LOGGING_DEFAULT = Boolean.FALSE;
+    Boolean LOGGING_DEFAULT = Boolean.TRUE;
 
 }

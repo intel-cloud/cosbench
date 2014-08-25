@@ -206,8 +206,6 @@ class WorkloadProcessor {
 
 			LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
 			LOGGER.info("============================================");
-			LOGGER.info("");
-
 			if(closuredelay > 0)
 				executeDelay(stageContext, closuredelay);
 		}

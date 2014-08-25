@@ -18,6 +18,9 @@ package com.intel.cosbench.bench;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.lang.model.element.Element;
 
 import com.intel.cosbench.log.Logger;
 
@@ -25,9 +28,20 @@ public class ErrorStatistics {
 	private HashMap<String, Exception> stackTraceAndException;
 	private HashMap<String, String> stackTraceAndTargets;
 	
+	//summary the result 
+	private HashMap<String, String> stackTraceAndMessage;
+	private HashMap<String, String> stackTraceAndErrorCode;
+	private HashMap<String, String> stackTraceAndNum;
+	private HashMap<String, String> stackTraceAndEntireTrace;
+	
+	
 	public ErrorStatistics(){
 		stackTraceAndException = new HashMap<String, Exception>();
 		stackTraceAndTargets = new HashMap<String, String>(); 
+		stackTraceAndMessage = new HashMap<String, String>();
+		stackTraceAndErrorCode = new HashMap<String, String>();
+		stackTraceAndEntireTrace = new HashMap<String, String>();
+		stackTraceAndNum = new HashMap<String, String>();
 	}
 
 
@@ -38,39 +52,52 @@ public class ErrorStatistics {
 	public HashMap<String, String> getStackTraceAndTargets() {
 		return stackTraceAndTargets;
 	}
+	
+	
+	public HashMap<String, String> getStackTraceAndMessage() {
+		return stackTraceAndMessage;
+	}
+
+
+	public HashMap<String, String> getStackTraceAndErrorCode() {
+		return stackTraceAndErrorCode;
+	}
+
+
+	public HashMap<String, String> getStackTraceAndEntireTrace() {
+		return stackTraceAndEntireTrace;
+	}
+	
+
+
+	public HashMap<String, String> getStackTraceAndNum() {
+		return stackTraceAndNum;
+	}
+
 
 	public void summaryToMission(Logger logger){
 		Exception e = null;
 		String message = null;
 		String code = null;
 		Integer codeNumber;
+		String trace = "";
 		for(Map.Entry<String, String> entry : stackTraceAndTargets.entrySet()){
 			e = stackTraceAndException.get(entry.getKey());
 			if (e != null)
 				message = e.getMessage();
+			stackTraceAndMessage.put(entry.getKey(), message);
 			if (message != null)
 				code = message.substring(9, 12);
-			codeNumber = getCodeNumber(entry.getValue());	
+			if(!isInteger(code))
+				code = "N/A";
+			stackTraceAndErrorCode.put(entry.getKey(), code);
+			codeNumber = getCodeNumber(entry.getValue());
+			stackTraceAndNum.put(entry.getKey(), String.valueOf(codeNumber));
+			for(StackTraceElement ele: stackTraceAndException.get(entry.getKey()).getStackTrace())
+				trace += ele.toString()+"\n";
+			stackTraceAndEntireTrace.put(entry.getKey(), trace);
 			logger.error("error code: " + code + " occurred " +codeNumber + " times, fail to operate: " + entry.getValue(), stackTraceAndException.get(entry.getKey()));			
 		}
-	}
-	
-	public HashMap<String, Integer> summaryToResponse(){
-		HashMap<String, Integer> codeAndNumber = new HashMap<String, Integer>();
-		Exception e = null;
-		String message = null;
-		String code = null;
-		Integer codeNumber;
-		for(Map.Entry<String, String> entry : stackTraceAndTargets.entrySet()){
-			e = stackTraceAndException.get(entry.getKey());
-			if (e != null)
-				message = e.getMessage();
-			if (message != null)
-				code = message.substring(9, 12);
-			codeNumber = getCodeNumber(entry.getValue());
-			codeAndNumber.put(code, codeNumber);
-		}
-		return codeAndNumber;
 	}
 	
 	public Integer getCodeNumber(String targets){
@@ -79,9 +106,10 @@ public class ErrorStatistics {
 		int codeNumber = targets.split(",").length;
 		return codeNumber;
 	}
-	
-	
-	
-	
-	
+	 	  
+	  public static boolean isInteger(String str) {    
+	    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");    
+	    return pattern.matcher(str).matches();    
+	  }  
+
 }

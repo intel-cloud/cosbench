@@ -55,8 +55,7 @@ public class CloseHandler extends MissionHandler {
             log = "[N/A]";
         }
         response.setDriverLog(log);
-        HashMap<String, Integer> errorStatistics = info.getErrorStatistics().summaryToResponse();
-        response.setErrorStatistics(errorStatistics);
+        
         return response;
     }
 

@@ -6,7 +6,7 @@
     <meta http-equiv="refresh" content="${info.mission.interval}; url=mission.html?id=${info.id}">
   <#elseif !isStopped >
     <meta http-equiv="refresh" content="10; url=mission.html?id=${info.id}">
-  </#if>
+  </#if>  
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
   <title>Mission Details</title>
 </head>
@@ -218,6 +218,39 @@
         </tr>
       </#list>
     </table>
+  </p>
+  <#if isStopped>
+    <#if showErrorStatistics> 
+    <h3>Error Statistics</h3>
+    <table class="info-table">
+        <tr>
+          <th>Error Message</th>
+          <th>Error Code</th>
+          <th>Occurence Number</th>
+          <th>StatckTrace</th>  
+        </tr>
+        <#list info.errorStatistics.stackTraceAndMessage?keys as trace>
+          <#if trace_has_next >
+            <tr>
+          <#else>
+            <tr class="high-light">
+          </#if>
+            <td class="id" style="width:13%">${info.errorStatistics.stackTraceAndMessage[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndErrorCode[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndNum[trace]}</td>
+            <td>${info.errorStatistics.stackTraceAndEntireTrace[trace]?substring(0,50)+"......"}</td>
+       </tr>
+        </#list>
+      </table>
+
+  
+      <p><a href="mission.html?id=${info.id}">hide error statistics details</a></p>
+    <#else>
+      <p><a href="mission.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
+    </#if>
+  </#if>
+
+
   </p>
   <h3>Actions</h3>
   <p>
