@@ -50,7 +50,8 @@ public class WorkloadContext implements WorkloadInfo {
     
     private boolean archived = false;
     
-    private HashMap<String, HashMap<String, Integer>> errorStatistics = new HashMap<String, HashMap<String,Integer>>();
+ // private HashMap<String, HashMap<String, Integer>> errorStatistics = new HashMap<String, HashMap<String,Integer>>();
+    private HashMap<String, ErrorSummary> errorStatistics = new HashMap<String, ErrorSummary>();
     public WorkloadContext() {
         /* empty */
     }
@@ -273,20 +274,20 @@ public class WorkloadContext implements WorkloadInfo {
     }
     
 
-    public HashMap<String, HashMap<String, Integer>> getErrorStatistics() {
+    public HashMap<String, ErrorSummary> getErrorStatistics() {
 		return errorStatistics;
 	}
-    
+       
     public void mergeErrorStatistics(){
     	for(StageContext stageContext : stageRegistry){
     		for(TaskContext taskContext : stageContext.getTaskRegistry()){
     			String driverUrl = taskContext.getSchedule().getDriver().getUrl();
     			if (! errorStatistics.containsKey(driverUrl))
-    				errorStatistics.put(driverUrl, taskContext.getErrorStatistics());
+    				errorStatistics.put(driverUrl, new ErrorSummary(taskContext.getErrorStatistics()));
     			else {
     				HashMap<String, Integer> source = new HashMap<String, Integer>();
     				source = taskContext.getErrorStatistics();
-    				HashMap<String, Integer> merge = errorStatistics.get(driverUrl);
+    				HashMap<String, Integer> merge = errorStatistics.get(driverUrl).getErrorCodeAndNum();
     				for(Map.Entry<String, Integer> entry : source.entrySet()){
     					if (!merge.containsKey(entry.getKey())){
     						merge.put(entry.getKey(), entry.getValue());
@@ -296,13 +297,14 @@ public class WorkloadContext implements WorkloadInfo {
     						merge.put(entry.getKey(), value);
     					}
     				}
+    				errorStatistics.put(driverUrl, new ErrorSummary(merge));
     			}
     		}
     	}
     }
     public void logErrorStatistics(Logger logger){
-    	for (Map.Entry<String, HashMap<String, Integer>> driverEntry : errorStatistics.entrySet()){
-    		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().entrySet()){
+    	for (Map.Entry<String, ErrorSummary> driverEntry : errorStatistics.entrySet()){
+    		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().getErrorCodeAndNum().entrySet()){
     			logger.error(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
     		}
     	}
