@@ -242,8 +242,7 @@
        </tr>
         </#list>
       </table>
-
-  
+      <a class="label" href="download-log.do?id=${info.id}">download-log</a>  
       <p><a href="mission.html?id=${info.id}">hide error statistics details</a></p>
     <#else>
       <p><a href="mission.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
