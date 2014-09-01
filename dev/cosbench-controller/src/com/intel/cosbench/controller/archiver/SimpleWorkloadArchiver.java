@@ -88,6 +88,7 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
             exportStage(sInfo, runDir);
         exportConfig(info.getWorkload(), runDir);
         exportLog(info, runDir);
+        exportScriptsLog(info, runDir);
         exportPerformanceMatrix(info);
     }
 
@@ -213,6 +214,22 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         String id = info.getId();
         String path = file.getAbsolutePath();
         String msg = "driver logs for workload {} has been merged at {}";
+        LOGGER.debug(msg, id, path);
+    }
+    
+
+    private void exportScriptsLog(WorkloadInfo info, File parent) throws IOException {
+        File file = new File(parent, "scripts.log");
+        Writer writer = new BufferedWriter(new FileWriter(file));
+        LogExporter exporter = Exporters.newScriptLogExporter(info);
+        try {
+            exporter.export(writer);
+        } finally {
+            writer.close();
+        }
+        String id = info.getId();
+        String path = file.getAbsolutePath();
+        String msg = "driver script logs for workload {} has been merged at {}";
         LOGGER.debug(msg, id, path);
     }
 
