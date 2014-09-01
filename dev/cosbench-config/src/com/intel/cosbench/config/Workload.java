@@ -33,6 +33,7 @@ public class Workload {
 
     private String name;
     private String description;
+    private String trigger=null;
     private Auth auth = DEFAULT_AUTH;
     private Storage storage = DEFAULT_STORAGE;
     private Workflow workflow;
@@ -59,6 +60,14 @@ public class Workload {
         /* description might be empty */
         this.description = description;
     }
+    
+    public String getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(String trigger) {
+		this.trigger = trigger;
+	}
 
     public Auth getAuth() {
         return auth;

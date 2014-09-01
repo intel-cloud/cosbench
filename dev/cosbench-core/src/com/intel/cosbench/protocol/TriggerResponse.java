@@ -15,20 +15,31 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 */ 
 
-package com.intel.cosbench.model;
 
-import java.util.Map;
+package com.intel.cosbench.protocol;
 
-public interface DriverInfo {
+public class TriggerResponse extends Response{
+	private String PID;
+	private String scriptLog;
 
-    public String getName();
+	public TriggerResponse() {
+		/*empty*/
+	}
 
-    public String getUrl();
+	public String getPID() {
+		return PID;
+	}
 
-    public void setAliveState(boolean aliveState);
-    
-    public boolean getAliveState();
-    
-    public Map<String, String> getLogMap();
-    
+	public void setPID(String pID) {
+		this.PID = pID;
+	}
+
+	public String getScriptLog() {
+		return scriptLog;
+	}
+
+	public void setScriptLog(String scriptLog) {
+		this.scriptLog = scriptLog;
+	}
+
 }

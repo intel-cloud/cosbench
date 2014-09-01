@@ -142,6 +142,27 @@ class SwiftStorage extends NoneStorage {
         }
         return stream;
     }
+    
+    @Override
+    public InputStream getList(String container, String object, Config config) {
+        super.getList(container, object, config);
+        InputStream stream;
+        try {
+        	stream = client.getTargetList(container, object);
+        } catch (SocketTimeoutException ste) {
+            throw new StorageTimeoutException(ste);
+        } catch (ConnectTimeoutException cte) {
+            throw new StorageTimeoutException(cte);
+        } catch (InterruptedIOException ie) {
+            throw new StorageInterruptedException(ie);
+        } catch (SwiftException se) {
+            String msg = se.getHttpStatusLine().toString();
+            throw new StorageException(msg, se);
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        return stream;
+    }
 
     @Override
     public void createContainer(String container, Config config) {

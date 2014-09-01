@@ -21,6 +21,8 @@ import java.util.Scanner;
 
 import javax.servlet.http.*;
 
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.MissionInfo;
 import com.intel.cosbench.protocol.Response;
 import com.intel.cosbench.service.DriverService;
@@ -29,6 +31,7 @@ import com.intel.cosbench.web.*;
 abstract class MissionHandler extends AbstractCommandHandler {
 
     protected DriverService driver;
+    protected static final Logger LOGGER = LogFactory.getSystemLogger();
 
     public void setDriver(DriverService driver) {
         this.driver = driver;
