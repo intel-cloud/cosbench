@@ -181,6 +181,34 @@
     </#list>
   </table>
   <p class="warn">There are ${info.stageCount} stages in this workload.</p>
+  <#if isStopped>
+    <#if showErrorStatistics> 
+    <h3>Error Statistics</h3>
+    <table class="info-table">
+        <tr>
+          <th>Driver Url</th>
+          <th>Error Code</th>
+          <th>Occurence Number</th>
+        </tr>
+        <#list info.errorStatistics?keys as url>     
+          <#list info.errorStatistics[url].errorCodeAndNum?keys as code>
+          <#if code_has_next >
+            <tr>
+          <#else>
+            <tr class="high-light">
+          </#if>
+            <td class="id" style="width:13%">${url}</td>
+            <td>${code}</td>
+            <td>${info.errorStatistics[url].errorCodeAndNum[code]}</td>
+          </tr>
+        </#list>
+        </#list>
+      </table>
+      <p><a href="workload.html?id=${info.id}">hide error statistics details</a></p>
+    <#else>
+      <p><a href="workload.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
+    </#if>
+  </#if>
   <h3>Actions</h3>
   <p>
     <#if !isStopped >

@@ -54,6 +54,7 @@ public class CloseHandler extends MissionHandler {
         } catch (IOException e) {
             log = "[N/A]";
         }
+        response.setErrorStatistics(info.getErrorStatistics().getErrorCodeAndNum());
         response.setDriverLog(log);
         
         return response;

@@ -33,6 +33,7 @@ public class ErrorStatistics {
 	private HashMap<String, String> stackTraceAndErrorCode;
 	private HashMap<String, String> stackTraceAndNum;
 	private HashMap<String, String> stackTraceAndEntireTrace;
+	private HashMap<String, Integer> errorCodeAndNum;
 	
 	
 	public ErrorStatistics(){
@@ -42,6 +43,7 @@ public class ErrorStatistics {
 		stackTraceAndErrorCode = new HashMap<String, String>();
 		stackTraceAndEntireTrace = new HashMap<String, String>();
 		stackTraceAndNum = new HashMap<String, String>();
+		errorCodeAndNum = new HashMap<String, Integer>();
 	}
 
 
@@ -73,6 +75,10 @@ public class ErrorStatistics {
 	public HashMap<String, String> getStackTraceAndNum() {
 		return stackTraceAndNum;
 	}
+	
+	public HashMap<String, Integer> getErrorCodeAndNum() {
+		return errorCodeAndNum;
+	}
 
 
 	public void summaryToMission(Logger logger){
@@ -93,6 +99,13 @@ public class ErrorStatistics {
 			stackTraceAndErrorCode.put(entry.getKey(), code);
 			codeNumber = getCodeNumber(entry.getValue());
 			stackTraceAndNum.put(entry.getKey(), String.valueOf(codeNumber));
+			if(errorCodeAndNum.containsKey(code)){
+				Integer num = errorCodeAndNum.get(code);
+				errorCodeAndNum.put(code, num + codeNumber);
+			}
+			else{
+				errorCodeAndNum.put(code, codeNumber);
+			}
 			for(StackTraceElement ele: stackTraceAndException.get(entry.getKey()).getStackTrace())
 				trace += ele.toString()+"\n";
 			stackTraceAndEntireTrace.put(entry.getKey(), trace);
