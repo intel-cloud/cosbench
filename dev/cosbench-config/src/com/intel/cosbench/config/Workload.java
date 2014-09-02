@@ -19,6 +19,8 @@ package com.intel.cosbench.config;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+
 /**
  * The model class mapping to "workload" in configuration xml with following form:
  * 	<workload name="name" description="desc" />
@@ -34,6 +36,7 @@ public class Workload {
     private String name;
     private String description;
     private String trigger=null;
+    private String config = "";
     private Auth auth = DEFAULT_AUTH;
     private Storage storage = DEFAULT_STORAGE;
     private Workflow workflow;
@@ -68,7 +71,16 @@ public class Workload {
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
 	}
+	
+    public String getConfig() {
+        return config;
+    }
 
+    public void setConfig(String config) {
+        /* configuration might be empty */
+        this.config = config;
+    }
+    
     public Auth getAuth() {
         return auth;
     }
@@ -96,6 +108,7 @@ public class Workload {
     public void setWorkflow(Workflow workflow) {
         if (workflow == null)
             throw new ConfigException("workload must have its workflow");
+        ConfigUtils.inherit(workflow.getConfig(), this.config);
         this.workflow = workflow;
     }
 

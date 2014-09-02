@@ -19,6 +19,8 @@ package com.intel.cosbench.config;
 
 import java.util.*;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+
 /**
  * The model class mapping to "workflow" in configuration xml with following form:
  * 	<workflow />
@@ -29,18 +31,30 @@ import java.util.*;
 public class Workflow implements Iterable<Stage> {
 
     private List<Stage> stages;
+    private String config = "";
 
     public Workflow() {
         /* empty */
     }
 
-    public List<Stage> getStages() {
+    public String getConfig() {
+		return config;
+	}
+
+	public void setConfig(String config) {
+		this.config = config;
+	}
+
+	public List<Stage> getStages() {
         return stages;
     }
 
     public void setStages(List<Stage> stages) {
         if (stages == null || stages.isEmpty())
             throw new ConfigException("workflow must have stages");
+        for(Stage stage: stages) {
+        	ConfigUtils.inherit(stage.getConfig(), this.config);
+        }
         this.stages = stages;
     }
 
@@ -49,6 +63,7 @@ public class Workflow implements Iterable<Stage> {
             throw new ConfigException("can't add one empty stage");
         if (stages == null)
             stages = new ArrayList<Stage>();
+        ConfigUtils.inherit(stage.getConfig(), this.config);
         stages.add(stage);
     }
 
