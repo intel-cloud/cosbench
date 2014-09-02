@@ -21,6 +21,8 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+
 /**
  * The model class mapping to "workstage" in configuration xml with following form:
  * 	<workstage name="name" />
@@ -33,6 +35,7 @@ public class Stage implements Iterable<Work> {
     private String name;
     private int closuredelay;
     private String trigger=null;
+    private String config = "";
 	private Auth auth;
     private Storage storage;
     private List<Work> works;
@@ -67,6 +70,14 @@ public class Stage implements Iterable<Work> {
 
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
+	}
+
+	public String getConfig() {
+		return config;
+	}
+	
+	public void setConfig(String config) {
+		this.config = config;
 	}
 
 	public void setClosuredelay(int closuredelay) {
@@ -126,6 +137,9 @@ public class Stage implements Iterable<Work> {
     public void setWorks(List<Work> works) {
         if (works == null || works.isEmpty())
             throw new ConfigException("stage must have works");
+        for(Work work: works) {
+        	ConfigUtils.inherit(work.getConfig(), this.config);
+        }
         this.works = works;
     }
 
@@ -134,6 +148,7 @@ public class Stage implements Iterable<Work> {
             throw new ConfigException("can't add one empty work");
         if (works == null)
             works = new ArrayList<Work>();
+        ConfigUtils.inherit(work.getConfig(), this.config);
         works.add(work);
     }
 

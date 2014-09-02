@@ -52,6 +52,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     private int totalOps; /* total operations to be performed */
 //    private int op_count;
     private long totalBytes; /* total bytes to be transferred */
+    private boolean has_histo; /* collect response time histogram data or not */
 
     private OperationPicker operationPicker;
     private OperatorRegistry operatorRegistry;
@@ -69,6 +70,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     @Override
     public void setWorkerContext(WorkerContext workerContext) {
         super.setWorkerContext(workerContext);
+        this.has_histo = workerContext.getMission().hasHisto();
+        
         dog.setWorkerContext(workerContext);
     }
 
