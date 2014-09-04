@@ -50,6 +50,10 @@
 			<bind-xml name="totalWorkers" node="attribute" />
 		</field>
 
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
+
 		<field name="auth" type="com.intel.cosbench.config.Auth">
 			<bind-xml name="auth" node="element" />
 		</field>

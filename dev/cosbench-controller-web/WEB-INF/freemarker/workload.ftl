@@ -10,7 +10,6 @@
     <meta http-equiv="refresh" content="10; url=workload.html?id=${info.id}" />
   </#if>
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
- 
   <title>Workload Details</title>
 </head>
 <body>
@@ -101,55 +100,18 @@
     <p class="warn">The snapshot was taken at ${snapshot.timestamp?time} with version ${snapshot.version}.</p>
   </#if>
   <h3>Stages</h3>
-    
-    <table class="Stages-table">
-    <tr>
-      
-      <th class="id" style="width:13%;">Stage Name</th>
-      <th style="width:10%;">Stages completed</th>
-      <th style="width:10%;">Stages remaining</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Time Elapsed</th>
-      
-    </tr>
-    
-    <#list info.stageInfos  as sInfo >
-    <#assign ctr = 0>
- 
-    <#list info.stageInfos as sInfo  >
-     <#assign ctr = ctr + 1>
-    
-     </#list>
-      <#if info.currentStage?? && sInfo.id == info.currentStage.id >
-        <tr class="high-light">
-        <td><strong>${sInfo.stage.name}</strong> </td>
-        <td><strong>${sInfo_index}</strong> </td>
-        <td><strong>${ctr - sInfo_index}</strong> </td>
-        <#if info.startDate?? ><td><strong>
-     ${info.startDate?datetime}</strong> </td>
-     <#assign ctr2 = .now?datetime>
-     
-     </#if>
-       <#if info.stopDate?? ><td>
-       <#assign ctr3 = .now?datetime>
-       <strong>
-        
-      ${info.stopDate?datetime}</strong> </td></#if>
-      
-        <td><strong>
-         
-   ${(ctr3?long / (1000 * 60 * 60 * 24))-(ctr2?long / (1000 * 60 * 60 * 24))}
-        </strong> </td>
-           </tr>
-         <#else>
-        <tr>
-       </#if>
-       
-         </tr>
-    </#list>
-  </table>
-
+  <div class="workflow">
+    <center>
+      <#list info.stageInfos as sInfo >
+        <#if info.currentStage?? && info.currentStage.id == sInfo.id >
+        <strong>${sInfo.stage.name}</strong>
+        <#else>
+        ${sInfo.stage.name}
+        </#if>
+        <#if sInfo_has_next > --> </#if>
+      </#list>
+    </center>
+  </div>
   <table class="info-table">
     <tr>
       <th class="id">ID</th>

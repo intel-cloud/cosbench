@@ -21,6 +21,8 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+
 /**
  * The model class mapping to "work" in configuration xml with following form:
  * 	<work type="type" workers="workers" division="division" 
@@ -44,7 +46,7 @@ public class Work implements Iterable<Operation> {
     private int totalOps = 0;
     private long totalBytes = 0;
     private String driver;
-    private String config;
+    private String config = "";
     private Auth auth;
     private Storage storage;    
     private List<Operation> operations;
@@ -233,6 +235,9 @@ public class Work implements Iterable<Operation> {
     public void setOperations(List<Operation> operations) {
         if (operations == null || operations.isEmpty())
             throw new ConfigException("a work must have opertations");
+        for(Operation op: operations) {
+        	ConfigUtils.inherit(op.getConfig(), this.config);
+        }
         this.operations = operations;
     }
 
@@ -241,6 +246,7 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a operation must have type");
         if (operations == null)
             operations = new ArrayList<Operation>();
+        ConfigUtils.inherit(op.getConfig(), this.config);
         operations.add(op);
     }
 
