@@ -50,12 +50,20 @@
 		class="com.intel.cosbench.driver.web.AbortMissionController">
 		<property name="driver" ref="driver" />
 	</bean>
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> b6a47436dc7d323fb5d98a46db8c859b5966dcdf
 	<bean id="downloadLogController" name="/download-log.do"
 		class="com.intel.cosbench.driver.web.DownloadLogController">
 		<property name="driver" ref="driver" />
 	</bean>
+<<<<<<< HEAD
 		<bean id="triggerController" name="/run-trigger.do"
+=======
+	<bean id="triggerController" name="/run-trigger.do"
+>>>>>>> b6a47436dc7d323fb5d98a46db8c859b5966dcdf
 		class="com.intel.cosbench.driver.web.TriggerController">
 		<property name="driver" ref="driver" />
 	</bean>
