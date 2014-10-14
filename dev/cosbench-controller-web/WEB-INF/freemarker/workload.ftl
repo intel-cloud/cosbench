@@ -79,6 +79,8 @@
         </tr>
       </#list>
     </table>
+      <th style="width:13%;">Time Remaining</th>
+    
     <p><a href="workload.html?id=${info.id}">hide details</a></p>
   <#else>
     <p><a href="workload.html?id=${info.id}&showDetails=True">more info</a></p>
@@ -100,18 +102,65 @@
     <p class="warn">The snapshot was taken at ${snapshot.timestamp?time} with version ${snapshot.version}.</p>
   </#if>
   <h3>Stages</h3>
-  <div class="workflow">
-    <center>
-      <#list info.stageInfos as sInfo >
-        <#if info.currentStage?? && info.currentStage.id == sInfo.id >
-        <strong>${sInfo.stage.name}</strong>
+
+    
+    <table class="Stages-table">
+    <tr>
+     <th class="id" style="width: 18%;">Current Stage</th>
+     <th style="width:10%;">Stages completed</th>
+      <th style="width:10%;">Stages remaining</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th style="width:13%;">Time Remaining</th>
+        </tr>
+    
+    <#list info.stageInfos  as sInfo >
+    <#assign ctr = 0>
+    <#global ctr2 = 0>
+    <#assign ctr3 = 0>
+    <#assign ctr4 = 0>
+    <#assign ctr5 = 0>
+    <#list info.stageInfos as sInfo  >
+     <#assign ctr = ctr + 1>
+         </#list>
+      <#if info.currentStage?? && sInfo.id == info.currentStage.id >
+        <tr class="high-light">
+        <td><strong>${sInfo.stage.name}</strong> </td>
+        <td><strong>${sInfo_index}</strong> </td>
+        <td><strong>${ctr - sInfo_index}</strong> </td>
+        <#if info.startDate?? >
+
+        <#assign ctr2 = info.startDate?time>
         <#else>
-        ${sInfo.stage.name}
-        </#if>
-        <#if sInfo_has_next > --> </#if>
-      </#list>
-    </center>
-  </div>
+       </#if>
+        <td><strong>${ctr2}</strong>
+         
+          <#if info.stopDate?? ||
+          (sInfo.getState()?upper_case == "COMPLETED") || 
+           (sInfo.getState()?contains("COMPLETED")) || 
+           (info.currentStage.state?lower_case == "completed") || 
+           (info.currentStage.stage.name?lower_case == "accomplished") || 
+           (sInfo.getStage()?lower_case == "completed")>
+        <#assign ctr3 = .now?time>
+         <td><strong>${ctr3}</strong></td>
+       
+     <td><strong>${(( ctr3?long - ctr2?long ) / ( 1000))?int} secs</strong></td>
+    
+           <#else>
+           <#assign ctr3 = .now?time>
+          <td><strong></strong></td>
+     <td><strong> </strong></td>
+       </#if> 
+      </tr>
+         <#else> 
+           
+           </#if>
+                
+     </tr>
+    </#list>
+ 
+  </table>
+
   <table class="info-table">
     <tr>
       <th class="id">ID</th>
