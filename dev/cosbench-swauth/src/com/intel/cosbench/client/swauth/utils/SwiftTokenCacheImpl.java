@@ -40,7 +40,7 @@ public class SwiftTokenCacheImpl {
 	}
 
     public static SwiftTokenCache getSwiftTokenCache(SwiftAuthClient client) {
-		if(latestTokenCache.getVersion()==0)
+		if(latestTokenCache.getVersion()==0 || ! client.check())
 			loadSwiftTokenCache(client,latestTokenCache);
             	return latestTokenCache;
     }
