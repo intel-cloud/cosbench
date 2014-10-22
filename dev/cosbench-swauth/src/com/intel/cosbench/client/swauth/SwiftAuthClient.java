@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.util.EntityUtils;
 
 import com.intel.cosbench.client.http.HttpClientUtil;
@@ -83,5 +84,23 @@ public class SwiftAuthClient {
                 EntityUtils.consume(response.getEntity());
         }
     }
+    
+    public boolean check() {
+    	       HttpResponse response;
+    	       if(storageURL == null || authToken == null)
+    	    	   return false;
+    	       try {
+    	           HttpHead method = new HttpHead(storageURL);
+    	           method.setHeader(X_AUTH_TOKEN, authToken);
+    	           response = client.execute(method);
+    	
+    	           if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_OK) &&
+    	               (response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100)))
+    	              return true;
+    	       } catch (IOException e) {
+    	       }
+    	        return false;
+    }
+    
 
 }

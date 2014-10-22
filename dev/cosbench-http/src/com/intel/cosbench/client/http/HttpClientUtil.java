@@ -22,7 +22,6 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
-
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.client.HttpClient;
@@ -76,6 +75,7 @@ public class HttpClientUtil {
         /* connection/socket timeouts */
         HttpConnectionParams.setSoTimeout(params, timeout);
         HttpConnectionParams.setConnectionTimeout(params, timeout);
+        
         /* user agent */
         HttpProtocolParams.setUserAgent(params, "cosbench/2.0");
         return params;
