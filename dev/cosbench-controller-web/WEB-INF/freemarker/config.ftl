@@ -10,14 +10,38 @@
 <div id="main">
 <div class="top"><br /></div>
 <div class="content">
-  <h3>Workload Configuration</h3>
-  <h5>(The page only provides basic configuration options, for advanced options, please follow user guide and edit xml files directly.)</h5>
+  <h3 id="Wconfig">Workload Configuration</h3>
+   <span><p id="Wconfig1"> Workload Description</span></p>
+  <script>
+  document.getElementById("Wconfig1").onmouseover = function() {mouseOver()};
+  document.getElementById("Wconfig1").onmouseout = function() {mouseOut()};
+    function mouseOver(){
+   document.getElementById("Wconfig1").innerHTML = "The page only provides basic configuration options, for advanced options, please follow user guide and edit xml files directly.";
+
+  }
+  
+   function mouseOut(){
+   document.getElementById("Wconfig1").innerHTML = "Workload Description";
+  document.getElementById("Wconfig1").style.color = "black";
+  }
+  </script>
+
+  </div>
+  
+ 
   <div>
     <form action="config-workload.do" method="post" class="content" >
 	  <#if error?? >
         <p><span class="error"><strong>Note</strong>: ${error}!</span></p>
       </#if>
-      
+   <div 
+    <component
+    id="workload.prop" table class="info-table"
+			onClick="toggleStageDiv(0,this.parentNode)
+			description="Hover"
+			</component> 
+			</div>
+			
 		<div id="workload" class="a1">
 			<h3>Workload</h3>	
 			
@@ -47,10 +71,12 @@
 			<div id="workload.as" class="a2">
 					<table class="info-table">
 						<thead>
+						
 							<tr>
-								<th ></th>
-								<th >Type</th>
-								<th >Configuration</th>
+							
+								<th ><strong></strong> </th>
+								<th ><strong>Type</strong></a> </th>
+								<th ></strong>Configuration</strong></a> </th>
 							</tr>
 						</thead>
 						
@@ -67,7 +93,9 @@
 									</select>
 								</td>
 								<td >
-									<input name="auth.config" id="auth.config" type="text" style="width:500px" value="username=<username>;password=<password>;auth_url=<url>" /> 
+									<input name="auth.config" id="auth.config" type="text" style="width:500px" value="username=<username>;password=<password>;auth_url=<url>"
+									title="different auth system has different parameters: &#10;[swauth]: username=<account:username>;password=<password>;url=<url> &#10;[keystone]: username=<account:username>;password=<password>;url=<url> &#10;[mock]: delay=<time> &#10;[none]: " /> 
+					
 								</td>
 							</tr>
 							
@@ -86,7 +114,9 @@
 									</select>
 								</td>
 								<td >
-									<input name="storage.config" id="storage.config" type="text" style="width:500px" value="" /> 
+									<input name="storage.config" id="storage.config" type="text" style="width:500px" value="" 
+									title="different storage system has different parameters: &#10 [swift]:  &#10 [ampli]: host=<host>;port=<port>;nsroot=<namespace root>;policy=<policy id> &#10; [mock]: delay=<time>;&#10 [none]: " /> 
+					
 								</td>
 							</tr>
 						</tbody>
@@ -98,7 +128,14 @@
 			<h3>Workflow</h3>
 			
 			<div id="init" class="a2">
-					<input type="checkbox" id="init.checked" name="init.checked" checked="checked" onClick="toggleStageDiv(0,this.parentNode);"><strong> Init Stage: </strong>
+					
+					<input type="checkbox" id="init.checked" name="init.checked" checked="checked" onClick="toggleStageDiv(0,this.parentNode);">
+					<a href=" " title="&#10 Init Table is used to create specific containers in bulk.
+					                   &#10 Parameters : containers, container prefix and suffix . 
+					                   &#10 Following format - 
+					                   &#10 <work type=init workers=4 config=containers=r(1,100)>">
+					                   <strong> Init Stage: </strong></a>
+          	
 				
 				<div id="init.work" class="a3">
 						<table class="info-table">
@@ -125,7 +162,8 @@
 				</div>
 				
 				<div id="init.delay" class="a2">
-          			<input type="checkbox" name="init.delay.checked"  onClick="toggleDiv(document.getElementById('init.delay.work'));"><strong> Delay: </strong>
+					<input type="checkbox" name="init.delay.checked"  onClick="toggleDiv(document.getElementById('init.delay.work'));"> 
+			<strong> Delay: </strong>
         
           			<div id="init.delay.work" class="a3" style="display:none">
             			<table class="info-table">
@@ -147,7 +185,11 @@
 			<input type="button" id="addinit" value="Add Init Stage" onClick="addStage(0);" />
 			
 			<div id="prepare" class="a2">
-					<input type="checkbox" id="prepare.checked" name="prepare.checked" checked="checked" onClick="toggleStageDiv(1,this.parentNode);"><strong> Prepare Stage:</strong>
+			
+					<input type="checkbox" id="prepare.checked" name="prepare.checked" checked="checked" onClick="toggleStageDiv(1,this.parentNode);"><a href=" 
+					" title="&#10 Prepare Table is used to create specific objects in bulk. 
+					         &#10 Following format -
+					         &#10 <work type=prepare workers=4 config=containers=r(1,100);objects=r(1,100);sizes=c(64)KB>"><strong>Prepare Stage:</strong></a> 			
 				
 				<div id="prepare.work" class="a3">
 						<table class="info-table">
@@ -185,8 +227,7 @@
 										  <option value="B">Byte</option>
 										  <option value="KB" selected="true">KB</option>
 										  <option value="MB">MB</option>
-										  <option value="GB">GB</option>
-										</select>
+										  <option value="GB">GB</option>	</select>
 									</td>
 								</tr>
 							</tbody>							
@@ -215,7 +256,9 @@
 			<input type="button" id="addprepare" value="Add Prepare Stage" onClick="addStage(1);" />
 			
 			<div id="normal" class="a2">
-					<input type="checkbox" id="normal.checked" name="normal.checked" checked="checked" onClick="toggleStageDiv(2,this.parentNode);"><strong> Main Stage:</strong>
+					<input type="checkbox" id="normal.checked" name="normal.checked" checked="checked" onClick="toggleStageDiv(2,this.parentNode);">
+					<a href=" " title="&#10 Main stage contains attributes like runtime and rampup which provide the ending options"><strong> Main Stage:</strong></a>
+									
 				
 				<div id="normal.work" class="a3">
 						<table class="info-table">
@@ -365,7 +408,11 @@
 			<input type="button" id="addnormal" value="Add Main Stage" onClick="addStage(2);" /> 
 			
 			<div id="cleanup" class="a2">
-					<input type="checkbox" id="cleanup.checked" name="cleanup.checked" checked="checked" onClick="toggleStageDiv(3,this.parentNode);"><strong> Cleanup Stage:</strong>
+			
+					<input type="checkbox" id="cleanup.checked" name="cleanup.checked" checked="checked" onClick="toggleStageDiv(3,this.parentNode);"><a href="" 
+					title="&#10 Cleanup Table is used to remove specific objects in bulk.
+					       &#10 Following format -
+					       &#10 <work type=cleanup workers=4 config=containers=r(1,100);objects=r(1,100)>""><strong> Cleanup Stage:</strong></a> 
 				
 				<div id="cleanup.work" class="a3">
 						<table class="info-table">
@@ -421,7 +468,11 @@
 			<input type="button" id="addcleanup" value="Add Cleanup Stage" onClick="addStage(3);" />
 			
 			<div id="dispose" class="a2">
-					<input type="checkbox" id="dispose.checked" name="dispose.checked" checked="checked" onClick="toggleStageDiv(4,this.parentNode);"><strong> Dispose Stage:</strong>
+			<input type="checkbox" id="dispose.checked" name="dispose.checked" checked="checked" onClick="toggleStageDiv(4,this.parentNode);"><a href=" 
+			" title="&#10 Dispose Table is used to remove specific containers in bulk. 
+			         &#10 Following format - 
+			         &#10 <work type=dispose workers=4 config=containers=r(1,100)/>""><strong> Dispose Stage:</strong></a> 
+			
 				
 				<div id="dispose.work" class="a3">
 						<table class="info-table">
@@ -514,6 +565,12 @@
         return false;
     }
     
+    function Workloaddesc()
+    {
+    document.getElementById("Wconfig").innerHTML = "The page only provides basic configuration options, for advanced options, please follow user guide and edit xml files directly.";
+    
+    }
+    
     function toggleStageDiv(stageNum,stageDiv)
     {
         if (numOfClonesInStage[stageNum] == 0)
@@ -555,7 +612,7 @@
 				config.title="e.g., &#10;    username=test:tester;password=testing;auth_url=http://192.168.0.1:8080/auth/v1.0";
 				break;
 			case "keystone":
-				config.value="username=<username>;password=<password>;tenant_name=<tenant name>;auth_url=<url>;service=<service>";
+				config.value="username=<username>;password=<password>;tenhttp://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_onmousemove_over_enterant_name=<tenant name>;auth_url=<url>;service=<service>";
 				config.title="e.g., &#10;    username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service";
 				break;
 			case "httpauth":

@@ -145,6 +145,7 @@
          <td><strong>${ctr3}</strong></td>
        
      <td><strong>${(( ctr3?long - ctr2?long ) / ( 1000))?int} secs</strong></td>
+        
     
            <#else>
            <#assign ctr3 = .now?time>
@@ -152,8 +153,12 @@
      <td><strong> </strong></td>
        </#if> 
       </tr>
-         <#else> 
+      
+     <#else> 
+     
+        </tr>
            
+                        
            </#if>
                 
      </tr>
