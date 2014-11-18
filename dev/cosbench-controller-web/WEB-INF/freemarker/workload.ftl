@@ -155,7 +155,14 @@
       </tr>
       
      <#else> 
-     
+     <tr class="high-light">
+     <td><br><strong></strong></br></td>
+     <td><br><strong></strong></br></td>
+     <td><br><strong></strong></br></td>
+     <td><br><strong></strong></br></td>
+     <td><br><strong></strong></br></td>
+     <td><br><strong></strong></br></td>
+     <#break>
         </tr>
            
                         

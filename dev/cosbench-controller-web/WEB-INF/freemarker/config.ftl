@@ -609,15 +609,15 @@
 		{
 			case "swauth":
 				config.value="username=<account:username>;password=<password>;auth_url=<url>";
-				config.title="e.g., &#10;    username=test:tester;password=testing;auth_url=http://192.168.0.1:8080/auth/v1.0";
+				config.title=" username=test:tester;password=testing;auth_url=http://192.168.0.1:8080/auth/v1.0";
 				break;
 			case "keystone":
-				config.value="username=<username>;password=<password>;tenhttp://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_onmousemove_over_enterant_name=<tenant name>;auth_url=<url>;service=<service>";
-				config.title="e.g., &#10;    username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service";
+				config.value="username=<username>;password=<password>;auth_url=<url>;service=<service>";
+				config.title=" username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service";
 				break;
 			case "httpauth":
 				config.value="username=<username>;password=<password>;auth_url=<url>";
-				config.title="e.g., &#10;    username=tester;password=testing;auth_url=http://192.168.10.1:8080/cdmi";
+				config.title=" username=tester;password=testing;auth_url=http://192.168.10.1:8080/cdmi";
 				break;
 			case "mock":
 				config.value="delay=<time>";
