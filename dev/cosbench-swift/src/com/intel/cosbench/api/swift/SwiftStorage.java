@@ -27,6 +27,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException;
 
 import com.intel.cosbench.api.context.AuthContext;
+import com.intel.cosbench.api.context.DefaultAuthContext;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.client.swift.*;
@@ -99,15 +100,15 @@ class SwiftStorage extends NoneStorage {
 
     @Override
     public AuthContext getAuthContext() {
-	String token = client.getAuthToken();
-	String storage_url = client.getStorageURL();
-
-	AuthContext info = new AuthContext();
-	info.put(AUTH_TOKEN_KEY, token);
-	info.put(STORAGE_URL_KEY, storage_url);
-
-	logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
-	return info;
+		String token = client.getAuthToken();
+		String storage_url = client.getStorageURL();
+	
+		AuthContext info = new DefaultAuthContext();
+		info.put(AUTH_TOKEN_KEY, token);
+		info.put(STORAGE_URL_KEY, storage_url);
+	
+		logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
+		return info;
     }
 
     @Override

@@ -20,7 +20,9 @@ package com.intel.cosbench.api.auth;
 public interface AuthConstants {
 
     String LOGGING_KEY = "logging";
-
     Boolean LOGGING_DEFAULT = Boolean.FALSE;
+    
+    String CACHING_KEY = "caching";
+    Boolean CACHING_DEFAULT = Boolean.FALSE;  
 
 }

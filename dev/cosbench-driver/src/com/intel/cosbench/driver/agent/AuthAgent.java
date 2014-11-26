@@ -23,7 +23,9 @@ import org.apache.commons.lang.math.RandomUtils;
 
 import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.context.AuthContext;
+import com.intel.cosbench.api.auth.AuthConstants;
 import com.intel.cosbench.api.storage.StorageAPI;
+import com.intel.cosbench.driver.util.AuthCachePool;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.service.AbortedException;
 
@@ -50,8 +52,35 @@ class AuthAgent extends AbstractAgent {
              * implementations such as Swift and S3 do require such information,
              * others don't. But we will do this anyway.
              */
+            AuthAPI authApi = workerContext.getAuthApi();
             StorageAPI storageApi = workerContext.getStorageApi();
-            storageApi.setAuthContext(login());
+            AuthContext import_context = authApi.getParms();
+        	AuthContext auth_context;
+    		String id = import_context.getID();
+        	
+    		boolean caching = import_context.getBoolean(AuthConstants.CACHING_KEY, AuthConstants.CACHING_DEFAULT);
+    		logger.debug("input auth context is {} with caching={}", import_context.toString(), caching);
+            if(caching) { // auth caching is enabled
+        		// check if auth context is already cached.
+                logger.debug("auth caching is enabled, will query cache pool with id={}", id);
+                synchronized(AuthCachePool.getInstance()) {
+	        		if(AuthCachePool.getInstance().containsKey(id)) {// already cached
+	        			auth_context = AuthCachePool.getInstance().get(id);
+	        			logger.debug("auth context for id={} is found as {}", id, auth_context);
+	        		}
+		    		else { // not found
+		    			logger.debug("auth context for id={} is not found, will try to login", id);
+						auth_context = authApi.login();
+						logger.debug("login is successful, auth context for id={} will be cacahed as {}", id, auth_context);
+						AuthCachePool.getInstance().put(id,  auth_context);
+					}
+                }
+        	}
+            else 
+				auth_context = authApi.login();
+
+            storageApi.setAuthContext(auth_context);
+
         } catch (AuthInterruptedException ie) {
             throw new AbortedException();
         } catch (AuthBadException be) {

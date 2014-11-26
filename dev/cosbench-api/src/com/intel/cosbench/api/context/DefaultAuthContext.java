@@ -18,27 +18,19 @@ limitations under the License.
 package com.intel.cosbench.api.context;
 
 /**
+ * This class represents a default implementation of AuthContext.
+ * 
  * @author ywang19
- *
+ * 
  */
-public abstract class AuthContext extends Context {
+public class DefaultAuthContext extends AuthContext {
+	
+	public String getID(String meta) {
+    	return this.toString();
+    }
+	
+	public String getID() {
+		return this.toString();
+	}
 
-	/**
-	 * Generate unique ID for the authentication context with attached metadata, normally, it will 
-	 * extract some key-value pairs from the context to construct the ID.
-	 * 
-	 * @param meta
-	 * @return an unique ID
-	 */
-	public abstract String getID(String meta) ;
-	
-	
-	/**
-	 * Generate unique ID for authentication context, normally, it will extract some key-value pairs 
-	 * from the context to construct the ID.
-	 * 
-	 * @return an unique ID
-	 */
-	public abstract String getID();
-	
 }
