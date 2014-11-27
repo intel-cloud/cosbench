@@ -1,3 +1,24 @@
+  COSBench 0.4.0.1(14-ww48.5)
+------------------------------------
+. #214: ceph prepare stage very low success ratio and throwing erros 
+. #211: SwiftTokenCache needs to validate current token is valid
+. #203: the driver "isAlive" status is green even the driver is not started 
+. #198: in v0.4.0.0, it seems the AFR doesn't take in effect in prepare stage 
+. #190: Config UI: Add detail to cleanup/dispose stage names 
+. #186: UI: Add detail to init and prepare stage names 
+. #178: Collect and view results for user-terminated jobs 
+. #159: Extend "histogram" selector to support "floating point" weights/percentages 
+. #156: Add "trigger" support
+. #154: Add authentication caching support
+. #147: UI: Advanced config UI Cleanup (part 1) 
+. #146: UI: Add tooltips to configurable params on the config UI
+. #145: UI: Change storage url template depending on the storage type chosen
+. #32: digest authentication support
+. #29: Error handling improvement
+. #19: Support LIST Api
+. #12: after several hours running, cosbench's banners all disappear. 
+
+
   COSBench 0.4.0.0 (14-ww21.5)
 ------------------------------------
 . #57: time synchronization
