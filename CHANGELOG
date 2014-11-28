@@ -4,6 +4,7 @@
 . #211: SwiftTokenCache needs to validate current token is valid
 . #203: the driver "isAlive" status is green even the driver is not started 
 . #198: in v0.4.0.0, it seems the AFR doesn't take in effect in prepare stage 
+. #191: cosbench-start.sh fails while executing 'nc': TOOL_PARAMS is incorrect.
 . #190: Config UI: Add detail to cleanup/dispose stage names 
 . #186: UI: Add detail to init and prepare stage names 
 . #178: Collect and view results for user-terminated jobs 
