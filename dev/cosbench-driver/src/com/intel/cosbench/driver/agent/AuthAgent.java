@@ -71,8 +71,13 @@ class AuthAgent extends AbstractAgent {
 		    		else { // not found
 		    			logger.debug("auth context for id={} is not found, will try to login", id);
 						auth_context = authApi.login();
-						logger.debug("login is successful, auth context for id={} will be cacahed as {}", id, auth_context);
-						AuthCachePool.getInstance().put(id,  auth_context);
+						if(auth_context != null) // the authentication mechanism is embedded into storage adapter
+						{
+							logger.debug("login is successful, auth context for id={} will be cacahed as {}", id, auth_context);
+							AuthCachePool.getInstance().put(id,  auth_context);
+						}else { // the authentication mechanism is embedded into storage adapter
+							logger.info("no auth context required.");								
+						}
 					}
                 }
         	}
