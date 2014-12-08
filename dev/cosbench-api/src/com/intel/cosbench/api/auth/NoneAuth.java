@@ -57,6 +57,11 @@ public class NoneAuth implements AuthAPI {
         parms.put(LOGGING_KEY, logging);
         parms.put(CACHING_KEY, caching);
     }
+    @Override
+    public void init() {
+    	/* empty */
+    }
+    
 
     @Override
     public void dispose() {

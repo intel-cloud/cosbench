@@ -98,14 +98,9 @@ class Reader extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-
-        	/**
-        	 * previous implementation method
-        	 */
-         //   doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform read operation " + conName + "/" + objName , e);
-        	
+        	isUnauthorizedException(e, session);
         	errorStatisticsHandle(e, session, conName + "/" + objName);
-
+        	
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
             IOUtils.closeQuietly(in);
