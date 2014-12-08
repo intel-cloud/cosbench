@@ -71,6 +71,7 @@ class SwiftStorage extends NoneStorage {
         logger.debug("using storage config: {}", parms);
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+        
         client = new SwiftClient(httpClient);
         logger.debug("swift client has been initialized");
     }

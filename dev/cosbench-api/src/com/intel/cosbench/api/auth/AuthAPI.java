@@ -38,6 +38,7 @@ public interface AuthAPI {
      *            from execution engine.
      */
     public void init(Config config, Logger logger);
+    public void init();
 
     /**
      * Triggers the back-end authentication mechanism.

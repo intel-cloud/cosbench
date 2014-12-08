@@ -18,6 +18,7 @@ limitations under the License.
 package com.intel.cosbench.api.storage;
 
 import java.io.InputStream;
+
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
@@ -154,5 +155,17 @@ public interface StorageAPI {
 //    
 //    public void createMetadata(String container, String object, Map<String,
 //     String> map, Config config);
+    
+    /**
+     * set the current authorization validity 
+     * @param auth
+     *          - if the current authorization valid or not
+     */				
+    public void setAuthFlag(Boolean auth);
+    /**
+     * check if the current authorization valid 
+     * 
+     */
+    public Boolean isAuthValid();
 
 }

@@ -22,6 +22,7 @@ import static com.intel.cosbench.api.storage.StorageConstants.*;
 import java.io.*;
 import java.util.*;
 
+import com.intel.cosbench.api.auth.NoneAuth;
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
@@ -39,7 +40,7 @@ public class NoneStorage implements StorageAPI {
 
     protected Context parms;
     protected Logger logger;
-
+    protected Boolean authFlag;
     /* configurations */
     private boolean logging; // enable logging
 
@@ -55,6 +56,7 @@ public class NoneStorage implements StorageAPI {
         logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
         /* register all parameters */
         parms.put(LOGGING_KEY, logging);
+        authFlag = false;
     }
 
     @Override
@@ -141,5 +143,10 @@ public class NoneStorage implements StorageAPI {
             logger.info("performing HEAD at /{}/{}", container, object);
         return Collections.emptyMap();
     }
-
+    public void setAuthFlag(Boolean auth) {
+    	this.authFlag = auth;
+    }
+    public Boolean isAuthValid() {
+    	return authFlag;
+    }
 }

@@ -99,14 +99,9 @@ class Writer extends AbstractOperator {
         } catch (StorageInterruptedException sie) {
             throw new AbortedException();
         } catch (Exception e) {
-
-        	/**
-        	 * previous implementation method 
-        	 */
-       //     doLogErr(session.getLogger(), "worker "+ session.getIndex() +  "fail to perform write operation " + conName + "/" + objName, e);
-        	
+        	isUnauthorizedException(e, session);
         	errorStatisticsHandle(e, session, conName + "/" + objName);
-
+        	
 			return new Sample(new Date(), op.getId(), op.getOpType(),
 					op.getSampleType(), op.getName(), false);
 			

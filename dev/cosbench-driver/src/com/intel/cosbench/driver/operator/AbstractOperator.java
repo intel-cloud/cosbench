@@ -20,6 +20,7 @@ package com.intel.cosbench.driver.operator;
 import java.util.HashMap;
 
 import com.intel.cosbench.config.Config;
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.bench.ErrorStatistics;
 import com.intel.cosbench.log.LogFactory;
 import com.intel.cosbench.log.Logger;
@@ -127,5 +128,17 @@ abstract class AbstractOperator implements Operator {
     			stackTraceAndTargets.put(trace, targets + ", "+target);
     		}
     }
+    public static void isUnauthorizedException(Exception e, Session session) {
+    	if(e != null && e.getMessage() != null)
+    		try{
+    			if(401 == Integer.valueOf(e.getMessage().substring(9, 12))){
+    				session.getApi().setAuthFlag(false);
+    				LOGGER.debug("catch 401 error from storage backend, set auth flag to false");
+    			}
+    		}catch(NumberFormatException ne) {
+    			ne.printStackTrace(); // mask ignore
+    		}
+    }
+
 
 }

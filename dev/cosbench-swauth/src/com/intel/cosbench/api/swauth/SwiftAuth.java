@@ -75,6 +75,15 @@ class SwiftAuth extends NoneAuth {
         client = new SwiftAuthClient(httpClient, url, username, password);
         logger.debug("swauth client has been initialized");
     }
+    @Override
+    public void init() {
+    	super.init();
+    	logger.debug("a second init of client using auth config: {}",parms);
+    	HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+        client = new SwiftAuthClient(httpClient, url, username, password);
+        logger.debug("a second swauth client has been initialized");
+    }
+    
 
     @Override
     public void dispose() {

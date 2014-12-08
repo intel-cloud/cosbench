@@ -79,11 +79,7 @@ class Deleter extends AbstractOperator {
             String msg = "Error deleting object " +  conName + ": " + objName; 
             doLogWarn(session.getLogger(), msg);
         } catch (Exception e) {
-
-        	/**
-        	 * previous implementation method 
-        	 */
-          //  doLogErr(session.getLogger(), "fail to perform remove operation", e);
+        	isUnauthorizedException(e, session);
         	errorStatisticsHandle(e, session, conName + "/" + objName); 
 
             return new Sample(new Date(), op.getId(), op.getOpType(),

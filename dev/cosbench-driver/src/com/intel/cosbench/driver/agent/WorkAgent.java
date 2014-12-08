@@ -18,15 +18,22 @@ limitations under the License.
 package com.intel.cosbench.driver.agent;
 
 import static com.intel.cosbench.bench.Mark.*;
+
 import com.intel.cosbench.bench.ErrorStatistics;
 
 import java.util.*;
 
+import javax.naming.AuthenticationException;
+
+import com.intel.cosbench.api.auth.AuthBadException;
+import com.intel.cosbench.api.auth.AuthException;
+import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.StorageAPI;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Mission;
 import com.intel.cosbench.driver.model.*;
 import com.intel.cosbench.driver.operator.*;
+import com.intel.cosbench.driver.util.AuthCachePool;
 import com.intel.cosbench.driver.util.OperationPicker;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.service.AbortedException;
@@ -168,23 +175,29 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         while (!workerContext.isFinished())
             try {
                 performOperation();
-            } catch (AbortedException ae) {
+			}catch (AbortedException ae) {
                 if (lrsample > frsample)
                     doSummary();
                 workerContext.setFinished(true);
             }
         doSnapshot();
     }
+        
 
     private void performOperation() {
     	if(workerContext.getAuthApi() == null || workerContext.getStorageApi() == null) 
     		throw new AbortedException();
-    		
+    	if(! workerContext.getStorageApi().isAuthValid())
+    		reLogin();
         lbegin = System.currentTimeMillis();
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
         OperatorContext context = operatorRegistry.getOperator(op);
-        context.getOperator().operate(this);
+        try{
+        	context.getOperator().operate(this);
+        }catch(AuthException ae) {
+        	reLogin();
+        }
     }
     
     @Override
@@ -271,6 +284,27 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         for (Mark mark : globalMarks)
             bytes += mark.getByteCount();
         return bytes;
+    }
+    public void reLogin() {
+    	LOGGER.debug("WorkAgent {} auth failed, now relogin",workerContext.getIndex());
+		AuthContext authContext = workerContext.getStorageApi().getAuthContext();
+		synchronized (AuthCachePool.getInstance()) {
+			AuthCachePool.getInstance().remove(authContext.getID());
+		}
+    	try{
+    		workerContext.getAuthApi().init();
+    		authContext = workerContext.getAuthApi().login();
+    		workerContext.getStorageApi().setAuthContext(authContext);
+    		workerContext.getStorageApi().setAuthFlag(true);
+    		synchronized (AuthCachePool.getInstance()) {
+				AuthCachePool.getInstance().put(authContext.getID(), authContext);
+			}
+    		LOGGER.debug("WorkAgent {} relogin successfully",workerContext.getIndex());
+    	}catch(AuthException ae) {
+    		workerContext.getAuthApi().dispose();
+    		LOGGER.error("agent "+workerContext.getIndex()+" failed to login",ae);
+    		throw new AgentException();
+    	}	
     }
 
 }
