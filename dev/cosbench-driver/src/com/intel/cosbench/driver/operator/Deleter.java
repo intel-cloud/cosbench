@@ -74,6 +74,7 @@ class Deleter extends AbstractOperator {
         try {
             session.getApi().deleteObject(conName, objName, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (StorageException se) {
             String msg = "Error deleting object " +  conName + ": " + objName; 

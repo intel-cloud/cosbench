@@ -84,6 +84,7 @@ public class Lister extends AbstractOperator {
 	        copyLarge(in, cout);
 	        xferTime = System.currentTimeMillis() - xferStart;
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
         	isUnauthorizedException(e, session);

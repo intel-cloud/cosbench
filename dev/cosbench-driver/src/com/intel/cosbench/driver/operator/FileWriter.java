@@ -142,6 +142,7 @@ class FileWriter extends AbstractOperator {
         try {
               session.getApi().createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
         	isUnauthorizedException(e, session);

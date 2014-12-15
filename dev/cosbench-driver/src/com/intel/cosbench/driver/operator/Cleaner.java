@@ -101,6 +101,7 @@ class Cleaner extends AbstractOperator {
         try {
             session.getApi().deleteContainer(conName, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (StorageException se) {
             String msg = "Error deleting container " +  conName; 

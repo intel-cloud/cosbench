@@ -96,6 +96,7 @@ class Reader extends AbstractOperator {
 				return new Sample(new Date(), getId(), getOpType(),
 						getSampleType(), getName(), false);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
         	isUnauthorizedException(e, session);
