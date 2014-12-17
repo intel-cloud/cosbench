@@ -17,11 +17,11 @@ limitations under the License.
 
 package com.intel.cosbench.driver.operator;
 
+
 import java.util.HashMap;
 
-import com.intel.cosbench.config.Config;
-import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.bench.ErrorStatistics;
+import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.LogFactory;
 import com.intel.cosbench.log.Logger;
 
@@ -136,9 +136,8 @@ abstract class AbstractOperator implements Operator {
     				LOGGER.debug("catch 401 error from storage backend, set auth flag to false");
     			}
     		}catch(NumberFormatException ne) {
-    			ne.printStackTrace(); // mask ignore
+    			ne.printStackTrace();// mask ignore
     		}
     }
-
 
 }

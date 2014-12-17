@@ -27,7 +27,6 @@ import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.*;
-
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.log.*;
 

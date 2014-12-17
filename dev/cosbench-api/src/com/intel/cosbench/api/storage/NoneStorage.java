@@ -61,6 +61,7 @@ public class NoneStorage implements StorageAPI {
 
     @Override
     public void setAuthContext(AuthContext info) {
+    	setAuthFlag(true);
         /* empty */
     }
 

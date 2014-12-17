@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.*;
+import com.intel.cosbench.config.common.KVConfigParser;
 import com.intel.cosbench.driver.util.OperationPicker;
 import com.intel.cosbench.log.LogManager;
 import com.intel.cosbench.model.*;
@@ -41,7 +42,7 @@ public class MissionContext implements MissionInfo {
     private StateRegistry stateHistory = new StateRegistry();
     private transient XmlConfig config;
     private transient volatile Future<?> future;
-
+    
     private Mission mission;
     private LogManager logManager;
     private ErrorStatistics errorStatistics;
@@ -54,7 +55,10 @@ public class MissionContext implements MissionInfo {
     private volatile Report report = null; // will be merged from worker reports
 
     private transient List<MissionListener> listeners = new ArrayList<MissionListener>();
-
+    
+    private static final String GENERATE_HISTOGRAM_KEY = "histogram";
+    private static final boolean DEFAULT_GENERATE_HISTOGRAM = true;
+    
     public MissionContext() {
         errorStatistics = new ErrorStatistics();
     }
@@ -95,7 +99,7 @@ public class MissionContext implements MissionInfo {
         for (MissionListener listener : listeners)
             listener.missionStopped(this);
     }
-
+    
     private Report mergeReport() {
         ReportMerger merger = new ReportMerger();
         for (WorkerContext worker : workerRegistry)
@@ -109,6 +113,27 @@ public class MissionContext implements MissionInfo {
         return report;
     }
 
+/*    private Report mergeReport() {
+        ReportMerger merger = new ReportMerger();
+        for (WorkerContext worker : workerRegistry)
+            merger.add(worker.getReport());
+        Report report = merger.merge();
+        Config missionConfig = KVConfigParser.parse(mission.getConfig());
+        boolean histogram = missionConfig.getBoolean(GENERATE_HISTOGRAM_KEY, DEFAULT_GENERATE_HISTOGRAM);
+        if(histogram) {
+        	generateHistogram(report);
+        }
+        return report;
+    }
+    
+    private void generateHistogram(Report report) {
+        OperatorRegistry registry = operatorRegistry;
+        for (Metrics metrics : report) {
+            OperatorContext op = registry.getOperator(metrics.getOpId());
+            metrics.setLatency(Histogram.convert(op.getCounter()));
+        }
+    }
+*/
     @Override
     public StateInfo[] getStateHistory() {
         return stateHistory.getAllStates();
