@@ -120,28 +120,6 @@ public class MissionContext implements MissionInfo {
             metrics.setLatency(Histogram.convert(op.getCounter()));
         }
     }
-
-/*    private Report mergeReport() {
-        ReportMerger merger = new ReportMerger();
-        for (WorkerContext worker : workerRegistry)
-            merger.add(worker.getReport());
-        Report report = merger.merge();
-        Config missionConfig = KVConfigParser.parse(mission.getConfig());
-        boolean histogram = missionConfig.getBoolean(GENERATE_HISTOGRAM_KEY, DEFAULT_GENERATE_HISTOGRAM);
-        if(histogram) {
-        	generateHistogram(report);
-        }
-        return report;
-    }
-    
-    private void generateHistogram(Report report) {
-        OperatorRegistry registry = operatorRegistry;
-        for (Metrics metrics : report) {
-            OperatorContext op = registry.getOperator(metrics.getOpId());
-            metrics.setLatency(Histogram.convert(op.getCounter()));
-        }
-    }
-*/
     @Override
     public StateInfo[] getStateHistory() {
         return stateHistory.getAllStates();
