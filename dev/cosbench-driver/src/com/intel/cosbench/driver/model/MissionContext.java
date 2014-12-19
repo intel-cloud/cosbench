@@ -120,7 +120,6 @@ public class MissionContext implements MissionInfo {
             metrics.setLatency(Histogram.convert(op.getCounter()));
         }
     }
-
     @Override
     public StateInfo[] getStateHistory() {
         return stateHistory.getAllStates();
