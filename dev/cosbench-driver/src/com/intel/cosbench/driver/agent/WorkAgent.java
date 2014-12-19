@@ -295,7 +295,6 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     		workerContext.getAuthApi().init();
     		authContext = workerContext.getAuthApi().login();
     		workerContext.getStorageApi().setAuthContext(authContext);
-    		workerContext.getStorageApi().setAuthFlag(true);
     		synchronized (AuthCachePool.getInstance()) {
 				AuthCachePool.getInstance().put(authContext.getID(), authContext);
 			}

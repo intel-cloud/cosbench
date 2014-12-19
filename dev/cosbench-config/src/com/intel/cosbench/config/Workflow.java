@@ -20,6 +20,8 @@ package com.intel.cosbench.config;
 import java.util.*;
 
 import com.intel.cosbench.config.common.ConfigUtils;
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 
 /**
  * The model class mapping to "workflow" in configuration xml with following form:
@@ -53,7 +55,7 @@ public class Workflow implements Iterable<Stage> {
         if (stages == null || stages.isEmpty())
             throw new ConfigException("workflow must have stages");
         for(Stage stage: stages) {
-        	ConfigUtils.inherit(stage.getConfig(), this.config);
+        	stage.setConfig(ConfigUtils.inherit(stage.getConfig(), this.config));
         }
         this.stages = stages;
     }
@@ -63,7 +65,7 @@ public class Workflow implements Iterable<Stage> {
             throw new ConfigException("can't add one empty stage");
         if (stages == null)
             stages = new ArrayList<Stage>();
-        ConfigUtils.inherit(stage.getConfig(), this.config);
+        stage.setConfig(ConfigUtils.inherit(stage.getConfig(), this.config));
         stages.add(stage);
     }
 

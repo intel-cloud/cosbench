@@ -236,7 +236,7 @@ public class Work implements Iterable<Operation> {
         if (operations == null || operations.isEmpty())
             throw new ConfigException("a work must have opertations");
         for(Operation op: operations) {
-        	ConfigUtils.inherit(op.getConfig(), this.config);
+        	op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
         }
         this.operations = operations;
     }
@@ -246,7 +246,7 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a operation must have type");
         if (operations == null)
             operations = new ArrayList<Operation>();
-        ConfigUtils.inherit(op.getConfig(), this.config);
+        op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
         operations.add(op);
     }
 

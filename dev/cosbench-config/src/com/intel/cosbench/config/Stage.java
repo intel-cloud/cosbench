@@ -22,6 +22,8 @@ import java.util.*;
 import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.common.ConfigUtils;
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 
 /**
  * The model class mapping to "workstage" in configuration xml with following form:
@@ -138,7 +140,10 @@ public class Stage implements Iterable<Work> {
         if (works == null || works.isEmpty())
             throw new ConfigException("stage must have works");
         for(Work work: works) {
-        	ConfigUtils.inherit(work.getConfig(), this.config);
+        	work.setConfig(ConfigUtils.inherit(work.getConfig(), this.config));
+        	 Logger logger = LogFactory.getSystemLogger();
+     		logger.debug("stage config: "+this.config+ "work inherit result: "+  ConfigUtils.inherit(work.getConfig(), this.config));
+         
         }
         this.works = works;
     }
@@ -148,7 +153,7 @@ public class Stage implements Iterable<Work> {
             throw new ConfigException("can't add one empty work");
         if (works == null)
             works = new ArrayList<Work>();
-        ConfigUtils.inherit(work.getConfig(), this.config);
+        work.setConfig(ConfigUtils.inherit(work.getConfig(), this.config));
         works.add(work);
     }
 

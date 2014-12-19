@@ -38,6 +38,10 @@ public interface AuthAPI {
      *            from execution engine.
      */
     public void init(Config config, Logger logger);
+    
+    /**
+     * Initializes a new HttpClient for WorkAgent to relogin. 
+     */
     public void init();
 
     /**

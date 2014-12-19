@@ -20,6 +20,8 @@ package com.intel.cosbench.config;
 import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.common.ConfigUtils;
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 
 /**
  * The model class mapping to "workload" in configuration xml with following form:
@@ -108,7 +110,7 @@ public class Workload {
     public void setWorkflow(Workflow workflow) {
         if (workflow == null)
             throw new ConfigException("workload must have its workflow");
-        ConfigUtils.inherit(workflow.getConfig(), this.config);
+        workflow.setConfig(ConfigUtils.inherit(workflow.getConfig(), this.config));
         this.workflow = workflow;
     }
 

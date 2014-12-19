@@ -173,6 +173,7 @@ class MissionHandler {
         authConfig = KVConfigParser.parse(m.getAuth().getConfig());
         retry = authConfig.getInt(AUTH_RETRY_KEY, DEFAULT_AUTH_RETRY);
         storageConfig = KVConfigParser.parse(m.getStorage().getConfig());
+        LOGGER.debug("driver mission config  is: "+m.getConfig());
     }
 
     private void createWorkers() {

@@ -64,6 +64,8 @@ class Submitter extends AbstractCommandTasklet<SubmitResponse> {
         mission.setAuth(work.getAuth());
         mission.setStorage(work.getStorage());
         mission.setOperations(work.getOperations());
+        LOGGER.debug("controller work config is:" +work.getConfig());
+        LOGGER.debug("controller mission config is: "+ mission.getConfig());
         return mission;
     }
 
