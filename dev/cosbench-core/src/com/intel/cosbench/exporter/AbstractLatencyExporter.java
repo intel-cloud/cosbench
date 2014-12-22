@@ -55,6 +55,8 @@ abstract class AbstractLatencyExporter implements LatencyExporter {
         accs = new int[metricsNum];
         for (Metrics metrics : workload.getReport()) {
             int sum = 0;
+            if(metrics.getLatency() == null)
+            	continue;
             int[] data = metrics.getLatency().getHistoData();
             for (int idx = 0; idx < size; idx++)
                 sum += data[idx];
