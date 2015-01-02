@@ -27,6 +27,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException;
 
 import com.intel.cosbench.api.context.AuthContext;
+import com.intel.cosbench.api.context.DefaultAuthContext;
 import com.intel.cosbench.api.storage.*;
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.client.swift.*;
@@ -70,6 +71,7 @@ class SwiftStorage extends NoneStorage {
         logger.debug("using storage config: {}", parms);
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+        
         client = new SwiftClient(httpClient);
         logger.debug("swift client has been initialized");
     }
@@ -99,15 +101,15 @@ class SwiftStorage extends NoneStorage {
 
     @Override
     public AuthContext getAuthContext() {
-	String token = client.getAuthToken();
-	String storage_url = client.getStorageURL();
-
-	AuthContext info = new AuthContext();
-	info.put(AUTH_TOKEN_KEY, token);
-	info.put(STORAGE_URL_KEY, storage_url);
-
-	logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
-	return info;
+		String token = client.getAuthToken();
+		String storage_url = client.getStorageURL();
+	
+		AuthContext info = new DefaultAuthContext();
+		info.put(AUTH_TOKEN_KEY, token);
+		info.put(STORAGE_URL_KEY, storage_url);
+	
+		logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
+		return info;
     }
 
     @Override
@@ -128,6 +130,27 @@ class SwiftStorage extends NoneStorage {
         InputStream stream;
         try {
             stream = client.getObjectAsStream(container, object);
+        } catch (SocketTimeoutException ste) {
+            throw new StorageTimeoutException(ste);
+        } catch (ConnectTimeoutException cte) {
+            throw new StorageTimeoutException(cte);
+        } catch (InterruptedIOException ie) {
+            throw new StorageInterruptedException(ie);
+        } catch (SwiftException se) {
+            String msg = se.getHttpStatusLine().toString();
+            throw new StorageException(msg, se);
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        return stream;
+    }
+    
+    @Override
+    public InputStream getList(String container, String object, Config config) {
+        super.getList(container, object, config);
+        InputStream stream;
+        try {
+        	stream = client.getTargetList(container, object);
         } catch (SocketTimeoutException ste) {
             throw new StorageTimeoutException(ste);
         } catch (ConnectTimeoutException cte) {

@@ -20,6 +20,7 @@ package com.intel.cosbench.driver.operator;
 import java.util.Random;
 
 import com.intel.cosbench.api.storage.StorageAPI;
+import com.intel.cosbench.bench.ErrorStatistics;
 import com.intel.cosbench.log.Logger;
 
 public interface Session {
@@ -35,5 +36,8 @@ public interface Session {
     public Logger getLogger();
 
     public OperationListener getListener();
+    
+    public ErrorStatistics getErrorStatistics();
+	
 
 }

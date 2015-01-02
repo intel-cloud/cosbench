@@ -18,16 +18,19 @@ limitations under the License.
 package com.intel.cosbench.driver.operator;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 
 import com.intel.cosbench.api.storage.StorageInterruptedException;
-import com.intel.cosbench.bench.*;
+import com.intel.cosbench.bench.Result;
+import com.intel.cosbench.bench.Sample;
 import com.intel.cosbench.config.Config;
-import com.intel.cosbench.driver.generator.XferCountingInputStream;
 import com.intel.cosbench.driver.generator.RandomInputStream;
-import com.intel.cosbench.driver.util.*;
+import com.intel.cosbench.driver.generator.XferCountingInputStream;
+import com.intel.cosbench.driver.util.ObjectPicker;
+import com.intel.cosbench.driver.util.SizePicker;
 import com.intel.cosbench.service.AbortedException;
 
 /**
@@ -91,15 +94,18 @@ class Writer extends AbstractOperator {
         long start = System.currentTimeMillis();
 
         try {
-        	doLogDebug(session.getLogger(), "Write Object " + conName + "/" + objName);
             session.getApi()
                     .createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform write operation", e);
+        	isUnauthorizedException(e, session);
+        	errorStatisticsHandle(e, session, conName + "/" + objName);
+        	
 			return new Sample(new Date(), op.getId(), op.getOpType(),
 					op.getSampleType(), op.getName(), false);
+			
         } finally {
             IOUtils.closeQuietly(cin);
         }

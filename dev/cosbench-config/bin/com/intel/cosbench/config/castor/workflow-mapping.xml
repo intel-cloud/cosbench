@@ -10,6 +10,9 @@
 			type="com.intel.cosbench.config.Stage">
 			<bind-xml name="workstage" node="element" />
 		</field>
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
 
 	</class>
 

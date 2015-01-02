@@ -34,11 +34,12 @@ public class NoneAuth implements AuthAPI {
 
     public static final String API_TYPE = "none";
 
-    protected Context parms;
+    protected AuthContext parms;
     protected Logger logger;
 
     /* configurations */
     private boolean logging; // enable logging
+    private boolean caching; // enable caching
 
     public NoneAuth() {
         /* empty */
@@ -47,12 +48,20 @@ public class NoneAuth implements AuthAPI {
     @Override
     public void init(Config config, Logger logger) {
         this.logger = logger;
-        this.parms = new Context();
+        this.parms = new DefaultAuthContext();
         
         logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
+        caching = config.getBoolean(CACHING_KEY, CACHING_DEFAULT);
+        
         /* register all parameters */
         parms.put(LOGGING_KEY, logging);
+        parms.put(CACHING_KEY, caching);
     }
+    @Override
+    public void init() {
+    	/* empty */
+    }
+    
 
     @Override
     public void dispose() {
@@ -60,7 +69,7 @@ public class NoneAuth implements AuthAPI {
     }
 
     @Override
-    public Context getParms() {
+    public AuthContext getParms() {
         return parms;
     }
 

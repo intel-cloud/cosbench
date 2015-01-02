@@ -75,9 +75,9 @@
       		<table class="info-table">
 						<thead>
 							<tr>
-								<th>Runtime(seconds)</th>
-								<th>Rampup(seconds)</th>
-								<th>Delay(seconds)</th>
+								<th>Runtime(in secs)</th>
+								<th>Rampup(in secs)</th>
+								<th>Delay(in secs)</th>
 								<th>Number of drivers</th>
 							</tr>
 						</thead>
@@ -153,9 +153,9 @@
 					<table class="rwd-table">
 						<thead>
 							<tr>
-							    <th>Read </th>
-                                <th>Write </th>
-                                <th>Delete </th>
+							    <th>Read % </th>
+                                <th>Write % </th>
+                                <th>Delete % </th>
 							</tr>
 						</thead>
 						

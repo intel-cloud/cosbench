@@ -38,6 +38,11 @@ public interface AuthAPI {
      *            from execution engine.
      */
     public void init(Config config, Logger logger);
+    
+    /**
+     * Initializes a new HttpClient for WorkAgent to relogin. 
+     */
+    public void init();
 
     /**
      * Triggers the back-end authentication mechanism.
@@ -54,7 +59,7 @@ public interface AuthAPI {
      * @return Context - one com.intel.cosbenchc.context.Context instance which contains all parameters
      *         configured for the authentication mechanism.
      */
-    public Context getParms();
+    public AuthContext getParms();
 
     /**
      * Releases the resources held by this Auth-API.

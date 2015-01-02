@@ -73,7 +73,7 @@ To debug both executables, a few special settings are required.
 		
 	1.6 At the bundle table, for each bundle, there are two parameters: "Start Level" and "Auto-Start". The information can get from "osgi.bundles" parameter in config.ini.
 		e.g.
-		"libs/com.springsource.freemarker-2.3.15.jar@2\:start" means the freemarker bundle will be with "Start Level" = 2 and "Auto-Start" = true.
+		"libs/com.springsource.freemarker-2.3.20.jar@2\:start" means the freemarker bundle will be with "Start Level" = 2 and "Auto-Start" = true.
 		
 	1.7 Some bundles may not set the two parameters, like "com.springsource.apache.coyote". in this case, just let it be. 
 	Ensure below two system bundles are checked: **org.eclipse.equinox.launcher_1.2.0.v20110502.jar**, **org.eclipse.osgi-3.7.0.v20110613.jar**

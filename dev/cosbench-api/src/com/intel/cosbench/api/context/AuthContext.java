@@ -18,12 +18,27 @@ limitations under the License.
 package com.intel.cosbench.api.context;
 
 /**
- * This class represents context information exchanged between an Auth-API and a
- * Storage-API.
- * 
- * @author ywang19, qzheng7
- * 
+ * @author ywang19
+ *
  */
-public class AuthContext extends Context {
+public abstract class AuthContext extends Context {
 
+	/**
+	 * Generate unique ID for the authentication context with attached metadata, normally, it will 
+	 * extract some key-value pairs from the context to construct the ID.
+	 * 
+	 * @param meta
+	 * @return an unique ID
+	 */
+	public abstract String getID(String meta) ;
+	
+	
+	/**
+	 * Generate unique ID for authentication context, normally, it will extract some key-value pairs 
+	 * from the context to construct the ID.
+	 * 
+	 * @return an unique ID
+	 */
+	public abstract String getID();
+	
 }

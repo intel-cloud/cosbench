@@ -173,6 +173,7 @@ class MissionHandler {
         authConfig = KVConfigParser.parse(m.getAuth().getConfig());
         retry = authConfig.getInt(AUTH_RETRY_KEY, DEFAULT_AUTH_RETRY);
         storageConfig = KVConfigParser.parse(m.getStorage().getConfig());
+        LOGGER.debug("driver mission config  is: "+m.getConfig());
     }
 
     private void createWorkers() {
@@ -191,6 +192,7 @@ class MissionHandler {
         context.setIndex(idx);
         context.setMission(mission);
         context.setLogger(manager.getLogger());
+        context.setErrorStatistics(missionContext.getErrorStatistics());
         context.setAuthApi(createAuthApi(mission.getAuth(), manager));
         context.setStorageApi(createStorageApi(mission.getStorage(), manager));
         return context;
@@ -311,6 +313,7 @@ class MissionHandler {
             return;
         }
         LOGGER.info("mission {} has been executed successfully", id);
+       
     }
 
     private void stressTarget() {
@@ -320,6 +323,7 @@ class MissionHandler {
         int timeout = m.getRampup() + m.getRuntime() + m.getRampdown();
         executeAgents(agents, timeout == 0 ? 0 : timeout + 60);
         missionContext.setState(FINISHED);
+        missionContext.getErrorStatistics().summaryToMission(missionContext.getLogManager().getLogger());
     }
 
     private List<Agent> createWorkAgents() {

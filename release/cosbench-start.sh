@@ -32,7 +32,7 @@ OSGI_CONFIG=conf/.$SERVICE_NAME
 TOMCAT_CONFIG=conf/$SERVICE_NAME-tomcat-server.xml
 
 TOOL="nc"
-TOOL_PARAMS="-q 1"
+TOOL_PARAMS="-i 0"
 
 #-------------------------------
 # MAIN
@@ -80,7 +80,7 @@ do
         attempts=60
         while [ $ready -ne 1 ];
         do
-                echo "ss -s ACTIVE cosbench" | $TOOL $TOOL_PARAMS localhost $OSGI_CONSOLE_PORT | grep $module >> /dev/null
+                echo "ss -s ACTIVE cosbench" | $TOOL $TOOL_PARAMS 0.0.0.0 $OSGI_CONSOLE_PORT | grep $module >> /dev/null
                 if [ $? -ne 0 ];
                 then
                         attempts=`expr $attempts - 1`

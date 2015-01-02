@@ -78,5 +78,13 @@ public class Tasklets {
         }
         return result;
     }
+    
+    public static List<Tasklet> newTriggers(String trigger, DriverRegistry registry, boolean option, String wsId) {
+    	List<Tasklet> result = new ArrayList<Tasklet>();
+        for (DriverContext driver : registry) {
+            result.add(new Trigger(driver, trigger, option, wsId));
+        }
+        return result;
+	}
 
 }

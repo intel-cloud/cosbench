@@ -17,20 +17,17 @@ limitations under the License.
 
 package com.intel.cosbench.api.swauth;
 
+
 import static com.intel.cosbench.client.swauth.SwiftAuthConstants.*;
 
-import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
-
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ConnectTimeoutException;
 
 import com.intel.cosbench.api.auth.*;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.client.http.HttpClientUtil;
 import com.intel.cosbench.client.swauth.*;
-import com.intel.cosbench.client.swauth.utils.SwiftTokenCache;
-import com.intel.cosbench.client.swauth.utils.SwiftTokenCacheImpl;
+//import com.intel.cosbench.client.swauth.utils.SwiftTokenCache;
+//import com.intel.cosbench.client.swauth.utils.SwiftTokenCacheImpl;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
 
@@ -78,6 +75,15 @@ class SwiftAuth extends NoneAuth {
         client = new SwiftAuthClient(httpClient, url, username, password);
         logger.debug("swauth client has been initialized");
     }
+    @Override
+    public void init() {
+    	super.init();
+    	logger.debug("a second init of client using auth config: {}",parms);
+    	HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+        client = new SwiftAuthClient(httpClient, url, username, password);
+        logger.debug("a second swauth client has been initialized");
+    }
+    
 
     @Override
     public void dispose() {
@@ -88,10 +94,24 @@ class SwiftAuth extends NoneAuth {
     @Override
     public AuthContext login() {
         super.login();
-    	AuthContext authContext = new AuthContext();
-    	SwiftTokenCache tokenCache = SwiftTokenCacheImpl.getSwiftTokenCache(client);
-    	authContext.put("token",tokenCache.getToken());
-        authContext.put("storage_url", tokenCache.getStorageURL());
-    	return authContext;
+//    	AuthContext authContext = new AuthContext();
+//    	SwiftTokenCache tokenCache = SwiftTokenCacheImpl.getSwiftTokenCache(client);
+//    	authContext.put("token",tokenCache.getToken());
+//        authContext.put("storage_url", tokenCache.getStorageURL());
+//    	return authContext;
+        try {
+            client.login();
+        } catch (SwiftAuthClientException se) {
+            throw new AuthTimeoutException(se);
+        } catch (Exception e) {
+            throw new AuthException(e);
+        }
+        return createContext();
+    }
+    
+    private AuthContext createContext() {
+        SwiftAuthContext context = new SwiftAuthContext(url, username, password, client.getAuthToken(), client.getStorageURL());
+        
+        return context;
     }
 }

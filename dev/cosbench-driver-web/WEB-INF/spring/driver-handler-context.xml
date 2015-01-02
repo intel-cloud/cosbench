@@ -40,6 +40,11 @@
 		class="com.intel.cosbench.driver.handler.AbortHandler">
 		<property name="driver" ref="driver" />
 	</bean>
+	
+	<bean id="triggerHandler" name="/i/trigger.command"
+		class="com.intel.cosbench.driver.handler.TriggerHandler">
+		<property name="driver" ref="driver" />
+	</bean>
 
 	<bean id="urlHandler"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
