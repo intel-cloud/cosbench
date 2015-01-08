@@ -47,7 +47,8 @@ public class IndexHandler extends AbstractClientHandler {
         for (WorkloadInfo workload : workloads)
             buffer.append(workload.getId()).append('\t')
                     .append(workload.getSubmitDate()).append('\t')
-                    .append(workload.getState()).append('\n');
+                    .append(workload.getState()).append('\t')
+                    .append(workload.getCurrentStage().getId()).append('\n');
         buffer.append("Total:").append(' ').append(workloads.length)
                 .append(' ').append("active workloads").append('\n');
         return buffer.toString();
