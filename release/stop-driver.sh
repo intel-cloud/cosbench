@@ -19,8 +19,43 @@
 # COSBENCH DRIVER STOPPER
 #-------------------------------
 
-SERVICE_NAME=driver
+checkAll(){
+	cat ip-port.list |while read line
+	do
+		echo $line
+		port=`echo $line |awk -F ":" 'NR==1{print $NF}'`
+		let "x=1+$port"	
+		OSGI_CONSOLE_PORT=$x
+		echo $port
+        	SERVICE_NAME=driver                                           
+        	sh cosbench-stop.sh $SERVICE_NAME $OSGI_CONSOLE_PORT
+	done	
+}
 
-OSGI_CONSOLE_PORT=18089
+checkOne(){
+	s=$(awk 'NR=='$1' {print $0}' ip-port.list)
+	port=`echo $s |awk -F ":" 'NR==1{print $NF}'`
+	let "x=1+$port"
+	OSGI_CONSOLE_PORT=$x
+	echo $port
+	SERVICE_NAME=driver                                           
+	sh cosbench-stop.sh $SERVICE_NAME $OSGI_CONSOLE_PORT
+}
 
-sh cosbench-stop.sh $SERVICE_NAME $OSGI_CONSOLE_PORT
+if [ $# -eq 0 ];then
+	checkAll
+elif [ $# -eq 1 ];then
+	checkOne $1
+else
+	echo "		<All>:none parameter, stop all"
+	echo "		<one>:one parameter,the serial number in ip-port.list "	
+	exit 1
+fi
+
+
+
+
+
+
+
+
