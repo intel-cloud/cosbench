@@ -1,16 +1,23 @@
 #!/bin/bash
 
+ip=127.0.0.1
+num=1
+base_port=18088
+
 if [ $# -eq 0 ];then
-	ip=127.0.0.1
 	num=1
-	base_port=18088
+elif [ $# -eq 1 ]; then
+	num=$1
+elif [ $# -eq 2 ]; then
+	num=$1
+	ip=$2
 elif [ $# -eq 3 ];then
 	num=$1
 	ip=$2
 	base_port=$3
 else
 	echo "<default>:none of parameter,create one driver"
-	echo "<mult>:three pareameters"
+	echo "<mult>:pareameters"
 	echo "	   	<1>the number of drivers on one node"
 	echo "	   	<2>the ip of driver"
 	echo "		<3>base of port"
