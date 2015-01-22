@@ -55,7 +55,13 @@ public class S3Storage extends NoneStorage {
         
         ClientConfiguration clientConf = new ClientConfiguration();
         clientConf.setConnectionTimeout(timeout);
+<<<<<<< HEAD
         clientConf.setMaxConnections(maxConnections);
+=======
+        clientConf.setSocketTimeout(timeout);
+        clientConf.withUseExpectContinue(false);
+        clientConf.withSignerOverride("S3SignerType");
+>>>>>>> d7a4d7c... Update dependency for cosbench-s3
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!proxyHost.equals(""))&&(!proxyPort.equals(""))){
 			clientConf.setProxyHost(proxyHost);
