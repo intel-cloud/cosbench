@@ -40,6 +40,5 @@ public class Report extends MapRegistry<Metrics> {
     public Metrics[] getAllMetrics() {
         return getAllItems().toArray(new Metrics[getSize()]);
     }
-    
 
 }

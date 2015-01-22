@@ -18,7 +18,6 @@ limitations under the License.
 package com.intel.cosbench.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import com.intel.cosbench.bench.*;
@@ -58,9 +57,5 @@ public interface StageInfo extends LifeCycle, Benchmark {
 	public void setReport(Report report);
 	
 	public ListRegistry<Snapshot> getSnapshotRegistry();
-	
-    public List<TaskReport> getTaskReports();
-
-	public void setTaskReports(List<TaskReport> taskReports);
 
 }
