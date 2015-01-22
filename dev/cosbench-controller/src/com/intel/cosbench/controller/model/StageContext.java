@@ -46,18 +46,8 @@ public class StageContext implements StageInfo {
     private volatile Report report = null; // will be merged from task reports
 
     private transient List<StageListener> listeners = new ArrayList<StageListener>();
-    
-    private List<TaskReport> taskReports = new ArrayList<TaskReport>();
 
-    public List<TaskReport> getTaskReports() {
-		return taskReports;
-	}
-
-	public void setTaskReports(List<TaskReport> taskReports) {
-		this.taskReports = taskReports;
-	}
-
-	public StageContext() {
+    public StageContext() {
         /* empty */
     }
 
@@ -103,14 +93,8 @@ public class StageContext implements StageInfo {
         if (taskRegistry == null)
             return new Report();
         ReportMerger merger = new ReportMerger();
-        for (TaskContext task : taskRegistry){
-        	TaskReport tReport=new TaskReport();
-        	tReport.setReport(task.getReport());
-        	tReport.setDriverName(task.getSchedule().getDriver().getName());
-        	tReport.setDriverUrl(task.getSchedule().getDriver().getUrl());
-        	taskReports.add(tReport);
-        	merger.add(task.getReport());
-        }
+        for (TaskContext task : taskRegistry)
+            merger.add(task.getReport());
         return merger.merge();
     }
 

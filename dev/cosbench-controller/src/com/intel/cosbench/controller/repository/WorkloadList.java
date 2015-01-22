@@ -21,8 +21,7 @@ import java.util.Collection;
 
 import com.intel.cosbench.controller.model.WorkloadContext;
 
-interface WorkloadList
-	{
+interface WorkloadList {
 
     public int count();
 

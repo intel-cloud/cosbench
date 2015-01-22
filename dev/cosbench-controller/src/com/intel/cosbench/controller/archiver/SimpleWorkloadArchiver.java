@@ -18,11 +18,8 @@ limitations under the License.
 package com.intel.cosbench.controller.archiver;
 
 import java.io.*;
-import java.util.List;
 import java.util.Scanner;
 
-import com.intel.cosbench.bench.Metrics;
-import com.intel.cosbench.bench.TaskReport;
 import com.intel.cosbench.config.*;
 import com.intel.cosbench.config.castor.CastorConfigTools;
 import com.intel.cosbench.exporter.*;
@@ -92,28 +89,9 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         exportConfig(info.getWorkload(), runDir);
         exportLog(info, runDir);
         exportScriptsLog(info, runDir);
-        exportPerformanceMatrix(info);    
-        exportTaskInfo(info,runDir);
+        exportPerformanceMatrix(info);
     }
 
-    private void exportTaskInfo(WorkloadInfo info,File parent)throws IOException{
-		for(DriverInfo dInfo:info.getDriverInfos()){
-			File file = new File(parent, dInfo.getName() + ".csv");
-	    	Writer writer = new BufferedWriter(new FileWriter(file));
-	    	 TaskExporter exporter = Exporters.newTaskExporter(info,dInfo);
-	    	 try {
-	             exporter.export(writer);
-	         } finally {
-	             writer.close();
-	         }
-	         String name = dInfo.getName();
-	         String path = file.getAbsolutePath();
-	         String msg = "perf details of {} has been exported to {}";
-	         LOGGER.debug(msg, name, path);
-		}	    
-    }
-    
-    
     private static String getRunDirName(WorkloadInfo info) {
         String name = info.getId();
         name += '-' + info.getWorkload().getName();
