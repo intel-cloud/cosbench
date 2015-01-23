@@ -228,16 +228,4 @@ public class Metrics implements Item, Cloneable {
         metrics.setBandwidth(bytes > 0 ? ((double) bytes) / window * 1000 : 0);
         return metrics;
     }
-
-	@Override
-	public String toString() {
-		return "Metrics [name=" + name + ", opType=" + opType + ", sampleType="
-				+ sampleType + ", opName=" + opName + ", opId=" + opId
-				+ ", sampleCount=" + sampleCount + ", totalSampleCount="
-				+ totalSampleCount + ", byteCount=" + byteCount
-				+ ", workerCount=" + workerCount + ", avgResTime=" + avgResTime
-				+ ", avgXferTime=" + avgXferTime + ", throughput=" + throughput
-				+ ", bandwidth=" + bandwidth + ", latency=" + latency
-				+ ", ratio=" + ratio + "]";
-	}
 }
