@@ -17,10 +17,12 @@ limitations under the License.
 
 package com.intel.cosbench.protocol;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.intel.cosbench.bench.Metrics;
+import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.model.TaskState;
 
 /**
@@ -35,8 +37,17 @@ public class CloseResponse extends Response {
     private String driverLog; /* driver log */
     private TaskState state;
     private HashMap<String, Integer> errorStatistics; /* mission error statistics*/
+    private List<Metrics> wrReport;
 
-    public CloseResponse() {
+	public List<Metrics> getWrReport() {
+		return wrReport;
+	}
+
+	public void setWrReport(List<Metrics> wrReport) {
+		this.wrReport = wrReport;
+	}
+
+	public CloseResponse() {
         /* empty */
     }
     
