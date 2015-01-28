@@ -59,6 +59,14 @@ public class MissionContext implements MissionInfo {
     private static final String GENERATE_HISTOGRAM_KEY = "histogram";
     private static final boolean DEFAULT_GENERATE_HISTOGRAM = true;
     
+    public List<Report> getWorkerReports(){
+    	List<Report> wReports = new ArrayList<Report>();
+    	for(WorkerContext wContext:workerRegistry){
+    		wReports.add(wContext.getReport());
+    	}
+    	return wReports;
+    }
+    
     public MissionContext() {
         errorStatistics = new ErrorStatistics();
     }
@@ -159,8 +167,6 @@ public class MissionContext implements MissionInfo {
         this.logManager = logManager;
     }
     
-    
-
     public ErrorStatistics getErrorStatistics() {
 		return errorStatistics;
 	}

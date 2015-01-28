@@ -1,0 +1,12 @@
+<Server>
+	<Service name="Catalina">
+		<Connector port="18088" protocol="HTTP/1.1" />
+		<Engine name="Standalone" defaultHost="0.0.0.0">
+		    <Realm className="org.apache.catalina.realm.MemoryRealm"
+				pathname="./conf/cosbench-users.xml"/>
+			<Host name="0.0.0.0" unpackWARs="false" autoDeploy="false"
+				liveDeploy="false" deployOnStartup="false" xmlValidation="false"
+				xmlNamespaceAware="false" />
+		</Engine>
+	</Service>
+</Server>

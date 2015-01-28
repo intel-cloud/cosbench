@@ -28,6 +28,12 @@ import com.intel.cosbench.model.*;
  */
 public class Exporters {
 	
+	public static WorkerExporter newWorkExporter(StageInfo info){
+		AbstractWorkerExporter exporter = new CSVWorkerExporter();
+		exporter.setStageInfo(info);
+		return exporter;
+	}
+	
 	public static TaskExporter newTaskExporter(WorkloadInfo workloadInfo,DriverInfo driverInfo){
 		AbstractTaskExporter exporter = new CSVTaskExporter();
         exporter.setWorkloadInfo(workloadInfo);

@@ -17,6 +17,8 @@ limitations under the License.
 
 package com.intel.cosbench.controller.model;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.http.client.HttpClient;
@@ -46,9 +48,18 @@ public class TaskContext implements TaskInfo {
  
     /* Each task starts with an empty error statistics log*/
     private volatile transient HashMap<String, Integer> errorStatistics = new HashMap<String, Integer>();
-    
+    /*Each task for workers report starts with empty*/
+    private  ArrayList<Metrics> wrReport = new ArrayList<Metrics>();
 
-    public TaskContext() {
+	public ArrayList<Metrics> getWrReport() {
+		return wrReport;
+	}
+
+	public void setWrReport(ArrayList<Metrics> wrReport) {
+		this.wrReport = wrReport;
+	}
+
+	public TaskContext() {
         /* empty */
     }
 

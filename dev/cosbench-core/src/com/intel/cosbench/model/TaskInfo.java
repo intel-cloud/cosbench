@@ -17,7 +17,10 @@ limitations under the License.
 
 package com.intel.cosbench.model;
 
+import java.util.ArrayList;
+
 import com.intel.cosbench.bench.Benchmark;
+import com.intel.cosbench.bench.Metrics;
 
 public interface TaskInfo extends LifeCycle, Benchmark {
 
@@ -30,5 +33,7 @@ public interface TaskInfo extends LifeCycle, Benchmark {
     public ScheduleInfo getSchedule();
 
     public String getLog();
+    
+    public ArrayList<Metrics> getWrReport();
 
 }
