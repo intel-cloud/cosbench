@@ -21,9 +21,12 @@ import static com.intel.cosbench.model.MissionState.TERMINATED;
 import static com.intel.cosbench.model.MissionState.FAILED;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+import com.intel.cosbench.bench.Metrics;
 import com.intel.cosbench.bench.Report;
 import com.intel.cosbench.model.MissionInfo;
 import com.intel.cosbench.model.TaskState;
@@ -43,6 +46,13 @@ public class CloseHandler extends MissionHandler {
     private Response getResponse(MissionInfo info) {
         CloseResponse response = new CloseResponse();
         Report report = info.getReport();
+        List<Metrics> wrReport = new ArrayList<Metrics>();
+        for(Report wReport:info.getWorkerReports()){
+        	for(Metrics metrics : wReport){
+        		wrReport.add(metrics);
+        	}
+        }
+        response.setWrReport(wrReport);
         response.setReport(Arrays.asList(report.getAllMetrics()));
 		if (info.getState().equals(FAILED))
 			response.setState(TaskState.FAILED);
