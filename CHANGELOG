@@ -1,3 +1,14 @@
+  COSBench 0.4.1.0(14-ww53.2)
+------------------------------------
+. Add one workload under workloads folder, whose distribution is summarized from two week's trace on ASUS WebStorage. Thanks ASUS' contribution!
+. #223: current authorization doesn't support retry 
+. #222: completed operation count is mismatching with configured totalOps 
+. #220: UI: The current stage table shouldn't merge with stage table when workload terminates
+. #212 swift show 401 error code
+. #194 Config UI: Add detail to General Report Table located in view details section of Active Workloads : Need to add information about stage names 
+. #188 UI: Don't generate stagenames with comma characters in them
+
+
   COSBench 0.4.0.1(14-ww48.5)
 ------------------------------------
 . #214: ceph prepare stage very low success ratio and throwing erros 

@@ -228,5 +228,4 @@ public class Metrics implements Item, Cloneable {
         metrics.setBandwidth(bytes > 0 ? ((double) bytes) / window * 1000 : 0);
         return metrics;
     }
-
 }
