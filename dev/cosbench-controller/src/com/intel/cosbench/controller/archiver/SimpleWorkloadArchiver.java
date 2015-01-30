@@ -94,13 +94,31 @@ public class SimpleWorkloadArchiver implements WorkloadArchiver {
         exportScriptsLog(info, runDir);
         exportPerformanceMatrix(info);    
         exportTaskInfo(info,runDir);
+        exportWorkerInfo(info,runDir);
+    }
+    
+    private void exportWorkerInfo(WorkloadInfo info,File parent)throws IOException{
+    	for(StageInfo sInfo :info.getStageInfos()){
+    		File file = new File(parent,getStageFileName(sInfo) +"-worker"+ ".csv");
+    		Writer writer = new BufferedWriter(new FileWriter(file));
+    		WorkerExporter exporter = Exporters.newWorkExporter(sInfo);
+	    	 try {
+	             exporter.export(writer);
+	         } finally {
+	             writer.close();
+	         }
+	         String name = sInfo.getId()+"worker";
+	         String path = file.getAbsolutePath();
+	         String msg = "perf details of {} has been exported to {}";
+	         LOGGER.debug(msg, name, path);
+    	}
     }
 
     private void exportTaskInfo(WorkloadInfo info,File parent)throws IOException{
 		for(DriverInfo dInfo:info.getDriverInfos()){
 			File file = new File(parent, dInfo.getName() + ".csv");
 	    	Writer writer = new BufferedWriter(new FileWriter(file));
-	    	 TaskExporter exporter = Exporters.newTaskExporter(info,dInfo);
+	    	TaskExporter exporter = Exporters.newTaskExporter(info,dInfo);
 	    	 try {
 	             exporter.export(writer);
 	         } finally {
