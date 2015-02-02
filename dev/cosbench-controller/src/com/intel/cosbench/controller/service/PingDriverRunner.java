@@ -48,11 +48,12 @@ public class PingDriverRunner implements Runnable{
 			boolean isAlive = false;
 			
 			String ipAddress = getIpAddres(driver.getUrl());
+			Integer port = getDriverPort(driver.getUrl());
 			try {
 				if (!ipAddress.isEmpty()) {	
 					try{
 						Socket socket = new Socket();
-						InetSocketAddress reAddress = new InetSocketAddress(ipAddress, 18088);
+						InetSocketAddress reAddress = new InetSocketAddress(ipAddress, port);
 						InetSocketAddress locAddress = new InetSocketAddress("0.0.0.0", 0);
 						socket.bind(locAddress);
 						socket.connect(reAddress,3000);
@@ -71,6 +72,12 @@ public class PingDriverRunner implements Runnable{
 		int start = url.indexOf('/') + 2;
 		int end = url.lastIndexOf(':');		
 		return end > start ? url.substring(start, end) : null;
+	}
+	
+	private Integer getDriverPort(String url) {
+		int start = url.lastIndexOf(":")+1;
+		int end = url.lastIndexOf("/");
+		return end > start? Integer.valueOf(url.substring(start, end)):null;
 	}
 
 	
