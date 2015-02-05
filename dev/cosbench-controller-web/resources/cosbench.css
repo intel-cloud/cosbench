@@ -377,7 +377,6 @@ a:visited {
 /* ---------------------------------------
  * chart Styles
  * --------------------------------------- */
-   <style type="text/css">
     .chart{
       height: 400px;
       width: 510px;
@@ -387,4 +386,3 @@ a:visited {
       margin-top: 10px;
       /*border: solid 1px #ccc;*/
   }
-  </style>
