@@ -28,7 +28,7 @@ import java.io.InputStream;
 
 import com.ceph.rados.IoCTX;
 import com.ceph.rados.Rados;
-import com.ceph.rados.RadosException;
+import com.ceph.rados.exceptions.RadosException;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.NoneStorage;
 import com.intel.cosbench.api.storage.StorageException;
