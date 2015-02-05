@@ -26,7 +26,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ceph.rados.RadosException;
+import com.ceph.rados.exceptions.RadosException;
 import com.intel.cosbench.api.storage.StorageException;
 
 /**
