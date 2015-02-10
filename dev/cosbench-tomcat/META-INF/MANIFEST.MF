@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Tomcat Bundle
 Bundle-SymbolicName: cosbench-tomcat
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Activator: com.intel.cosbench.tomcat.osgi.Activator
 Import-Package: com.intel.cosbench.log,
  org.apache.catalina;version="[6.0.16,7.0.0)",
