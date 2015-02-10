@@ -15,8 +15,8 @@
 #limitations under the License.
 #
 
-sh start-driver.sh
+bash start-driver.sh
 echo
 echo "======================================================"
 echo
-sh start-controller.sh
+bash start-controller.sh
