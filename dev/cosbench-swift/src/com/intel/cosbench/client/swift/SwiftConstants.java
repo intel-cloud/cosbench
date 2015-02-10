@@ -40,6 +40,9 @@ public interface SwiftConstants {
     String POLICY_KEY = "policy";
     String POLICY_DEFAULT = null;
     
+    String TRANSFER_RATE = "transfer_rate";
+    Integer TRANSFER_RATE_DEFAULT = 50000000;
+    
     // --------------------------------------------------------------------------
     // Swift RESTful API
     // --------------------------------------------------------------------------
@@ -57,5 +60,7 @@ public interface SwiftConstants {
     String X_ACCOUNT_CONTAINER_COUNT = "X-Account-Container-Count";
 
     String X_ACCOUNT_BYTES_USED = "X-Account-Bytes-Used";
+    
+    String X_TRANSFER_RATE = "X-Transfer-Rate";
 
 }

@@ -38,6 +38,7 @@ public class SwiftClient {
     private String authToken;
     private String storageURL;
     private String policy;
+    private int rate;
 
     /* HTTP client */
     private HttpClient client;
@@ -68,10 +69,11 @@ public class SwiftClient {
         method = null;
     }
 
-    public void init(String authToken, String storageURL, String policy) {
+    public void init(String authToken, String storageURL, String policy, int rate) {
         this.authToken = authToken;
         this.storageURL = storageURL;
         this.policy = policy;
+        this.rate = rate;
     }
 
     public SwiftAccount getAccountInfo() throws IOException, SwiftException {
@@ -174,6 +176,7 @@ public class SwiftClient {
             throws IOException, SwiftException {
         method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
         method.setHeader(X_AUTH_TOKEN, authToken);
+        method.setHeader(X_TRANSFER_RATE, new Integer(rate).toString());
         SwiftResponse response = new SwiftResponse(client.execute(method));
         if (response.getStatusCode() == SC_OK)
             return response.getResponseBodyAsStream();
