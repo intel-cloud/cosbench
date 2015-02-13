@@ -1,61 +1,117 @@
    <script type="text/javascript">
-    //bandwidth
-    var ybandwidth=new Array();
+      
     var i=0;
-        ybandwidth.push(0);
     var xvalue=new Array();
-    var bandwidthname="bandwidth";
-    var bandwidthsp="KB/S";
-    var bandwidth="";
+    var yvalue = new Array();
+    var axis=new Array();
+
+    //bandwidth
+    var ybandread=new Array();
+    var ybandwrite=new Array();
+    var ybanddelete=new Array();
+    var bandwidth;
+
     //throughput
-    var ythroughput=new Array();
-        ythroughput.push(0);
-    var throughputname="throughput";
-    var throughputsp="op/s";
-    var throughput="";
+    var ytputread=new Array();
+    var ytputwrite=new Array();
+    var ytputdelete=new Array();
+    var sampletype;
+    var throughput;
+
     //restime
-    var yRestime=new Array();
-        yRestime.push(0);
-    var avgResTime="";
-    var avgResTimename="resTime";
-    var avgResTimesp="ms";
+    var yrtimeread=new Array();
+    var yrtimewrite=new Array();
+    var yrtimedelete=new Array();
+    var avgResTime;
 
     //ratio
-    var yratio=new Array();
-        yratio.push(0);
-    var rationame="ratio";
-    var ratiosp="%";
-    var ratio="";
-
+    var yraread=new Array();
+    var yrawrite=new Array();
+    var yradelete=new Array();
+    var ratio;
     <#assign  sInfo=info.currentStage>
-     var stagename="${sInfo.id}";
-      <#list sInfo.snapshots as snapshot>
-        <#list snapshot.report.allMetrics as mInfo>
-           // bandwidth
-            bandwidth="${mInfo.bandwidth}";
-            bandwidth=bandwidth.replace(/,/gi,'');
-            ybandwidth.push(Math.round(eval(bandwidth/1024)));
-        // throughput
-            throughput="${mInfo.throughput}";
-            throughput=throughput.replace(/,/gi,'');
-            ythroughput.push(Math.round(eval(throughput)));
-        //resTime
-            avgResTime="${mInfo.avgResTime}";
-            avgResTime=avgResTime.replace(/,/gi,'');
-            yRestime.push(Math.round(eval(avgResTime)));
+     var id="${sInfo.id}";
+    <#list sInfo.snapshots as snapshot>
+       <#list snapshot.report.allMetrics as mInfo>
+    // bandwidth
+        bandwidth="${mInfo.bandwidth}";
+        bandwidth=bandwidth.replace(/,/gi,'');
 
-        //Succ-Ratio
-            ratio="${mInfo.ratio}";
-            ratio=ratio.replace(/,/gi,'');
-            yratio.push(Math.round(eval(ratio*100)));
-        //xvalue
-            var now = new Date();
-            xvalue.push(i);
-            i++;
+    //resTime
+        avgResTime="${mInfo.avgResTime}";
+        avgResTime=avgResTime.replace(/,/gi,'');
+      
+    //Succ-Ratio
+        ratio="${mInfo.ratio}";
+        ratio=ratio.replace(/,/gi,'');
+
+    // throughput
+        sampletype="${mInfo.sampleType}";
+        throughput="${mInfo.throughput}";
+        throughput=throughput.replace(/,/gi,'');
+        if(sampletype=="read"){
+            ytputread.push(Math.round(eval(throughput)));
+            ybandread.push(Math.round(eval(bandwidth/1024)));
+            yrtimeread.push(Math.round(eval(avgResTime)));
+            yraread.push(Math.round(eval(ratio*100)));
+        }else if(sampletype=="write"){
+            ytputwrite.push(Math.round(eval(throughput)));
+            ybandwrite.push(Math.round(eval(bandwidth/1024)));
+            yrtimewrite.push(Math.round(eval(avgResTime)));
+            yrawrite.push(Math.round(eval(ratio*100)));
+        }else if(sampletype=="delete"){
+            ytputdelete.push(Math.round(eval(throughput)));
+            ybanddelete.push(Math.round(eval(bandwidth/1024)));
+            yrtimedelete.push(Math.round(eval(avgResTime)));
+            yradelete.push(Math.round(eval(ratio*100)));
+        }          
+    //xvalue
+        xvalue.push(i);
+        i++;
         </#list>
     </#list>
-    forchart(xvalue,ybandwidth,bandwidthname,bandwidthsp,stagename);
-    forchart(xvalue,ythroughput,throughputname,throughputsp,stagename);
-    forchart(xvalue,yRestime,avgResTimename,avgResTimesp,stagename);
-    forchart(xvalue,yratio,rationame,ratiosp,stagename);
+    //restime
+    yvalue.length=0;
+    if(yrtimeread.length>0){
+        yvalue.push(yrtimeread);
+        axis.push("read");
+    }if(yrtimewrite.length>0){
+        yvalue.push(yrtimewrite);
+        axis.push("write");
+    }if(yrtimedelete.length>0){
+        yvalue.push(yrtimedelete);
+        axis.push("delete");
+    }
+    xvalue.length=yvalue[0].length;
+    forchart(xvalue,yvalue,"resTime","sp",id,axis);
+    //ratio
+    yvalue.length=0;
+    if(yraread.length>0){
+        yvalue.push(yraread);
+    }if(yrawrite.length>0){
+        yvalue.push(yrawrite);
+    }if(yradelete.length>0){
+        yvalue.push(yradelete);
+    }
+    forchart(xvalue,yvalue,"ratio","%",id,axis);
+    //bandwith
+    yvalue.length=0;
+    if(ybandread.length>0){
+        yvalue.push(ybandread);
+    }if(ybandwrite.length>0){
+        yvalue.push(ybandwrite);
+    }if(ybanddelete.length>0){
+        yvalue.push(ybanddelete);
+    }
+    forchart(xvalue,yvalue,"bandwidth","KB/S",id,axis);
+    //throughput
+    yvalue.length=0;
+    if(ytputread.length>0){
+        yvalue.push(ytputread);
+    }if(ytputwrite.length>0){
+        yvalue.push(ytputwrite);
+    }if(ytputdelete.length>0){
+        yvalue.push(ytputdelete);
+    }
+    forchart(xvalue,yvalue,"throughput","op/s",id,axis);
 </script>

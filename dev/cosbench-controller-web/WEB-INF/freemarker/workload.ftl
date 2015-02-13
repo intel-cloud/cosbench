@@ -90,24 +90,6 @@
     <h3>Final Result</h3>
     <#assign allMetrics = info.report.allMetrics >
     <#include "metrics.ftl">
-      <h4>Performance Graph
-         <select id="cstage" onchange="custage()">
-            <option value="close" select="selected"></option>
-           <#list info.stageInfos  as sInfo >
-            <option value=${sInfo.id}>${sInfo.id}</option>
-           </#list>
-         </select>
-       </h4>
-       <div id="fchart" style="display:none">
-        <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
-        <div class="chart" id="throughput"></div>
-        <div class="chart" id="resTime"></div>
-        <div class="chart" id="bandwidth" value="bandwidth"></div>
-        <div class="chart" id="ratio"></div>
-        <#include "forchart.ftl">
-        <#include "finalchart.ftl">
-       </div>
-   </div>
     <#if perfDetails >
       <p><a href="workload.html?id=${info.id}">hide peformance details</a></p>
     <#else>
@@ -118,17 +100,6 @@
     <#assign snapshot = info.snapshot >
     <#assign allMetrics = snapshot.report.allMetrics >
     <#include "metrics.ftl">
-      <h4>Performance Graph</h4>
-        <div id="graph">
-          <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
-          <div class="chart" id="throughput"></div>
-          <div class="chart" id="resTime"></div>
-          <div class="chart" id="bandwidth" value="bandwidth"></div>
-          <div class="chart" id="ratio"></div>
-          <#include "forchart.ftl">
-          <#include "runningchart.ftl">
-        </viv>
-   </div>
     <p class="warn">The snapshot was taken at ${snapshot.timestamp?time} with version ${snapshot.version}.</p>
   </#if>
   <h3>Stages</h3>
@@ -233,6 +204,22 @@
       </tr>
     </#list>
   </table>
+
+<!--running Performance Graph  -->
+<#if isRunning>
+  <h4>Performance Graph</h4>
+  <div id="graph">
+    <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+    <div class="chart" id="throughput"></div>
+    <div class="chart" id="resTime"></div>
+    <div class="chart" id="bandwidth"></div>
+    <div class="chart" id="ratio"></div>
+    <#include "forchart.ftl">
+    <#include "runningchart.ftl">
+    </viv>
+  </div>
+</#if>
+
   <p class="warn">There are ${info.stageCount} stages in this workload.</p>
   <#if isStopped>
     <#if showErrorStatistics> 
@@ -261,7 +248,28 @@
     <#else>
       <p><a href="workload.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
     </#if>
+    <!-- final Performance Graph -->
+      <h4>Performance Graph
+         <select id="cstage" onchange="custage()">
+            <option value="close" select="selected"></option>
+           <#list info.stageInfos  as sInfo >
+            <option value=${sInfo.id}>${sInfo.id}</option>
+           </#list>
+         </select>
+       </h4>
+      <div id="fchart" style="display:none">
+        <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+        <div class="chart" id="throughput"></div>
+        <div class="chart" id="resTime"></div>
+        <div class="chart" id="bandwidth" ></div>
+        <div class="chart" id="ratio"></div>
+        <#include "forchart.ftl">
+        <#include "finalchart.ftl">
+        </div>
+     </div>
   </#if>
+
+
   <h3>Actions</h3>
   <p>
     <#if !isStopped >
