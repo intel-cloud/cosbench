@@ -1,6 +1,30 @@
 
     <script type="text/javascript">
-    function forchart(xvalue,yvalue,name,sp,stagename){
+    function forchart(xvalue,yvalue,name,sp,stagename,axis){
+        var seriesdate="[";
+        for(var i=0;i<yvalue.length;i++){
+            seriesdate+="{";
+            seriesdate+="\"name\":\""+axis[i]+"\",";
+            seriesdate+="\"type\":\"line\",";
+            seriesdate+="\"data\":["+yvalue[i].toString()+"],";
+            seriesdate+="\"markPoint\":{\"data\":[{\"type\":\"max\",\"name\":\"max\"},{\"type\":\"min\",\"name\":\"min\"}]},";
+            seriesdate+="\"markLine\":{\"data\":[{\"type\":\"average\",\"name\":\"average\"}]}";
+            seriesdate+="},";
+           
+        }
+        seriesdate=seriesdate.substring(0,seriesdate.length-1);
+        seriesdate+="]";
+        var jsdata=eval(seriesdate);
+       
+        var axistitle="{\"data\":[";
+        for(var j=0;j<axis.length;j++){
+
+            axistitle+="\""+axis[j]+"\","
+        }
+        axistitle=axistitle.substring(0,axistitle.length-1);
+        axistitle+="]}";
+        var titlename = JSON.parse(axistitle); 
+
         require.config({
             paths: {
                  echarts: 'resources/build/dist'
@@ -22,9 +46,7 @@
                     tooltip : {
                         trigger: 'axis'
                     },
-                    legend: {
-                        data:[name]
-                    },
+                    legend : titlename,
                     toolbox: {
                         show : true,
                         feature : {
@@ -51,25 +73,8 @@
                             }
                         }
                     ],
-                    series : [
-                        {
-                            name:name,
-                            type:'line',
-                            data:yvalue,
-                            markPoint : {
-                                data : [
-                                    {type : 'max', name: 'max'},
-                                    {type : 'min', name: 'min'}
-                                ]
-                            },
-                            markLine : {
-                                data : [
-                                   {type : 'average', name: 'average'}
-                                ]
-                            }
-                        }
-                    ]
-                    };
+                    series:jsdata
+                }
                 myChart.setOption(option); 
             }
         );
