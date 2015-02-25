@@ -23,6 +23,8 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intel.cosbench.config.*;
 import com.intel.cosbench.config.castor.CastorConfigTools;
 import com.intel.cosbench.controller.model.*;
@@ -106,7 +108,8 @@ class WorkloadProcessor {
     	int index = 0;
 		for (Work work : stage.getWorks()) {
 			for (Operation op : work.getOperations())
-				op.setId("op" + String.valueOf(++index));
+				if("none".equals(op.getId()))
+					op.setId("op" + String.valueOf(++index));
 		}
     }
 
