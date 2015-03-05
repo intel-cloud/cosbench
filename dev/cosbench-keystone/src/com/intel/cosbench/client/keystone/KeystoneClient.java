@@ -27,6 +27,7 @@ import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.ServiceInf
 import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.Token;
 import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.User;
 import com.intel.cosbench.client.keystone.handler.*;
+import com.intel.cosbench.log.Logger;
 
 /**
  * A client for Openstack keystone authentication service. <br />
@@ -62,11 +63,13 @@ public class KeystoneClient {
     private String username;
     private String password;
     private String userToken;
-
+    
     /* tenant info */
     private String tenantId;
     private String tenantName;
-
+    
+    /*targe region*/
+    private String region;
     /* authentication handler */
     private AuthHandler handler;
 
@@ -287,13 +290,19 @@ public class KeystoneClient {
      *            - the name identifying the service
      * @return the public URL of a cloud service
      */
-    public String getServiceUrl(String serviceName) {
+    public String getServiceUrl(String serviceName, String region) {
         ServiceInfo service = getServiceInfo(serviceName);
         if (service == null)
             return null;
         List<Endpoint> endpoints = service.getEndpoints();
         if (endpoints != null && endpoints.size() > 0)
-            return endpoints.get(0).getPublicURL();
+        {
+        	for (Endpoint endpoint : endpoints) {
+				if(endpoint.getRegion() != null && endpoint.getRegion().equals(region)){
+					return endpoint.getPublicURL();
+				}
+			}
+        }
         return null;
     }
 
