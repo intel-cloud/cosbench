@@ -59,4 +59,7 @@ public interface KeystoneConstants {
 
     String AUTH_SERVICE_KEY = "service";
     String AUTH_SERVICE_DEFAULT = "swift";
+    
+    String AUTH_REGION_KEY = "region";
+    String AUTH_REGION_DEFAULT = "regionOne";
 }
