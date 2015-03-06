@@ -1,0 +1,9 @@
+language: java
+java:
+  - openjdk6
+  - oraclejdk6
+  - openjdk7
+  - oraclejdk7
+
+install: PLEASE CHANGE ME
+script: PLEASE CHANGE ME
