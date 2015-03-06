@@ -192,6 +192,7 @@ public class KeystoneResponse {
                 private String adminURL;
                 private String internalURL;
                 private String publicURL;
+                private String region;
 
                 public String getAdminURL() {
                     return adminURL;
@@ -216,6 +217,16 @@ public class KeystoneResponse {
                 public void setPublicURL(String publicURL) {
                     this.publicURL = publicURL;
                 }
+
+				public String getRegion() {
+					return region;
+				}
+
+				public void setRegion(String region) {
+					this.region = region;
+				}
+                
+                
 
             }
 
