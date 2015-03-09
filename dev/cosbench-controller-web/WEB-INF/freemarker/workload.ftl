@@ -209,11 +209,11 @@
 <#if isRunning>
   <h4>Performance Graph</h4>
   <div id="graph">
-    <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
-    <div class="chart" id="throughput"></div>
-    <div class="chart" id="resTime"></div>
-    <div class="chart" id="bandwidth"></div>
-    <div class="chart" id="ratio"></div>
+    <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+    <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="bandwidth"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
     <#include "forchart.ftl">
     <#include "runningchart.ftl">
     </viv>
@@ -258,11 +258,11 @@
          </select>
        </h4>
       <div id="fchart" style="display:none">
-        <div style="width:1080px;height:825px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
-        <div class="chart" id="throughput"></div>
-        <div class="chart" id="resTime"></div>
-        <div class="chart" id="bandwidth" ></div>
-        <div class="chart" id="ratio"></div>
+        <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+        <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="bandwidth" ></div>
+        <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
         <#include "forchart.ftl">
         <#include "finalchart.ftl">
         </div>
