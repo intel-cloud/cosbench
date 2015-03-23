@@ -43,6 +43,7 @@ public class LogonErrorPageController extends AbstractController {
     protected ModelAndView process(HttpServletRequest req,
             HttpServletResponse res) {
         ModelAndView result = new ModelAndView("logonError");
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
 

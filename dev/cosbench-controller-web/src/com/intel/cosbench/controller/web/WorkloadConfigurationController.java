@@ -566,13 +566,13 @@ public class WorkloadConfigurationController extends AbstractController {
     private ModelAndView createErrResult(String xml, String msg) {
         ModelAndView result = new ModelAndView("config", "xml", xml);
         result.addObject("error", "ERROR: " + msg);
-        
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
 
     private ModelAndView createSuccResult(String xml) {    	
         ModelAndView result = new ModelAndView(XML, "xml", xml);
-
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
     

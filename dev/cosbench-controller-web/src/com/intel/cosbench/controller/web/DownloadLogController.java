@@ -57,7 +57,9 @@ public class DownloadLogController extends WorkloadPageController {
 
     protected ModelAndView process(WorkloadInfo info) {
         File file = controller.getWorkloadLog(info);
-        return new ModelAndView(LOG, "log", file);
+    	ModelAndView result = new ModelAndView(LOG, "log", file);
+    	result.addObject("cInfo", controller.getControllerInfo());
+        return result;
     }
 
 }

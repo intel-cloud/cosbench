@@ -49,7 +49,9 @@ public class TimelineCSVController extends StagePageController {
 
     @Override
     protected ModelAndView process(WorkloadInfo wInfo, StageInfo sInfo) {
-        return new ModelAndView(CSV, "sInfo", sInfo);
+    	ModelAndView result = new ModelAndView(CSV, "sInfo", sInfo);
+    	result.addObject("cInfo", controller.getControllerInfo());
+        return result;
     }
 
 }

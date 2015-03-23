@@ -34,11 +34,12 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
     private String name;
     private String url;
     private boolean aliveState;
-    // pIDMap<scriptName, pid>
+ 
+	// pIDMap<scriptName, pid>
 	private Map<String, String> pidMap = new HashMap<String, String>();
 	// logMap<'wId'+'sId', ScriptLog>
 	private Map<String, String> scriptsLog = new HashMap<String, String>();
-
+	
 	public DriverContext() {
         /* empty */
     }
@@ -95,6 +96,12 @@ public class DriverContext implements DriverInfo, MapRegistry.Item {
 	
 	public String getLogMapValue(String wsId) {
 		return scriptsLog.remove(wsId);
+	}
+
+	@Override
+	public String getVersion() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

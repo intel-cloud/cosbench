@@ -44,12 +44,15 @@ public class WorkloadMatrixConfigurationController extends AbstractController {
 	 private ModelAndView createErrResult(String msg) {
 	        ModelAndView result = new ModelAndView("advanced-config");
 	        result.addObject("error", "ERROR: " + msg);
+	        result.addObject("cInfo", controller.getControllerInfo());
 	        return result;
 	    }
 
 	    private ModelAndView createSuccResult() {    	
 	        WorkloadInfo[] aInfos = controller.getActiveWorkloads();
-	        return new ModelAndView("submit", "aInfos", aInfos);
+	        ModelAndView result = new ModelAndView("submit", "aInfos", aInfos);
+	        result.addObject("cInfo", controller.getControllerInfo());
+	        return result;
 	    }
 	    
 

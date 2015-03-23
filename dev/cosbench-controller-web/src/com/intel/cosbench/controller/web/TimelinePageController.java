@@ -25,6 +25,7 @@ public class TimelinePageController extends StagePageController {
 
     protected ModelAndView process(WorkloadInfo wInfo, StageInfo sInfo) {
         ModelAndView result = new ModelAndView("timeline");
+        result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("wInfo", wInfo);
         result.addObject("sInfo", sInfo);
         return result;

@@ -26,5 +26,6 @@ public interface ControllerInfo {
     public int getDriverCount();
 
     public DriverInfo[] getDriverInfos();
-
+    
+    public String getVersion();
 }

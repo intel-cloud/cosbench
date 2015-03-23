@@ -43,6 +43,8 @@ cp -f 3rd-party-licenses.pdf $1/
 cp -f pkg.lst $1/
 
 
+echo $(date +%Y%m%d) > $1/BUILDER
+
 echo "Build up adaptor example enviornment"
 mkdir $1/ext
 cp -f -R ext/* $1/ext
