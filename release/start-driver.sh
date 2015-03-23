@@ -40,7 +40,7 @@ do
 	let "x=($i-1)*100+$base_port"
 	rm -f driver.conf
 	rm -f driver_$i.conf
-	cp model_driver.conf driver_$i.conf
+	cp driver_temple.conf driver_$i.conf
 	name="$ip:$x"
 	url="http:\/\/$ip:$x\/driver"
 	sed -i "s/^name=.*$/name=${name}/" driver_$i.conf
@@ -50,7 +50,7 @@ do
 	#make driver-tomcat-server.xml
 	rm -f driver-tomcat-server.xml
 	rm -f driver-tomcat-server_$i.xml
-	cp model_driver-tomcat-server.xml driver-tomcat-server_$i.xml
+	cp driver-tomcat-server_temple.xml driver-tomcat-server_$i.xml
 	sed -i "s/\(.*Connector port=\"\)[^\"]*\(.*\)/\1${x}\2/" driver-tomcat-server_$i.xml 
 	let "x=$x+1"
 	ln -s driver-tomcat-server_$i.xml driver-tomcat-server.xml
