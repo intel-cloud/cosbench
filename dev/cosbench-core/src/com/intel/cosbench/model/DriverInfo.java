@@ -31,4 +31,5 @@ public interface DriverInfo {
     
     public Map<String, String> getLogMap();
     
+    public String getVersion();
 }

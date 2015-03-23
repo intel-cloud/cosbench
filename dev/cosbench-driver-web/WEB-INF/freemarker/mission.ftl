@@ -226,7 +226,7 @@
         <tr>
           <th>Error Message</th>
           <th>Error Code</th>
-          <th>Occurence Number</th>
+          <th>Occurrence Number</th>
           <th>StatckTrace</th>  
         </tr>
         <#list info.errorStatistics.stackTraceAndMessage?keys as trace>

@@ -36,6 +36,7 @@ public class LogonPageController extends AbstractController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		result.addObject("cInfo", controller.getControllerInfo());
 		return result;
 	}
 }

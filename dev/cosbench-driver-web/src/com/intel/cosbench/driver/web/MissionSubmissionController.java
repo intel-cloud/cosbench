@@ -65,6 +65,7 @@ public class MissionSubmissionController extends AbstractController {
 
     private ModelAndView createErrResult(String msg) {
         ModelAndView result = new ModelAndView("submit");
+        result.addObject("dInfo", driver.getDriverInfo());
         result.addObject("aInfos", driver.getActiveMissions());
         result.addObject("error", msg);
         return result;
@@ -72,6 +73,7 @@ public class MissionSubmissionController extends AbstractController {
 
     private ModelAndView createSuccResult(String id) {
         ModelAndView result = new ModelAndView("submit");
+        result.addObject("dInfo", driver.getDriverInfo());
         result.addObject("aInfos", driver.getActiveMissions());
         result.addObject("submitted", "your mission has been accepted");
         result.addObject("id", id);

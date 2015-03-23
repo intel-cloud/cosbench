@@ -32,8 +32,17 @@ public class ControllerContext implements ControllerInfo {
     private String archive_dir;
     private int concurrency;
     private DriverRegistry driverRegistry;
+	private String version;
+	
+    public String getVersion() {
+		return version;
+	}
 
-    public ControllerContext() {
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public ControllerContext() {
         /* empty */
     }
 

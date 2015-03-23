@@ -30,8 +30,7 @@ import com.intel.cosbench.web.*;
 
 public class WorkersPageController extends AbstractController {
 
-    protected DriverService driver;
-
+    protected  DriverService driver;
     public void setDriver(DriverService driver) {
         this.driver = driver;
     }
@@ -45,7 +44,8 @@ public class WorkersPageController extends AbstractController {
         MissionInfo info = driver.getMissionInfo(id);
         if (info == null)
             throw new NotFoundException();
-        return createResult(info);
+        ModelAndView result = createResult(info).addObject("dInfo", driver.getDriverInfo());
+        return result;
     }
 
     private static ModelAndView createResult(MissionInfo info) {

@@ -36,7 +36,9 @@ public class AdvancedConfigPageController extends AbstractController {
     @Override
     protected ModelAndView process(HttpServletRequest req,
             HttpServletResponse res) {
-        return new ModelAndView("advanced-config");
+    	ModelAndView result = new ModelAndView("advanced-config");
+    	result.addObject("cInfo", controller.getControllerInfo());
+        return result;
     }
 
 }

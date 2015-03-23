@@ -68,6 +68,7 @@ public class WorkloadSubmissionController extends AbstractController {
         ModelAndView result = new ModelAndView("submit");
         result.addObject("aInfos", controller.getActiveWorkloads());
         result.addObject("error", msg);
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
 
@@ -76,6 +77,7 @@ public class WorkloadSubmissionController extends AbstractController {
         result.addObject("aInfos", controller.getActiveWorkloads());
         result.addObject("submitted", "your workload has been accepted");
         result.addObject("id", id);
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
 
