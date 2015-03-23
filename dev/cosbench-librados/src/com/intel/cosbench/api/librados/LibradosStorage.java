@@ -28,7 +28,9 @@ import java.io.InputStream;
 
 import com.ceph.rados.IoCTX;
 import com.ceph.rados.Rados;
+import com.ceph.rados.exceptions.RadosAlreadyConnectedException;
 import com.ceph.rados.exceptions.RadosException;
+import com.ceph.rados.exceptions.RadosOperationInProgressException;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.NoneStorage;
 import com.intel.cosbench.api.storage.StorageException;
@@ -50,7 +52,7 @@ public class LibradosStorage extends NoneStorage {
     private String secretKey;
     private String endpoint;
 
-    private static Rados client;
+    private Rados client;
 
     public void init(Config config, Logger logger) {
         super.init(config, logger);
@@ -69,9 +71,26 @@ public class LibradosStorage extends NoneStorage {
             try {
                 client.confSet("key", this.secretKey);
                 client.confSet("mon_host", this.endpoint);
+            } catch (RadosException e) {
+            	throw new StorageException(e);
+            }
+
+            try {
                 client.connect();
                 logger.debug("Librados client has been initialized");
+            } catch (RadosAlreadyConnectedException ace) {
+            	logger.debug("The connection is already connected");
+            } catch (RadosOperationInProgressException eip) {
+            	logger.warn("Connection is in progress");
+            	// normally this means race condition where multiple threads are trying to use the same rados client to create connections.
+            	// we will treat it's valid so far, but assume the later thread can directly use the connection after a short wait.
+            	try {
+            		Thread.sleep(100);
+            	}catch(InterruptedException ie) {
+            		throw new StorageException(ie);
+            	}
             } catch (RadosException e) {
+            	logger.error(e.getMessage());
                 throw new StorageException(e);
             }
         }
