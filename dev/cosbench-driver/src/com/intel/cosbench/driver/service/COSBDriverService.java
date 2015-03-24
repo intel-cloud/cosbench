@@ -116,10 +116,11 @@ class COSBDriverService implements DriverService, MissionListener {
     @Override
     public void login(String id) {
         final MissionHandler handler = handlers.get(id);
+        LOGGER.info("handler=" + id);
         if (handler == null)
             throw new IllegalStateException("no mission handler");
         /* for strong consistency: a lock should be employed here */
-        synchronized(handler) {
+
         if (handler.getMissionContext().getFuture() != null)
             throw new IllegalStateException("mission is busy");
         class AuthThread implements Runnable {
@@ -132,6 +133,7 @@ class COSBDriverService implements DriverService, MissionListener {
 
         }
         LOGGER.debug("authing mission {} ...", id);
+        synchronized(handler.getMissionContext()) {
         Future<?> future = executor.submit(new AuthThread());
         handler.getMissionContext().setFuture(future);
         LOGGER.debug("mission {} has been requested to auth", id);
@@ -146,7 +148,6 @@ class COSBDriverService implements DriverService, MissionListener {
         if (handler == null)
             throw new IllegalStateException("no mission handler");
         /* for strong consistency: a lock should be employed here */
-        synchronized(handler) {
         if (handler.getMissionContext().getFuture() != null)
             throw new IllegalStateException("mission is busy");
         class DriverThread implements Runnable {
@@ -159,11 +160,13 @@ class COSBDriverService implements DriverService, MissionListener {
 
         }
         LOGGER.debug("launching mission {} ...", id);
+        synchronized(handler.getMissionContext()) {
         Future<?> future = executor.submit(new DriverThread());
         handler.getMissionContext().setFuture(future);
+        awaitTermination(future);
         yieldExecution(200); // give mission handler a chance
-        LOGGER.debug("mission {} has been requested to launch", id);
         }
+        LOGGER.debug("mission {} has been requested to launch", id);
     }
 
     @Override
