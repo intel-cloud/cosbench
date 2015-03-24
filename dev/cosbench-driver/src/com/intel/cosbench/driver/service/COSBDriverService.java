@@ -78,6 +78,7 @@ class COSBDriverService implements DriverService, MissionListener {
     @Override
     public String submit(XmlConfig config) {
         LOGGER.debug("submitting mission ... ");
+        
         MissionContext mission = createMissionContext(config);
         MissionHandler handler = createHandler(mission);
         mission.addListener(this);
@@ -118,6 +119,7 @@ class COSBDriverService implements DriverService, MissionListener {
         if (handler == null)
             throw new IllegalStateException("no mission handler");
         /* for strong consistency: a lock should be employed here */
+        synchronized(handler) {
         if (handler.getMissionContext().getFuture() != null)
             throw new IllegalStateException("mission is busy");
         class AuthThread implements Runnable {
@@ -135,6 +137,7 @@ class COSBDriverService implements DriverService, MissionListener {
         LOGGER.debug("mission {} has been requested to auth", id);
         awaitTermination(future); // mission may be terminated or aborted
         handler.getMissionContext().setFuture(null); // make sure it is null
+        }
     }
 
     @Override
@@ -143,6 +146,7 @@ class COSBDriverService implements DriverService, MissionListener {
         if (handler == null)
             throw new IllegalStateException("no mission handler");
         /* for strong consistency: a lock should be employed here */
+        synchronized(handler) {
         if (handler.getMissionContext().getFuture() != null)
             throw new IllegalStateException("mission is busy");
         class DriverThread implements Runnable {
@@ -159,6 +163,7 @@ class COSBDriverService implements DriverService, MissionListener {
         handler.getMissionContext().setFuture(future);
         yieldExecution(200); // give mission handler a chance
         LOGGER.debug("mission {} has been requested to launch", id);
+        }
     }
 
     @Override
