@@ -104,12 +104,13 @@ public class LibradosStorage extends NoneStorage {
         super.dispose();
         if(client != null)
         	client.shutDown();
+        client = null;
     }
 
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
         InputStream stream;
-        IoCTX ioctx;
+        IoCTX ioctx = null;
         try {
             ioctx = client.ioCtxCreate(container);
             long length = ioctx.stat(object).getSize();
@@ -123,8 +124,10 @@ public class LibradosStorage extends NoneStorage {
             stream = new ByteArrayInputStream(buf);
         } catch (RadosException e) {
             throw new StorageException(e);
+        }finally {
+        	if(ioctx != null)
+        		client.ioCtxDestroy(ioctx);
         }
-        client.ioCtxDestroy(ioctx);
         return stream;
     }
 
@@ -157,25 +160,32 @@ public class LibradosStorage extends NoneStorage {
     public void createObject(String container, String object, InputStream data, long length, Config config) {
         super.createObject(container, object, data, length, config);
         byte[] buf = new byte[(int) length];
+        IoCTX ioctx = null;
         try {
             data.read(buf, 0, (int) length);
-            IoCTX ioctx = client.ioCtxCreate(container);
+            ioctx = client.ioCtxCreate(container);
             ioctx.write(object, buf);
         } catch (RadosException e) {
             throw new StorageException(e);
         } catch (IOException e) {
             throw new StorageException(e);
+        } finally {
+        	if(ioctx != null)
+        		client.ioCtxDestroy(ioctx);
         }
     }
 
     public void deleteObject(String container, String object, Config config) {
         super.deleteObject(container, object, config);
-        IoCTX ioctx;
+        IoCTX ioctx = null;
         try {
             ioctx = client.ioCtxCreate(container);
             ioctx.remove(object);
         } catch (RadosException e) {
             throw new StorageException(e);
+        } finally {
+        	if(ioctx != null) 
+        		client.ioCtxDestroy(ioctx);
         }
     }
 }
