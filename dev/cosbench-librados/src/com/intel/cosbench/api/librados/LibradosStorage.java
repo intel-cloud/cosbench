@@ -102,7 +102,8 @@ public class LibradosStorage extends NoneStorage {
 
     public void dispose() {
         super.dispose();
-//        client = null;
+        if(client != null)
+        	client.shutDown();
     }
 
     public InputStream getObject(String container, String object, Config config) {
