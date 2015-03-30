@@ -72,6 +72,10 @@ public class KeystoneRequest {
     public void addTenantName(String tenantName) {
         auth.setTenantName(tenantName);
     }
+    
+    public void addRegionName(String regionName) {
+    	auth.setRegionName(regionName);
+    }
 
     // --------------------------------------------------------------------------
     // AuthInfo
@@ -95,6 +99,7 @@ public class KeystoneRequest {
         private Token token;
         private String tenantId;
         private String tenantName;
+        private String regionName;
 
         public Credentials getPasswordCredentials() {
             return passwordCredentials;
@@ -126,6 +131,10 @@ public class KeystoneRequest {
 
         public void setTenantName(String tenantName) {
             this.tenantName = tenantName;
+        }
+        
+        public void setRegionName(String regionName) {
+        	this.regionName = regionName;
         }
 
         // ----------------------------------------------------------------------

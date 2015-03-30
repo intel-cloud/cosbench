@@ -48,6 +48,9 @@ class KeystoneAuth extends NoneAuth {
     /* tenant info */
     private String tenantId;
     private String tenantName;
+    
+    /* region name */
+    private String regionName;
 
     /* service info */
     private String service;
@@ -69,6 +72,7 @@ class KeystoneAuth extends NoneAuth {
         userToken = config.get(AUTH_USERTOKEN_KEY, AUTH_USERTOKEN_DEFAULT);
         tenantId = config.get(AUTH_TENANT_ID_KEY, AUTH_TENANT_ID_DEFAULT);
         tenantName = config.get(AUTH_TENANT_NAME_KEY, config.get(AUTH_TENANT_NAME_ALTKEY, AUTH_TENANT_NAME_DEFAULT));
+        regionName = config.get(AUTH_REGION_NAME_KEY, AUTH_REGION_NAME_DEFAULT);
         service = config.get(AUTH_SERVICE_KEY, AUTH_SERVICE_DEFAULT);
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
 
@@ -78,6 +82,7 @@ class KeystoneAuth extends NoneAuth {
         parms.put(AUTH_USERTOKEN_KEY, userToken);
         parms.put(AUTH_TENANT_ID_KEY, tenantId);
         parms.put(AUTH_TENANT_NAME_KEY, tenantName);
+        parms.put(AUTH_REGION_NAME_KEY, regionName);
         parms.put(AUTH_SERVICE_KEY, service);
         parms.put(CONN_TIMEOUT_KEY, timeout);
 
@@ -85,7 +90,7 @@ class KeystoneAuth extends NoneAuth {
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
         client = new KeystoneClient(httpClient, url, username, password,
-                tenantName, timeout);
+                tenantName, regionName, timeout);
         logger.debug("keystone client has been initialized");
     }
 
@@ -117,7 +122,7 @@ class KeystoneAuth extends NoneAuth {
 //        context.put(AUTH_TOKEN_KEY, client.getKeystoneTokenId());
 //        context.put(STORAGE_URL_KEY, client.getServiceUrl(service));
 //        return context;
-        KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service));
+        KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service, regionName));
         
         return context;
     }

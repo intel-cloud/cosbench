@@ -184,12 +184,13 @@ public class KeystoneResponse {
 
             /**
              * <code>
-             * { "adminURL": "?", "internalURL": "?", "publicURL": "?" }
+             * { "adminURL": "?", "region": "?", "internalURL": "?", "publicURL": "?" }
              * </code>
              */
             public static class Endpoint {
 
                 private String adminURL;
+                private String region;
                 private String internalURL;
                 private String publicURL;
 
@@ -215,6 +216,14 @@ public class KeystoneResponse {
 
                 public void setPublicURL(String publicURL) {
                     this.publicURL = publicURL;
+                }
+                
+                public void setRegion(String region) {
+                	this.region = region;
+                }
+                
+                public String getRegion() {
+                	return region;
                 }
 
             }

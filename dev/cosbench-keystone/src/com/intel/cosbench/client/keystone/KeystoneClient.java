@@ -66,6 +66,9 @@ public class KeystoneClient {
     /* tenant info */
     private String tenantId;
     private String tenantName;
+    
+    /* region name */
+    private String regionName;
 
     /* authentication handler */
     private AuthHandler handler;
@@ -74,10 +77,11 @@ public class KeystoneClient {
     private KeystoneResponse response;
 
     public KeystoneClient(HttpClient client, String url, String username,
-            String password, String tenantName, int timeout) {
+            String password, String tenantName, String regionName, int timeout) {
         this.username = username;
         this.password = password;
         this.tenantName = tenantName;
+        this.regionName = regionName;
         this.handler = new HttpAuthHandler(url, timeout);
     }
 
@@ -118,6 +122,11 @@ public class KeystoneClient {
         } else if (this.tenantName != null) {
             request.addTenantName(this.tenantName);
         }
+        /* region name */
+        if (this.regionName != null) {
+        	request.addRegionName(regionName);
+        }
+        
         return request;
     }
 
@@ -287,13 +296,24 @@ public class KeystoneClient {
      *            - the name identifying the service
      * @return the public URL of a cloud service
      */
-    public String getServiceUrl(String serviceName) {
+    @SuppressWarnings("null")
+	public String getServiceUrl(String serviceName, String... regionName) {
         ServiceInfo service = getServiceInfo(serviceName);
         if (service == null)
             return null;
         List<Endpoint> endpoints = service.getEndpoints();
-        if (endpoints != null && endpoints.size() > 0)
-            return endpoints.get(0).getPublicURL();
+        if (regionName == null)
+        {
+	        if (endpoints != null && endpoints.size() > 0)
+	            return endpoints.get(0).getPublicURL();
+        }
+	    else if (regionName.length == 1) {
+	    	for (Endpoint endpoint : endpoints) {
+	    		if (endpoint != null && regionName[0].equals(endpoint.getRegion()))
+	    			return endpoint.getPublicURL();
+	    	}
+	    }
+	    	
         return null;
     }
 
