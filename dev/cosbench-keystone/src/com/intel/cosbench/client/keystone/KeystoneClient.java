@@ -296,8 +296,7 @@ public class KeystoneClient {
      *            - the name identifying the service
      * @return the public URL of a cloud service
      */
-    @SuppressWarnings("null")
-	public String getServiceUrl(String serviceName, String... regionName) {
+    public String getServiceUrl(String serviceName, String... regionName) {
         ServiceInfo service = getServiceInfo(serviceName);
         if (service == null)
             return null;
