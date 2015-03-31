@@ -74,6 +74,7 @@ public class MatrixPageController extends AbstractController {
         	result.addObject("hInfos", controller.getArchivedWorkloads());
         }
         result.addObject("type", req.getParameter("type"));
+        result.addObject("cInfo", controller.getControllerInfo());
         return result;
     }
 

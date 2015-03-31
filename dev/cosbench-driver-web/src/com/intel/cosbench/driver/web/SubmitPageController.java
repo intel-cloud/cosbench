@@ -37,7 +37,9 @@ public class SubmitPageController extends AbstractController {
     protected ModelAndView process(HttpServletRequest req,
             HttpServletResponse res) throws Exception {
         MissionInfo[] aInfos = driver.getActiveMissions();
-        return new ModelAndView("submit", "aInfos", aInfos);
+        ModelAndView result = new ModelAndView("submit", "aInfos", aInfos);
+        result.addObject("dInfo", driver.getDriverInfo());
+        return result;
     }
 
 }

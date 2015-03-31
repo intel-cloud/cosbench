@@ -55,6 +55,7 @@ public class MissionPageController extends AbstractController {
     protected ModelAndView process(MissionInfo info) {
         ModelAndView result = new ModelAndView("mission");
         result.addObject("info", info);
+        result.addObject("dInfo", driver.getDriverInfo());
         result.addObject("isStopped", isStopped(info.getState()));
         result.addObject("isRunning", isRunning(info.getState()));
         result.addObject("toBeAuthed", allowAuth(info.getState()));
