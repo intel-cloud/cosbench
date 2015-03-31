@@ -37,7 +37,10 @@ public class SubmitPageController extends AbstractController {
     protected ModelAndView process(HttpServletRequest req,
             HttpServletResponse res) {
         WorkloadInfo[] aInfos = controller.getActiveWorkloads();
-        return new ModelAndView("submit", "aInfos", aInfos);
+        ModelAndView result = new ModelAndView("submit");
+        result.addObject("aInfos", aInfos);
+        result.addObject("cInfo", controller.getControllerInfo());
+        return result;
     }
 
 }

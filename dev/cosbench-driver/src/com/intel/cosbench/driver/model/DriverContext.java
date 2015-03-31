@@ -33,11 +33,20 @@ public class DriverContext implements DriverInfo {
     private String name;
     private String url;
     private boolean aliveState;
-    // pIDMap<scriptName, pid>
+    private String version;
+
+	// pIDMap<scriptName, pid>
 	private Map<String, String> pidMap = new HashMap<String, String>();
 	// logMap<'wId'+'sId', ScriptLog>
 	private Map<String, String> scriptsLog = new HashMap<String, String>();
-	
+    public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
     public DriverContext() {
         /* empty */
     }
