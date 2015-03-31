@@ -74,6 +74,7 @@ public class LibradosStorage extends NoneStorage {
 		                client.confSet("key", this.secretKey);
 		                client.confSet("mon_host", this.endpoint);
 		                client.connect();
+		                logger.info("Librados client has connected.");
             		}
             	}
             }
