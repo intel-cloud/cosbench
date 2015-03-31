@@ -245,14 +245,8 @@ class MissionHandler {
     private void performLogin() {
         missionContext.setState(AUTHING);
 
-//        // Use worker 0 for authentication (and use the same token for other workers)
-//        WorkerContext worker0 = missionContext.getWorkerRegistry().getWorkerByIndex(0);
-//        List<Agent> agents = createAuthAgentFromContext(worker0);
         List<Agent> agents = createAuthAgents();
         executeAgents(agents, 0);
-
-//        AuthContext authContext = worker0.getStorageApi().getAuthContext();
-//        setAllWorkersAuthContext(authContext);
 
         missionContext.setState(AUTHED);
     }
