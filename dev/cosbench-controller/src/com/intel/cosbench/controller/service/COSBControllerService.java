@@ -197,10 +197,14 @@ class COSBControllerService implements ControllerService, WorkloadListener {
 		if (processor.getWorkloadContext().getFuture() != null)
 			throw new IllegalStateException();
 		ControllerThread ctrlThrd = new ControllerThread(processor);
-		Future<?> future = executor.submit(ctrlThrd);
-        processor.getWorkloadContext().setFuture(future);
-        yieldExecution(200); // give workload processor a chance
+		
+		Future<?> future = null;
+		synchronized(processor.getWorkloadContext()) {
+			executor.submit(ctrlThrd);
+			processor.getWorkloadContext().setFuture(future);
+		}
         LOGGER.debug("[ CT ] - workload {} started", id);
+		yieldExecution(200); // give workload processor a chance
     }
     
 	@Override

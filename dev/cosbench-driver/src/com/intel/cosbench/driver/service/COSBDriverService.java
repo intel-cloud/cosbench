@@ -132,11 +132,14 @@ class COSBDriverService implements DriverService, MissionListener {
 
         }
         LOGGER.debug("authing mission {} ...", id);
-        Future<?> future = executor.submit(new AuthThread());
-	    handler.getMissionContext().setFuture(future);
+        Future<?> future = null;
+        synchronized(handler.getMissionContext()) {
+        	future = executor.submit(new AuthThread());
+        	handler.getMissionContext().setFuture(future);
+        }
         LOGGER.debug("mission {} has been requested to auth", id);
+        yieldExecution(200); // give mission handler a chance
         awaitTermination(future); // mission may be terminated or aborted
-        handler.getMissionContext().setFuture(null); // make sure it is null
     }
 
     @Override
@@ -156,10 +159,15 @@ class COSBDriverService implements DriverService, MissionListener {
 
         }
         LOGGER.debug("launching mission {} ...", id);
-        Future<?> future = executor.submit(new DriverThread());
-        handler.getMissionContext().setFuture(future);
+        Future<?> future = null;
+        synchronized(handler.getMissionContext()) {
+        	future = executor.submit(new DriverThread());
+            handler.getMissionContext().setFuture(future);
+        }
+            
         LOGGER.debug("mission {} has been requested to launch", id);
         yieldExecution(200); // give mission handler a chance
+        awaitTermination(future); // mission may be terminated or aborted
     }
 
     @Override
