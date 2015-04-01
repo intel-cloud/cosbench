@@ -76,7 +76,7 @@ class COSBDriverService implements DriverService, MissionListener {
     }
     
     @Override
-    public String submit(XmlConfig config) {
+    public synchronized String submit(XmlConfig config) {
         LOGGER.debug("submitting mission ... ");
         
         MissionContext mission = createMissionContext(config);
@@ -133,7 +133,7 @@ class COSBDriverService implements DriverService, MissionListener {
         }
         LOGGER.debug("authing mission {} ...", id);
         Future<?> future = null;
-        synchronized(handler.getMissionContext()) {
+        synchronized(handler) {
         	future = executor.submit(new AuthThread());
         	handler.getMissionContext().setFuture(future);
         }
@@ -160,7 +160,7 @@ class COSBDriverService implements DriverService, MissionListener {
         }
         LOGGER.debug("launching mission {} ...", id);
         Future<?> future = null;
-        synchronized(handler.getMissionContext()) {
+        synchronized(handler) {
         	future = executor.submit(new DriverThread());
             handler.getMissionContext().setFuture(future);
         }
