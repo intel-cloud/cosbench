@@ -49,7 +49,13 @@
 		<field name="totalBytes" type="long">
 			<bind-xml name="totalBytes" node="attribute" />
 		</field>
+		<field name="maxIOPS" type="integer">
+			<bind-xml name="maxIOPS" node="attribute" />
+		</field>
 		
+		<field name="maxBW" type="long">
+			<bind-xml name="maxBW" node="attribute" />
+		</field>
 		<field name="driver" type="string">
 			<bind-xml name="driver" node="attribute" />
 		</field>

@@ -69,7 +69,13 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
 
     private Status currMarks = new Status(); /* for snapshots */
     private Status globalMarks = new Status(); /* for the final report */
-
+    
+    private double maxIOPS = 0;
+    private double maxBW = 0;
+    private long lcompare = 0;
+    /*if current IOPS or BW exceeds the specify max IOPS or BW, should sleep for certain seconds */
+    private double sleepTime = 0;
+    private float error = 0.05f;
     public WorkAgent() {
         /* empty */
     }
@@ -153,6 +159,10 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         Mission mission = workerContext.getMission();
         totalOps = mission.getTotalOps() / mission.getTotalWorkers();
         totalBytes = mission.getTotalBytes() / mission.getTotalWorkers();
+        maxIOPS = (double)mission.getMaxIOPS() /mission.getTotalWorkers();
+        maxBW = (double)mission.getMaxBW() / mission.getTotalWorkers();
+        getMissionLogger().debug("workagent maxiops is {}",maxIOPS);
+        getMissionLogger().debug("workagent maxBW is {}", maxBW);
         if (mission.getRuntime() == 0)
             return;
         begin = start + mission.getRampup() * 1000;
@@ -193,7 +203,12 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
         OperatorContext context = operatorRegistry.getOperator(op);
+        preOpCompare();
+        if(sleepTime> 0) {
+        	sleepForSometime();
+        }
         try{
+        	lcompare = System.currentTimeMillis();
         	context.getOperator().operate(this);
         }catch(AuthException ae) {
         	reLogin();
@@ -305,5 +320,54 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     		throw new AgentException();
     	}	
     }
-
+    public void preOpCompare() {
+    	if(lcompare ==0) {
+    		return;
+    	}
+    	if(maxIOPS !=0) {
+    		double ioUpper = maxIOPS*(1 + error);
+    		double ioLower = maxIOPS*(1 - error);
+        	getMissionLogger().debug("the current IOPS is{}", getCurIOPS());
+        	getMissionLogger().debug("the config maxIOPS is{}", maxIOPS);
+    		if(getCurIOPS() <= ioUpper && getCurIOPS() >= ioLower)
+    			return;
+    		sleepTime = 1000/maxIOPS -(System.currentTimeMillis() - lcompare);
+    		return; // if user both configure maxIOPS and maxBW, just handle maxIOPS
+    	}
+    	if(maxBW !=0) {
+    		double bwUpper = maxBW*(1 + error);
+    		double bwLower = maxBW*(1 - error);
+    		getMissionLogger().debug("the current BW is{}", getCurBW());
+        	getMissionLogger().debug("the config maxBW is{}", maxBW);
+    		if(getCurBW() <= bwUpper && getCurBW() >= bwLower)
+    			return;
+    		sleepTime = 1000/maxBW - (System.currentTimeMillis() - lcompare);
+    	}
+    }
+    private double getCurIOPS() {
+    	return (getTotalSucOps() *1000) / (System.currentTimeMillis()-frsample);
+    }
+    
+    private double getCurBW() {
+    	return (getTotalBytes()*1000)/ (System.currentTimeMillis()-frsample);
+    }
+    
+    private void sleepForSometime() {
+        try {
+            Thread.sleep(Math.round(sleepTime));
+        } catch (InterruptedException e) {
+            throw new AgentException();
+        }catch (IllegalArgumentException e) {
+        	getMissionLogger().debug("the sleep time is a negative number, will reset it to zero");
+        	sleepTime = 0;
+			return;
+		}
+        getMissionLogger().debug("the workagent periodical sleep time is {}", Math.round(sleepTime*1000));
+    }
+    private int getTotalSucOps() {
+    	int sum = 0;
+    	for(Mark mark: globalMarks)
+    		sum += mark.getOpCount();
+    	return sum;
+    }
 }

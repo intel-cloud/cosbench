@@ -46,6 +46,8 @@ public class Work implements Iterable<Operation> {
     private int totalOps = 0;
     private long totalBytes = 0;
     private String driver;
+    private int maxIOPS = 0;
+    private long maxBW = 0;
     private String config = "";
     private Auth auth;
     private Storage storage;    
@@ -249,8 +251,30 @@ public class Work implements Iterable<Operation> {
         op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
         operations.add(op);
     }
+    
+    
 
-    @Override
+    public int getMaxIOPS() {
+		return maxIOPS;
+	}
+
+	public void setMaxIOPS(int maxIOPS) {
+		if(maxIOPS < 0)
+			throw new ConfigException("illegal value for maxIOPS ");
+		this.maxIOPS = maxIOPS;
+	}
+
+	public long getMaxBW() {
+		return maxBW;
+	}
+
+	public void setMaxBW(long maxBW) {
+		if(maxBW < 0)
+			throw new ConfigException("illegal value for maxBW");
+		this.maxBW = maxBW;
+	}
+
+	@Override
     public Iterator<Operation> iterator() {
         return operations.iterator();
     }

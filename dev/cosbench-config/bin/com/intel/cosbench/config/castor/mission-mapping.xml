@@ -61,7 +61,12 @@
 		<field name="storage" type="com.intel.cosbench.config.Storage">
 			<bind-xml name="storage" node="element" />
 		</field>
-
+		<field name="maxIOPS" type="int">
+			<bind-xml name="maxIOPS" node="attribute" />
+		</field>
+		<field name="maxBW" type="long">
+			<bind-xml name="maxBW" node="attribute" />
+		</field>
 		<field name="operations" collection="arraylist"
 			type="com.intel.cosbench.config.Operation">
 			<bind-xml name="operation" node="element" />

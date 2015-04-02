@@ -45,6 +45,8 @@ public class Mission implements Iterable<Operation> {
     private int rampdown = 0;
     private int totalOps = 0;
     private long totalBytes = 0;
+    private int maxIOPS = 0;
+    private long maxBW = 0;
     private int totalWorkers;
     private String config = "";
     private Auth auth = DEFAULT_AUTH;
@@ -226,8 +228,24 @@ public class Mission implements Iterable<Operation> {
         }
         this.operations = operations;
     }
+    
+    public int getMaxIOPS() {
+		return maxIOPS;
+	}
 
-    @Override
+	public void setMaxIOPS(int maxIOPS) {
+		this.maxIOPS = maxIOPS;
+	}
+
+	public long getMaxBW() {
+		return maxBW;
+	}
+
+	public void setMaxBW(long maxBW) {
+		this.maxBW = maxBW;
+	}
+
+	@Override
     public Iterator<Operation> iterator() {
         return operations.iterator();
     }
