@@ -71,7 +71,10 @@ public class Workflow implements Iterable<Stage> {
 
     @Override
     public Iterator<Stage> iterator() {
-        return stages.iterator();
+    	if(stages == null){
+    		stages = new ArrayList();
+    	}
+    	return stages.iterator();
     }
 
     public void validate() {
