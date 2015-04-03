@@ -88,7 +88,7 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
     private String getVersion() {
 		// TODO Auto-generated method stub
     	String str = getName("VERSION");
-    	String str2 = getName("BUILDER");
+    	String str2 = getName("BUILD.no");
     	return str+"."+str2;
 	}
     
