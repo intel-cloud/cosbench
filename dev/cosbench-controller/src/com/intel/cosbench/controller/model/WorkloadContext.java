@@ -308,7 +308,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void logErrorStatistics(Logger logger){
     	for (Map.Entry<String, ErrorSummary> driverEntry : errorStatistics.entrySet()){
     		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().getErrorCodeAndNum().entrySet()){
-    			logger.error(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
+    			logger.warn(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
     		}
     	}
     }
