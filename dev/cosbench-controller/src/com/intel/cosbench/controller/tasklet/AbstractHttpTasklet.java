@@ -76,7 +76,7 @@ abstract class AbstractHttpTasklet extends AbstractTasklet {
             throw new TaskletException(); // mark termination
         } finally {
         	if(response != null) {      
-        		LOGGER.info("try to fetch response body");
+//        		LOGGER.info("try to fetch response body");
         		try{
         			body = fetchResponseBody(response);
         		}catch(IOException ioe) {
