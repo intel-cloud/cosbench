@@ -167,7 +167,6 @@ class COSBDriverService implements DriverService, MissionListener {
             
         LOGGER.debug("mission {} has been requested to launch", id);
         yieldExecution(200); // give mission handler a chance
-        awaitTermination(future); // mission may be terminated or aborted
     }
 
     @Override
