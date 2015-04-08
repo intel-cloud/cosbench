@@ -96,7 +96,7 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
     private String getVersion() {
   		// TODO Auto-generated method stub
       	String str = getName("VERSION");
-      	String str2 = getName("BUILDER");
+      	String str2 = getName("BUILD.no");
       	return str+"."+str2;
   	}
       
