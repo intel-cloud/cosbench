@@ -1,79 +1,96 @@
+  COSBench 0.4.2.0(15-ww15.3)
+------------------------------------
+- #260: when testing ceph giant through librados adapter, some errors like EINPROGRESS raises 
+- #254: Mixed Workloads (Read,Write,Delete) cause low read success rate. 
+- #227: CLI script doesn't show current stage 
+- #87: [WorkloadConfigurator] Add support for specifying number of drivers and workers-per-driver (extension to #86) 
+- #5: real-time performance grap
+- #221: Dumping of Per driver result
+- #210: multiple drivers on the same physical node
+- #252: too many open files” errors with filewrite type 
+- #236: Keystone needs to accept region name as parameter. 
+- #250: hard to distinguish different operations under the same work item from U
+- #238: Working with Ceph 0.87 encountered errors 
+- #245: Driver not alive
+- #240: cosbench is not starting under CentOS 
+
+
   COSBench 0.4.1.0(14-ww53.2)
 ------------------------------------
-. Add one workload under workloads folder, whose distribution is summarized from two week's trace on ASUS WebStorage. Thanks ASUS' contribution!
-. #223: current authorization doesn't support retry 
-. #222: completed operation count is mismatching with configured totalOps 
-. #220: UI: The current stage table shouldn't merge with stage table when workload terminates
-. #212 swift show 401 error code
-. #194 Config UI: Add detail to General Report Table located in view details section of Active Workloads : Need to add information about stage names 
-. #188 UI: Don't generate stagenames with comma characters in them
+- Add one workload under workloads folder, whose distribution is summarized from two week's trace on ASUS WebStorage. Thanks ASUS' contribution!
+- #223: current authorization doesn't support retry 
+- #222: completed operation count is mismatching with configured totalOps 
+- #220: UI: The current stage table shouldn't merge with stage table when workload terminates
+- #212 swift show 401 error code
+- #194 Config UI: Add detail to General Report Table located in view details section of Active Workloads : Need to add information about stage names 
+- #188 UI: Don't generate stagenames with comma characters in them
 
 
   COSBench 0.4.0.1(14-ww48.5)
 ------------------------------------
-. #214: ceph prepare stage very low success ratio and throwing erros 
-. #211: SwiftTokenCache needs to validate current token is valid
-. #203: the driver "isAlive" status is green even the driver is not started 
-. #198: in v0.4.0.0, it seems the AFR doesn't take in effect in prepare stage 
-. #191: cosbench-start.sh fails while executing 'nc': TOOL_PARAMS is incorrect.
-. #190: Config UI: Add detail to cleanup/dispose stage names 
-. #186: UI: Add detail to init and prepare stage names 
-. #178: Collect and view results for user-terminated jobs 
-. #159: Extend "histogram" selector to support "floating point" weights/percentages 
-. #156: Add "trigger" support
-. #154: Add authentication caching support
-. #147: UI: Advanced config UI Cleanup (part 1) 
-. #146: UI: Add tooltips to configurable params on the config UI
-. #145: UI: Change storage url template depending on the storage type chosen
-. #32: digest authentication support
-. #29: Error handling improvement
-. #19: Support LIST Api
-. #12: after several hours running, cosbench's banners all disappear. 
+- #214: ceph prepare stage very low success ratio and throwing erros 
+- #211: SwiftTokenCache needs to validate current token is valid
+- #203: the driver "isAlive" status is green even the driver is not started 
+- #198: in v0.4.0.0, it seems the AFR doesn't take in effect in prepare stage 
+- #191: cosbench-start.sh fails while executing 'nc': TOOL_PARAMS is incorrect.
+- #190: Config UI: Add detail to cleanup/dispose stage names 
+- #186: UI: Add detail to init and prepare stage names 
+- #178: Collect and view results for user-terminated jobs 
+- #159: Extend "histogram" selector to support "floating point" weights/percentages 
+- #156: Add "trigger" support
+- #154: Add authentication caching support
+- #147: UI: Advanced config UI Cleanup (part 1) 
+- #146: UI: Add tooltips to configurable params on the config UI
+- #145: UI: Change storage url template depending on the storage type chosen
+- #32: digest authentication support
+- #29: Error handling improvement
+- #19: Support LIST Api
+- #12: after several hours running, cosbench's banners all disappear. 
 
 
   COSBench 0.4.0.0 (14-ww21.5)
 ------------------------------------
-. #57: time synchronization
-. #96: Creating Web UI facility for generating different workload configuration files
-. #155: Add support for "acceptable failure rate, failure %" to all stages
-. #4: xml validator
-. #77: contextual parameter list
-. #167: storage policy supporting for openstack swift
-. #37: support CDMI interface
-. #139: NullPointerException when a mission is aborted
-. #166: show driver alive state on controller index page
-. #158: Extend "histogram" selector to support "open ranges"
-. #165: enable Open range for object size in uniform and histogram
-. #136: 1 GB Object Reads Fail due to IllegalArgumentException
-. #99 (#152): measure and report the time for first and last byte in or out
-. #159: Extend "histogram" selector to support "floating point" weights/percentages
-. #143: at loading archived workloads, even there are 100 workloads, the UI shows only 98.
-. #140: duplicated workload id generated 
-. #151: avoid being challenged for each request
-. #137: when there are large # of archive jobs, exception will raise from archive list on web portal.
-. #139: NullPointerException when a mission is aborted
-. support http BASIC and DIGEST authentication
-. add cdmi base and util bundle
-. add cdmi adapter for swift+cdmi middleware
+- #57: time synchronization
+- #96: Creating Web UI facility for generating different workload configuration files
+- #155: Add support for "acceptable failure rate, failure %" to all stages
+- #4: xml validator
+- #77: contextual parameter list
+- #167: storage policy supporting for openstack swift
+- #37: support CDMI interface
+- #139: NullPointerException when a mission is aborted
+- #166: show driver alive state on controller index page
+- #158: Extend "histogram" selector to support "open ranges"
+- #165: enable Open range for object size in uniform and histogram
+- #136: 1 GB Object Reads Fail due to IllegalArgumentException
+- #99 (#152): measure and report the time for first and last byte in or out
+- #159: Extend "histogram" selector to support "floating point" weights/percentages
+- #143: at loading archived workloads, even there are 100 workloads, the UI shows only 98.
+- #140: duplicated workload id generated 
+- #151: avoid being challenged for each request
+- #137: when there are large # of archive jobs, exception will raise from archive list on web portal.
+- #139: NullPointerException when a mission is aborted
+- support http BASIC and DIGEST authentication
+- add cdmi base and util bundle
+- add cdmi adapter for swift+cdmi middleware
 
 
   COSBench 0.3.3.0 (13-ww44.5)
 ------------------------------------
-. #20: multiple same operations
-. #16: web console authentication
-. #34: 0% success on write
-. #11: job management
-. #70: multiple main stages
-. #30: no historical workloads after restart
-. add histogram selector to define histogram size distribution
-. #58: sleep between stage
-. #84: multiple init/prepare/cleanup/dispose from config UI
-. oen bug fix for java.lang.ArrayIndexOutOfBoundsException at data archiving
-. #118: file-write operation - percentile zero issue
-. #121: specify archive dir
-. #92: using swift storage without authentication
-. support auth token caching for swift testing
-. #128: Use workstage name from XML rather than generic names in logs
+- #20: multiple same operations
+- #16: web console authentication
+- #34: 0% success on write
+- #11: job management
+- #70: multiple main stages
+- #30: no historical workloads after restart
+- add histogram selector to define histogram size distribution
+- #58: sleep between stage
+- #84: multiple init/prepare/cleanup/dispose from config UI
+- oen bug fix for java.lang.ArrayIndexOutOfBoundsException at data archiving
+- #118: file-write operation - percentile zero issue
+- #121: specify archive dir
+- #92: using swift storage without authentication
+- support auth token caching for swift testing
+- #128: Use workstage name from XML rather than generic names in logs
 
 
   COSBench 0.3.1.2 (13-ww31.3)
