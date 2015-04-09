@@ -30,6 +30,12 @@ public interface S3Constants {
     String PROXY_PORT_KEY = "proxyport";    
     
     // --------------------------------------------------------------------------
+    // MAX CONNECTIONS DEFAULT
+    // --------------------------------------------------------------------------
+    String MAX_CONNECTIONS = "max_connections";
+    int MAX_CONNECTIONS_DEFAULT = 50;
+
+    // --------------------------------------------------------------------------
     // PATH STYLE ACCESS
     // --------------------------------------------------------------------------
     String PATH_STYLE_ACCESS_KEY = "path_style_access";
