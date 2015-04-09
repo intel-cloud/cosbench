@@ -17,6 +17,9 @@ limitations under the License.
 
 package com.intel.cosbench.bench;
 
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -27,6 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class Counter {
+
+    protected static final Logger LOGGER = LogFactory.getSystemLogger();
 
     /* interval for the response time histogram */
     public final static long RES_INT = 10; // 10 milliseconds
@@ -61,6 +66,11 @@ public class Counter {
      * @return
      */
     public void doAdd(long time) {
+        if (time<0) {
+            LOGGER.warn(String.format("Negative time interval detected (%d), please configure the NTP", time));
+            // let's flip it around
+            time = -time;
+        }
         int index = (time >= RES_MAX) ? UL : (int) (time / RES_INT);
         counts[index].incrementAndGet();
     }
