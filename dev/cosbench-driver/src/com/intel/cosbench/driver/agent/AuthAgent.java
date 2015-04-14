@@ -74,8 +74,7 @@ class AuthAgent extends AbstractAgent {
     private AuthContext login() {
         Logger logger = getMissionLogger();
         AuthAPI authApi = workerContext.getAuthApi();
-        if(authApi instanceof NoneAuth) // bypass caching handling for NoneAuth.
-        	return null;
+
         int attempts = 0;
         while (attempts++ < loginAttempts - 1)
             try {
