@@ -38,6 +38,7 @@ public class S3Storage extends NoneStorage {
         secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
 
         boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
+        int maxConnections = config.getInt(MAX_CONNECTIONS, MAX_CONNECTIONS_DEFAULT);
         
 		String proxyHost = config.get(PROXY_HOST_KEY, "");
 		String proxyPort = config.get(PROXY_PORT_KEY, "");
@@ -53,6 +54,7 @@ public class S3Storage extends NoneStorage {
         
         ClientConfiguration clientConf = new ClientConfiguration();
         clientConf.setConnectionTimeout(timeout);
+        clientConf.setMaxConnections(maxConnections);
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!proxyHost.equals(""))&&(!proxyPort.equals(""))){
 			clientConf.setProxyHost(proxyHost);
