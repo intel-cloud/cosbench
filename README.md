@@ -70,5 +70,7 @@ COSBench-Workload-Generator: (https://github.com/giteshnandre/COSBench-Workload-
 
 COSBench-Plot: (https://github.com/icclab/cosbench-plot)
 
+matplotlib-utils-cosbench: (https://github.com/wallnerryan/matplotlib-utils-cosbench)
+
 
 = END =
