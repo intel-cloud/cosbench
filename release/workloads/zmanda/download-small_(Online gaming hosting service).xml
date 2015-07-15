@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="download-small" description="a swift workload for website hosting service from zmanda">
+<!-- scenario 
+	GET: 90%, PUT: 5%, DELETE:5%
+
+	Example: Website hosting service 
+		— once a new webpage is published by the owner, lots of read requests will hit on the new webpage.
+	
+	Caveat: at below workload, GET/PUT/DELETE operations are working at the same object range, so conflicts are expected. 
+		Users can tune the object range to mitigate or reduce conflicts on their purpose.
+-->
+
+  <storage type="swift" />
+  
+  <!-- MODIFY ME -->
+  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.10.1:8080/auth/v1.0" />
+
+  <!-- Keystone Authentication 
+  <auth type="keystone" config="username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service" /> 
+  -->
+
+  <!-- bypass authentication, directly feed auth token  
+  <storage type="swift" config="token=AUTH_xxx;storage_url=http://192.168.10.1:8080/auth/v1.0" />	
+  -->
+	
+  <workflow>
+
+    <workstage name="init">
+      <work type="init" workers="1" config="containers=r(1,100)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="10" config="containers=r(1,100);objects=r(1,100);sizes=c(1,100)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="main" workers="8" runtime="300">
+        <operation type="read" ratio="90" config="containers=u(1,100);objects=u(1,100)" />
+        <operation type="write" ratio="5" config="containers=u(1,100);objects=u(1,100);sizes=c(1,100)KB" />
+        <operation type="delete" ratio="5" config="containers=u(1,100);objects=u(1,100)" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="10" config="containers=r(1,100);objects=r(1,100)" />
+    </workstage>
+
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="containers=r(1,100)" />
+    </workstage>
+
+  </workflow>
+
+</workload>
