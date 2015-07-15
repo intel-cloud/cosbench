@@ -345,7 +345,13 @@ public class KeystoneClient {
             if (serviceName != null ? serviceName.equals(service.getName())
                     : service.getName() == null)
                 return service;
-
+        
+        List<String> services = new ArrayList<String>();
+        for (ServiceInfo service : catalog)
+        	services.add(service.getName());
+        
+        logger.error("no designated service [" + serviceName + "] found, but only those services returned: " + services.toString());
+        
         return null;
     }
 

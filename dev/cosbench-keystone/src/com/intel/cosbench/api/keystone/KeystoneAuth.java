@@ -92,7 +92,7 @@ class KeystoneAuth extends NoneAuth {
         logger.debug("using auth config: {}", parms);
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
-        client = new KeystoneClient(httpClient, url, username, password,
+        client = new KeystoneClient(logger, httpClient, url, username, password,
                 tenantName, timeout);
         logger.debug("keystone client has been initialized");
     }
