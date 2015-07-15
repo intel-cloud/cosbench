@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.client.keystone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.HttpClient;
@@ -54,11 +55,13 @@ import com.intel.cosbench.log.Logger;
  * order to get a new token that will be scoped with the specified tenant.
  * </p>
  * </ol>
- * 
- * @author qzheng (qing.zheng@intel.com)
+ * @author ywang19 
+ * @author qzheng
  */
 public class KeystoneClient {
-
+	
+	private Logger logger;
+	
     /* user info */
     private String username;
     private String password;
@@ -76,8 +79,9 @@ public class KeystoneClient {
     /* authentication response */
     private KeystoneResponse response;
 
-    public KeystoneClient(HttpClient client, String url, String username,
+    public KeystoneClient(Logger logger, HttpClient client, String url, String username,
             String password, String tenantName, int timeout) {
+    	this.logger = logger;
         this.username = username;
         this.password = password;
         this.tenantName = tenantName;
@@ -295,15 +299,34 @@ public class KeystoneClient {
         if (service == null)
             return null;
         List<Endpoint> endpoints = service.getEndpoints();
-        if (endpoints != null && endpoints.size() > 0)
+        
+        if (endpoints == null || endpoints.size() == 0)
         {
-        	for (Endpoint endpoint : endpoints) {
-				if(endpoint.getRegion() != null && endpoint.getRegion().equals(region)){
-					return endpoint.getPublicURL();
-				}
-			}
+        	logger.error("no endpoints return from keystone");
+        	return null;
         }
-        return null;
+      
+        List<String> regions = new ArrayList<String>();
+	   	for (Endpoint endpoint : endpoints) {
+    		String the_region = endpoint.getRegion();
+    		if(the_region != null) {
+    			regions.add(the_region);
+    		}
+	   	}
+	   	
+        if (region == null || region.isEmpty()) { // no region assigned, will use the first one.
+
+    	   	logger.warn("Below regions are returned from keystone : " + regions.toString() + 
+    	   			", but no expected region assigned in your configuration, so the first region will be used.");
+    	   	return endpoints.get(0).getPublicURL();
+        }
+
+        int idx = -1;
+	   	if((idx=regions.indexOf(region)) >= 0) {
+	   		return endpoints.get(idx).getPublicURL();
+		}
+        
+		return null;
     }
 
     /**
