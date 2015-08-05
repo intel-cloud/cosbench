@@ -87,7 +87,7 @@ public class AbcAuth extends NoneAuth {
     }
 
     private AuthContext createContext() {
-        AuthContext context = new AuthContext();
+        AuthContext context = new DefaultAuthContext();
         context.put(AUTH_TOKEN_KEY, client.getAuthToken());
         return context;
     }
