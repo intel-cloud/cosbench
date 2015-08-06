@@ -17,24 +17,31 @@ limitations under the License.
 
 package com.intel.cosbench.controller.service;
 
-import java.net.InetAddress;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.DriverInfo;
 
 public class PingDriverRunner implements Runnable{
 
-	private int interval = 5000;
+    protected static final Logger LOGGER = LogFactory.getSystemLogger();
 	private DriverInfo[] driverInfos;
+	private int interval = 15*000;	// set longer interval.
+	private int failure_tolerance = 20; // in total 5 mins.
+	private int[] failures;
+	private boolean isAlive = true;
 	
 	PingDriverRunner(DriverInfo[] driverInfos){
 		this.driverInfos = driverInfos;
+		this.failures = new int[this.driverInfos.length];
 	}
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (isAlive) {
 			pingDrivers(driverInfos);
 			try {
 				Thread.sleep(interval);
@@ -44,27 +51,46 @@ public class PingDriverRunner implements Runnable{
 	}
 
 	private void pingDrivers(DriverInfo[] driverInfos) {
-		for (DriverInfo driver : driverInfos) {
-			boolean isAlive = false;
-			
+
+		for (int i=0; i<driverInfos.length; i++) {
+			DriverInfo driver = driverInfos[i];
+			LOGGER.info("Trying to ping driver " + driver.getName() + " at " + driver.getUrl());
 			String ipAddress = getIpAddres(driver.getUrl());
 			Integer port = getDriverPort(driver.getUrl());
-			try {
-				if (!ipAddress.isEmpty()) {	
-					try{
-						Socket socket = new Socket();
-						InetSocketAddress reAddress = new InetSocketAddress(ipAddress, port);
-						InetSocketAddress locAddress = new InetSocketAddress("0.0.0.0", 0);
-						socket.bind(locAddress);
-						socket.connect(reAddress,3000);
-						isAlive = true;
-						}catch(Exception e){
-							isAlive = false;
-						}
+			if (ipAddress == null || ipAddress.isEmpty()) { 
+				isAlive = false;
+				failures[i] = failure_tolerance;
+				LOGGER.error("the driver ip address shouldn't be empty, the heartbeat is disabled to driver !" + driver.getName());
+				return;
+			}
+
+			Socket socket = null;
+			try{
+				socket = new Socket();
+				InetSocketAddress reAddress = new InetSocketAddress(ipAddress, port);
+				InetSocketAddress locAddress = new InetSocketAddress("0.0.0.0", 0);
+				socket.bind(locAddress);
+				socket.connect(reAddress,3000);
+				isAlive = true;
+				failures[i] = 0;
+				LOGGER.info("The driver " + driver.getName() + " at " + driver.getUrl() + " is reachable");
+			}catch(Exception e){
+				failures[i]++;
+				LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " is not reachable at the " + (i+1) + " time, with below exception: \n" + e.getMessage());
+				if(failures[i] >= failure_tolerance) {
+					isAlive = false;
+					LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " hits failure tolerance, will disable the heartbeat to it");
 				}
 			}finally{
 				driver.setAliveState(isAlive);
+				if (socket != null) {
+					try {
+						socket.close();
+					}catch (IOException ignore) {						
+					}
+				}
 			}
+
 		}
 	}
 	
@@ -80,6 +106,5 @@ public class PingDriverRunner implements Runnable{
 		return end > start? Integer.valueOf(url.substring(start, end)):null;
 	}
 
-	
 }
 
