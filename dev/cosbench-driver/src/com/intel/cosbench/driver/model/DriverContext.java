@@ -19,6 +19,7 @@ package com.intel.cosbench.driver.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 
 import com.intel.cosbench.model.DriverInfo;
 
@@ -34,11 +35,22 @@ public class DriverContext implements DriverInfo {
     private String url;
     private boolean aliveState;
     private String version;
+    private String time;
 
 	// pIDMap<scriptName, pid>
 	private Map<String, String> pidMap = new HashMap<String, String>();
 	// logMap<'wId'+'sId', ScriptLog>
 	private Map<String, String> scriptsLog = new HashMap<String, String>();
+	
+	public String getTime() {
+		time = new Date().toString();
+		return time;
+	}
+	
+	public void setTime(String timeStr) {
+		this.time = timeStr;
+	}
+	
     public String getVersion() {
 		return version;
 	}
