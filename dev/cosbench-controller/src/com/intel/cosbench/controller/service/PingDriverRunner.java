@@ -28,11 +28,14 @@ import com.intel.cosbench.model.DriverInfo;
 public class PingDriverRunner implements Runnable{
 
     protected static final Logger LOGGER = LogFactory.getSystemLogger();
+
+	private static final int base_interval = 20;	// heartbeat interval in seconds.
+	private static final int failure_tolerance = 15; // in total 5 mins.
+	private static final int ext_interval = 3*base_interval; // extended interval for the case failures is over tolerance.
+	private static final int delay = 3; // timeout for socket wait in seconds
 	private DriverInfo[] driverInfos;
-	private int interval = 15*000;	// set longer interval.
-	private int failure_tolerance = 20; // in total 5 mins.
 	private int[] failures;
-	private boolean isAlive = true;
+	private boolean isHealthy = true;
 	
 	PingDriverRunner(DriverInfo[] driverInfos){
 		this.driverInfos = driverInfos;
@@ -41,11 +44,15 @@ public class PingDriverRunner implements Runnable{
 	
 	@Override
 	public void run() {
-		while (isAlive) {
+		while (true) {
 			pingDrivers(driverInfos);
+			int interval = isHealthy? base_interval: ext_interval;
 			try {
-				Thread.sleep(interval);
-			} catch (InterruptedException ignore) {
+				LOGGER.info("begin to sleep for " + interval + " seconds.");
+				Thread.sleep(interval*1000);
+				LOGGER.info("wake up from sleep.");				
+			} catch (InterruptedException ie) {
+				LOGGER.warn("thread sleep is interrupted.");
 			}
 		}
 	}
@@ -54,35 +61,32 @@ public class PingDriverRunner implements Runnable{
 
 		for (int i=0; i<driverInfos.length; i++) {
 			DriverInfo driver = driverInfos[i];
-			LOGGER.info("Trying to ping driver " + driver.getName() + " at " + driver.getUrl());
 			String ipAddress = getIpAddres(driver.getUrl());
 			Integer port = getDriverPort(driver.getUrl());
+			LOGGER.info("Trying to ping driver " + driver.getName() + " at " + driver.getUrl() + " with ip=" + ipAddress + ", port=" + port + "...");
 			if (ipAddress == null || ipAddress.isEmpty()) { 
-				isAlive = false;
+				isHealthy = false;
 				failures[i] = failure_tolerance;
 				LOGGER.error("the driver ip address shouldn't be empty, the heartbeat is disabled to driver !" + driver.getName());
 				return;
 			}
-
+			
 			Socket socket = null;
 			try{
 				socket = new Socket();
-				InetSocketAddress reAddress = new InetSocketAddress(ipAddress, port);
-				InetSocketAddress locAddress = new InetSocketAddress("0.0.0.0", 0);
-				socket.bind(locAddress);
-				socket.connect(reAddress,3000);
-				isAlive = true;
+				socket.connect(new InetSocketAddress(ipAddress, port), delay*1000);
+				isHealthy = true;
 				failures[i] = 0;
 				LOGGER.info("The driver " + driver.getName() + " at " + driver.getUrl() + " is reachable");
 			}catch(Exception e){
 				failures[i]++;
-				LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " is not reachable at the " + (i+1) + " time, with below exception: \n" + e.getMessage());
+				LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " is not reachable at the " + failures[i] + " time, with error message: " + e.getMessage());
 				if(failures[i] >= failure_tolerance) {
-					isAlive = false;
-					LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " hits failure tolerance, will disable the heartbeat to it");
+					isHealthy = false;
+					LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " hits failure tolerance, will extend the heartbeat interval to " + ext_interval + " seconds");
 				}
 			}finally{
-				driver.setAliveState(isAlive);
+				driver.setAliveState(isHealthy);
 				if (socket != null) {
 					try {
 						socket.close();
