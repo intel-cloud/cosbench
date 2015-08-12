@@ -1,5 +1,17 @@
-  COSBench 0.4.2.0(15-ww15.3)
+  COSBench 0.4.2.c3(15-ww32.5)
 ------------------------------------
+- #279: "IsAlive" for drivers goes red after a while 
+- #278: unable to run workload against HP public cloud 
+- #276: no response with any data when running on RHEL 7.1 
+- #275: It appears that Cosbench does not properly close driver sockets. 
+- #274: FreeMarker template error: The following has evaluated to null or missing ... 
+- #270: S3: Timeout modifies only the connection timeout 
+
+
+  COSBench 0.4.2.c2(15-ww15.3)
+------------------------------------
+- #267: v0.4.2.c1: Swift/Keystone regression 
+- #265: S3: Need configurable max_connections for AmazonS3Client 
 - #260: when testing ceph giant through librados adapter, some errors like EINPROGRESS raises 
 - #254: Mixed Workloads (Read,Write,Delete) cause low read success rate. 
 - #227: CLI script doesn't show current stage 
