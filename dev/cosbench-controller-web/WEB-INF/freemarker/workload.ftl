@@ -228,7 +228,7 @@
         <tr>
           <th>Driver Url</th>
           <th>Error Code</th>
-          <th>Occurence Number</th>
+          <th>Occurrence Number</th>
         </tr>
         <#list info.errorStatistics?keys as url>     
           <#list info.errorStatistics[url].errorCodeAndNum?keys as code>
