@@ -122,7 +122,7 @@ public class ErrorStatistics {
 	 	  
 	  public static boolean isInteger(String str) {    
 	    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");    
-	    if(pattern.matcher(str) != null)
+	    if(pattern !=null && pattern.matcher(str) != null)
 	    	return pattern.matcher(str).matches();
 	    else
 	    	return false;
