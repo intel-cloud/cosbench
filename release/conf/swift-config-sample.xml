@@ -11,7 +11,7 @@
   <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.10.1:8080/auth/v1.0" />
 
   <!-- Keystone Authentication 
-  <auth type="keystone" config="username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service" /> 
+  <auth type="keystone" config="username=tester;password=testing;tenant_name=test;auth_url=http://127.0.0.1:5000/v2.0;service=swift service;region=regionOne" /> 
   -->
 
   <!-- bypass authentication, directly feed auth token  
