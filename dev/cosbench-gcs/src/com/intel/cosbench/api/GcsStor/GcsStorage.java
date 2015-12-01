@@ -20,6 +20,7 @@ import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
+import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
 
@@ -36,13 +37,14 @@ public class GcsStorage extends NoneStorage {
     public void init(Config config, Logger logger) {
     	super.init(config, logger);
     	initParms(config);
-    	    	
     	try{
     		InputStream input = new FileInputStream(jsonKeyFile);
     		GoogleCredential credential = GoogleCredential.fromStream(input);
+    	    if (credential.createScopedRequired()) {
+    	    	credential = credential.createScoped(StorageScopes.all());
+    	    }
     		HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     		client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).build();
-          
     		logger.debug("GCS client has been initialized");
     	} catch (Exception e) {
     		throw new StorageException(e);
@@ -64,7 +66,7 @@ public class GcsStorage extends NoneStorage {
     
     @Override
     public void setAuthContext(AuthContext info) {
-        super.setAuthContext(info);
+    	super.setAuthContext(info);
     }
 
     @Override
@@ -89,13 +91,13 @@ public class GcsStorage extends NoneStorage {
     @Override
     public void createContainer(String container, Config config) {
     	super.createContainer(container, config);
-        Bucket newBucket = new Bucket();
+    	Bucket newBucket = new Bucket();
         newBucket.setName(container);
 		try {
-			 Storage.Buckets.Insert bucketInsertRequest = client.buckets().insert(projectId, newBucket);
-		     bucketInsertRequest.execute();
+			Storage.Buckets.Insert bucketInsertRequest = client.buckets().insert(projectId, newBucket);
+			bucketInsertRequest.execute();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new StorageException(e);
 		}
     }
 
