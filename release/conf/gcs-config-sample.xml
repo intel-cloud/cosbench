@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <workload name="gcs-sample" description="sample benchmark for Google Cloud Storage">
 
+  <!-- Authentication needs service account credentials. -->
   <storage type="gcs" config="projectid=<projectid>;jsonkeyfile=</path/to/json/key.json/>" />
 
   <workflow>
