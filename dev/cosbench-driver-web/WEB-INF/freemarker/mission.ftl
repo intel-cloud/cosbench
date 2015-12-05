@@ -235,7 +235,7 @@
           <#else>
             <tr class="high-light">
           </#if>
-		  <#if trace>
+		  <#if trace??>
             <td class="id" style="width:13%">${info.errorStatistics.stackTraceAndMessage[trace]}</td>
             <td>${info.errorStatistics.stackTraceAndErrorCode[trace]}</td>
             <td>${info.errorStatistics.stackTraceAndNum[trace]}</td>
