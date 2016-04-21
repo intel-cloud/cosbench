@@ -69,7 +69,7 @@ class Deleter extends AbstractOperator {
         if (Thread.interrupted())
             throw new AbortedException();
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
 
         try {
             session.getApi().deleteObject(conName, objName, config);
@@ -87,11 +87,10 @@ class Deleter extends AbstractOperator {
 					op.getSampleType(), op.getName(), false);
         }
 
-        long end = System.currentTimeMillis();
+        long end = System.nanoTime();
 
-        Date now = new Date(end);
-        return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
-				op.getName(), true, end - start, 0L, 0L);
+        return new Sample(new Date(), op.getId(), op.getOpType(), op.getSampleType(),
+				op.getName(), true, (end - start) / 1000000, 0L, 0L);
     }
 
 }
