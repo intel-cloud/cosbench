@@ -19,7 +19,6 @@ import io.openio.sds.Client;
 import io.openio.sds.ClientBuilder;
 import io.openio.sds.exceptions.ContainerExistException;
 import io.openio.sds.exceptions.ContainerNotEmptyException;
-import io.openio.sds.exceptions.OioSystemException;
 import io.openio.sds.exceptions.SdsException;
 import io.openio.sds.models.ListOptions;
 import io.openio.sds.models.ObjectInfo;
