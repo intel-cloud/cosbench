@@ -42,14 +42,14 @@ public class XferCountingInputStream extends CountingInputStream{
 	
 	private void recordTime() {
 		if (this.isFirstByte) {
-			this.xferStart = System.currentTimeMillis();
+			this.xferStart = System.nanoTime();
 			this.isFirstByte = false;
 		}
-		this.xferEnd = System.currentTimeMillis();
+		this.xferEnd = System.nanoTime();
 	}
 	
 	public long getXferTime() {
-		long xferTime = this.xferEnd - this.xferStart;
+		long xferTime = (this.xferEnd - this.xferStart) / 1000000;
 		return xferTime > 0 ? xferTime : 0L;
 	}
 	
