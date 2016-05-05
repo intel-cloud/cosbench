@@ -25,6 +25,9 @@ import static com.intel.cosbench.client.librados.LibradosConstants.ENDPOINT_KEY;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.ceph.rados.IoCTX;
 import com.ceph.rados.Rados;
@@ -53,6 +56,7 @@ public class LibradosStorage extends NoneStorage {
     private String endpoint;
 
     private Rados client;
+    private Map<String, IoCTX> ioCtxList;
 
     public void init(Config config, Logger logger) {
         super.init(config, logger);
@@ -94,6 +98,8 @@ public class LibradosStorage extends NoneStorage {
                 throw new StorageException(e);
             }
         }
+        
+        ioCtxList = new HashMap<String, IoCTX>();
     }
 
     public void setAuthContext(AuthContext info) {
@@ -102,15 +108,28 @@ public class LibradosStorage extends NoneStorage {
 
     public void dispose() {
         super.dispose();
-//        client = null;
+        Iterator<Map.Entry<String, IoCTX>> entries = ioCtxList.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, IoCTX> entry = entries.next();
+            IoCTX ioctx = (IoCTX)entry.getValue();
+            client.ioCtxDestroy(ioctx);
+            logger.debug("ioCtx for "+entry.getKey()+" container has benn destroyed");
+            entries.remove();
+        }
+        client.shutDown();
+        logger.debug("Librados client has been disposed");
     }
 
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
         InputStream stream;
-        IoCTX ioctx;
         try {
-            ioctx = client.ioCtxCreate(container);
+        	IoCTX ioctx = ioCtxList.get(container);
+            if ( ioctx == null ) {
+            	ioctx = client.ioCtxCreate(container);
+            	logger.debug("ioCtx for "+container+" container has benn created");
+            	ioCtxList.put(container, ioctx);
+            }
             long length = ioctx.stat(object).getSize();
             if (length > (Math.pow(2, 31) - 1)) {
                 throw new StorageException("Object larger than 2GB, handling not implemented");
@@ -123,7 +142,6 @@ public class LibradosStorage extends NoneStorage {
         } catch (RadosException e) {
             throw new StorageException(e);
         }
-        client.ioCtxDestroy(ioctx);
         return stream;
     }
 
@@ -158,7 +176,12 @@ public class LibradosStorage extends NoneStorage {
         byte[] buf = new byte[(int) length];
         try {
             data.read(buf, 0, (int) length);
-            IoCTX ioctx = client.ioCtxCreate(container);
+            IoCTX ioctx = ioCtxList.get(container);
+            if ( ioctx == null ) {
+            	ioctx = client.ioCtxCreate(container);
+            	logger.debug("ioCtx for "+container+" container has benn created");
+            	ioCtxList.put(container, ioctx);
+            }
             ioctx.write(object, buf);
         } catch (RadosException e) {
             throw new StorageException(e);
@@ -169,9 +192,13 @@ public class LibradosStorage extends NoneStorage {
 
     public void deleteObject(String container, String object, Config config) {
         super.deleteObject(container, object, config);
-        IoCTX ioctx;
         try {
-            ioctx = client.ioCtxCreate(container);
+        	IoCTX ioctx = ioCtxList.get(container);
+            if ( ioctx == null ) {
+            	ioctx = client.ioCtxCreate(container);
+            	logger.debug("ioCtx for "+container+" container has benn created");
+            	ioCtxList.put(container, ioctx);
+            }
             ioctx.remove(object);
         } catch (RadosException e) {
             throw new StorageException(e);
