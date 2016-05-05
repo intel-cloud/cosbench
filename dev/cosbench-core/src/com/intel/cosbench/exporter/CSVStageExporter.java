@@ -71,7 +71,7 @@ class CSVStageExporter extends AbstractStageExporter {
     protected void writeMetrics(Writer writer, Snapshot snapshot)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(TIME.format(snapshot.getTimestamp())).append(',');
+        buffer.append(DATETIME.format(snapshot.getTimestamp())).append(',');
         Report report = snapshot.getReport();
 
         if(report.getSize() == 0)
