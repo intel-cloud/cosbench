@@ -7,7 +7,7 @@ Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  rados.jar,
- jna-3.5.2.jar
+ jna-4.2.2.jar
 import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,
  com.intel.cosbench.api.storage,
