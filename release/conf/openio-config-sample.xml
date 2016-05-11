@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workload name="openio sample workload" description="light run" config="">
+    <auth type="none"/>
+    <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+    <workflow config="">
+        <workstage name="init" closuredelay="0" config="">
+            <auth type="none"/>
+            <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+            <work name="init" type="init" workers="5" interval="5"
+                division="container" runtime="0" rampup="0" rampdown="0"
+                afr="0" totalOps="30" totalBytes="0" config="cprefix=container_;containers=r(1,20)">
+                <auth type="none"/>
+                <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+                <operation type="init" ratio="100" division="container"
+                    config="cprefix=container_;containers=r(1,20)" id="op1"/>
+            </work>
+        </workstage>
+        <workstage name="prepare" closuredelay="0" config="">
+            <auth type="none"/>
+            <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+            <work name="prepare" type="prepare" workers="5"
+                interval="5" division="object" runtime="0" rampup="0"
+                rampdown="0" afr="0" totalOps="60" totalBytes="0" config="cprefix=container_;containers=r(1,20);objects=r(1,30);sizes=c(5)KB">
+                <auth type="none"/>
+                <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+                <operation type="prepare" ratio="100" division="object"
+                    config="createContainer=false;cprefix=container_;containers=r(1,20);objects=r(1,60);sizes=c(5)KB" id="op1"/>
+            </work>
+        </workstage>
+        <workstage name="main" closuredelay="0" config="">
+            <auth type="none"/>
+            <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+            <work name="main" type="normal" workers="5" interval="5"
+                division="container" runtime="120" rampup="0"
+                rampdown="0" afr="200000" totalOps="0" totalBytes="0" config="">
+                <auth type="none"/>
+                <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+                <operation type="read" ratio="50" division="container"
+                    config="cprefix=container_;containers=u(1,20);objects=u(1,40)" id="op1"/>
+                <operation type="write" ratio="40" division="container"
+                    config="cprefix=container_;containers=u(1,20);objects=u(10,50);sizes=c(6)KB" id="op2"/>
+                <operation type="delete" ratio="10" division="container"
+                    config="cprefix=container_;containers=u(1,20);objects=u(51,60)" id="op3"/>
+            </work>
+        </workstage>
+        <workstage name="cleanup" closuredelay="0" config="">
+            <auth type="none"/>
+            <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+            <work name="cleanup" type="cleanup" workers="5"
+                interval="5" division="object" runtime="0" rampup="0"
+                rampdown="0" afr="0" totalOps="30" totalBytes="0" config="cprefix=container_;containers=r(1,20);objects=r(1,30)">
+                <auth type="none"/>
+                <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+                <operation type="cleanup" ratio="100" division="object"
+                    config="cprefix=container_;containers=r(1,20);objects=r(1,60)" id="op1"/>
+            </work>
+        </workstage>
+        <workstage name="dispose" closuredelay="0" config="">
+            <auth type="none"/>
+            <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+            <work name="dispose" type="dispose" workers="5" interval="5"
+                division="container" runtime="0" rampup="0" rampdown="0"
+                afr="0" totalOps="6" totalBytes="0" config="cprefix=container_;containers=r(1,20)">
+                <auth type="none"/>
+                <storage type="openio" config="ns=NS;account=myaccount;proxyd-url=http://127.0.0.1:6000"/>
+                <operation type="dispose" ratio="100"
+                    division="container"
+                    config="objects=r(0,0);sizes=c(0)B;cprefix=container_;containers=r(1,20)" id="op1"/>
+            </work>
+        </workstage>
+    </workflow>
+</workload>

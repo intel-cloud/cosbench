@@ -49,27 +49,27 @@ public class OpenIOStorage extends NoneStorage {
         parms.put(ACCOUNT_KEY, account);
     }
 
-	/**
-	 * Hack the exception message to put the error code where COSBench expects
-	 * it.
-	 *
-	 * @param wrapped
-	 *            The exception to wrap
-	 * @return a new StorageException with the {@link SdsException} as cause
-	 */
-	private StorageException makeStorageException(SdsException wrapped) {
-		String origMsg = wrapped.getMessage();
-		if (wrapped instanceof ContainerNotEmptyException ||
-				wrapped instanceof ContainerExistException)
-			return new StorageException("HTTP/1.1 409 " + origMsg, wrapped);
+    /**
+     * Hack the exception message to put the error code where COSBench expects
+     * it.
+     *
+     * @param wrapped
+     *            The exception to wrap
+     * @return a new StorageException with the {@link SdsException} as cause
+     */
+    private StorageException makeStorageException(SdsException wrapped) {
+        String origMsg = wrapped.getMessage();
+        if (wrapped instanceof ContainerNotEmptyException
+                || wrapped instanceof ContainerExistException)
+            return new StorageException("HTTP/1.1 409 " + origMsg, wrapped);
 
-		Matcher codeMatcher = errCodePattern.matcher(origMsg);
-		if (codeMatcher.find()) {
-			return new StorageException("HTTP/1.1 " + codeMatcher.group(1) + " "
-					+ origMsg, wrapped);
-		}
-		return new StorageException(wrapped);
-	}
+        Matcher codeMatcher = errCodePattern.matcher(origMsg);
+        if (codeMatcher.find()) {
+            return new StorageException("HTTP/1.1 " + codeMatcher.group(1)
+                    + " " + origMsg, wrapped);
+        }
+        return new StorageException("HTTP/1.1 500 " + origMsg, wrapped);
+    }
 
     @Override
     public InputStream getObject(String container, String object,
@@ -97,18 +97,18 @@ public class OpenIOStorage extends NoneStorage {
             throw makeStorageException(e);
         }
         return new ByteArrayInputStream(sb.toString().getBytes());
-	}
+    }
 
-	@Override
-	public void createContainer(String container, Config config) {
-		super.createContainer(container, config);
-		try {
-			client.createContainer(url(account, container));
-		} catch (ContainerExistException e) {
-			this.logger.warn("Container " + container + " already exists!", e);
-		} catch (SdsException e) {
-		    throw makeStorageException(e);
-		}
+    @Override
+    public void createContainer(String container, Config config) {
+        super.createContainer(container, config);
+        try {
+            client.createContainer(url(account, container));
+        } catch (ContainerExistException e) {
+            this.logger.warn("Container " + container + " already exists!", e);
+        } catch (SdsException e) {
+            throw makeStorageException(e);
+        }
     }
 
     @Override
