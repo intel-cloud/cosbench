@@ -57,6 +57,7 @@ public class PingDriverRunner implements Runnable{
 						InetSocketAddress locAddress = new InetSocketAddress("0.0.0.0", 0);
 						socket.bind(locAddress);
 						socket.connect(reAddress,3000);
+						socket.close();
 						isAlive = true;
 						}catch(Exception e){
 							isAlive = false;
