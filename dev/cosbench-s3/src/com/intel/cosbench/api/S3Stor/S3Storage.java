@@ -55,6 +55,7 @@ public class S3Storage extends NoneStorage {
         clientConf.setConnectionTimeout(timeout);
         clientConf.setSocketTimeout(timeout);
         clientConf.withUseExpectContinue(false);
+        clientConf.withSignerOverride("S3SignerType");
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!proxyHost.equals(""))&&(!proxyPort.equals(""))){
 			clientConf.setProxyHost(proxyHost);
