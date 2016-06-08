@@ -71,5 +71,11 @@ COSBench-Plot: (https://github.com/icclab/cosbench-plot)
 
 COSBench-Appliance: (https://susestudio.com/a/S1QYue/cosbench)
 
+COSBench Ansible Playbook: 
+
+- (http://www.ksingh.co.in/blog/2016/05/29/deploy-cosbench-using-ansible/)
+- (https://github.com/ksingh7/ansible-role-cosbench)
+- (https://galaxy.ansible.com/ksingh7/cosbench/)
+
 
 = END =
