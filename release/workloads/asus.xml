@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="test" description="The distribution is a summarization of a real-world trace script. The trace script was collected continuously 
+	for two weeks, and the system is located in a regional server farm operated by ASUS Webstorage. The workload contains 4 types of activities 
+	that are frequently invoked in the object storage servers – read, write, append and move.">
+
+  <storage type="swift" />
+  
+  <auth type="swauth" config="username=test:swift;password=thepassword;auth_url=http://lab-be1:80/auth" />
+
+  <workflow>
+    <workstage name="init">
+      <work type="init" 
+            workers="1" 
+    config="containers=r(1,431)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" 
+            workers="40" 
+    config="containers=r(1,431);objects=r(1,1299);sizes=h(1|100|604,101|500|116,501|1024|51,1025|5120|169,5121|102400|18,102401|1024000|2)KB" />
+    </workstage>
+    <workstage name="delay" closuredelay="300">
+       <work type="delay" workers="1" />
+    </workstage>
+    <workstage name="main">
+      <work name="main" workers="256" runtime="900">
+        <operation type="read" 
+   config="containers=u(1,431);objects=u(1,1299)" />
+      </work>
+    </workstage>
+    <workstage name="cleanup">
+      <work type="cleanup" 
+            workers="40" 
+    config="containers=r(1,431);objects=r(1,1299)" />
+    </workstage>
+
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="containers=r(1,431)" />
+    </workstage>
+  </workflow>
+</workload>
