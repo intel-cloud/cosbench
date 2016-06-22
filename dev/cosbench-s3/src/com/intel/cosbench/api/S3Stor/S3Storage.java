@@ -81,6 +81,7 @@ public class S3Storage extends NoneStorage {
         clientConf.setSocketTimeout(timeout);
         clientConf.withUseExpectContinue(false);
         clientConf.withSignerOverride("S3SignerType");
+        System.setProperty(SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!parms.getStr(PROXY_HOST_KEY).equals(""))&&(!parms.getStr(PROXY_PORT_KEY).equals(""))){
 			clientConf.setProxyHost(parms.getStr(PROXY_HOST_KEY));
