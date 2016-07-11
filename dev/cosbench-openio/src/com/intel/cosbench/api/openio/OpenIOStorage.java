@@ -3,6 +3,7 @@ package com.intel.cosbench.api.openio;
 import static com.intel.cosbench.client.openio.OioStorageConstants.ACCOUNT_KEY;
 import static com.intel.cosbench.client.openio.OioStorageConstants.NS_KEY;
 import static com.intel.cosbench.client.openio.OioStorageConstants.PROXYD_URL_KEY;
+import static com.intel.cosbench.client.openio.OioStorageConstants.ECD_URL_KEY;
 import static io.openio.sds.models.OioUrl.url;
 
 import java.io.ByteArrayInputStream;
@@ -41,8 +42,9 @@ public class OpenIOStorage extends NoneStorage {
         super.init(config, logger);
         String ns = config.get(NS_KEY);
         String proxydurl = config.get(PROXYD_URL_KEY);
+        String ecdUrl = config.get(ECD_URL_KEY);
         client = ClientBuilder
-                .newClient(ns, proxydurl);
+                .newClient(ns, proxydurl, ecdUrl);
         account = config.get(ACCOUNT_KEY);
         parms.put(NS_KEY, ns);
         parms.put(PROXYD_URL_KEY, proxydurl);
