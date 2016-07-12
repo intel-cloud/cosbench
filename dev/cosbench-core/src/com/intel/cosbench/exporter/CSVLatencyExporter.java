@@ -79,7 +79,7 @@ class CSVLatencyExporter extends AbstractLatencyExporter {
         for (StageInfo stage : workload.getStageInfos()) {
         	for (Metrics metrics : stage.getReport()) {
         		metricsIdx++;
-        		if (!metrics.getOpName().equals(metrics.getSampleType())) {
+        		if (!metrics.getOpName().equals(metrics.getSampleType()) || metrics.getLatency() == null) {
         			continue; /*skip for special work*/
         		}
         		int count = metrics.getLatency().getHistoData()[idx];

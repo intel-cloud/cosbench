@@ -37,7 +37,7 @@ fi
 
 which $TOOL 1>&2 >/dev/null
 if [ $? -eq 0 ]; then
-	echo "exit" | $TOOL localhost $OSGI_CONSOLE_PORT >> /dev/null
+	echo "exit" | $TOOL 0.0.0.0 $OSGI_CONSOLE_PORT >> /dev/null
 else
 	pid=`ps -eo pid,cmd |grep java |grep $SERVICE_NAME |cut -d" " -f1`
 	kill $pid

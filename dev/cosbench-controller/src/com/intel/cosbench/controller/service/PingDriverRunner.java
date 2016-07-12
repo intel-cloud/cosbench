@@ -18,6 +18,8 @@ limitations under the License.
 package com.intel.cosbench.controller.service;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 import com.intel.cosbench.model.DriverInfo;
 
@@ -47,12 +49,21 @@ public class PingDriverRunner implements Runnable{
 			
 			String ipAddress = getIpAddres(driver.getUrl());
 			try {
-				if (!ipAddress.isEmpty()) {
-					isAlive = InetAddress.getByName(ipAddress).isReachable(3000);				
+				if (!ipAddress.isEmpty()) {	
+					try{
+						Socket socket = new Socket();
+						InetSocketAddress reAddress = new InetSocketAddress(ipAddress, 18088);
+						InetSocketAddress locAddress = new InetSocketAddress("127.0.0.1", 0);
+						socket.bind(locAddress);
+						socket.connect(reAddress,3000);
+						isAlive = true;
+						}catch(Exception e){
+							isAlive = false;
+						}
 				}
-			} catch (Exception ignore) {
+			}finally{
+				driver.setAliveState(isAlive);
 			}
-			driver.setAliveState(isAlive);
 		}
 	}
 	

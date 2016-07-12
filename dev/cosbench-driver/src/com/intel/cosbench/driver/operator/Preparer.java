@@ -23,6 +23,8 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.api.auth.AuthException;
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.Config;
@@ -108,11 +110,20 @@ class Preparer extends AbstractOperator {
             throw new AbortedException();
 
         try {
-            session.getApi().createContainer(conName, config);
+        	session.getApi().createContainer(conName, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
-        } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform prepare operation", e);
+        }catch(StorageException se) {
+        	isUnauthorizedException(se, session);
+            errorStatisticsHandle(se, session, conName);
+            if(session.getApi().isAuthValid()){
+            	throw new AgentException();
+            }
+            else {
+				throw new AuthException(se);
+			}
+        }catch (Exception e) {
             throw new AgentException(); // mark error
         }
 

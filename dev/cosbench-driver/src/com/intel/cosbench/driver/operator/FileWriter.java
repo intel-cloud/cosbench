@@ -137,13 +137,15 @@ class FileWriter extends AbstractOperator {
 
         XferCountingInputStream cin = new XferCountingInputStream(in);
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
 
         try {
-            session.getApi().createObject(conName, objName, cin, length, config);
+              session.getApi().createObject(conName, objName, cin, length, config);
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
+        	isUnauthorizedException(e, session);
             doLogErr(session.getLogger(), "fail to perform filewrite operation", e);
             return new Sample(new Date(), getId(), getOpType(), getSampleType(),
     				getName(), false);
@@ -151,10 +153,9 @@ class FileWriter extends AbstractOperator {
             IOUtils.closeQuietly(cin);
         }
 
-        long end = System.currentTimeMillis();
+        long end = System.nanoTime();
 
-        Date now = new Date(end);
-        return new Sample(now,  getId(), getOpType(), getSampleType(),
-				getName(), true, end - start, cin.getXferTime(), cin.getByteCount());
+        return new Sample(new Date(),  getId(), getOpType(), getSampleType(),
+				getName(), true, (end - start) / 1000000, cin.getXferTime(), cin.getByteCount());
     }
 }

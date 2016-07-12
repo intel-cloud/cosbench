@@ -31,7 +31,7 @@ public class Operation {
     private String type;
     private int ratio = 100;
     private String division;
-    private String config;
+    private String config = "";
     private String id = "none"; /* will be inited in workloadProcessor.initStageOpId() */
 
     public Operation() {

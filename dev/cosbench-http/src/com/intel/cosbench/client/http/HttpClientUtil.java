@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.client.http;
 
+import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -25,6 +26,10 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -42,6 +47,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HttpContext;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 /**
  * This class encapsulates basic HTTP client related functions which are
@@ -66,16 +73,17 @@ public class HttpClientUtil {
 	      HttpParams params = createDefaultHttpParams(timeout);
 	      ClientConnectionManager cm = createClientConnManager();
 	
-	      return new DefaultHttpClient(cm, params);    	
+	      return new DefaultHttpClient(cm, params);    	    	
     }
 
-    private static HttpParams createDefaultHttpParams(int timeout) {
+    private static  HttpParams createDefaultHttpParams(int timeout) {
         HttpParams params = new BasicHttpParams();
         /* default HTTP parameters */
         DefaultHttpClient.setDefaultHttpParams(params);
         /* connection/socket timeouts */
         HttpConnectionParams.setSoTimeout(params, timeout);
         HttpConnectionParams.setConnectionTimeout(params, timeout);
+        
         /* user agent */
         HttpProtocolParams.setUserAgent(params, "cosbench/2.0");
         return params;
@@ -166,5 +174,4 @@ public class HttpClientUtil {
             return str;
         }
     }
-
 }

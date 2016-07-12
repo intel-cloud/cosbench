@@ -82,34 +82,36 @@ class Reader extends AbstractOperator {
         InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         long xferTime = 0L;
-        long xferTimeCheck = 0L;
         try {
-        	doLogDebug(session.getLogger(), "Read Object " + conName + "/" + objName);
             in = session.getApi().getObject(conName, objName, config);
-            long xferStart = System.currentTimeMillis();
-            if (!hashCheck){
+            long xferStart = System.nanoTime();
+            if (!hashCheck) {
                 copyLarge(in, cout);
-            	long xferEnd = System.currentTimeMillis();
-            	xferTime = xferEnd - xferStart;
-            } else if (!validateChecksum(conName, objName, session, in, cout, xferTimeCheck))
+            } else if (!validateChecksum(conName, objName, session, in, cout)) {
 				return new Sample(new Date(), getId(), getOpType(),
 						getSampleType(), getName(), false);
+            }
+            long xferEnd = System.nanoTime();
+            xferTime = (xferEnd - xferStart) / 1000000;
         } catch (StorageInterruptedException sie) {
+            doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
-            doLogErr(session.getLogger(), "fail to perform read operation", e);
+        	isUnauthorizedException(e, session);
+        	errorStatisticsHandle(e, session, conName + "/" + objName);
+        	
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(cout);
         }
-        long end = System.currentTimeMillis();
+        long end = System.nanoTime();
 
-        Date now = new Date(end);
-		return new Sample(now, getId(), getOpType(), getSampleType(),
-				getName(), true, end - start, hashCheck ? xferTimeCheck : xferTime, cout.getByteCount());
+		return new Sample(new Date(), getId(), getOpType(), getSampleType(),
+				getName(), true, (end - start)/1000000,
+				xferTime, cout.getByteCount());
     }
 
     public OutputStream copyLarge(InputStream input, OutputStream output)
@@ -124,7 +126,7 @@ class Reader extends AbstractOperator {
     }
     
     private static boolean validateChecksum(String conName, String objName,
-            Session session, InputStream in, OutputStream out, long xferTimeCheck)
+            Session session, InputStream in, OutputStream out)
             throws IOException {
         HashUtil util;
         try {
@@ -137,7 +139,6 @@ class Reader extends AbstractOperator {
             String storedHash = new String();
             String calculatedHash = new String();
             
-            long xferStart = System.currentTimeMillis();
             int br1 = in.read(buf1);
 
             if (br1 <= hashLen) {
@@ -174,8 +175,7 @@ class Reader extends AbstractOperator {
                     br1 = br2;
                 }
             }
-            xferTimeCheck = System.currentTimeMillis() - xferStart;
-            
+
             if (!calculatedHash.equals(storedHash)) {
                 if (storedHash.startsWith(HashUtil.GUARD)) {
                     String err =

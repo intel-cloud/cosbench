@@ -21,6 +21,9 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+import com.intel.cosbench.config.common.KVConfigParser;
+
 /**
  * The class encapsulates the mission delivering to driver.
  * 
@@ -43,9 +46,12 @@ public class Mission implements Iterable<Operation> {
     private int totalOps = 0;
     private long totalBytes = 0;
     private int totalWorkers;
+    private String config = "";
     private Auth auth = DEFAULT_AUTH;
     private Storage storage = DEFAULT_STORAGE;
     private List<Operation> operations;
+    
+    
 
     public Mission() {
         /* empty */
@@ -170,7 +176,24 @@ public class Mission implements Iterable<Operation> {
                     "must specify 'totalWorkers' for a mission");
         this.totalWorkers = totalWorkers;
     }
+    
+    public boolean hasHisto() {
+    	if(config != null) {
+    		return KVConfigParser.parse(config).getBoolean("histo", true);
+    	}
+    	
+    	return true;
+    }
 
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        /* configuration might be empty */
+        this.config = config;
+    }
+    
     public Auth getAuth() {
         return auth;
     }
@@ -198,6 +221,9 @@ public class Mission implements Iterable<Operation> {
     public void setOperations(List<Operation> operations) {
         if (operations == null || operations.isEmpty())
             throw new ConfigException("a mission must have opertations");
+        for(Operation op: operations) {
+        	op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
+        }
         this.operations = operations;
     }
 

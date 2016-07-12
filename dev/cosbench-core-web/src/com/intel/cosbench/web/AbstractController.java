@@ -57,6 +57,8 @@ public abstract class AbstractController implements Controller {
         result.addObject("showDetails", Boolean.parseBoolean(showDetails));
         String perfDetails = req.getParameter("perfDetails");
         result.addObject("perfDetails", Boolean.parseBoolean(perfDetails));
+        String showErrorStatistics = req.getParameter("showErrorStatistics");
+        result.addObject("showErrorStatistics",Boolean.parseBoolean(showErrorStatistics));
         return result;
     }
 

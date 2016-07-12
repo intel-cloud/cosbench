@@ -17,6 +17,8 @@ limitations under the License.
 
 package com.intel.cosbench.model;
 
+import java.util.Map;
+
 public interface DriverInfo {
 
     public String getName();
@@ -26,5 +28,7 @@ public interface DriverInfo {
     public void setAliveState(boolean aliveState);
     
     public boolean getAliveState();
+    
+    public Map<String, String> getLogMap();
     
 }

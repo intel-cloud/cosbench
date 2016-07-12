@@ -21,6 +21,7 @@ import static com.intel.cosbench.api.mock.MockConstants.*;
 
 import com.intel.cosbench.api.auth.NoneAuth;
 import com.intel.cosbench.api.context.AuthContext;
+import com.intel.cosbench.api.context.DefaultAuthContext;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
 
@@ -60,7 +61,7 @@ class MockAuth extends NoneAuth {
     public AuthContext login() {
         super.login();
         MockUtils.sleep(delay);
-        AuthContext context = new AuthContext();
+        AuthContext context = new DefaultAuthContext();
         context.put(AUTH_TOKEN_KEY, token);
         return context;
     }

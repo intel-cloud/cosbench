@@ -113,9 +113,12 @@ class KeystoneAuth extends NoneAuth {
     }
 
     private AuthContext createContext() {
-        AuthContext context = new AuthContext();
-        context.put(AUTH_TOKEN_KEY, client.getKeystoneTokenId());
-        context.put(STORAGE_URL_KEY, client.getServiceUrl(service));
+//        AuthContext context = new DefaultAuthContext();
+//        context.put(AUTH_TOKEN_KEY, client.getKeystoneTokenId());
+//        context.put(STORAGE_URL_KEY, client.getServiceUrl(service));
+//        return context;
+        KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service));
+        
         return context;
     }
 

@@ -20,6 +20,7 @@ package com.intel.cosbench.model;
 import java.util.Date;
 
 import com.intel.cosbench.bench.Benchmark;
+import com.intel.cosbench.bench.ErrorStatistics;
 import com.intel.cosbench.config.Mission;
 import com.intel.cosbench.log.LogManager;
 
@@ -40,5 +41,7 @@ public interface MissionInfo extends LifeCycle, Benchmark {
     public int getWorkerCount();
 
     public WorkerInfo[] getWorkerInfos();
+        
+    public ErrorStatistics getErrorStatistics();
 
 }

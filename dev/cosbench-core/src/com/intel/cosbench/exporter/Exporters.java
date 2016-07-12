@@ -56,6 +56,12 @@ public class Exporters {
         exporter.setWorkload(workload);
         return exporter;
     }
+    
+    public static LogExporter newScriptLogExporter(WorkloadInfo workload) {
+        ScriptsLogExporter exporter = new ScriptsLogExporter();
+        exporter.setWorkload(workload);
+        return exporter;
+    }
 
     public static MatrixExporter newMatrixExporter(WorkloadInfo workload) {
         AbstractMatrixExporter exporter = new CSVMatrixExporter();

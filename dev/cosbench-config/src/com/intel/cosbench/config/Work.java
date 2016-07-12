@@ -21,6 +21,8 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.intel.cosbench.config.common.ConfigUtils;
+
 /**
  * The model class mapping to "work" in configuration xml with following form:
  * 	<work type="type" workers="workers" division="division" 
@@ -39,12 +41,12 @@ public class Work implements Iterable<Operation> {
     private int runtime = 0;
     private int rampup = 0;
     private int rampdown = 0;
-    private int afr = 200000; /* acceptable failure ratio, the unit is samples per one million,
+    private int afr = -1; /* acceptable failure ratio, the unit is samples per one million,
      * default is 200000 for normal work, and 0 for init/prepare/cleanup/dispose/delay work */
     private int totalOps = 0;
     private long totalBytes = 0;
     private String driver;
-    private String config;
+    private String config = "";
     private Auth auth;
     private Storage storage;    
     private List<Operation> operations;
@@ -233,6 +235,9 @@ public class Work implements Iterable<Operation> {
     public void setOperations(List<Operation> operations) {
         if (operations == null || operations.isEmpty())
             throw new ConfigException("a work must have opertations");
+        for(Operation op: operations) {
+        	op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
+        }
         this.operations = operations;
     }
 
@@ -241,6 +246,7 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a operation must have type");
         if (operations == null)
             operations = new ArrayList<Operation>();
+        op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
         operations.add(op);
     }
 
@@ -254,7 +260,7 @@ public class Work implements Iterable<Operation> {
             name = "prepare";
         setDivision("object");
         setRuntime(0);
-        setAfr(0);
+        setDefaultAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -274,7 +280,7 @@ public class Work implements Iterable<Operation> {
             name = "cleanup";
         setDivision("object");
         setRuntime(0);
-        setAfr(0);
+        setDefaultAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -294,7 +300,7 @@ public class Work implements Iterable<Operation> {
             name = "init";
         setDivision("container");
         setRuntime(0);
-        setAfr(0);
+        setDefaultAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -310,7 +316,7 @@ public class Work implements Iterable<Operation> {
             name = "dispose";
         setDivision("container");
         setRuntime(0);
-        setAfr(0);
+        setDefaultAfr(0);
         setTotalBytes(0);
         setTotalOps(getWorkers());
         Operation op = new Operation();
@@ -326,7 +332,7 @@ public class Work implements Iterable<Operation> {
 			name = "delay";
 		setDivision("none");
 		setRuntime(0);
-		setAfr(0);
+		setDefaultAfr(0);
 		setTotalBytes(0);
 		setWorkers(1);
 		setTotalOps(getWorkers());
@@ -336,6 +342,11 @@ public class Work implements Iterable<Operation> {
 		op.setConfig("");
 		setOperations(Collections.singletonList(op));
 	} 
+	
+	private void setDefaultAfr(int def) {
+		if (afr < 0)
+			setAfr(def);
+	}
 
     public void validate() {
         if (type.equals("prepare"))
@@ -348,6 +359,8 @@ public class Work implements Iterable<Operation> {
             toDisposeWork();
 		else if (type.equals("delay"))
 			toDelayWork(); 
+		else 
+			setDefaultAfr(200000);
         setName(getName());
         setWorkers(getWorkers());
         if (runtime == 0 && totalOps == 0 && totalBytes == 0)

@@ -45,7 +45,7 @@ public class Metrics implements Item, Cloneable {
     private int workerCount; /* total workers involved */
 
     /* Metrics */
-
+    
     private double avgResTime; /* average response time */
     private double avgXferTime; /* average transfer time */
     private double throughput; /* operation throughput */

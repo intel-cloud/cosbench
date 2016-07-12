@@ -53,6 +53,9 @@ public class S3Storage extends NoneStorage {
         
         ClientConfiguration clientConf = new ClientConfiguration();
         clientConf.setConnectionTimeout(timeout);
+        clientConf.setSocketTimeout(timeout);
+        clientConf.withUseExpectContinue(false);
+        clientConf.withSignerOverride("S3SignerType");
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!proxyHost.equals(""))&&(!proxyPort.equals(""))){
 			clientConf.setProxyHost(proxyHost);
@@ -89,7 +92,7 @@ public class S3Storage extends NoneStorage {
         super.getObject(container, object, config);
         InputStream stream;
         try {
-        	logger.info("Retrieving " + container + "\\" + object);
+        	
             S3Object s3Obj = client.getObject(container, object);
             stream = s3Obj.getObjectContent();
             
@@ -104,7 +107,7 @@ public class S3Storage extends NoneStorage {
         super.createContainer(container, config);
         try {
         	if(!client.doesBucketExist(container)) {
-	        	logger.info("Creating " + container);
+	        	
 	            client.createBucket(container);
         	}
         } catch (Exception e) {
@@ -117,7 +120,6 @@ public class S3Storage extends NoneStorage {
             long length, Config config) {
         super.createObject(container, object, data, length, config);
         try {
-        	logger.info("Creating " + container + "\\" + object + " with length=" + length + " Bytes");
     		ObjectMetadata metadata = new ObjectMetadata();
     		metadata.setContentLength(length);
     		metadata.setContentType("application/octet-stream");
@@ -133,7 +135,6 @@ public class S3Storage extends NoneStorage {
         super.deleteContainer(container, config);
         try {
         	if(client.doesBucketExist(container)) {
-        		logger.info("Deleting " + container);
         		client.deleteBucket(container);
         	}
         } catch(AmazonS3Exception awse) {
@@ -149,7 +150,6 @@ public class S3Storage extends NoneStorage {
     public void deleteObject(String container, String object, Config config) {
         super.deleteObject(container, object, config);
         try {
-        	logger.info("Deleting " + container + "\\" + object);
             client.deleteObject(container, object);
         } catch(AmazonS3Exception awse) {
         	if(awse.getStatusCode() != HttpStatus.SC_NOT_FOUND) {

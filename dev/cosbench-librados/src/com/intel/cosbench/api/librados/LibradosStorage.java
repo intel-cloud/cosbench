@@ -89,8 +89,6 @@ public class LibradosStorage extends NoneStorage {
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
         InputStream stream;
-
-        logger.info("Retrieving " + container + "\\" + object);
         IoCTX ioctx;
         try {
             ioctx = client.ioCtxCreate(container);

@@ -51,6 +51,16 @@
 		<property name="driver" ref="driver" />
 	</bean>
 
+	<bean id="downloadLogController" name="/download-log.do"
+		class="com.intel.cosbench.driver.web.DownloadLogController">
+		<property name="driver" ref="driver" />
+	</bean>
+
+	<bean id="triggerController" name="/run-trigger.do"
+		class="com.intel.cosbench.driver.web.TriggerController">
+		<property name="driver" ref="driver" />
+	</bean>
+
 	<bean id="urlHandler"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 	</bean>

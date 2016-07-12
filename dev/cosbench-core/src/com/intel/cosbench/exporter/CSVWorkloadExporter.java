@@ -136,12 +136,21 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
 
     private static void writeLatencyInfo(StringBuilder buffer, Histogram latency)
             throws IOException {
-        writePercentileRT(buffer, latency.get_60());
-        writePercentileRT(buffer, latency.get_80());
-        writePercentileRT(buffer, latency.get_90());
-        writePercentileRT(buffer, latency.get_95());
-        writePercentileRT(buffer, latency.get_99());
-        writePercentileRT(buffer, latency.get_100());
+    	if(latency == null) {
+            writePercentileRT(buffer,null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+    	}else {
+    		writePercentileRT(buffer, latency.get_60());
+    		writePercentileRT(buffer, latency.get_80());
+    		writePercentileRT(buffer, latency.get_90());
+    		writePercentileRT(buffer, latency.get_95());
+    		writePercentileRT(buffer, latency.get_99());
+    		writePercentileRT(buffer, latency.get_100());
+    	}
     }
 
     private static void writePercentileRT(StringBuilder buffer, long[] resTime) {

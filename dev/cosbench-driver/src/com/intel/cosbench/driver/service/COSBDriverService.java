@@ -43,16 +43,16 @@ import com.intel.cosbench.service.IllegalStateException;
 class COSBDriverService implements DriverService, MissionListener {
 
     private static final Logger LOGGER = LogFactory.getSystemLogger();
-
+    
     private DriverContext context;
     private Map<String, MissionHandler> handlers;
-
+    
     private AuthAPIService authAPIs;
     private StorageAPIService storageAPIs;
 
     private ExecutorService executor;
     private MissionRepository memRepo = new RAMMissionRepository();
-
+    
     public COSBDriverService() {
         /* empty */
     }
@@ -74,7 +74,7 @@ class COSBDriverService implements DriverService, MissionListener {
         handlers = Collections.synchronizedMap(handlers);
         executor = Executors.newCachedThreadPool();
     }
-
+    
     @Override
     public String submit(XmlConfig config) {
         LOGGER.debug("submitting mission ... ");
