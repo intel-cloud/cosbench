@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/annotations-2.0.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/archaius-core-0.5.12.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/aws-java-sdk-1.7.5.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/commons-codec-1.6.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/commons-collections-3.2.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/commons-configuration-1.8.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/commons-lang-2.6.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/commons-logging-1.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/guava-14.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/httpclient-4.2.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/httpcore-4.2.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jackson-annotations-2.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jackson-core-2.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jackson-core-asl-1.9.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jackson-databind-2.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jackson-mapper-asl-1.9.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jersey-apache-client4-1.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jersey-client-1.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jersey-core-1.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/joda-time-2.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jsr311-api-1.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/netflix-commons-util-0.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/netflix-statistics-0.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/ribbon-core-0.3.9.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/ribbon-httpclient-0.3.9.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/rxjava-core-0.14.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/s3-client-2.0.3-javadoc.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/s3-client-2.0.3-sources.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/s3-client-2.0.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/servo-core-0.4.44.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/slf4j-api-1.6.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/smart-client-2.0.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../s3_workshop/libs/jackson-databind-2.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../../jars/object-client-1.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../../jars/smart-client-1.0.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../../jars/aws-java-sdk-1.9.6/lib/aws-java-sdk-1.9.6.jar!/" />
+    <src_description expected_position="5">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="5" />
+    </src_description>
+  </component>
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="Manually" manifestLocation="META-INF/MANIFEST.MF" jarfileLocation="cosbench-ecs_0.4.2.0.jar" outputPathType="OsgiOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="false" alwaysRebuildBundleJAR="true" doNotSynchronizeWithMaven="false">
+        <additionalProperties />
+        <additionalJARContents>
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/commons-codec-1.4.jar" dest="commons-codec-1.4.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/commons-logging-1.1.1.jar" dest="commons-logging-1.1.1.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/jdom2-2.0.5.jar" dest="jdom2-2.0.5.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-apache-client4-1.18.3.jar" dest="jersey-apache-client4-1.18.3.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-client-1.18.3.jar" dest="jersey-client-1.18.3.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-core-1.18.3.jar" dest="jersey-core-1.18.3.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/log4j-1.2.17.jar" dest="log4j-1.2.17.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/lzma-sdk-4j-9.22.0.jar" dest="lzma-sdk-4j-9.22.0.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/slf4j-api-1.7.5.jar" dest="slf4j-api-1.7.5.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/vipr-object-transformations-2.0.3.jar" dest="vipr-object-transformations-2.0.3.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/javax.mail-api-1.4.6.jar" dest="javax.mail-api-1.4.6.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/httpcore-4.4.1.jar" dest="httpcore-4.4.1.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/httpclient-4.5.jar" dest="httpclient-4.5.jar" />
+          <entry source="$MODULE_DIR$/smart-client-2.0.6.jar" dest="smart-client-2.0.6.jar" />
+          <entry source="$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-api_0.4.1.0.jar" dest="cosbench-api_0.4.1.0.jar" />
+          <entry source="$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-config_0.4.1.0.jar" dest="cosbench-config_0.4.1.0.jar" />
+          <entry source="$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-http_0.4.1.0.jar" dest="cosbench-http_0.4.1.0.jar" />
+          <entry source="$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-log_0.4.1.0.jar" dest="cosbench-log_0.4.1.0.jar" />
+          <entry source="$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-driver_0.4.1.0.jar" dest="cosbench-driver_0.4.1.0.jar" />
+          <entry source="$MODULE_DIR$/../../jars/ecs-object-client-libs/object-client-2.2.1.jar" dest="object-client-2.2.1.jar" />
+        </additionalJARContents>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$" type="java-test-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/log4j-api-2.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/commons-codec-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/commons-logging-1.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/jdom2-2.0.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-apache-client4-1.18.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-client-1.18.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/jersey-core-1.18.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/log4j-1.2.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/lzma-sdk-4j-9.22.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/slf4j-api-1.7.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/vipr-object-transformations-2.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/javax.mail-api-1.4.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="org.osgi.core-6.0.0" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/httpcore-4.4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../jars/ecs-object-client-libs/httpclient-4.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="smart-client-2.0.6" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-api_0.4.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-config_0.4.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-log_0.4.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-http_0.4.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/cosbench/0.4.1.0/osgi/plugins/cosbench-driver_0.4.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="object-client-2.2.1" level="project" />
+  </component>
+</module>
