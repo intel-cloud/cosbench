@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.operator;
 
@@ -32,18 +32,18 @@ import com.intel.cosbench.service.AbortedException;
 
 /**
  * This class represents primitive READ operation.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class Reader extends AbstractOperator {
 
     public static final String OP_TYPE = "read";
-    
+
     private boolean hashCheck = false;
 
     private ObjectPicker objPicker = new ObjectPicker();
-    
+
     private byte buffer[] = new byte[1024*1024];
 
     public Reader() {
@@ -101,7 +101,7 @@ class Reader extends AbstractOperator {
         } catch (Exception e) {
         	isUnauthorizedException(e, session);
         	errorStatisticsHandle(e, session, conName + "/" + objName);
-        	
+
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
             IOUtils.closeQuietly(in);
@@ -117,14 +117,11 @@ class Reader extends AbstractOperator {
     public OutputStream copyLarge(InputStream input, OutputStream output)
             throws IOException
     {
-            for(int n = 0; -1 != (n = input.read(buffer));)
-            {
-                output.write(buffer, 0, n);
-            }
+            IOUtils.copyLarge(input, output);
 
             return output;
     }
-    
+
     private static boolean validateChecksum(String conName, String objName,
             Session session, InputStream in, OutputStream out)
             throws IOException {
@@ -138,7 +135,7 @@ class Reader extends AbstractOperator {
 
             String storedHash = new String();
             String calculatedHash = new String();
-            
+
             int br1 = in.read(buf1);
 
             if (br1 <= hashLen) {

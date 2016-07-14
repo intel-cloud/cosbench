@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 */
 
 package com.intel.cosbench.driver.operator;
@@ -37,7 +37,7 @@ public class Lister extends AbstractOperator {
     public static final String OP_TYPE = "list";
 
     private ObjectPicker objPicker = new ObjectPicker();
-    
+
     private byte buffer[] = new byte[1024*1024];
 
     public Lister() {
@@ -78,7 +78,7 @@ public class Lister extends AbstractOperator {
         long start = System.nanoTime();
         long xferTime = 0L;
         try {
-        	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);      	
+            doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);
 	        in = session.getApi().getList(conName, objName, config);
 	        long xferStart = System.nanoTime();
 	        copyLarge(in, cout);
@@ -104,10 +104,7 @@ public class Lister extends AbstractOperator {
     public OutputStream copyLarge(InputStream input, OutputStream output)
             throws IOException
     {
-            for(int n = 0; -1 != (n = input.read(buffer));)
-            {
-                output.write(buffer, 0, n);
-            }
+            IOUtils.copyLarge(input, output);
 
             return output;
     }
