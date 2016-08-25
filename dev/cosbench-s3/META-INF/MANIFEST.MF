@@ -33,4 +33,5 @@ Import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.client.http,
  com.intel.cosbench.config,
  com.intel.cosbench.log
+Require-Bundle: com.springsource.org.apache.commons.collections
 

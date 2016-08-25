@@ -16,6 +16,15 @@ import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
 
+//Cloudian
+import java.util.List;
+import java.util.ArrayList;
+import org.apache.commons.collections.iterators.LoopingListIterator;
+import com.amazonaws.DnsResolver;
+import com.amazonaws.SystemDefaultDnsResolver;
+import java.net.InetAddress;
+//Cloudian
+
 public class S3Storage extends NoneStorage {
 	private int timeout;
 	
@@ -23,7 +32,63 @@ public class S3Storage extends NoneStorage {
     private String secretKey;
     private String endpoint;
     
+    //Cloudian
+    private static final String TOPOLOGY_CONF_FILE = "cloudian-topology.properties";
+    private static volatile LoopingListIterator s3Hosts;
+    //Cloudian
+    
     private AmazonS3 client;
+
+    //Cloudian
+    static {
+    	final File f = new File(TOPOLOGY_CONF_FILE);
+    	if (f.exists()) {
+    		List<String> loadedList = new ArrayList<String>();
+    		BufferedReader br;
+    		try {
+    			br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(f)));
+    			String line = br.readLine();
+    			while (line != null) {
+    				if (!line.isEmpty()) {
+    					loadedList.add(line);
+    				}
+    				line = br.readLine();
+    			}
+    			br.close();
+    		} catch (FileNotFoundException e) {
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+
+    		//Don't need strict consistency to this
+    		s3Hosts = new LoopingListIterator(loadedList);
+    	} else {
+    		s3Hosts = null;
+    	}
+    }
+    
+    class fixedDns implements DnsResolver {
+        String ip = null;
+        DnsResolver other;
+        public fixedDns(final String thatIp) {
+                this(new SystemDefaultDnsResolver( ), thatIp);
+        }
+        public fixedDns(final DnsResolver thatDnsResolver, final String thatIp) {
+            this.other = thatDnsResolver;
+            this.ip = thatIp;
+        }
+        public InetAddress[] resolve(final String host)
+            throws java.net.UnknownHostException {
+        	if (this.other != null && this.ip != null) {
+        		InetAddress[] iaddrs = other.resolve(this.ip);
+        			return iaddrs;
+            }
+            return resolve(host);
+        }
+    }
+    //Cloudian
 
     @Override
     public void init(Config config, Logger logger) {
@@ -62,6 +127,24 @@ public class S3Storage extends NoneStorage {
 			clientConf.setProxyPort(Integer.parseInt(proxyPort));
 		}
         
+		//Cloudian
+		if (s3Hosts != null
+				&& s3Hosts.hasNext()) {
+			String thisHostSpec = (String) s3Hosts.next();
+	        int last_colon = thisHostSpec.lastIndexOf(':');
+	        String s3Host;
+	        int s3Port;
+	        if (last_colon > -1) {
+	        	s3Host = thisHostSpec.substring(0, last_colon);
+	            s3Port = Integer.parseInt(thisHostSpec.substring(last_colon + 1));
+	        } else {
+	        	s3Host = thisHostSpec;
+	            s3Port = 80;
+	        }    
+	        clientConf.setDnsResolver(new fixedDns(s3Host));
+		}
+		//Cloudian
+		
         AWSCredentials myCredentials = new BasicAWSCredentials(accessKey, secretKey);
         client = new AmazonS3Client(myCredentials, clientConf);
         client.setEndpoint(endpoint);
