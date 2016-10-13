@@ -42,7 +42,7 @@ public class OpenIOStorage extends NoneStorage {
         super.init(config, logger);
         String ns = config.get(NS_KEY);
         String proxydurl = config.get(PROXYD_URL_KEY);
-        String ecdUrl = config.get(ECD_URL_KEY);
+        String ecdUrl = config.get(ECD_URL_KEY, "http://localhost:6001");
         client = ClientBuilder
                 .newClient(ns, proxydurl, ecdUrl);
         account = config.get(ACCOUNT_KEY);
