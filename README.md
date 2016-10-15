@@ -69,7 +69,7 @@ COSBench-Workload-Generator: (https://github.com/giteshnandre/COSBench-Workload-
 
 COSBench-Plot: (https://github.com/icclab/cosbench-plot)
 
-COSBench-Appliance: (https://susestudio.com/a/S1QYue/cosbench)
+COSBench-Appliance: (https://susestudio.com/a/8Kp374/cosbench)
 
 COSBench Ansible Playbook: 
 
