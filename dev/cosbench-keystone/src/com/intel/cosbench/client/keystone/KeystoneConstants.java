@@ -56,6 +56,9 @@ public interface KeystoneConstants {
     String AUTH_TENANT_NAME_KEY = "tenant_name";
     String AUTH_TENANT_NAME_ALTKEY = "tenname";
     String AUTH_TENANT_NAME_DEFAULT = "";
+    
+    String AUTH_REGION_NAME_KEY = "region_name";
+    String AUTH_REGION_NAME_DEFAULT = "";
 
     String AUTH_SERVICE_KEY = "service";
     String AUTH_SERVICE_DEFAULT = "swift";
