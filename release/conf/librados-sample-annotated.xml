@@ -4,6 +4,8 @@
 	<storage type="librados" config="endpoint=HOSTNAME;accesskey=admin;secretkey=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" />
 	<!-- config for the connection. Enpoint could be e.g. the monitor node, secretkey is the Key from the admin Keyring-->
 
+	<workflow>
+
 	<!-- Dont use librados to create containers (pools), they will default to only have 64 pgs, which renders them pretty useless, see http://ceph.com/docs/master/rados/operations/pools/-->
 
 		<workstage name="write - 240t - 4MB">
