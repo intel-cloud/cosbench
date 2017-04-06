@@ -3,6 +3,7 @@ package com.intel.cosbench.api.S3Stor;
 import static com.intel.cosbench.client.S3Stor.S3Constants.*;
 
 import java.io.*;
+import java.util.Random;
 
 import org.apache.http.HttpStatus;
 
@@ -24,6 +25,10 @@ public class S3Storage extends NoneStorage {
     private String endpoint;
     
     private AmazonS3 client;
+    
+    private boolean isRangeRequest  ; 
+    private int rangeStart ;
+    private int rangeEnd ;
 
     @Override
     public void init(Config config, Logger logger) {
@@ -41,6 +46,11 @@ public class S3Storage extends NoneStorage {
         
 		String proxyHost = config.get(PROXY_HOST_KEY, "");
 		String proxyPort = config.get(PROXY_PORT_KEY, "");
+		
+		isRangeRequest = config.getBoolean("is_range_request", false);
+		rangeStart = config.getInt("range_start", 0);
+		rangeEnd = config.getInt("range_end", 4048);
+		
         
         parms.put(ENDPOINT_KEY, endpoint);
     	parms.put(AUTH_USERNAME_KEY, accessKey);
@@ -92,9 +102,25 @@ public class S3Storage extends NoneStorage {
         super.getObject(container, object, config);
         InputStream stream;
         try {
-        	
-            S3Object s3Obj = client.getObject(container, object);
-            stream = s3Obj.getObjectContent();
+        	if(isRangeRequest)
+        	{
+        		GetObjectRequest rangeObjectRequest = new GetObjectRequest(container, object);
+        		Random rand = new Random();
+        		 
+        		int randNumber1 = rand.nextInt(rangeEnd - rangeStart + 1) + rangeStart;
+        		int randNumber2 = rand.nextInt(rangeEnd - rangeStart + 1) + rangeStart;
+        	    int start = Math.min(randNumber1, randNumber2) ;
+        		int end = Math.max(randNumber1, randNumber2) ;
+        		 
+        		rangeObjectRequest.setRange(start, end); 
+        		S3Object objectPortion = client.getObject(rangeObjectRequest);
+        		stream = objectPortion.getObjectContent();
+        	}
+        	else
+        	{
+                S3Object s3Obj = client.getObject(container, object);
+                stream = s3Obj.getObjectContent();
+        	}
             
         } catch (Exception e) {
             throw new StorageException(e);
