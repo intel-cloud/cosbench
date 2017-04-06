@@ -6,3 +6,7 @@
 /0.3.0.9
 /META-INF
 /OSGI-INF
+/release/archive/
+/release/log/
+/release/start
+/release/stop
