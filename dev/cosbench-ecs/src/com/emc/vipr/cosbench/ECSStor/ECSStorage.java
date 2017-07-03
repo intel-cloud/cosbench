@@ -1,5 +1,5 @@
-/*
- * Copyright 2014-2016 EMC Corporation. All Rights Reserved.
+/**
+ * Copyright 2014-2017 EMC Corporation. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -31,6 +31,15 @@ import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.PrimitiveIterator.OfDouble;
+import java.util.PrimitiveIterator.OfInt;
+import java.util.Random;
+import java.util.TimeZone;
 
 /**
  * COSBench Storage API for EMC ECS Object Storage interface.
@@ -38,6 +47,156 @@ import java.net.URISyntaxException;
  */
 public class ECSStorage extends NoneStorage
         implements ECSConstants {
+
+    public static void main(String[] args) {
+        ECSStorage storage = new ECSStorage();
+
+        TestConfig config = new TestConfig();
+        config.addMapping(METADATA_NAMES_KEY, "string,integer,double,date");
+        String[] metadataNames = getMetadataNames(config);
+        if (metadataNames.length != 4) {
+            System.err.println("Wrong number of metadata names: 4 != " + metadataNames.length);
+        }
+
+        config.addMapping("string_type", "string");
+        config.addMapping("date_type", "date");
+        config.addMapping("double_type", "double");
+        config.addMapping("int_type", "int");
+
+        String type = getType("string", config);
+        if (!METADATA_TYPE_STRING.equals(type)) {
+            System.err.println("Wrong type: " + METADATA_TYPE_STRING + " != " + type);
+        }
+
+        type = getType("date", config);
+        if (!METADATA_TYPE_DATE.equals(type)) {
+            System.err.println("Wrong type: " + METADATA_TYPE_DATE + " != " + type);
+        }
+
+        type = getType("int", config);
+        if (!METADATA_TYPE_INT.equals(type)) {
+            System.err.println("Wrong type: " + METADATA_TYPE_INT + " != " + type);
+        }
+
+        type = getType("double", config);
+        if (!METADATA_TYPE_DOUBLE.equals(type)) {
+            System.err.println("Wrong type: " + METADATA_TYPE_DOUBLE + " != " + type);
+        }
+
+        config.addMapping("int_maximum", "10");
+        config.addMapping("int_minimum", "5");
+
+        OfInt ofInt = storage.createRandomIntGenerator("int", "int_minimum", "int_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            int nextInt = ofInt.nextInt();
+            if ((nextInt < 5) || (nextInt >= 10)) {
+                System.err.println(">>>> Bad int " + nextInt);
+            } else {
+                System.out.println(i + ": " + nextInt);
+            }
+        }
+
+        ofInt = storage.createRandomIntGenerator("int2", "int2_minimum", "int2_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            System.out.println(i + ": " + ofInt.nextInt());
+        }
+
+        config.addMapping("double_minimum", "-5.07");
+        config.addMapping("double_maximum", "15.005");
+
+        OfDouble ofDouble = storage.createRandomDoubleGenerator("double", "double_minimum", "double_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            double nextDouble = ofDouble.nextDouble();
+            if ((nextDouble < -5.07) || (nextDouble >= 15.005)) {
+                System.err.println(">>>> Bad double " + nextDouble);
+            } else {
+                System.out.println(i + ": " + nextDouble);
+            }
+        }
+
+        ofDouble = storage.createRandomDoubleGenerator("double2", "double2_minimum", "double2_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            System.out.println(i + ": " + ofDouble.nextDouble());
+        }
+
+        config.addMapping("string_maximum", "10");
+        config.addMapping("string_minimum", "0");
+        config.addMapping("string_characters", "0123456789aZ%");
+
+        RandomStringGenerator generator = storage.createRandomStringGenerator("string", "string_minimum", "string_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            String nextString = generator.nextString();
+            if ((nextString.length() < 0) || (nextString.length() >= 10)) {
+                System.err.println(">>>> Bad string " + nextString);
+            } else {
+                boolean badString = false;
+                for (int j = 0; j < nextString.length(); ++j) {
+                    char nextChar = nextString.charAt(j);
+                    if ((nextChar < '0' || nextChar > '9') && (nextChar != 'a' && nextChar != 'Z' && nextChar != '%')) {
+                        badString = true;
+                    }
+                }
+                if (badString) {
+                    System.err.println(">>>> Bad string character " + nextString);
+                } else {
+                    System.out.println(i + ": " + nextString);
+                }
+            }
+        }
+
+        generator = storage.createRandomStringGenerator("string2", "string2_minimum", "string2_maximum", config);
+        for (int i = 0; i < 100; ++i) {
+            String nextString = generator.nextString();
+            boolean badString = false;
+            for (int j = 0; j < nextString.length(); ++j) {
+                char nextChar = nextString.charAt(j);
+                if (!((nextChar >= '0' && nextChar <= '9') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar >= 'A' && nextChar <= 'Z'))) {
+                    badString = true;
+                }
+            }
+            if (badString) {
+                System.err.println(">>>> Bad string character " + nextString);
+            } else {
+                System.out.println(i + ": " + nextString);
+            }
+        }
+
+        String firstDate = "2015-01-30 13.01.02";
+        String lastDate = "2017-08-20 13.01.59";
+        String dateFormat = "yyyy-MM-dd HH.mm.ss";
+        config.addMapping("date_maximum", lastDate);
+        config.addMapping("date_minimum", firstDate);
+        config.addMapping("date_format", dateFormat);
+
+        RandomDateGenerator dateGenerator = storage.createRandomDateGenerator("date", "date_minimum", "date_maximum", config);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        for (int i = 0; i < 100; ++i) {
+            String nextString = dateGenerator.nextDate();
+            if ((nextString.compareTo(firstDate) < 0) || (nextString.compareTo(lastDate)> 0)) {
+                System.err.println(">>>> Bad date " + nextString);
+            } else {
+                try {
+                    simpleDateFormat.parse(nextString);
+                    System.out.println(i + ": " + nextString);
+                } catch (Exception e) {
+                    System.err.println(">>>> Bad date format " + nextString);
+                }
+            }
+        }
+
+        dateGenerator = storage.createRandomDateGenerator("date2", "date2_minimum", "date2_maximum", config);
+        simpleDateFormat = new SimpleDateFormat(METADATA_DEFAULT_FORMAT_DATE);
+        for (int i = 0; i < 100; ++i) {
+            String nextString = dateGenerator.nextDate();
+            try {
+                simpleDateFormat.parse(nextString);
+                System.out.println(i + ": " + nextString);
+            } catch (Exception e) {
+                System.err.println(">>>> Bad date format " + nextString);
+            }
+        }
+
+    }
 
     //Local environment variables
     private String connTimeout;
@@ -49,6 +208,12 @@ public class ECSStorage extends NoneStorage
     private boolean smartClient;
     protected S3Client s3Client;
     S3Config s3CliConfig;
+
+    private Random random = new Random();
+    private final Map<String, java.util.PrimitiveIterator.OfInt> randomIntGenerators = new HashMap<String, OfInt>();
+    private final Map<String, java.util.PrimitiveIterator.OfDouble> randomDoubleGenerators = new HashMap<String, OfDouble>();
+    private final Map<String, RandomDateGenerator> randomDateGenerators = new HashMap<String, RandomDateGenerator>();
+    private final Map<String, RandomStringGenerator> randomStringGenerators = new HashMap<String, RandomStringGenerator>();
 
     /**
      * Empty constructor; does nothing.
@@ -139,6 +304,126 @@ public class ECSStorage extends NoneStorage
             s3Client = new S3JerseyClient(s3CliConfig);
         }
 
+        random = new Random();
+        String[] metadataNames = getMetadataNames(config);
+        for (String name : metadataNames) {
+            String type = getType(name, config);
+            String minimumKey = getMinimumKey(name);
+            String maximumKey = getMaximumKey(name);
+            if (METADATA_TYPE_INT.equals(type)) {
+                randomIntGenerators.put(name, createRandomIntGenerator(name, minimumKey, maximumKey, config));
+            } else if (METADATA_TYPE_DOUBLE.equals(type)) {
+                randomDoubleGenerators.put(name, createRandomDoubleGenerator(name, minimumKey, maximumKey, config));
+            } else if (METADATA_TYPE_STRING.equals(type)) {
+                randomStringGenerators.put(name, createRandomStringGenerator(name, minimumKey, maximumKey, config));
+            } else if (METADATA_TYPE_DATE.equals(type)) {
+                randomDateGenerators.put(name, createRandomDateGenerator(name, minimumKey, maximumKey, config));
+            }
+        }
+    }
+
+    /**
+     * @param config
+     * @return
+     */
+    private static String[] getMetadataNames(Config config) {
+        return config == null ? (new String[] {}) : config.get(METADATA_NAMES_KEY, "").split(",");
+    }
+
+    /**
+     * @param name
+     * @param config
+     * @return
+     */
+    private static String getType(String name, Config config) {
+        return config.get(name + METADATA_TYPE_KEY_SUFFIX);
+    }
+
+    /**
+     * @param name
+     * @return
+     */
+    private static String getMinimumKey(String name) {
+        return name + METADATA_MINIMUM_KEY_SUFFIX;
+    }
+
+    /**
+     * @param name
+     * @return
+     */
+    private static String getMaximumKey(String name) {
+        return name + METADATA_MAXIMUM_KEY_SUFFIX;
+    }
+
+    /**
+     * @param name
+     * @param minimumKey
+     * @param maximumKey
+     * @param config
+     * @return
+     */
+    private OfInt createRandomIntGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        int minimum = config.getInt(minimumKey, Integer.MIN_VALUE);
+        int maximum = config.getInt(maximumKey, Integer.MAX_VALUE);
+        return random.ints(minimum, maximum).iterator();
+    }
+
+    /**
+     * @param name
+     * @param minimumKey
+     * @param maximumKey
+     * @param config
+     * @return
+     */
+    private OfDouble createRandomDoubleGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        double minimum = config.getDouble(minimumKey, 0);
+        double maximum = config.getDouble(maximumKey, Double.MAX_VALUE);
+        return random.doubles(minimum, maximum).iterator();
+    }
+
+    /**
+     * @param name
+     * @param minimumKey
+     * @param maximumKey
+     * @param config
+     * @return
+     */
+    private RandomStringGenerator createRandomStringGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        int minimum = config.getInt(minimumKey, 0);
+        int maximum = config.getInt(maximumKey, 1024);
+        return new RandomStringGenerator(random, minimum, maximum, config.get(name + METADATA_CHARACTERS_KEY_SUFFIX));
+    }
+
+    /**
+     * @param name
+     * @param minimumKey
+     * @param maximumKey
+     * @param config
+     * @return
+     */
+    private RandomDateGenerator createRandomDateGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        String format = config.get(name + METADATA_FORMAT_KEY_SUFFIX, METADATA_DEFAULT_FORMAT_DATE);
+        long minimum = 0;
+        long maximum = Long.MAX_VALUE;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(METADATA_TIME_ZONE));
+        String startDate = config.get(minimumKey, "");
+        String endDate = config.get(maximumKey, "");
+        if (!"".equals(startDate)) {
+            try {
+                minimum = simpleDateFormat.parse(startDate).getTime();
+            } catch (ParseException e) {
+                logger.error("Unparseable date: " + startDate);
+            }
+        }
+        if (!"".equals(endDate)) {
+            try {
+                maximum = simpleDateFormat.parse(endDate).getTime();
+            } catch (ParseException e) {
+                logger.error("Unparseable date: " + endDate);
+            }
+        }
+        return new RandomDateGenerator(simpleDateFormat, random.longs(minimum, maximum).iterator());
     }
 
     /**
@@ -221,12 +506,38 @@ public class ECSStorage extends NoneStorage
 
         try {
             logger.info((new StringBuilder("Creating ")).append(container).append("\\").append(object).append(" with length=").append(length).append(" Bytes").toString());
-            PutObjectRequest req = new PutObjectRequest(container, object, data).withObjectMetadata(new S3ObjectMetadata().withContentLength(length));
+            S3ObjectMetadata s3ObjectMetadata = new S3ObjectMetadata().withContentLength(length);
+            Map<String, String> randomMetadata = generateRandomMetadata(config);
+            for (Entry<String, String> entry : randomMetadata.entrySet()) {
+                s3ObjectMetadata.addUserMetadata(entry.getKey(), entry.getValue());
+            }
+            PutObjectRequest req = new PutObjectRequest(container, object, data).withObjectMetadata(s3ObjectMetadata);
             s3Client.putObject(req);
         } catch (Exception e) {
             logger.error(e.getMessage());
             //throw new StorageException(e);
         }
+    }
+
+    /**
+     * @param config
+     * @return
+     */
+    private Map<String, String> generateRandomMetadata(Config config) {
+        Map<String, String> randomMetada = new HashMap<String, String>();
+        for (Entry<String, OfInt> entry : randomIntGenerators.entrySet()) {
+            randomMetada.put(entry.getKey(), Integer.toString(entry.getValue().nextInt()));
+        }
+        for (Entry<String, OfDouble> entry : randomDoubleGenerators.entrySet()) {
+            randomMetada.put(entry.getKey(), Double.toString(entry.getValue().nextDouble()));
+        }
+        for (Entry<String, RandomStringGenerator> entry : randomStringGenerators.entrySet()) {
+            randomMetada.put(entry.getKey(), entry.getValue().nextString());
+        }
+        for (Entry<String, RandomDateGenerator> entry : randomDateGenerators.entrySet()) {
+            randomMetada.put(entry.getKey(), entry.getValue().nextDate());
+        }
+        return randomMetada;
     }
 
     /**
@@ -269,6 +580,99 @@ public class ECSStorage extends NoneStorage
             logger.error(e.getMessage());
             //throw new StorageException(e);
         }
+    }
+
+    private static class TestConfig implements Config {
+
+        Map<String, String> _map = new HashMap<String, String>();
+
+        public void addMapping(String key, String value) {
+            _map.put(key, value);
+        }
+
+        @Override
+        public String get(String key) {
+            return get(key, null);
+        }
+
+        @Override
+        public String get(String key, String value) {
+            String bareString = _map.get(key);
+            return (bareString != null) ? bareString : value;
+        }
+
+        @Override
+        public int getInt(String key) {
+            return getInt(key, 0);
+        }
+
+        @Override
+        public int getInt(String key, int value) {
+            String number = get(key);
+            if ((number != null) && (!"".equals(number.trim()))) {
+                try {
+                    return Integer.parseInt(number);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+            return value;
+        }
+
+        @Override
+        public long getLong(String key) {
+            return getLong(key, 0);
+        }
+
+        @Override
+        public long getLong(String key, long value) {
+            String number = get(key);
+            if ((number != null) && (!"".equals(number.trim()))) {
+                try {
+                    return Long.parseLong(number);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+            return value;
+        }
+
+        @Override
+        public double getDouble(String key) {
+            return getDouble(key, 0);
+        }
+
+        @Override
+        public double getDouble(String key, double value) {
+            String number = get(key);
+            if ((number != null) && (!"".equals(number.trim()))) {
+                try {
+                    return Double.parseDouble(number);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+            return value;
+        }
+
+        @Override
+        public boolean getBoolean(String key) {
+            return getBoolean(key, false);
+        }
+
+        @Override
+        public boolean getBoolean(String key, boolean value) {
+            String booleanString = get(key);
+            if ((booleanString != null) && (!"".equals(booleanString.trim()))) {
+                try {
+                    return Boolean.parseBoolean(booleanString);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+            return value;
+        }
+
     }
 
 }
