@@ -64,6 +64,7 @@ public interface ECSConstants {
     public static final String SMART_CLIENT_KEY = "use_smart_client";
     public static final boolean SMART_CLIENT_DEFAULT = true;
 
+    public static final String METADATA_NAME_START = "x-amz-meta-";
     public static final String METADATA_NAMES_KEY = "metadata_names";
 
     public static final String METADATA_TYPE_KEY_SUFFIX = "_type";

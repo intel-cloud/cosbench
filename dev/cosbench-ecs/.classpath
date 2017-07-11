@@ -2,21 +2,17 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/httpclient-4.5.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/httpcore-4.4.1.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/javax.mail-api-1.4.6.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jdom2-2.0.5.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jersey-apache-client4-1.18.3.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jersey-client-1.18.3.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jersey-core-1.18.3.jar"/>
+	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jdom2-2.0.6.jar"/>
+	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/jersey-apache-client4-1.19.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/lzma-sdk-4j-9.22.0.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/object-client-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/object-client-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/smart-client-2.0.6.jar"/>
 	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/vipr-object-transformations-2.0.3.jar"/>
 	<classpathentry excluding="**/.ecsmeta/*" kind="src" path="src"/>
+	<classpathentry kind="lib" path="httpclient-4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/seibed/Documents/git_repo/cosbench/dev/cosbench-ecs/commons-codec-1.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

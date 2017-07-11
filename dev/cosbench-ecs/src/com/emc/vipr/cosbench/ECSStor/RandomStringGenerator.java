@@ -22,7 +22,7 @@ import java.util.Random;
  * @author seibed
  *
  */
-public class RandomStringGenerator {
+public class RandomStringGenerator implements IStringGenerator {
 
     private final static String defaultCharacters;
     static {
@@ -50,7 +50,7 @@ public class RandomStringGenerator {
      * @param characterString
      */
     public RandomStringGenerator(Random random, int minimum, int maximum, String characterString) {
-        if (characterString == null) {
+        if ((characterString == null) || "".equals(characterString.trim())) {
             characterString = defaultCharacters;
         }
         lengthGenerator = random.ints(minimum, maximum).iterator();
@@ -58,9 +58,10 @@ public class RandomStringGenerator {
         characterGenerator = random.ints(0, characters.length).iterator();
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see com.emc.vipr.cosbench.ECSStor.IStringGenerator#nextString()
      */
+    @Override
     public String nextString() {
         StringBuilder stringBuilder = new StringBuilder();
         int length = lengthGenerator.nextInt();

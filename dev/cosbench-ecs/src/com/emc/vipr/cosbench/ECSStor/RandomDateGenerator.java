@@ -23,7 +23,7 @@ import java.util.PrimitiveIterator.OfLong;
  * @author seibed
  *
  */
-public class RandomDateGenerator {
+public class RandomDateGenerator implements IStringGenerator {
 
     private final SimpleDateFormat simpleDateFormat;
     private final OfLong ofLong;
@@ -38,10 +38,11 @@ public class RandomDateGenerator {
         this.ofLong = ofLong;
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see com.emc.vipr.cosbench.ECSStor.IStringGenerator#nextString()
      */
-    public synchronized String nextDate() {
+    @Override
+    public synchronized String nextString() {
         date.setTime(ofLong.nextLong());
         return simpleDateFormat.format(date);
     }

@@ -20,7 +20,10 @@ import com.emc.object.Range;
 import com.emc.object.s3.S3Client;
 import com.emc.object.s3.S3Config;
 import com.emc.object.s3.S3ObjectMetadata;
+import com.emc.object.s3.bean.MetadataSearchDatatype;
+import com.emc.object.s3.bean.MetadataSearchKey;
 import com.emc.object.s3.jersey.S3JerseyClient;
+import com.emc.object.s3.request.CreateBucketRequest;
 import com.emc.object.s3.request.PutObjectRequest;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.NoneStorage;
@@ -33,7 +36,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PrimitiveIterator.OfDouble;
@@ -86,9 +91,9 @@ public class ECSStorage extends NoneStorage
         config.addMapping("int_maximum", "10");
         config.addMapping("int_minimum", "5");
 
-        OfInt ofInt = storage.createRandomIntGenerator("int", "int_minimum", "int_maximum", config);
+        IStringGenerator ofInt = storage.createRandomIntGenerator("int", "int_minimum", "int_maximum", config);
         for (int i = 0; i < 100; ++i) {
-            int nextInt = ofInt.nextInt();
+            int nextInt = Integer.parseInt(ofInt.nextString());
             if ((nextInt < 5) || (nextInt >= 10)) {
                 System.err.println(">>>> Bad int " + nextInt);
             } else {
@@ -98,15 +103,15 @@ public class ECSStorage extends NoneStorage
 
         ofInt = storage.createRandomIntGenerator("int2", "int2_minimum", "int2_maximum", config);
         for (int i = 0; i < 100; ++i) {
-            System.out.println(i + ": " + ofInt.nextInt());
+            System.out.println(i + ": " + ofInt.nextString());
         }
 
         config.addMapping("double_minimum", "-5.07");
         config.addMapping("double_maximum", "15.005");
 
-        OfDouble ofDouble = storage.createRandomDoubleGenerator("double", "double_minimum", "double_maximum", config);
+        IStringGenerator ofDouble = storage.createRandomDoubleGenerator("double", "double_minimum", "double_maximum", config);
         for (int i = 0; i < 100; ++i) {
-            double nextDouble = ofDouble.nextDouble();
+            double nextDouble = Double.parseDouble(ofDouble.nextString());
             if ((nextDouble < -5.07) || (nextDouble >= 15.005)) {
                 System.err.println(">>>> Bad double " + nextDouble);
             } else {
@@ -116,14 +121,14 @@ public class ECSStorage extends NoneStorage
 
         ofDouble = storage.createRandomDoubleGenerator("double2", "double2_minimum", "double2_maximum", config);
         for (int i = 0; i < 100; ++i) {
-            System.out.println(i + ": " + ofDouble.nextDouble());
+            System.out.println(i + ": " + ofDouble.nextString());
         }
 
         config.addMapping("string_maximum", "10");
         config.addMapping("string_minimum", "0");
         config.addMapping("string_characters", "0123456789aZ%");
 
-        RandomStringGenerator generator = storage.createRandomStringGenerator("string", "string_minimum", "string_maximum", config);
+        IStringGenerator generator = storage.createRandomStringGenerator("string", "string_minimum", "string_maximum", config);
         for (int i = 0; i < 100; ++i) {
             String nextString = generator.nextString();
             if ((nextString.length() < 0) || (nextString.length() >= 10)) {
@@ -168,10 +173,10 @@ public class ECSStorage extends NoneStorage
         config.addMapping("date_minimum", firstDate);
         config.addMapping("date_format", dateFormat);
 
-        RandomDateGenerator dateGenerator = storage.createRandomDateGenerator("date", "date_minimum", "date_maximum", config);
+        IStringGenerator dateGenerator = storage.createRandomDateGenerator("date", "date_minimum", "date_maximum", config);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         for (int i = 0; i < 100; ++i) {
-            String nextString = dateGenerator.nextDate();
+            String nextString = dateGenerator.nextString();
             if ((nextString.compareTo(firstDate) < 0) || (nextString.compareTo(lastDate)> 0)) {
                 System.err.println(">>>> Bad date " + nextString);
             } else {
@@ -187,7 +192,7 @@ public class ECSStorage extends NoneStorage
         dateGenerator = storage.createRandomDateGenerator("date2", "date2_minimum", "date2_maximum", config);
         simpleDateFormat = new SimpleDateFormat(METADATA_DEFAULT_FORMAT_DATE);
         for (int i = 0; i < 100; ++i) {
-            String nextString = dateGenerator.nextDate();
+            String nextString = dateGenerator.nextString();
             try {
                 simpleDateFormat.parse(nextString);
                 System.out.println(i + ": " + nextString);
@@ -210,10 +215,7 @@ public class ECSStorage extends NoneStorage
     S3Config s3CliConfig;
 
     private Random random = new Random();
-    private final Map<String, java.util.PrimitiveIterator.OfInt> randomIntGenerators = new HashMap<String, OfInt>();
-    private final Map<String, java.util.PrimitiveIterator.OfDouble> randomDoubleGenerators = new HashMap<String, OfDouble>();
-    private final Map<String, RandomDateGenerator> randomDateGenerators = new HashMap<String, RandomDateGenerator>();
-    private final Map<String, RandomStringGenerator> randomStringGenerators = new HashMap<String, RandomStringGenerator>();
+    private final Map<String, IStringGenerator> metadataGenerators = new HashMap<String, IStringGenerator>();
 
     /**
      * Empty constructor; does nothing.
@@ -307,19 +309,34 @@ public class ECSStorage extends NoneStorage
         random = new Random();
         String[] metadataNames = getMetadataNames(config);
         for (String name : metadataNames) {
-            String type = getType(name, config);
-            String minimumKey = getMinimumKey(name);
-            String maximumKey = getMaximumKey(name);
-            if (METADATA_TYPE_INT.equals(type)) {
-                randomIntGenerators.put(name, createRandomIntGenerator(name, minimumKey, maximumKey, config));
-            } else if (METADATA_TYPE_DOUBLE.equals(type)) {
-                randomDoubleGenerators.put(name, createRandomDoubleGenerator(name, minimumKey, maximumKey, config));
-            } else if (METADATA_TYPE_STRING.equals(type)) {
-                randomStringGenerators.put(name, createRandomStringGenerator(name, minimumKey, maximumKey, config));
-            } else if (METADATA_TYPE_DATE.equals(type)) {
-                randomDateGenerators.put(name, createRandomDateGenerator(name, minimumKey, maximumKey, config));
-            }
+            createMetadataGenerator(name, config);
         }
+        logger.debug("Created metadata generators: " + metadataGenerators.size());
+    }
+
+    /**
+     * @param name
+     * @param config
+     * @return
+     */
+    private IStringGenerator createMetadataGenerator(String name, Config config) {
+        IStringGenerator metadataGenerator = null;
+        String type = getType(name, config);
+        String minimumKey = getMinimumKey(name);
+        String maximumKey = getMaximumKey(name);
+        if (METADATA_TYPE_INT.equals(type)) {
+            metadataGenerator = createRandomIntGenerator(name, minimumKey, maximumKey, config);
+        } else if (METADATA_TYPE_DOUBLE.equals(type)) {
+            metadataGenerator = createRandomDoubleGenerator(name, minimumKey, maximumKey, config);
+        } else if (METADATA_TYPE_STRING.equals(type)) {
+            metadataGenerator = createRandomStringGenerator(name, minimumKey, maximumKey, config);
+        } else if (METADATA_TYPE_DATE.equals(type)) {
+            metadataGenerator = createRandomDateGenerator(name, minimumKey, maximumKey, config);
+        }
+        if (metadataGenerator != null) {
+            metadataGenerators.put(name, metadataGenerator);
+        }
+        return metadataGenerator;
     }
 
     /**
@@ -362,10 +379,10 @@ public class ECSStorage extends NoneStorage
      * @param config
      * @return
      */
-    private OfInt createRandomIntGenerator(String name, String minimumKey, String maximumKey, Config config) {
-        int minimum = config.getInt(minimumKey, Integer.MIN_VALUE);
-        int maximum = config.getInt(maximumKey, Integer.MAX_VALUE);
-        return random.ints(minimum, maximum).iterator();
+    private IStringGenerator createRandomIntGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        final int minimum = config.getInt(minimumKey, Integer.MIN_VALUE);
+        final int maximum = config.getInt(maximumKey, Integer.MAX_VALUE);
+        return new RandomIntGenerator(random.ints(minimum, maximum).iterator());
     }
 
     /**
@@ -375,10 +392,10 @@ public class ECSStorage extends NoneStorage
      * @param config
      * @return
      */
-    private OfDouble createRandomDoubleGenerator(String name, String minimumKey, String maximumKey, Config config) {
-        double minimum = config.getDouble(minimumKey, 0);
-        double maximum = config.getDouble(maximumKey, Double.MAX_VALUE);
-        return random.doubles(minimum, maximum).iterator();
+    private IStringGenerator createRandomDoubleGenerator(String name, String minimumKey, String maximumKey, Config config) {
+        final double minimum = config.getDouble(minimumKey, 0);
+        final double maximum = config.getDouble(maximumKey, Double.MAX_VALUE);
+        return new RandomDoubleGenerator(random.doubles(minimum, maximum).iterator());
     }
 
     /**
@@ -388,10 +405,10 @@ public class ECSStorage extends NoneStorage
      * @param config
      * @return
      */
-    private RandomStringGenerator createRandomStringGenerator(String name, String minimumKey, String maximumKey, Config config) {
+    private IStringGenerator createRandomStringGenerator(String name, String minimumKey, String maximumKey, Config config) {
         int minimum = config.getInt(minimumKey, 0);
         int maximum = config.getInt(maximumKey, 1024);
-        return new RandomStringGenerator(random, minimum, maximum, config.get(name + METADATA_CHARACTERS_KEY_SUFFIX));
+        return new RandomStringGenerator(random, minimum, maximum, config.get(name + METADATA_CHARACTERS_KEY_SUFFIX, ""));
     }
 
     /**
@@ -401,7 +418,7 @@ public class ECSStorage extends NoneStorage
      * @param config
      * @return
      */
-    private RandomDateGenerator createRandomDateGenerator(String name, String minimumKey, String maximumKey, Config config) {
+    private IStringGenerator createRandomDateGenerator(String name, String minimumKey, String maximumKey, Config config) {
         String format = config.get(name + METADATA_FORMAT_KEY_SUFFIX, METADATA_DEFAULT_FORMAT_DATE);
         long minimum = 0;
         long maximum = Long.MAX_VALUE;
@@ -483,7 +500,32 @@ public class ECSStorage extends NoneStorage
         try {
             if (!s3Client.bucketExists(container)) {
                 logger.info((new StringBuilder("Creating ")).append(container).toString());
-                s3Client.createBucket(container);
+                List<MetadataSearchKey> metadataSearchKeys = new ArrayList<MetadataSearchKey>();
+                for (String name : getMetadataNames(config)) {
+                    IStringGenerator metadataGenerator = metadataGenerators.get(name);
+                    if (metadataGenerator == null) {
+                        metadataGenerator = createMetadataGenerator(name, config);
+                    }
+                    if (metadataGenerator != null) {
+                        MetadataSearchDatatype metadataSearchDatatype = null;
+                        if (metadataGenerator instanceof RandomIntGenerator) {
+                            metadataSearchDatatype = MetadataSearchDatatype.integer;
+                        } else if (metadataGenerator instanceof RandomDoubleGenerator) {
+                            metadataSearchDatatype = MetadataSearchDatatype.decimal;
+                        } else if (metadataGenerator instanceof RandomStringGenerator) {
+                            metadataSearchDatatype = MetadataSearchDatatype.string;
+                        } else if (metadataGenerator instanceof RandomDateGenerator) {
+                            metadataSearchDatatype = MetadataSearchDatatype.datetime;
+                        }
+                        metadataSearchKeys.add(new MetadataSearchKey(METADATA_NAME_START + name, metadataSearchDatatype));
+                    }
+                }
+                CreateBucketRequest createBucketRequest = new CreateBucketRequest(container);
+                if (!metadataSearchKeys.isEmpty()) {
+                    createBucketRequest.setMetadataSearchKeys(metadataSearchKeys);
+                }
+                s3Client.createBucket(createBucketRequest);
+
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -509,6 +551,9 @@ public class ECSStorage extends NoneStorage
             S3ObjectMetadata s3ObjectMetadata = new S3ObjectMetadata().withContentLength(length);
             Map<String, String> randomMetadata = generateRandomMetadata(config);
             for (Entry<String, String> entry : randomMetadata.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                logger.info("Set metadata " + name + ": " + value);
                 s3ObjectMetadata.addUserMetadata(entry.getKey(), entry.getValue());
             }
             PutObjectRequest req = new PutObjectRequest(container, object, data).withObjectMetadata(s3ObjectMetadata);
@@ -525,17 +570,14 @@ public class ECSStorage extends NoneStorage
      */
     private Map<String, String> generateRandomMetadata(Config config) {
         Map<String, String> randomMetada = new HashMap<String, String>();
-        for (Entry<String, OfInt> entry : randomIntGenerators.entrySet()) {
-            randomMetada.put(entry.getKey(), Integer.toString(entry.getValue().nextInt()));
-        }
-        for (Entry<String, OfDouble> entry : randomDoubleGenerators.entrySet()) {
-            randomMetada.put(entry.getKey(), Double.toString(entry.getValue().nextDouble()));
-        }
-        for (Entry<String, RandomStringGenerator> entry : randomStringGenerators.entrySet()) {
-            randomMetada.put(entry.getKey(), entry.getValue().nextString());
-        }
-        for (Entry<String, RandomDateGenerator> entry : randomDateGenerators.entrySet()) {
-            randomMetada.put(entry.getKey(), entry.getValue().nextDate());
+        for (String name : getMetadataNames(config)) {
+            logger.info("Metadata name " + name);
+            IStringGenerator metadataGenerator = metadataGenerators.get(name);
+            if (metadataGenerator != null) {
+                String value = metadataGenerator.nextString();
+                logger.info("Metadata " + name + ": " + value);
+                randomMetada.put(name, value);
+            }
         }
         return randomMetada;
     }
