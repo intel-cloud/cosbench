@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package com.emc.vipr.cosbench.ECSStor;
+package com.emc.ecs.cosbench;
 
 /**
  * Constants for use with EMC ECS Storage API plugin
@@ -68,6 +68,7 @@ public interface ECSConstants {
     public static final String METADATA_NAMES_KEY = "metadata_names";
 
     public static final String METADATA_TYPE_KEY_SUFFIX = "_type";
+    public static final String METADATA_VALUES_ARRAY_SUFFIX = "_values";
     public static final String METADATA_MINIMUM_KEY_SUFFIX = "_minimum";
     public static final String METADATA_MAXIMUM_KEY_SUFFIX = "_maximum";
     public static final String METADATA_CHARACTERS_KEY_SUFFIX = "_characters";

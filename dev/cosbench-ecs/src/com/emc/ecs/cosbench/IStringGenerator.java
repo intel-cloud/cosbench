@@ -12,28 +12,17 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package com.emc.vipr.cosbench.ECSStor;
-
-import java.util.PrimitiveIterator.OfDouble;
+package com.emc.ecs.cosbench;
 
 /**
  * @author seibed
  *
  */
-public class RandomDoubleGenerator implements IStringGenerator {
-
-    private final OfDouble _iterator;
+public interface IStringGenerator {
 
     /**
-     * @param iterator
+     * @return
      */
-    public RandomDoubleGenerator(OfDouble iterator) {
-        _iterator = iterator;
-    }
-
-    @Override
-    public String nextString() {
-        return Double.toString(_iterator.nextDouble());
-    }
+    String nextString();
 
 }

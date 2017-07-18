@@ -13,16 +13,15 @@
  * permissions and limitations under the License.
  */
 
-package com.emc.vipr.cosbench.ECSStor;
+package com.emc.ecs.cosbench;
 
-import java.util.PrimitiveIterator.OfInt;
 import java.util.Random;
 
 /**
  * @author seibed
  *
  */
-public class RandomStringGenerator implements IStringGenerator {
+public class RandomStringGenerator extends MetadataGenerator {
 
     private final static String defaultCharacters;
     static {
@@ -39,34 +38,38 @@ public class RandomStringGenerator implements IStringGenerator {
         defaultCharacters = stringBuilder.toString();
     }
 
-    private final OfInt lengthGenerator;
+    private final Random random;
+    private final int minimum;
+    private final int difference;
     private final char[] characters;
-    private final OfInt characterGenerator;
 
     /**
      * @param random
+     * @param valuesArray 
      * @param minimum
      * @param maximum
      * @param characterString
      */
-    public RandomStringGenerator(Random random, int minimum, int maximum, String characterString) {
+    public RandomStringGenerator(Random random, String[] valuesArray, int minimum, int maximum, String characterString) {
+        super(random, valuesArray);
         if ((characterString == null) || "".equals(characterString.trim())) {
             characterString = defaultCharacters;
         }
-        lengthGenerator = random.ints(minimum, maximum).iterator();
+        this.random = random;
+        this.minimum = minimum;
+        this.difference = maximum - minimum;
         characters = characterString.toCharArray();
-        characterGenerator = random.ints(0, characters.length).iterator();
     }
 
     /* (non-Javadoc)
-     * @see com.emc.vipr.cosbench.ECSStor.IStringGenerator#nextString()
+     * @see com.emc.ecs.cosbench.MetadataGenerator#specificNextString()
      */
     @Override
-    public String nextString() {
+    protected String specificNextString() {
         StringBuilder stringBuilder = new StringBuilder();
-        int length = lengthGenerator.nextInt();
+        int length = minimum + random.nextInt(difference);
         for (int i = 0; i < length; ++i) {
-            stringBuilder.append(characters[characterGenerator.nextInt()]);
+            stringBuilder.append(characters[random.nextInt(characters.length)]);
         }
         return stringBuilder.toString();
     }

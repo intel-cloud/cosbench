@@ -13,37 +13,46 @@
  * permissions and limitations under the License.
  */
 
-package com.emc.vipr.cosbench.ECSStor;
+package com.emc.ecs.cosbench;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.PrimitiveIterator.OfLong;
+import java.util.Random;
 
 /**
  * @author seibed
  *
  */
-public class RandomDateGenerator implements IStringGenerator {
+public class RandomDateGenerator extends MetadataGenerator {
 
     private final SimpleDateFormat simpleDateFormat;
-    private final OfLong ofLong;
+    private final Random random;
+    private final long minimum;
+    private final long difference;
     private final Date date = new Date();
 
     /**
      * @param simpleDateFormat
-     * @param ofLong
+     * @param random
+     * @param valuesArray
+     * @param minimum
+     * @param maximum
      */
-    public RandomDateGenerator(SimpleDateFormat simpleDateFormat, OfLong ofLong) {
+    public RandomDateGenerator(SimpleDateFormat simpleDateFormat, Random random, String[] valuesArray, long minimum,
+            long maximum) {
+        super(random, valuesArray);
         this.simpleDateFormat = simpleDateFormat;
-        this.ofLong = ofLong;
+        this.random = random;
+        this.minimum = minimum;
+        this.difference = maximum - minimum;
     }
 
     /* (non-Javadoc)
-     * @see com.emc.vipr.cosbench.ECSStor.IStringGenerator#nextString()
+     * @see com.emc.ecs.cosbench.MetadataGenerator#specificNextString()
      */
     @Override
-    public synchronized String nextString() {
-        date.setTime(ofLong.nextLong());
+    protected String specificNextString() {
+        date.setTime((long) (minimum + difference * random.nextDouble()));
         return simpleDateFormat.format(date);
     }
 
