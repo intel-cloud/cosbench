@@ -32,7 +32,9 @@ public interface ECSConstants {
 
     // Read Timeout Control; default is same as connection timeout
     public static final String READ_TIMEOUT_KEY = "read_timeout";
-    
+
+    public static final String CONFIG_URI_KEY = "configUri";
+
     // ECS Endpoint Constants
     public static final String ENDPOINT_KEY = "endpoint";
     public static final String ENDPOINT_DEFAULT = "http://s3.amazonaws.com";

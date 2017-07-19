@@ -25,6 +25,7 @@ import com.emc.object.s3.bean.MetadataSearchKey;
 import com.emc.object.s3.jersey.S3JerseyClient;
 import com.emc.object.s3.request.CreateBucketRequest;
 import com.emc.object.s3.request.PutObjectRequest;
+import com.emc.object.util.ConfigUri;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.NoneStorage;
 import com.intel.cosbench.config.Config;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import java.util.Random;
 import java.util.TimeZone;
 
@@ -50,6 +52,15 @@ import java.util.TimeZone;
  */
 public class ECSStorage extends NoneStorage
         implements ECSConstants {
+
+    /* (non-Javadoc)
+     * @see com.intel.cosbench.api.storage.NoneStorage#abort()
+     */
+    @Override
+    public void abort() {
+        // TODO Auto-generated method stub
+        super.abort();
+    }
 
     public static void main(String[] args) {
         ECSStorage storage = new ECSStorage();
@@ -241,48 +252,54 @@ public class ECSStorage extends NoneStorage
         parms.put(CONN_TIMEOUT_KEY, connTimeout);
         parms.put(READ_TIMEOUT_KEY, readTimeout);
 
-        endpoint = config.get(ENDPOINT_KEY, ENDPOINT_DEFAULT);
-        accessKey = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
-        secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
-        boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
+        String configUriString = config.get(CONFIG_URI_KEY, "");
+        if ((configUriString != null) && !configUriString.trim().isEmpty()) {
+            ConfigUri<S3Config> s3Uri = new ConfigUri<S3Config>(S3Config.class);
+            s3CliConfig = s3Uri.parseUri(configUriString);
+            parms.put(CONFIG_URI_KEY, configUriString);
+        } else {
+            endpoint = config.get(ENDPOINT_KEY, ENDPOINT_DEFAULT);
+            accessKey = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
+            secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
+            boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
 //        String proxyHost = config.get(PROXY_HOST_KEY, "");
 //        String proxyPort = config.get(PROXY_PORT_KEY, "");
-        String namespace = config.get(NAMESPACE_KEY, "");
-        httpClient = config.get(HTTP_CLIENT_KEY, HTTP_CLIENT_DEFAULT);
-        smartClient = config.getBoolean(SMART_CLIENT_KEY, SMART_CLIENT_DEFAULT);
+            String namespace = config.get(NAMESPACE_KEY, "");
+            smartClient = config.getBoolean(SMART_CLIENT_KEY, SMART_CLIENT_DEFAULT);
 
-        //Put new info. to environment variables where applicable
-        parms.put(ENDPOINT_KEY, endpoint);
-        parms.put(AUTH_USERNAME_KEY, accessKey);
-        parms.put(AUTH_PASSWORD_KEY, secretKey);
-        parms.put(PATH_STYLE_ACCESS_KEY, pathStyleAccess);
-//        parms.put(PROXY_HOST_KEY, proxyHost);
-//        parms.put(PROXY_PORT_KEY, proxyPort);
-        parms.put(NAMESPACE_KEY, namespace);
-        parms.put(HTTP_CLIENT_KEY, httpClient);
-        parms.put(SMART_CLIENT_KEY, smartClient);
-        logger.debug("using storage config: {}", parms);
+            //Put new info. to environment variables where applicable
+            parms.put(ENDPOINT_KEY, endpoint);
+            parms.put(AUTH_USERNAME_KEY, accessKey);
+            parms.put(AUTH_PASSWORD_KEY, secretKey);
+            parms.put(PATH_STYLE_ACCESS_KEY, pathStyleAccess);
+//            parms.put(PROXY_HOST_KEY, proxyHost);
+//            parms.put(PROXY_PORT_KEY, proxyPort);
+            parms.put(NAMESPACE_KEY, namespace);
+            parms.put(SMART_CLIENT_KEY, smartClient);
+            logger.debug("using storage config: {}", parms);
 
-        String[] hostArr = endpoint.split(",");
-        for (int i = 0; i < hostArr.length; i++) {
-            int stInd = hostArr[i].indexOf("/") + 2;    //Starting index of endpoint IP
-            hostArr[i] = hostArr[i].substring(stInd, hostArr[i].indexOf(":", stInd + 1));
-        }
-        if ( smartClient == Boolean.FALSE ) try {
-            s3CliConfig = new S3Config(new URI(hostArr[0]));
-        } catch (URISyntaxException e) {
-            logger.error(e.getMessage());
-        }
-        else {
-            try {
-                if (endpoint.toLowerCase().contains("https")) s3CliConfig = new S3Config(Protocol.HTTPS, hostArr);
-                else s3CliConfig = new S3Config(Protocol.HTTP, hostArr);
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                s3CliConfig = new S3Config(Protocol.HTTPS, hostArr);
+            String[] hostArr = endpoint.split(",");
+            for (int i = 0; i < hostArr.length; i++) {
+                int stInd = hostArr[i].indexOf("/") + 2;    //Starting index of endpoint IP
+                hostArr[i] = hostArr[i].substring(stInd, hostArr[i].indexOf(":", stInd + 1));
             }
+            if ( smartClient == Boolean.FALSE ) try {
+                s3CliConfig = new S3Config(new URI(hostArr[0]));
+            } catch (URISyntaxException e) {
+                logger.error(e.getMessage());
+            }
+            else {
+                try {
+                    if (endpoint.toLowerCase().contains("https")) s3CliConfig = new S3Config(Protocol.HTTPS, hostArr);
+                    else s3CliConfig = new S3Config(Protocol.HTTP, hostArr);
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                    s3CliConfig = new S3Config(Protocol.HTTPS, hostArr);
+                }
+            }
+            s3CliConfig.withIdentity(accessKey).withSecretKey(secretKey);
+            if (!namespace.equals("")) s3CliConfig.setNamespace(namespace);
         }
-        s3CliConfig.withIdentity(accessKey).withSecretKey(secretKey);
 
 
         try {
@@ -295,9 +312,10 @@ public class ECSStorage extends NoneStorage
             //throw new StorageException(e);
         }
 
-        if (!namespace.equals("")) s3CliConfig.setNamespace(namespace);
-
-        if (httpClient == "java") {
+        httpClient = config.get(HTTP_CLIENT_KEY, HTTP_CLIENT_DEFAULT);
+        parms.put(HTTP_CLIENT_KEY, httpClient);
+        if ("java".equals(httpClient)) {
+            logger.info("Using java http client");
             s3Client =  new S3JerseyClient(s3CliConfig, new URLConnectionClientHandler());
         }
         else{
@@ -461,14 +479,14 @@ public class ECSStorage extends NoneStorage
             try {
                 minimum = simpleDateFormat.parse(startDate).getTime();
             } catch (ParseException e) {
-                logger.error("Unparseable date: " + startDate);
+                logger.error("Unparseable start date: " + startDate);
             }
         }
         if (!"".equals(endDate)) {
             try {
                 maximum = simpleDateFormat.parse(endDate).getTime();
             } catch (ParseException e) {
-                logger.error("Unparseable date: " + endDate);
+                logger.error("Unparseable end date: " + endDate);
             }
         }
         return new RandomDateGenerator(simpleDateFormat, random, valuesArray, minimum, maximum);
@@ -488,6 +506,7 @@ public class ECSStorage extends NoneStorage
      */
     public void dispose() {
         super.dispose();
+        logger.info(("Releasing clients"));
         s3Client.destroy();
         s3Client = null;
     }
@@ -529,7 +548,9 @@ public class ECSStorage extends NoneStorage
         super.createContainer(container, config);
 
         try {
-            if (!s3Client.bucketExists(container)) {
+            if (s3Client.bucketExists(container)) {
+                logger.info((new StringBuilder("Bucket exists: ")).append(container).toString());
+            } else {
                 logger.info((new StringBuilder("Creating ")).append(container).toString());
                 List<MetadataSearchKey> metadataSearchKeys = new ArrayList<MetadataSearchKey>();
                 for (String name : getMetadataNames(config)) {
@@ -555,10 +576,12 @@ public class ECSStorage extends NoneStorage
                 if (!metadataSearchKeys.isEmpty()) {
                     createBucketRequest.setMetadataSearchKeys(metadataSearchKeys);
                 }
+                logger.info("Starting put: " + container);
                 s3Client.createBucket(createBucketRequest);
-
+                logger.info("Finished put: " + container);
             }
         } catch (Exception e) {
+            logger.info("Creation error: " + container);
             logger.error(e.getMessage());
             //throw new StorageException(e);
         }
@@ -582,14 +605,14 @@ public class ECSStorage extends NoneStorage
             S3ObjectMetadata s3ObjectMetadata = new S3ObjectMetadata().withContentLength(length);
             Map<String, String> randomMetadata = generateRandomMetadata(config);
             for (Entry<String, String> entry : randomMetadata.entrySet()) {
-                String name = entry.getKey();
-                String value = entry.getValue();
-                logger.info("Set metadata " + name + ": " + value);
                 s3ObjectMetadata.addUserMetadata(entry.getKey(), entry.getValue());
             }
             PutObjectRequest req = new PutObjectRequest(container, object, data).withObjectMetadata(s3ObjectMetadata);
+            logger.info("Starting put: " + object);
             s3Client.putObject(req);
+            logger.info("Finished put: " + object);
         } catch (Exception e) {
+            logger.info("Creation error: " + object);
             logger.error(e.getMessage());
             //throw new StorageException(e);
         }
@@ -602,12 +625,9 @@ public class ECSStorage extends NoneStorage
     private Map<String, String> generateRandomMetadata(Config config) {
         Map<String, String> randomMetada = new HashMap<String, String>();
         for (String name : getMetadataNames(config)) {
-            logger.info("Metadata name " + name);
             IStringGenerator metadataGenerator = metadataGenerators.get(name);
             if (metadataGenerator != null) {
-                String value = metadataGenerator.nextString();
-                logger.info("Metadata " + name + ": " + value);
-                randomMetada.put(name, value);
+                randomMetada.put(name, metadataGenerator.nextString());
             }
         }
         return randomMetada;
