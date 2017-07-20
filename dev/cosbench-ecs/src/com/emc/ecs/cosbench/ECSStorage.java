@@ -276,7 +276,6 @@ public class ECSStorage extends NoneStorage
 //            parms.put(PROXY_PORT_KEY, proxyPort);
             parms.put(NAMESPACE_KEY, namespace);
             parms.put(SMART_CLIENT_KEY, smartClient);
-            logger.debug("using storage config: {}", parms);
 
             String[] hostArr = endpoint.split(",");
             for (int i = 0; i < hostArr.length; i++) {
@@ -301,7 +300,6 @@ public class ECSStorage extends NoneStorage
             if (!namespace.equals("")) s3CliConfig.setNamespace(namespace);
         }
 
-
         try {
             System.setProperty("http.maxConnections", Integer.toString(Thread.activeCount()) + 128);
             if(!connTimeout.equals("")) System.setProperty("com.sun.jersey.client.property.readTimeout", connTimeout);
@@ -314,8 +312,9 @@ public class ECSStorage extends NoneStorage
 
         httpClient = config.get(HTTP_CLIENT_KEY, HTTP_CLIENT_DEFAULT);
         parms.put(HTTP_CLIENT_KEY, httpClient);
+        logger.debug("using storage config: {}", parms);
+
         if ("java".equals(httpClient)) {
-            logger.info("Using java http client");
             s3Client =  new S3JerseyClient(s3CliConfig, new URLConnectionClientHandler());
         }
         else{
@@ -576,9 +575,7 @@ public class ECSStorage extends NoneStorage
                 if (!metadataSearchKeys.isEmpty()) {
                     createBucketRequest.setMetadataSearchKeys(metadataSearchKeys);
                 }
-                logger.info("Starting put: " + container);
                 s3Client.createBucket(createBucketRequest);
-                logger.info("Finished put: " + container);
             }
         } catch (Exception e) {
             logger.info("Creation error: " + container);
@@ -608,9 +605,7 @@ public class ECSStorage extends NoneStorage
                 s3ObjectMetadata.addUserMetadata(entry.getKey(), entry.getValue());
             }
             PutObjectRequest req = new PutObjectRequest(container, object, data).withObjectMetadata(s3ObjectMetadata);
-            logger.info("Starting put: " + object);
             s3Client.putObject(req);
-            logger.info("Finished put: " + object);
         } catch (Exception e) {
             logger.info("Creation error: " + object);
             logger.error(e.getMessage());
