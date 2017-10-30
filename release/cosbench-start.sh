@@ -80,7 +80,7 @@ do
         attempts=60
         while [ $ready -ne 1 ];
         do
-                echo "ss -s ACTIVE cosbench" | $TOOL $TOOL_PARAMS 0.0.0.0 $OSGI_CONSOLE_PORT | grep $module >> /dev/null
+                echo -e "ss -s ACTIVE cosbench\ndisconnect\n" | $TOOL $TOOL_PARAMS 0.0.0.0 $OSGI_CONSOLE_PORT | grep $module >> /dev/null
                 if [ $? -ne 0 ];
                 then
                         attempts=`expr $attempts - 1`
