@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+    xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/osgi
+         http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+ 
+ 
+    <!--定义OSSStorageFactory为一个bean-->
+    <bean name="storageFactory" class="com.intel.cosbench.api.oss.OSSStorageFactory" />
+ 
+    <!--声明bean OSSStorageFactory为一个osgi服务，osgi容器会自动将该服务注册到它的服务中心-->
+    <osgi:service ref="storageFactory" context-class-loader="service-provider"
+        interface="com.intel.cosbench.api.storage.StorageAPIFactory">
+    </osgi:service>
+     
+</beans>
