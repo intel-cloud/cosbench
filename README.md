@@ -5,7 +5,7 @@ COSBench is a benchmarking tool to measure the performance of Cloud Object Stora
 emerging technology that is different from traditional file systems (e.g., NFS) or block device systems (e.g., iSCSI).
 Amazon S3 and Openstack* swift are well-known object storage solutions.
 
-COSBench now supports OpenStack* Swift, Amazon* S3, Amplidata v2.3, 2.5 and 3.1, Scality*, Ceph, CDMI, Google* Cloud Storage,Aliyun OSS as well as custom adaptors.
+COSBench now supports OpenStack* Swift, Amazon* S3, Amplidata v2.3, 2.5 and 3.1, Scality*, Ceph, CDMI, Google* Cloud Storage, Aliyun OSS as well as custom adaptors.
 
 
 Important Notice and Contact Information
@@ -17,7 +17,7 @@ the need to invest enough effort to learn how to use it effectively and to addre
 b) To help COSBench develop further, please become an active member of the community and consider giving back by making
 contributions.
 
-For other questions, contact jiangang.duan@intel.com or yaguang.wang@intel.com
+For other questions, contact jian.zhang@intel.com.
 
 
 Licensing
