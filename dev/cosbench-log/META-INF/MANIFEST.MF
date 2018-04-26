@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Log Bundle
 Bundle-SymbolicName: cosbench-log
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Activator: com.intel.cosbench.log.osgi.Activator
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

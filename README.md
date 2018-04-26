@@ -1,11 +1,11 @@
 COSBench - Cloud Object Storage Benchmark
 =========================================
 
-COSBench is a benchmarking tool to measure the performance of Cloud Object Storage services. Object storage is an 
+COSBench is a benchmarking tool to measure the performance of Cloud Object Storage services. Object storage is an
 emerging technology that is different from traditional file systems (e.g., NFS) or block device systems (e.g., iSCSI).
 Amazon S3 and Openstack* swift are well-known object storage solutions.
 
-COSBench now supports OpenStack* Swift, Amazon* S3, OpenIO*, Amplidata v2.3, 2.5 and 3.1, Scality*, Ceph, CDMI, Google* Cloud Storage, as well as custom adaptors.
+COSBench now supports OpenStack* Swift, Amazon* S3, OpenIO*, Amplidata v2.3, 2.5 and 3.1, Scality*, Ceph, CDMI, Google* Cloud Storage, Aliyun OSS as well as custom adaptors.
 
 
 Important Notice and Contact Information
@@ -14,10 +14,10 @@ Important Notice and Contact Information
 a) COSBench is not a product, and it does not have a full-time support team. Before you use this tool, please understand 
 the need to invest enough effort to learn how to use it effectively and to address possible bugs.
 
-b) To help COSBench develop further, please become an active member of the community and consider giving back by making 
+b) To help COSBench develop further, please become an active member of the community and consider giving back by making
 contributions.
 
-For other questions, contact jiangang.duan@intel.com or yaguang.wang@intel.com
+For other questions, contact jian.zhang@intel.com.
 
 
 Licensing
@@ -71,7 +71,7 @@ COSBench-Plot: (https://github.com/icclab/cosbench-plot)
 
 COSBench-Appliance: (https://susestudio.com/a/8Kp374/cosbench)
 
-COSBench Ansible Playbook: 
+COSBench Ansible Playbook:
 
 - (http://www.ksingh.co.in/blog/2016/05/29/deploy-cosbench-using-ansible/)
 - (https://github.com/ksingh7/ansible-role-cosbench)

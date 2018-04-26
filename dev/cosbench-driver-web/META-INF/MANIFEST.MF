@@ -3,7 +3,7 @@ Web-ContextPath: driver
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Driver Web Bundle
 Bundle-SymbolicName: cosbench-driver-web
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.intel.cosbench.bench,
