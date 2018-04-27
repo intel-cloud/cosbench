@@ -22,11 +22,13 @@ import java.util.concurrent.Future;
 
 import com.intel.cosbench.bench.*;
 import com.intel.cosbench.config.*;
+import com.intel.cosbench.log.LogFactory;
 import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.*;
 
 public class WorkloadContext implements WorkloadInfo {
 
+	private static final Logger LOGGER = LogFactory.getSystemLogger();
     private String id;
     private Date submitDate;
     private Date startDate;
@@ -306,7 +308,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void logErrorStatistics(Logger logger){
     	for (Map.Entry<String, ErrorSummary> driverEntry : errorStatistics.entrySet()){
     		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().getErrorCodeAndNum().entrySet()){
-    			logger.error(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
+    			logger.warn(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
     		}
     	}
     }

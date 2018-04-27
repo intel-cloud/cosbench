@@ -64,6 +64,7 @@ public class WorkloadPageController extends AbstractController {
     protected ModelAndView process(WorkloadInfo info) {
         ModelAndView result = new ModelAndView("workload");
         StageInfo stage = info.getCurrentStage();
+        result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("info", info);
         result.addObject("isStopped", isStopped(info.getState()));
         result.addObject("isRunning", isRunning(info.getState()));

@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.intel.cosbench.controller.model;
 
+import java.util.Date;
 import com.intel.cosbench.model.*;
 
 /**
@@ -32,8 +33,27 @@ public class ControllerContext implements ControllerInfo {
     private String archive_dir;
     private int concurrency;
     private DriverRegistry driverRegistry;
+	private String version;
+	private String time;
+	
+	public String getTime() {
+		time = new Date().toString();
+		return time;
+	}
+	
+	public void setTime(String timeStr) {
+		time = timeStr;
+	}
+	
+    public String getVersion() {
+		return version;
+	}
 
-    public ControllerContext() {
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public ControllerContext() {
         /* empty */
     }
 

@@ -28,7 +28,9 @@ import java.io.InputStream;
 
 import com.ceph.rados.IoCTX;
 import com.ceph.rados.Rados;
-import com.ceph.rados.RadosException;
+import com.ceph.rados.exceptions.RadosAlreadyConnectedException;
+import com.ceph.rados.exceptions.RadosException;
+import com.ceph.rados.exceptions.RadosOperationInProgressException;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.NoneStorage;
 import com.intel.cosbench.api.storage.StorageException;
@@ -50,7 +52,7 @@ public class LibradosStorage extends NoneStorage {
     private String secretKey;
     private String endpoint;
 
-    private static Rados client;
+    private static Rados client; // as it's heavy to create a rados client, we will use shared rados client for all workers.
 
     public void init(Config config, Logger logger) {
         super.init(config, logger);
@@ -64,17 +66,36 @@ public class LibradosStorage extends NoneStorage {
         parms.put(AUTH_PASSWORD_KEY, secretKey);
         logger.debug("using storage config: {}", parms);
 
-        if (client == null) {
-            client = new Rados(this.accessKey);
-            try {
-                client.confSet("key", this.secretKey);
-                client.confSet("mon_host", this.endpoint);
-                client.connect();
-                logger.debug("Librados client has been initialized");
-            } catch (RadosException e) {
-                throw new StorageException(e);
+        try {
+            if (client == null) {
+            	synchronized (this.getClass()) {
+            		if(client == null) {
+		                client = new Rados(this.accessKey);
+		                client.confSet("key", this.secretKey);
+		                client.confSet("mon_host", this.endpoint);
+		                client.connect();
+		                logger.info("Librados client has connected.");
+            		}
+            	}
             }
+            
+            logger.debug("Librados client has been initialized");
+        } catch (RadosAlreadyConnectedException ace) {
+        	logger.debug("The connection is already connected");
+        } catch (RadosOperationInProgressException eip) {
+        	logger.warn("Connection is in progress");
+        	// normally this means race condition where multiple threads are trying to use the same rados client to create connections.
+        	// we will treat it's valid so far, but assume the later thread can directly use the connection after a short wait.
+        	try {
+        		Thread.sleep(100);
+        	}catch(InterruptedException ie) {
+        		throw new StorageException(ie);
+        	}
+        } catch (RadosException e) {
+        	logger.error(e.getMessage());
+            throw new StorageException(e);
         }
+
     }
 
     public void setAuthContext(AuthContext info) {
@@ -83,13 +104,12 @@ public class LibradosStorage extends NoneStorage {
 
     public void dispose() {
         super.dispose();
-//        client = null;
     }
 
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
         InputStream stream;
-        IoCTX ioctx;
+        IoCTX ioctx = null;
         try {
             ioctx = client.ioCtxCreate(container);
             long length = ioctx.stat(object).getSize();
@@ -103,8 +123,10 @@ public class LibradosStorage extends NoneStorage {
             stream = new ByteArrayInputStream(buf);
         } catch (RadosException e) {
             throw new StorageException(e);
+        }finally {
+        	if(ioctx != null)
+        		client.ioCtxDestroy(ioctx);
         }
-        client.ioCtxDestroy(ioctx);
         return stream;
     }
 
@@ -137,25 +159,32 @@ public class LibradosStorage extends NoneStorage {
     public void createObject(String container, String object, InputStream data, long length, Config config) {
         super.createObject(container, object, data, length, config);
         byte[] buf = new byte[(int) length];
+        IoCTX ioctx = null;
         try {
             data.read(buf, 0, (int) length);
-            IoCTX ioctx = client.ioCtxCreate(container);
+            ioctx = client.ioCtxCreate(container);
             ioctx.write(object, buf);
         } catch (RadosException e) {
             throw new StorageException(e);
         } catch (IOException e) {
             throw new StorageException(e);
+        } finally {
+        	if(ioctx != null)
+        		client.ioCtxDestroy(ioctx);
         }
     }
 
     public void deleteObject(String container, String object, Config config) {
         super.deleteObject(container, object, config);
-        IoCTX ioctx;
+        IoCTX ioctx = null;
         try {
             ioctx = client.ioCtxCreate(container);
             ioctx.remove(object);
         } catch (RadosException e) {
             throw new StorageException(e);
+        } finally {
+        	if(ioctx != null) 
+        		client.ioCtxDestroy(ioctx);
         }
     }
 }

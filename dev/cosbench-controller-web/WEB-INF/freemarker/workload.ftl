@@ -10,6 +10,7 @@
     <meta http-equiv="refresh" content="10; url=workload.html?id=${info.id}" />
   </#if>
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
+  <script type="text/javascript" src="resources/build/dist/echarts.js"></script>
   <title>Workload Details</title>
 </head>
 <body>
@@ -203,6 +204,22 @@
       </tr>
     </#list>
   </table>
+
+<!--running Performance Graph  -->
+<#if isRunning>
+  <h4>Performance Graph</h4>
+  <div id="graph">
+    <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+    <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="bandwidth"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
+    <#include "forchart.ftl">
+    <#include "runningchart.ftl">
+    </viv>
+  </div>
+</#if>
+
   <p class="warn">There are ${info.stageCount} stages in this workload.</p>
   <#if isStopped>
     <#if showErrorStatistics> 
@@ -211,7 +228,7 @@
         <tr>
           <th>Driver Url</th>
           <th>Error Code</th>
-          <th>Occurence Number</th>
+          <th>Occurrence Number</th>
         </tr>
         <#list info.errorStatistics?keys as url>     
           <#list info.errorStatistics[url].errorCodeAndNum?keys as code>
@@ -231,7 +248,28 @@
     <#else>
       <p><a href="workload.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
     </#if>
+    <!-- final Performance Graph -->
+      <h4>Performance Graph
+         <select id="cstage" onchange="custage()">
+            <option value="close" select="selected"></option>
+           <#list info.stageInfos  as sInfo >
+            <option value=${sInfo.id}>${sInfo.id}</option>
+           </#list>
+         </select>
+       </h4>
+      <div id="fchart" style="display:none">
+        <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+        <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="bandwidth" ></div>
+        <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
+        <#include "forchart.ftl">
+        <#include "finalchart.ftl">
+        </div>
+     </div>
   </#if>
+
+
   <h3>Actions</h3>
   <p>
     <#if !isStopped >

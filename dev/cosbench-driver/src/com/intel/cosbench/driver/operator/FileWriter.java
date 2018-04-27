@@ -18,6 +18,7 @@ package com.intel.cosbench.driver.operator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -94,11 +95,12 @@ class FileWriter extends AbstractOperator {
         // as we index arrays starting from 0, we need to remove 1 here
         Integer rand = (filePicker.pickObjKey(random) - 1);
         String filename = null;
-
+        
+        InputStream fis = null;
+        filename = listOfFiles[rand].getName();
+        long length = listOfFiles[rand].length();
+        
         try {
-            filename = listOfFiles[rand].getName();
-            long length = listOfFiles[rand].length();
-            InputStream fis = null;
             if (hashCheck) {
                 HashUtil util = new HashUtil();
                 int hashLen = util.getHashLen();
@@ -122,6 +124,14 @@ class FileWriter extends AbstractOperator {
                     "failed to perform file Write operation, hash Algorithm MD5 not supported, deaktivate hashCheck, maybe?", e);
             sample = new Sample(new Date(), getId(), getOpType(),
 					getSampleType(), getName(), false);
+        }finally {
+        	if(fis != null) {
+        		try {
+					fis.close();
+				} catch (IOException e) {
+					doLogErr(session.getLogger(), "failed to close file " + filename, e);
+				}
+        	}
         }
 
         session.getListener().onSampleCreated(sample);

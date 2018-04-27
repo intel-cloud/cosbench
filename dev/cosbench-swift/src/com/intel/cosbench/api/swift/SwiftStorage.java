@@ -49,6 +49,7 @@ class SwiftStorage extends NoneStorage {
     private String token;
     private String storage_url;
     private String policy;
+    private int transfer_rate;
 
     public SwiftStorage() {
         /* empty */
@@ -62,11 +63,13 @@ class SwiftStorage extends NoneStorage {
         token = config.get(AUTH_TOKEN_KEY, AUTH_TOKEN_DEFAULT);
         storage_url = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
         policy = config.get(POLICY_KEY, POLICY_DEFAULT);
+        transfer_rate = config.getInt(TRANSFER_RATE, TRANSFER_RATE_DEFAULT);
         		
         parms.put(CONN_TIMEOUT_KEY, timeout);
         parms.put(AUTH_TOKEN_KEY, token);
         parms.put(STORAGE_URL_KEY, storage_url);
         parms.put(POLICY_KEY, policy);
+        parms.put(TRANSFER_RATE, transfer_rate);
 
         logger.debug("using storage config: {}", parms);
 
@@ -86,7 +89,7 @@ class SwiftStorage extends NoneStorage {
         }
         
         try {
-            client.init(token, storage_url, policy);
+            client.init(token, storage_url, policy, transfer_rate);
         } catch (Exception e) {
             throw new StorageException(e);
         }

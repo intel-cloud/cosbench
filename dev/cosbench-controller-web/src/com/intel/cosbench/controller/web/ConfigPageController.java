@@ -36,7 +36,9 @@ public class ConfigPageController extends AbstractController {
     @Override
     protected ModelAndView process(HttpServletRequest req,
             HttpServletResponse res) {
-        return new ModelAndView("config");
+    	ModelAndView result = new ModelAndView("config");
+    	result.addObject("cInfo", controller.getControllerInfo());
+        return result;
     }
 
 }

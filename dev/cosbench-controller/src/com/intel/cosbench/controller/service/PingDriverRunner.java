@@ -17,53 +17,110 @@ limitations under the License.
 
 package com.intel.cosbench.controller.service;
 
-import java.net.InetAddress;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import com.intel.cosbench.log.LogFactory;
+import com.intel.cosbench.log.Logger;
 import com.intel.cosbench.model.DriverInfo;
 
 public class PingDriverRunner implements Runnable{
 
-	private int interval = 5000;
+    protected static final Logger LOGGER = LogFactory.getSystemLogger();
+
+	private static final int base_interval = 20;	// heartbeat interval in seconds.
+	private static final int failure_tolerance = 3; // how many failures in a row is tolerable.
+	private static final int ext_interval = 3*base_interval; // extended interval for the case failures is over tolerance.
+	private static final int delay = 3; // timeout for socket wait in seconds
 	private DriverInfo[] driverInfos;
+	private int driver_count = 0;
+	private int[] failures;
+	private boolean[] all_alive;
 	
 	PingDriverRunner(DriverInfo[] driverInfos){
 		this.driverInfos = driverInfos;
+		this.driver_count = driverInfos.length;
+		this.failures = new int[this.driver_count];
+		this.all_alive = new boolean[this.driver_count];
+	}
+	
+	public boolean isAlive() {
+		for(boolean status : all_alive) {
+			if(!status)
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public void checkFaultyDrivers() {
+		for(int i=0; i<driver_count; i++) {
+			if(!all_alive[i]) {
+				LOGGER.error(driverInfos[i].getName() + " at " + driverInfos[i].getUrl());
+			}
+		}		
 	}
 	
 	@Override
 	public void run() {
 		while (true) {
 			pingDrivers(driverInfos);
+			int interval = base_interval;
+			if(!isAlive()) {
+				LOGGER.error("below drivers are not alive:");
+				checkFaultyDrivers();
+				interval = ext_interval;
+			}
+
 			try {
-				Thread.sleep(interval);
-			} catch (InterruptedException ignore) {
+				LOGGER.info("begin to sleep for " + interval + " seconds.");
+				Thread.sleep(interval*1000);
+				LOGGER.info("wake up from sleep.");				
+			} catch (InterruptedException ie) {
+				LOGGER.warn("thread sleep is interrupted.");
 			}
 		}
 	}
 
 	private void pingDrivers(DriverInfo[] driverInfos) {
-		for (DriverInfo driver : driverInfos) {
-			boolean isAlive = false;
-			
+
+		for (int i=0; i<driverInfos.length; i++) {
+			DriverInfo driver = driverInfos[i];
 			String ipAddress = getIpAddres(driver.getUrl());
-			try {
-				if (!ipAddress.isEmpty()) {	
-					try{
-						Socket socket = new Socket();
-						InetSocketAddress reAddress = new InetSocketAddress(ipAddress, 18088);
-						InetSocketAddress locAddress = new InetSocketAddress("127.0.0.1", 0);
-						socket.bind(locAddress);
-						socket.connect(reAddress,3000);
-						isAlive = true;
-						}catch(Exception e){
-							isAlive = false;
-						}
+			Integer port = getDriverPort(driver.getUrl());
+			LOGGER.info("Trying to ping driver " + driver.getName() + " at " + driver.getUrl() + " with ip=" + ipAddress + ", port=" + port + "...");
+			if (ipAddress == null || ipAddress.isEmpty()) { 
+				all_alive[i] = false;
+				failures[i] = failure_tolerance;
+				LOGGER.error("the driver ip address shouldn't be empty, the heartbeat is disabled to driver !" + driver.getName());
+				return;
+			}
+			
+			Socket socket = null;
+			try{
+				socket = new Socket();
+				socket.connect(new InetSocketAddress(ipAddress, port), delay*1000);
+				all_alive[i] = true;
+				failures[i] = 0;
+				LOGGER.info("The driver " + driver.getName() + " at " + driver.getUrl() + " is reachable");
+			}catch(Exception e){
+				failures[i]++;
+				LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " is not reachable at the " + failures[i] + " time, with error message: " + e.getMessage());
+				if(failures[i] >= failure_tolerance) {
+					all_alive[i] = false;
+					LOGGER.warn("The driver " + driver.getName() + " at " + driver.getUrl() + " hits failure tolerance, will extend the heartbeat interval to " + ext_interval + " seconds");
 				}
 			}finally{
-				driver.setAliveState(isAlive);
+				driver.setAliveState(all_alive[i]);
+				if (socket != null) {
+					try {
+						socket.close();
+					}catch (IOException ignore) {						
+					}
+				}
 			}
+
 		}
 	}
 	
@@ -73,5 +130,11 @@ public class PingDriverRunner implements Runnable{
 		return end > start ? url.substring(start, end) : null;
 	}
 	
+	private Integer getDriverPort(String url) {
+		int start = url.lastIndexOf(":")+1;
+		int end = url.lastIndexOf("/");
+		return end > start? Integer.valueOf(url.substring(start, end)):null;
+	}
+
 }
 

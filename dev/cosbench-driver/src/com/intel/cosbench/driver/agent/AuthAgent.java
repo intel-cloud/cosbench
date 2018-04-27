@@ -74,6 +74,7 @@ class AuthAgent extends AbstractAgent {
     private AuthContext login() {
         Logger logger = getMissionLogger();
         AuthAPI authApi = workerContext.getAuthApi();
+
         int attempts = 0;
         while (attempts++ < loginAttempts - 1)
             try {

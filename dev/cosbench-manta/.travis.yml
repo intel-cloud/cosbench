@@ -1,0 +1,21 @@
+language: java
+sudo: false
+
+before_install:
+  - echo 'MAVEN_OPTS="-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"' >~/.mavenrc
+
+matrix:
+  fast_finish: true
+  include:
+    # checkstyle
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle"
+        - CMD="mvn clean checkstyle:check"
+    # unit tests (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="oraclejdk8 package"
+        - CMD="mvn clean package -Dcheckstyle.skip=true"
+
+script: echo ${CMD}; ${CMD}

@@ -30,7 +30,7 @@ Development Environment
 
 Below are steps to set up development environment in eclipse:
 
-1. download eclipse SDK (Juno) from http://www.eclipse.org/downloads/
+1. download eclipse SDK from [http://download.eclipse.org/eclipse/downloads/](http://download.eclipse.org/eclipse/downloads/), and we are using the version 4.2.1 (Juno).
 
 2. get cosbench source code tree by git or downloading the whole zip package.
 

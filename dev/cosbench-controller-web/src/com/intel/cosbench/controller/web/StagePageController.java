@@ -69,6 +69,7 @@ public class StagePageController extends AbstractController {
 
     protected ModelAndView process(WorkloadInfo wInfo, StageInfo sInfo) {
         ModelAndView result = new ModelAndView("stage");
+        result.addObject("cInfo", controller.getControllerInfo());
         result.addObject("sInfo", sInfo);
         result.addObject("wInfo", wInfo);
         result.addObject("isStopped", isStopped(sInfo.getState()));

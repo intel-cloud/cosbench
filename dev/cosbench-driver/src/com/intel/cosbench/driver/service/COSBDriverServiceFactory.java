@@ -19,7 +19,10 @@ package com.intel.cosbench.driver.service;
 
 import static org.apache.commons.lang.SystemUtils.IS_OS_WINDOWS;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import com.intel.cosbench.api.auth.AuthAPIService;
 import com.intel.cosbench.api.storage.StorageAPIService;
@@ -86,9 +89,35 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         DriverContext context = new DriverContext();
         context.setName(loadDriverName());
         context.setUrl(loadDriverUrl());
+        context.setVersion(getVersion());
         return context;
     }
-
+    
+    private String getVersion() {
+  		// TODO Auto-generated method stub
+      	String str = getName("VERSION");
+      	String str2 = getName("BUILD.no");
+      	return str+"."+str2;
+  	}
+      
+    private String getName(String fileName){
+	  	String str = null ;
+	    File myFile=new File(fileName);
+	    if(!myFile.exists()){ 
+	        System.err.println("Can't Find " + fileName);
+	    }
+	    try {
+	        BufferedReader in = new BufferedReader(new FileReader(myFile));
+	        str = in.readLine();
+	        in.close();
+	     } 
+	     catch (IOException e) {
+	        e.getStackTrace();
+	     }
+		return str;
+    }
+      
+    
     protected String loadLogLevel() {
         return config.get("driver.log_level", "INFO");
     }

@@ -38,6 +38,7 @@ public class S3Storage extends NoneStorage {
         secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
 
         boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
+        int maxConnections = config.getInt(MAX_CONNECTIONS, MAX_CONNECTIONS_DEFAULT);
         
 		String proxyHost = config.get(PROXY_HOST_KEY, "");
 		String proxyPort = config.get(PROXY_PORT_KEY, "");
@@ -46,9 +47,10 @@ public class S3Storage extends NoneStorage {
     	parms.put(AUTH_USERNAME_KEY, accessKey);
     	parms.put(AUTH_PASSWORD_KEY, secretKey);
     	parms.put(PATH_STYLE_ACCESS_KEY, pathStyleAccess);
+    	parms.put(MAX_CONNECTIONS, maxConnections);
     	parms.put(PROXY_HOST_KEY, proxyHost);
     	parms.put(PROXY_PORT_KEY, proxyPort);
-
+/*
         logger.debug("using storage config: {}", parms);
         
         ClientConfiguration clientConf = new ClientConfiguration();
@@ -56,6 +58,7 @@ public class S3Storage extends NoneStorage {
         clientConf.setSocketTimeout(timeout);
         clientConf.withUseExpectContinue(false);
         clientConf.withSignerOverride("S3SignerType");
+        clientConf.setMaxConnections(maxConnections);
 //        clientConf.setProtocol(Protocol.HTTP);
 		if((!proxyHost.equals(""))&&(!proxyPort.equals(""))){
 			clientConf.setProxyHost(proxyHost);
@@ -68,6 +71,34 @@ public class S3Storage extends NoneStorage {
         client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(pathStyleAccess));
         
         logger.debug("S3 client has been initialized");
+*/
+    	initClient();
+    }
+    
+    private AmazonS3 initClient() {
+        logger.debug("initialize S3 client with storage config: {}", parms);
+        
+        ClientConfiguration clientConf = new ClientConfiguration();
+        clientConf.setConnectionTimeout(parms.getInt(CONN_TIMEOUT_KEY));
+        clientConf.setMaxConnections(parms.getInt(MAX_CONNECTIONS));
+        clientConf.setSocketTimeout(timeout);
+        clientConf.withUseExpectContinue(false);
+        clientConf.withSignerOverride("S3SignerType");
+        System.setProperty(SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
+//        clientConf.setProtocol(Protocol.HTTP);
+		if((!parms.getStr(PROXY_HOST_KEY).equals(""))&&(!parms.getStr(PROXY_PORT_KEY).equals(""))){
+			clientConf.setProxyHost(parms.getStr(PROXY_HOST_KEY));
+			clientConf.setProxyPort(parms.getInt(PROXY_PORT_KEY));
+		}
+        
+        AWSCredentials myCredentials = new BasicAWSCredentials(accessKey, secretKey);
+        client = new AmazonS3Client(myCredentials, clientConf);
+        client.setEndpoint(endpoint);
+        client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(parms.getBoolean(PATH_STYLE_ACCESS_KEY)));
+        
+        logger.debug("S3 client has been initialized");
+        
+        return client;
     }
     
     @Override
@@ -90,15 +121,22 @@ public class S3Storage extends NoneStorage {
 	@Override
     public InputStream getObject(String container, String object, Config config) {
         super.getObject(container, object, config);
-        InputStream stream;
+        InputStream stream = null;
         try {
         	
             S3Object s3Obj = client.getObject(container, object);
             stream = s3Obj.getObjectContent();
             
-        } catch (Exception e) {
-            throw new StorageException(e);
+        } catch(AmazonServiceException ase) {
+        	if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(ase);
+        	}
+        } catch (AmazonClientException ace) { // recreate the AmazonS3 client connection if it is broken.
+        	logger.warn("below exception encountered when retrieving object " + object + " at bucket " + container + ": " + ace.getMessage());
+        	ace.printStackTrace();
+        	initClient();
         }
+        
         return stream;
     }
 
@@ -110,8 +148,14 @@ public class S3Storage extends NoneStorage {
 	        	
 	            client.createBucket(container);
         	}
-        } catch (Exception e) {
-            throw new StorageException(e);
+        } catch(AmazonServiceException ase) {
+        	if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(ase);
+        	}
+        } catch (AmazonClientException ace) { // recreate the AmazonS3 client connection if it is broken.
+        	logger.warn("below exception encountered when creating bucket " + container + ": " + ace.getMessage());
+        	ace.printStackTrace();
+        	initClient();
         }
     }
 
@@ -125,8 +169,14 @@ public class S3Storage extends NoneStorage {
     		metadata.setContentType("application/octet-stream");
     		
         	client.putObject(container, object, data, metadata);
-        } catch (Exception e) {
-            throw new StorageException(e);
+        }catch(AmazonServiceException ase) {
+        	if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(ase);
+        	}
+        } catch (AmazonClientException ace) { // recreate the AmazonS3 client connection if it is broken.
+        	logger.warn("below exception encountered when creating object " + object + " at " + container + ": " + ace.getMessage());
+        	ace.printStackTrace();
+        	initClient();
         }
     }
 
@@ -137,12 +187,14 @@ public class S3Storage extends NoneStorage {
         	if(client.doesBucketExist(container)) {
         		client.deleteBucket(container);
         	}
-        } catch(AmazonS3Exception awse) {
-        	if(awse.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
-        		throw new StorageException(awse);
+        } catch(AmazonServiceException ase) {
+        	if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(ase);
         	}
-        } catch (Exception e) {
-            throw new StorageException(e);
+        } catch (AmazonClientException ace) { // recreate the AmazonS3 client connection if it is broken.
+        	logger.warn("below exception encountered when deleting bucket " + container + ": " + ace.getMessage());
+        	ace.printStackTrace();
+        	initClient();
         }
     }
 
@@ -151,12 +203,14 @@ public class S3Storage extends NoneStorage {
         super.deleteObject(container, object, config);
         try {
             client.deleteObject(container, object);
-        } catch(AmazonS3Exception awse) {
-        	if(awse.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
-        		throw new StorageException(awse);
+        } catch(AmazonServiceException ase) {
+        	if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
+        		throw new StorageException(ase);
         	}
-        } catch (Exception e) {
-            throw new StorageException(e);
+        } catch (AmazonClientException ace) { // recreate the AmazonS3 client connection if it is broken.
+        	logger.warn("below exception encountered when deleting object " + object + " at bucket " + container + ": " + ace.getMessage());
+        	ace.printStackTrace();
+        	initClient();
         }
     }
 

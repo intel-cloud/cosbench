@@ -17,15 +17,29 @@ limitations under the License.
 
 package com.intel.cosbench.exporter;
 
+import com.intel.cosbench.bench.TaskReport;
 import com.intel.cosbench.model.*;
 
 /**
  * This class is a wrapper to construct different exporters by providing static construction methods.
  * 
- * @author ywang19, qzheng7
+ * @author ywang19, qzheng7 
  *
  */
 public class Exporters {
+	
+	public static WorkerExporter newWorkExporter(StageInfo info){
+		AbstractWorkerExporter exporter = new CSVWorkerExporter();
+		exporter.setStageInfo(info);
+		return exporter;
+	}
+	
+	public static TaskExporter newTaskExporter(WorkloadInfo workloadInfo,DriverInfo driverInfo){
+		AbstractTaskExporter exporter = new CSVTaskExporter();
+        exporter.setWorkloadInfo(workloadInfo);
+        exporter.setDriverInfo(driverInfo);
+        return exporter;
+	}
 
     public static RunExporter newRunExporter(WorkloadInfo workload) {
         AbstractRunExporter exporter = new CSVRunExporter();
@@ -68,5 +82,7 @@ public class Exporters {
         exporter.setWorkload(workload);
         return exporter;
     }
+    
+  
 
 }
