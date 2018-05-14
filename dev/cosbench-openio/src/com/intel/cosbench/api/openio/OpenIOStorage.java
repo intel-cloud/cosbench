@@ -20,6 +20,9 @@ import io.openio.sds.Client;
 import io.openio.sds.ClientBuilder;
 import io.openio.sds.exceptions.ContainerExistException;
 import io.openio.sds.exceptions.ContainerNotEmptyException;
+import io.openio.sds.exceptions.ContainerNotFoundException;
+import io.openio.sds.exceptions.DeadlineReachedException;
+import io.openio.sds.exceptions.ObjectNotFoundException;
 import io.openio.sds.exceptions.SdsException;
 import io.openio.sds.models.ListOptions;
 import io.openio.sds.models.ObjectInfo;
@@ -62,8 +65,14 @@ public class OpenIOStorage extends NoneStorage {
     private StorageException makeStorageException(SdsException wrapped) {
         String origMsg = wrapped.getMessage();
         if (wrapped instanceof ContainerNotEmptyException
-                || wrapped instanceof ContainerExistException)
+                || wrapped instanceof ContainerExistException) {
             return new StorageException("HTTP/1.1 409 " + origMsg, wrapped);
+        } else if (wrapped instanceof ObjectNotFoundException ||
+                wrapped instanceof ContainerNotFoundException) {
+            return new StorageException("HTTP/1.1 404 " + origMsg, wrapped);
+        } else if (wrapped instanceof DeadlineReachedException) {
+            return new StorageException("HTTP/1.1 503 " + origMsg, wrapped);
+        }
 
         Matcher codeMatcher = errCodePattern.matcher(origMsg);
         if (codeMatcher.find()) {
