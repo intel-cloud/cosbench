@@ -16,10 +16,13 @@ See workload example [here](../../release/conf/openio-config-sample.xml).
 
 ## Updating the plugin
 
+This only works for stable versions. Snapshot versions of openio-api cannot be
+downloaded with maven's dependency:copy plugin (unless you are a maven expert).
+
 ```bash
 PREV=$((cd dev/cosbench-openio && /bin/ls -1 -v openio-api-* ) | tail -n 1)
 mvn dependency:copy -Dartifact=io.openio.sds:openio-api:LATEST -DoutputDirectory=dev/cosbench-openio/
 LATEST=$((cd dev/cosbench-openio && /bin/ls -1 -v openio-api-* ) | tail -n 1)
-sed -e "s/openio-api-.*\.jar/${LATEST}/g" dev/cosbench-openio/META-INF/MANIFEST.MF dev/cosbench-openio/.classpath dev/cosbench-openio/build.properties
+sed -i -e "s/openio-api-.*\.jar/${LATEST}/g" dev/cosbench-openio/META-INF/MANIFEST.MF dev/cosbench-openio/.classpath dev/cosbench-openio/build.properties
 rm -f "dev/cosbench-openio/${PREV}"
 ```
