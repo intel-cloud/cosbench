@@ -17,8 +17,6 @@ the need to invest enough effort to learn how to use it effectively and to addre
 b) To help COSBench develop further, please become an active member of the community and consider giving back by making
 contributions.
 
-For other questions, contact jian.zhang@intel.com.
-
 
 Licensing
 ---------
