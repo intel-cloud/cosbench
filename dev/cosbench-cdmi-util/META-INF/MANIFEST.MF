@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDMI Utility Bundle
 Bundle-SymbolicName: cosbench-cdmi-util
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.intel.cosbench.client.cdmi.util

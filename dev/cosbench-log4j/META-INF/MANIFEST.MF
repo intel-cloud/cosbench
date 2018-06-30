@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Log4j Configuration Bundle
 Bundle-SymbolicName: cosbench-log4j
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Vendor: intel
 Fragment-Host: com.springsource.org.apache.log4j;bundle-version="[1.0.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

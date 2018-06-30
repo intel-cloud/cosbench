@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Castor Configuration Bundle
 Bundle-SymbolicName: cosbench-castor
-Bundle-Version: 0.4.1.0
+Bundle-Version: 0.4.2.0
 Bundle-Vendor: intel
 Fragment-Host: com.springsource.org.castor;bundle-version="[1.2.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

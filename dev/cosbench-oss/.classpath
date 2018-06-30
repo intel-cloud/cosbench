@@ -3,12 +3,12 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/aliyun-sdk-oss-2.8.1.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/commons-codec-1.9.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/hamcrest-core-1.1.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/httpclient-4.4.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/httpcore-4.4.jar"/>
-	<classpathentry kind="lib" path="D:/Repository/cosbench-oss-jars/jdom-1.1.jar"/>
+	<classpathentry kind="lib" path="aliyun-sdk-oss-2.8.1.jar"/>
+	<classpathentry kind="lib" path="commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="hamcrest-core-1.1.jar"/>
+	<classpathentry kind="lib" path="httpclient-4.4.jar"/>
+	<classpathentry kind="lib" path="httpcore-4.4.jar"/>
+	<classpathentry kind="lib" path="jdom-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
