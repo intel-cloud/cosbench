@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Qiniu Storage Client Bundle
+Bundle-SymbolicName: cosbench-qiniu
+Bundle-Version: 0.4.2.0
+Bundle-Vendor: intel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .,
+ gson.jar,
+ okhttp.jar,
+ okio.jar,
+ qiniu.jar
+Import-Package: com.intel.cosbench.api.auth,
+ com.intel.cosbench.api.context,
+ com.intel.cosbench.api.storage,
+ com.intel.cosbench.client.http,
+ com.intel.cosbench.config,
+ com.intel.cosbench.log
+
