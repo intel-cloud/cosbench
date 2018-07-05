@@ -44,7 +44,7 @@ public class PingHandler extends AbstractCommandHandler {
     	Scanner scanner = new Scanner(req.getInputStream());
     	Long controllerTime = getControllerTime(scanner);
     	String setControllerTime = System.getProperty("cosbench.driver.set.controller.time");
-    	if ( setControllerTime == null || setControllerTime.equals("true") ) {
+    	if ("true".equalsIgnoreCase(setControllerTime)) {
     		setSysTime(controllerTime);
     	}
     	PingResponse response = new PingResponse();
