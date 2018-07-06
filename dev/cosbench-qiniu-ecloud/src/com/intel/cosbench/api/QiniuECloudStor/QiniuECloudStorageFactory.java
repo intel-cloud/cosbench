@@ -5,13 +5,14 @@ import com.intel.cosbench.api.storage.*;
 public class QiniuECloudStorageFactory implements StorageAPIFactory {
 
     @Override
-    public String getStorageName() {
+    public String getStorageName()
+    {
         return "qiniu-ecloud";
     }
 
     @Override
-    public StorageAPI getStorageAPI() {
+    public StorageAPI getStorageAPI()
+    {
         return new QiniuECloudStorage();
     }
-
 }
