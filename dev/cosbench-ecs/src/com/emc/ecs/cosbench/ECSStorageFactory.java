@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 EMC Corporation. All Rights Reserved.
+ * Copyright 2014-2017 EMC Corporation. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package com.emc.vipr.cosbench.ECSStor;
+package com.emc.ecs.cosbench;
 
 import com.intel.cosbench.api.storage.StorageAPI;
 import com.intel.cosbench.api.storage.StorageAPIFactory;

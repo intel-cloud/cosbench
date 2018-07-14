@@ -1,5 +1,5 @@
-/*
- * Copyright 2014-2016 EMC Corporation. All Rights Reserved.
+/**
+ * Copyright 2014-2017 EMC Corporation. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package com.emc.vipr.cosbench.ECSStor;
+package com.emc.ecs.cosbench;
 
 /**
  * Constants for use with EMC ECS Storage API plugin
@@ -32,7 +32,9 @@ public interface ECSConstants {
 
     // Read Timeout Control; default is same as connection timeout
     public static final String READ_TIMEOUT_KEY = "read_timeout";
-    
+
+    public static final String CONFIG_URI_KEY = "configUri";
+
     // ECS Endpoint Constants
     public static final String ENDPOINT_KEY = "endpoint";
     public static final String ENDPOINT_DEFAULT = "http://s3.amazonaws.com";
@@ -63,4 +65,22 @@ public interface ECSConstants {
     // Whether to use the smart client (incl. client-side load balancing)
     public static final String SMART_CLIENT_KEY = "use_smart_client";
     public static final boolean SMART_CLIENT_DEFAULT = true;
+
+    public static final String METADATA_NAME_START = "x-amz-meta-";
+    public static final String METADATA_NAMES_KEY = "metadata_names";
+
+    public static final String METADATA_TYPE_KEY_SUFFIX = "_type";
+    public static final String METADATA_VALUES_ARRAY_SUFFIX = "_values";
+    public static final String METADATA_MINIMUM_KEY_SUFFIX = "_minimum";
+    public static final String METADATA_MAXIMUM_KEY_SUFFIX = "_maximum";
+    public static final String METADATA_CHARACTERS_KEY_SUFFIX = "_characters";
+    public static final String METADATA_FORMAT_KEY_SUFFIX = "_format";
+
+    public static final String METADATA_TYPE_INT = "int";
+    public static final String METADATA_TYPE_DOUBLE = "double";
+    public static final String METADATA_TYPE_STRING = "string";
+    public static final String METADATA_TYPE_DATE = "date";
+
+    public static final String METADATA_DEFAULT_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String METADATA_TIME_ZONE = "UTC";
 }
