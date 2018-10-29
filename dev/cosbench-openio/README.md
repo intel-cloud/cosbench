@@ -24,5 +24,7 @@ PREV=$((cd dev/cosbench-openio && /bin/ls -1 -v openio-api-* ) | tail -n 1)
 mvn dependency:copy -Dartifact=io.openio.sds:openio-api:LATEST -DoutputDirectory=dev/cosbench-openio/
 LATEST=$((cd dev/cosbench-openio && /bin/ls -1 -v openio-api-* ) | tail -n 1)
 sed -i -e "s/openio-api-.*\.jar/${LATEST}/g" dev/cosbench-openio/META-INF/MANIFEST.MF dev/cosbench-openio/.classpath dev/cosbench-openio/build.properties
-rm -f "dev/cosbench-openio/${PREV}"
+git rm "dev/cosbench-openio/${PREV}"
+git add "dev/cosbench-openio/${LATEST}"
+git add dev/cosbench-openio/META-INF/MANIFEST.MF dev/cosbench-openio/.classpath dev/cosbench-openio/build.properties
 ```

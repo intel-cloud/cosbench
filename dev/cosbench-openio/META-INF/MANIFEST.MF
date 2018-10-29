@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OpenIO Storage Client Bundle
 Bundle-SymbolicName: cosbench-openio
-Bundle-Version: 0.4.3
+Bundle-Version: 0.4.4
 Bundle-Vendor: Intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.intel.cosbench.api.auth,
@@ -23,5 +23,5 @@ Import-Package: com.intel.cosbench.api.auth,
  org.apache.http.util;version="[4.1.4,5.0.0)"
 Bundle-ClassPath: .,
  gson-2.5.jar,
- openio-api-1.0.1-20180628.073951-1.jar
+ openio-api-1.1.0.jar
 Export-Package: com.intel.cosbench.api.openio
