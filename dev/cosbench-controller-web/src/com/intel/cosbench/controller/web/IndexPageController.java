@@ -35,7 +35,7 @@ import com.intel.cosbench.web.AbstractController;
  */
 public class IndexPageController extends AbstractController {
 
-    private ControllerService controller;
+    protected ControllerService controller;
 
     public void setController(ControllerService controller) {
         this.controller = controller;

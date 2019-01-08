@@ -35,6 +35,10 @@
 		<servlet-name>main</servlet-name>
 		<url-pattern>*.csv</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>/prometheus</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>client</servlet-name>
