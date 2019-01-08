@@ -24,258 +24,258 @@ import com.intel.cosbench.model.*;
 import com.intel.cosbench.service.ControllerService;
 
 public class PrometheusController extends IndexPageController {
-    
-    /* 
-     * Custom "inline" View dedicated for Prometheus output generation
+
+  /* 
+   * Custom "inline" View dedicated for Prometheus output generation
+   */
+  private static final View PROMETHEUS = new PrometheusView();
+  private static class PrometheusView implements View {
+
+    /*
+     * # Prometheus FORMAT
+     * chart_name_with_underscores_separator{label1="value1",label2="value2"} 0.0000000 1546933475642
+     * Followed by the value of the metric as a float
+     * At the end, the timestamp can be added (Unix time in milliseconds)
+     * 
+     * More at https://prometheus.io/docs/instrumenting/exposition_formats/
      */
-    private static final View PROMETHEUS = new PrometheusView();
-    private static class PrometheusView implements View {
-    	
-    	/*
-    	 * # Prometheus FORMAT
-    	 * chart_name_with_underscores_separator{label1="value1",label2="value2"} 0.0000000 1546933475642
-    	 * Followed by the value of the metric as a float
-    	 * At the end, the timestamp can be added (Unix time in milliseconds)
-    	 * 
-    	 * More at https://prometheus.io/docs/instrumenting/exposition_formats/
-    	 */
 
-    	/* constants */
-    	private static final String PROM_SP          = " ";
-    	private static final String PROM_SEP         = "_";
-    	private static final String PROM_LINE_SEP    = "\n";
-    	private static final String PROM_LABEL_SEP   = ",";
-    	private static final String PROM_LABEL_QUOTE = "\"";
-    	private static final String PROM_LABEL_EQ    = "=";
-    	private static final String PROM_LABEL_START = "{";
-    	private static final String PROM_LABEL_END   = "}";
-    	private static final String PROM_PREFIX      = "cosbench" + PROM_SEP;
-    	
-    	/*
-    	 * Output one metric with labels
-    	 */
-    	private void printProm(PrintWriter writer, long date, float value, String name, Map<String, String> labels) {
-    		
-    		/* print chart name */
-    		writer.print(PROM_PREFIX + name);
-    		
-    		/* handle labels if present */
-    		if (labels != null) {    		
-    			
-	    		Iterator<Map.Entry<String, String>> it = labels.entrySet().iterator();
-	    		boolean first = true;
-	    		
-	    		/* if not labels list not empty */
-	    		if (it.hasNext()) {
-	    			
-	    			writer.print(PROM_SP + PROM_LABEL_START);
-	    			
-	    			/* iterate through labels */
-		    		while (it.hasNext()) {
-		    			
-		    			/* print PROM_LABL_SEP ',' only since the 2nd item */ 
-		    			if (first) first = false;
-		    			else writer.print(PROM_LABEL_SEP);
-		    			
-		    			/* extract next label */
-		    			Map.Entry<String, String> label = (Map.Entry<String, String>) it.next();
-		    			
-		    			/* print the label */
-		    			writer.print(label.getKey() + PROM_LABEL_EQ + PROM_LABEL_QUOTE + label.getValue() + PROM_LABEL_QUOTE);
-		    		}
-		    		
-	    			writer.print(PROM_LABEL_END);
-	    		}
-    		}
+    /* constants */
+    private static final String PROM_SP          = " ";
+    private static final String PROM_SEP         = "_";
+    private static final String PROM_LINE_SEP    = "\n";
+    private static final String PROM_LABEL_SEP   = ",";
+    private static final String PROM_LABEL_QUOTE = "\"";
+    private static final String PROM_LABEL_EQ    = "=";
+    private static final String PROM_LABEL_START = "{";
+    private static final String PROM_LABEL_END   = "}";
+    private static final String PROM_PREFIX      = "cosbench" + PROM_SEP;
 
-    		/* handle printing the float value to ensure it uses only num and the dot characters */
-    		if (value == (long) value) {
-    			writer.print(PROM_SP + String.format("%d", (long)value));
-    		} else {
-    			writer.print(PROM_SP + String.format("%s", value));    			
-    		}
-			
-    		/* print the date if present */
-			if (date > 0) writer.print(PROM_SP + String.valueOf(date));
-			
-			/* End of the metric */
-			writer.print(PROM_LINE_SEP);
-    	}
-    	
-    	/*
-    	 * 
-    	 */
-    	private void printMetrics(Report report, HashMap<String, String> labels, PrintWriter writer) {
-    		printMetrics(report, labels, 0, writer);
-    	}
-    	
-    	/*
-    	 * Print complete operation metrics, composed of
-    	 *   - Operations count
-    	 *   - Transfer Byte count
-    	 *   - Average Response time
-    	 *   - Average Transfer time
-    	 *   - Average Process time (which is Response time - Transfer Time)
-    	 *   - Throughput (which is the number of operations per seconds)
-    	 *   - Bandwidth (which is the number transfer bytes per seconds)
-    	 *   - Success Percentage   
-    	 */
-    	private void printMetrics(Report report, HashMap<String, String> labels, long time, PrintWriter writer) {
-    		/* duplicate labels for each workload */
-            labels = (HashMap<String,String>)labels.clone();
-    		
-			Metrics allMetrics[] = report.getAllMetrics();
-			for (int i=0; i<allMetrics.length; i++) {
-				Metrics metrics     = allMetrics[i];
-				String opId         = metrics.getOpId();
-				String opName       = metrics.getOpName();
-				String opSampleType = metrics.getSampleType();
-				String opType       = "";
-				
-				if (opId != null && opId.length() > 0) opType = opId + ":";
-				opType += opName;
-				if (opName.compareTo(opSampleType) != 0) opType += "-" + opSampleType; 
-				labels.put("operation", opType);
-				
-				labels.put("unit", "operation");
-				printProm(writer, time, (float)metrics.getSampleCount(), "workload_ops_count", labels);
+    /*
+     * Output one metric with labels
+     */
+    private void printProm(PrintWriter writer, long date, float value, String name, Map<String, String> labels) {
 
-				labels.put("unit", "byte");
-				printProm(writer, time, (float)metrics.getByteCount(), "workload_byte_count", labels);
+      /* print chart name */
+      writer.print(PROM_PREFIX + name);
 
-				labels.put("unit", "ms");
-				printProm(writer, time, (float)metrics.getAvgResTime(), "workload_average_response_time", labels);
+      /* handle labels if present */
+      if (labels != null) {        
 
-				labels.put("unit", "ms");
-				printProm(writer, time, (float)metrics.getAvgXferTime(), "workload_average_transfer_time", labels);
+        Iterator<Map.Entry<String, String>> it = labels.entrySet().iterator();
+        boolean first = true;
 
-				labels.put("unit", "ms");
-				printProm(writer, time, (float)metrics.getAvgResTime() - (long)metrics.getAvgXferTime(), "workload_average_process_time", labels);
+        /* if not labels list not empty */
+        if (it.hasNext()) {
 
-				labels.put("unit", "op/s");
-				printProm(writer, time, (float)metrics.getThroughput(), "workload_throughput", labels);
+          writer.print(PROM_SP + PROM_LABEL_START);
 
-				labels.put("unit", "byte/s");
-				printProm(writer, time, (float)metrics.getBandwidth(), "workload_bandwidth", labels);
+          /* iterate through labels */
+          while (it.hasNext()) {
 
-				labels.put("unit", "%");
-				printProm(writer, time, (float)(metrics.getRatio()*100), "workload_success_ratio", labels);
-			}
-    	}
+            /* print PROM_LABL_SEP ',' only since the 2nd item */ 
+            if (first) first = false;
+            else writer.print(PROM_LABEL_SEP);
 
-    	/*
-    	 * Return the Content-Type for prometheus
-    	 *   force charset to prevent tomcat to add another 
-    	 */
-        @Override
-        public String getContentType() {
-            return "text/plain; version=0.0.4; charset=utf-8";
+            /* extract next label */
+            Map.Entry<String, String> label = (Map.Entry<String, String>) it.next();
+
+            /* print the label */
+            writer.print(label.getKey() + PROM_LABEL_EQ + PROM_LABEL_QUOTE + label.getValue() + PROM_LABEL_QUOTE);
+          }
+
+          writer.print(PROM_LABEL_END);
         }
+      }
 
-        /*
-         * Render the View
-         * Output statistics for Active and Historical Workloads by default
-         * Archive workloads are not exported by default
-         * change settings to :
-         *   - cosbench.controller.prometheus.export.workloads.active
-         *   - cosbench.controller.prometheus.export.workloads.historical
-         *   - cosbench.controller.prometheus.export.workloads.archive
-         */
-        @Override
-        public void render(Map<String, ?> model, HttpServletRequest req, HttpServletResponse res) throws Exception {
-        	
-        	/* get the controller */
-        	ControllerService controller = (ControllerService)model.get("controller");
+      /* handle printing the float value to ensure it uses only num and the dot characters */
+      if (value == (long) value) {
+        writer.print(PROM_SP + String.format("%d", (long)value));
+      } else {
+        writer.print(PROM_SP + String.format("%s", value));          
+      }
 
-        	/* handle workloads to include */
-        	String includeActiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.active");
-        	String includeHistoricalWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.historical");
-        	String includeArchiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.archive");
-        	
-        	WorkloadInfo workloads[] = new WorkloadInfo[0];      	
-        	if (includeActiveWorkloads == null ||"true".equalsIgnoreCase(includeActiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getActiveWorkloads());
-        	if (includeHistoricalWorkloads == null || "true".equalsIgnoreCase(includeHistoricalWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getHistoryWorkloads());
-        	if ("true".equalsIgnoreCase(includeArchiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getArchivedWorkloads());
-        	
+      /* print the date if present */
+      if (date > 0) writer.print(PROM_SP + String.valueOf(date));
 
-        	/* set Content-Type and get servlet Writer */
-        	res.setContentType(this.getContentType());
-            PrintWriter writer = res.getWriter();
-
-            /* setup default labels with current hostname */ 
-            HashMap<String,String> labels = new HashMap<String, String>();          
-            labels.put("instance", InetAddress.getLocalHost().getHostName());
-
-            
-            /* iterate through each workloads */
-        	for (int i=0; i<workloads.length; i++) {
-        		
-        		/* get current workload */
-        		WorkloadInfo workload = workloads[i];
-        		
-        		/* set workload id and name as label by default */
-        		labels.put("workload", workload.getId() + " (" + workload.getWorkload().getName() + ")");
-        		
-        		/* convert workload state to integer */
-        		float state;
-        		switch(workload.getState()) {
-        			case QUEUING:
-        				state = 0;
-        				break;
-        			case PROCESSING:
-        				state = 1;
-        				break;
-        			case FINISHED:
-        				state = 2;
-        				break;
-        			case FAILED:
-        				state = 3;
-        				break;
-        			case TERMINATED:
-        				state = 4;
-        				break;
-        			case CANCELLED:
-        				state = 5;
-        				break;
-        			default:
-        				state = -1;
-        				break;
-        		}
-
-        		/* output workload_state metric */
-        		printProm(writer, 0, state, "workload_state", labels);
-
-        		// no other stats until it starts running
-        		if (workload.getState() == WorkloadState.QUEUING) continue;
-     		
-        		/* get Report that contains all metrics
-        		 * If the workload is running (state == PROCESSING) then the report is to be fetch from the last SnapShot
-        		 * otherwise the workload is over and the report is to be taken directly
-        		 */
-        		Report report = (workload.getState() == WorkloadState.PROCESSING) ? workload.getSnapshot().getReport() : workload.getReport();
-        		
-        		/* Output all metrics */
-        		printMetrics(report, labels, writer);
-        		
-        	}
-
-        	/* print empty line */
-            writer.print(PROM_LINE_SEP);
-        }
+      /* End of the metric */
+      writer.print(PROM_LINE_SEP);
     }
 
-    /* 
-     * Controller main function
+    /*
+     * 
+     */
+    private void printMetrics(Report report, HashMap<String, String> labels, PrintWriter writer) {
+      printMetrics(report, labels, 0, writer);
+    }
+
+    /*
+     * Print complete operation metrics, composed of
+     *   - Operations count
+     *   - Transfer Byte count
+     *   - Average Response time
+     *   - Average Transfer time
+     *   - Average Process time (which is Response time - Transfer Time)
+     *   - Throughput (which is the number of operations per seconds)
+     *   - Bandwidth (which is the number transfer bytes per seconds)
+     *   - Success Percentage   
+     */
+    private void printMetrics(Report report, HashMap<String, String> labels, long time, PrintWriter writer) {
+      /* duplicate labels for each workload */
+      labels = (HashMap<String,String>)labels.clone();
+
+      Metrics allMetrics[] = report.getAllMetrics();
+      for (int i=0; i<allMetrics.length; i++) {
+        Metrics metrics     = allMetrics[i];
+        String opId         = metrics.getOpId();
+        String opName       = metrics.getOpName();
+        String opSampleType = metrics.getSampleType();
+        String opType       = "";
+
+        if (opId != null && opId.length() > 0) opType = opId + ":";
+        opType += opName;
+        if (opName.compareTo(opSampleType) != 0) opType += "-" + opSampleType; 
+        labels.put("operation", opType);
+
+        labels.put("unit", "operation");
+        printProm(writer, time, (float)metrics.getSampleCount(), "workload_ops_count", labels);
+
+        labels.put("unit", "byte");
+        printProm(writer, time, (float)metrics.getByteCount(), "workload_byte_count", labels);
+
+        labels.put("unit", "ms");
+        printProm(writer, time, (float)metrics.getAvgResTime(), "workload_average_response_time", labels);
+
+        labels.put("unit", "ms");
+        printProm(writer, time, (float)metrics.getAvgXferTime(), "workload_average_transfer_time", labels);
+
+        labels.put("unit", "ms");
+        printProm(writer, time, (float)metrics.getAvgResTime() - (long)metrics.getAvgXferTime(), "workload_average_process_time", labels);
+
+        labels.put("unit", "op/s");
+        printProm(writer, time, (float)metrics.getThroughput(), "workload_throughput", labels);
+
+        labels.put("unit", "byte/s");
+        printProm(writer, time, (float)metrics.getBandwidth(), "workload_bandwidth", labels);
+
+        labels.put("unit", "%");
+        printProm(writer, time, (float)(metrics.getRatio()*100), "workload_success_ratio", labels);
+      }
+    }
+
+    /*
+     * Return the Content-Type for prometheus
+     *   force charset to prevent tomcat to add another 
      */
     @Override
-    protected ModelAndView process(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    	
-    	/* instanciate custom "inline" View */ 
-    	ModelAndView result = new ModelAndView(PROMETHEUS);
-    	
-    	/* pass controller Object to View */
-    	result.addObject("controller", controller);
-    	
-        return result;
+    public String getContentType() {
+      return "text/plain; version=0.0.4; charset=utf-8";
     }
+
+    /*
+     * Render the View
+     * Output statistics for Active and Historical Workloads by default
+     * Archive workloads are not exported by default
+     * change settings to :
+     *   - cosbench.controller.prometheus.export.workloads.active
+     *   - cosbench.controller.prometheus.export.workloads.historical
+     *   - cosbench.controller.prometheus.export.workloads.archive
+     */
+    @Override
+    public void render(Map<String, ?> model, HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+      /* get the controller */
+      ControllerService controller = (ControllerService)model.get("controller");
+
+      /* handle workloads to include */
+      String includeActiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.active");
+      String includeHistoricalWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.historical");
+      String includeArchiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.archive");
+
+      WorkloadInfo workloads[] = new WorkloadInfo[0];        
+      if (includeActiveWorkloads == null ||"true".equalsIgnoreCase(includeActiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getActiveWorkloads());
+      if (includeHistoricalWorkloads == null || "true".equalsIgnoreCase(includeHistoricalWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getHistoryWorkloads());
+      if ("true".equalsIgnoreCase(includeArchiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getArchivedWorkloads());
+
+
+      /* set Content-Type and get servlet Writer */
+      res.setContentType(this.getContentType());
+      PrintWriter writer = res.getWriter();
+
+      /* setup default labels with current hostname */ 
+      HashMap<String,String> labels = new HashMap<String, String>();          
+      labels.put("instance", InetAddress.getLocalHost().getHostName());
+
+
+      /* iterate through each workloads */
+      for (int i=0; i<workloads.length; i++) {
+
+        /* get current workload */
+        WorkloadInfo workload = workloads[i];
+
+        /* set workload id and name as label by default */
+        labels.put("workload", workload.getId() + " (" + workload.getWorkload().getName() + ")");
+
+        /* convert workload state to integer */
+        float state;
+        switch(workload.getState()) {
+          case QUEUING:
+            state = 0;
+            break;
+          case PROCESSING:
+            state = 1;
+            break;
+          case FINISHED:
+            state = 2;
+            break;
+          case FAILED:
+            state = 3;
+            break;
+          case TERMINATED:
+            state = 4;
+            break;
+          case CANCELLED:
+            state = 5;
+            break;
+          default:
+            state = -1;
+            break;
+        }
+
+        /* output workload_state metric */
+        printProm(writer, 0, state, "workload_state", labels);
+
+        // no other stats until it starts running
+        if (workload.getState() == WorkloadState.QUEUING) continue;
+
+        /* get Report that contains all metrics
+         * If the workload is running (state == PROCESSING) then the report is to be fetch from the last SnapShot
+         * otherwise the workload is over and the report is to be taken directly
+         */
+        Report report = (workload.getState() == WorkloadState.PROCESSING) ? workload.getSnapshot().getReport() : workload.getReport();
+
+        /* Output all metrics */
+        printMetrics(report, labels, writer);
+
+      }
+
+      /* print empty line */
+      writer.print(PROM_LINE_SEP);
+    }
+  }
+
+  /* 
+   * Controller main function
+   */
+  @Override
+  protected ModelAndView process(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+    /* instanciate custom "inline" View */ 
+    ModelAndView result = new ModelAndView(PROMETHEUS);
+
+    /* pass controller Object to View */
+    result.addObject("controller", controller);
+
+    return result;
+  }
 }
