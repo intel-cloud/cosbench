@@ -146,13 +146,14 @@ public class PrometheusController extends IndexPageController {
         Metrics metrics     = allMetrics[i];
         String opId         = metrics.getOpId();
         String opName       = metrics.getOpName();
-        String opSampleType = metrics.getSampleType();
-        String opType       = "";
+        String opType       = metrics.getOpType();
 
-        if (opId != null && opId.length() > 0) opType = opId + ":";
-        opType += opName;
-        if (opName.compareTo(opSampleType) != 0) opType += "-" + opSampleType; 
-        labels.put("operation", opType);
+        if (opId != null && opId.length() > 0) opName = opId + ":" + opName;
+        labels.put("operation_name", opName);
+
+        if (opType != null && opType.length() > 0) {
+          labels.put("operation_type", opType);
+        }
 
         labels.put("unit", "operation");
         printProm(writer, time, (float)metrics.getSampleCount(), "workload_ops_count", labels);
