@@ -26,6 +26,7 @@ package com.intel.cosbench.controller.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -195,9 +196,14 @@ public class PrometheusController extends IndexPageController {
      * Output statistics for Active and Historical Workloads by default
      * Archive workloads are not exported by default
      * change settings to :
-     *   - cosbench.controller.prometheus.export.workloads.active
-     *   - cosbench.controller.prometheus.export.workloads.historical
-     *   - cosbench.controller.prometheus.export.workloads.archive
+     *   - prometheus.export.workloads.active
+     *   - prometheus.export.workloads.historical
+     *   - prometheus.export.workloads.archive
+     *
+     * By default statistics for loaded workloads are sent for 5 minutes after workload finished.
+     * The time can be changed with the setting 'prometheus.export.timeout'.
+     * Set it to 0 will disable this behavior and continue to send metrics until workload is loaded
+     * Warning: this can overlap with the parameter 'prometheus.export.workloads.archive'
      */
     @Override
     public void render(Map<String, ?> model, HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -205,16 +211,24 @@ public class PrometheusController extends IndexPageController {
       /* get the controller */
       ControllerService controller = (ControllerService)model.get("controller");
 
-      /* handle workloads to include */
+      /* handle System properties */
       String includeActiveWorkloads = System.getProperty("prometheus.export.workloads.active");
-      String includeHistoricalWorkloads = System.getProperty("prometheus.export.workloads.historical");
-      String includeArchiveWorkloads = System.getProperty("prometheus.export.workloads.archive");
+      String includeHistoryWorkloads = System.getProperty("prometheus.export.workloads.history");
+      String includeArchivedWorkloads = System.getProperty("prometheus.export.workloads.archived");
+      int stopExporting;
+      try {
+          /* convert to int */
+          stopExporting = Integer.parseInt(System.getProperty("prometheus.export.timeout"));
+      } catch (Exception e) {
+          /* default to 5 minutes*/
+          stopExporting = 5;
+      }
 
+      /* handle workloads to include */
       WorkloadInfo workloads[] = new WorkloadInfo[0];
       if (includeActiveWorkloads == null || "true".equalsIgnoreCase(includeActiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getActiveWorkloads());
-      if (includeHistoricalWorkloads == null || "true".equalsIgnoreCase(includeHistoricalWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getHistoryWorkloads());
-      if ("true".equalsIgnoreCase(includeArchiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getArchivedWorkloads());
-
+      if (includeHistoryWorkloads == null || "true".equalsIgnoreCase(includeHistoryWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getHistoryWorkloads());
+      if ("true".equalsIgnoreCase(includeArchivedWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getArchivedWorkloads());
 
       /* set Content-Type and get servlet Writer */
       res.setContentType(this.getContentType());
@@ -224,12 +238,18 @@ public class PrometheusController extends IndexPageController {
       HashMap<String,String> labels = new HashMap<String, String>();
       labels.put("instance", InetAddress.getLocalHost().getHostName());
 
-
       /* iterate through each workloads */
       for (int i=0; i<workloads.length; i++) {
 
         /* get current workload */
         WorkloadInfo workload = workloads[i];
+
+        /* stop sending statistics 'stopExporting' minutes after workload has stopped */
+        if (stopExporting > 0 && WorkloadState.isStopped(workload.getState())) {
+            if ((new Date()).getTime() > workload.getStopDate().getTime() + (1000 * 60 * stopExporting)) {
+                continue;
+            }
+        }
 
         /* set workload id and name as label by default */
         labels.put("workload", workload.getId() + " (" + workload.getWorkload().getName() + ")");
@@ -270,7 +290,12 @@ public class PrometheusController extends IndexPageController {
          * If the workload is running (state == PROCESSING) then the report is to be fetch from the last SnapShot
          * otherwise the workload is over and the report is to be taken directly
          */
-        Report report = (workload.getState() == WorkloadState.PROCESSING) ? workload.getSnapshot().getReport() : workload.getReport();
+        Report report;
+        if (workload.getState() == WorkloadState.PROCESSING) {
+            report = workload.getSnapshot().getReport();
+        } else {
+            report = workload.getReport();
+        }
 
         /* Output all metrics */
         printMetrics(report, labels, writer);
