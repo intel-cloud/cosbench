@@ -109,7 +109,7 @@ public class PrometheusController extends IndexPageController {
       if (value == (long) value) {
         writer.print(PROM_SP + String.format("%d", (long)value));
       } else {
-        writer.print(PROM_SP + String.format("%s", value));          
+        writer.print(PROM_SP + String.format("%s", value));
       }
 
       /* print the date if present */
@@ -206,12 +206,12 @@ public class PrometheusController extends IndexPageController {
       ControllerService controller = (ControllerService)model.get("controller");
 
       /* handle workloads to include */
-      String includeActiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.active");
-      String includeHistoricalWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.historical");
-      String includeArchiveWorkloads = System.getProperty("cosbench.controller.prometheus.export.workloads.archive");
+      String includeActiveWorkloads = System.getProperty("prometheus.export.workloads.active");
+      String includeHistoricalWorkloads = System.getProperty("prometheus.export.workloads.historical");
+      String includeArchiveWorkloads = System.getProperty("prometheus.export.workloads.archive");
 
-      WorkloadInfo workloads[] = new WorkloadInfo[0];        
-      if (includeActiveWorkloads == null ||"true".equalsIgnoreCase(includeActiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getActiveWorkloads());
+      WorkloadInfo workloads[] = new WorkloadInfo[0];
+      if (includeActiveWorkloads == null || "true".equalsIgnoreCase(includeActiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getActiveWorkloads());
       if (includeHistoricalWorkloads == null || "true".equalsIgnoreCase(includeHistoricalWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getHistoryWorkloads());
       if ("true".equalsIgnoreCase(includeArchiveWorkloads)) workloads = (WorkloadInfo[])ArrayUtils.addAll(workloads, controller.getArchivedWorkloads());
 
@@ -221,7 +221,7 @@ public class PrometheusController extends IndexPageController {
       PrintWriter writer = res.getWriter();
 
       /* setup default labels with current hostname */ 
-      HashMap<String,String> labels = new HashMap<String, String>();          
+      HashMap<String,String> labels = new HashMap<String, String>();
       labels.put("instance", InetAddress.getLocalHost().getHostName());
 
 
