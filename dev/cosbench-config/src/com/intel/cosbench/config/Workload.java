@@ -17,6 +17,8 @@ limitations under the License.
 
 package com.intel.cosbench.config;
 
+import java.io.File;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.intel.cosbench.config.common.ConfigUtils;
@@ -115,6 +117,10 @@ public class Workload {
     }
 
     public void validate() {
+        if (getName().indexOf(File.separator) >= 0) {
+            throw new ConfigException("Forbidden character (" + File.separator + ") in the name of the workload.");
+        }
+
         setName(getName());
         setWorkflow(getWorkflow());
         for (Stage stage : workflow)
