@@ -1,5 +1,5 @@
 /** 
- 
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,16 +43,16 @@ import com.intel.cosbench.service.IllegalStateException;
 class COSBDriverService implements DriverService, MissionListener {
 
     private static final Logger LOGGER = LogFactory.getSystemLogger();
-    
+
     private DriverContext context;
     private Map<String, MissionHandler> handlers;
-    
+
     private AuthAPIService authAPIs;
     private StorageAPIService storageAPIs;
 
     private ExecutorService executor;
     private MissionRepository memRepo = new RAMMissionRepository();
-    
+
     public COSBDriverService() {
         /* empty */
     }
@@ -78,11 +78,11 @@ class COSBDriverService implements DriverService, MissionListener {
         handlers = Collections.synchronizedMap(handlers);
         executor = Executors.newCachedThreadPool();
     }
-    
+
     @Override
     public synchronized String submit(XmlConfig config) {
         LOGGER.debug("submitting mission ... ");
-        
+
         MissionContext mission = createMissionContext(config);
         MissionHandler handler = createHandler(mission);
         mission.addListener(this);
@@ -138,8 +138,8 @@ class COSBDriverService implements DriverService, MissionListener {
         LOGGER.debug("authing mission {} ...", id);
         Future<?> future = null;
         synchronized(handler) {
-        	future = executor.submit(new AuthThread());
-        	handler.getMissionContext().setFuture(future);
+            future = executor.submit(new AuthThread());
+            handler.getMissionContext().setFuture(future);
         }
         LOGGER.debug("mission {} has been requested to auth", id);
         yieldExecution(200); // give mission handler a chance
@@ -165,10 +165,10 @@ class COSBDriverService implements DriverService, MissionListener {
         LOGGER.debug("launching mission {} ...", id);
         Future<?> future = null;
         synchronized(handler) {
-        	future = executor.submit(new DriverThread());
+            future = executor.submit(new DriverThread());
             handler.getMissionContext().setFuture(future);
         }
-            
+
         LOGGER.debug("mission {} has been requested to launch", id);
         yieldExecution(200); // give mission handler a chance
     }
@@ -204,8 +204,8 @@ class COSBDriverService implements DriverService, MissionListener {
 
     private static void awaitTermination(Future<?> future) {
         try {
-        	if(future != null)
-        		future.get(); // wait forever
+            if(future != null)
+                future.get(); // wait forever
         } catch (CancellationException ce) {
             LOGGER.warn("task has been cancelled!", ce);
         } catch (InterruptedException ie) {
@@ -243,5 +243,4 @@ class COSBDriverService implements DriverService, MissionListener {
         handler.dispose();
         LOGGER.debug("handler for mission {} has been detached", id);
     }
-
 }

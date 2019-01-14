@@ -1,5 +1,5 @@
 /** 
- 
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,32 +93,32 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         context.setMission_dir(loadMissionDir());
         return context;
     }
-    
+
     private String getVersion() {
-  		// TODO Auto-generated method stub
-      	String str = getName("VERSION");
-      	String str2 = getName("BUILD.no");
-      	return str+"."+str2;
-  	}
-      
+          // TODO Auto-generated method stub
+          String str = getName("VERSION");
+          String str2 = getName("BUILD.no");
+          return str+"."+str2;
+      }
+
     private String getName(String fileName){
-	  	String str = null ;
-	    File myFile=new File(fileName);
-	    if(!myFile.exists()){ 
-	        System.err.println("Can't Find " + fileName);
-	    }
-	    try {
-	        BufferedReader in = new BufferedReader(new FileReader(myFile));
-	        str = in.readLine();
-	        in.close();
-	     } 
-	     catch (IOException e) {
-	        e.getStackTrace();
-	     }
-		return str;
+          String str = null ;
+        File myFile=new File(fileName);
+        if(!myFile.exists()){ 
+            System.err.println("Can't Find " + fileName);
+        }
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(myFile));
+            str = in.readLine();
+            in.close();
+         } 
+         catch (IOException e) {
+            e.getStackTrace();
+         }
+        return str;
     }
-      
-    
+
+
     protected String loadLogLevel() {
         return config.get("driver.log_level", "INFO");
     }

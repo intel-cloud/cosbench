@@ -1,5 +1,5 @@
 /** 
- 
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,27 +38,27 @@ public class DriverContext implements DriverInfo {
     private String time;
     private String mission_dir;
 
-	// pIDMap<scriptName, pid>
-	private Map<String, String> pidMap = new HashMap<String, String>();
-	// logMap<'wId'+'sId', ScriptLog>
-	private Map<String, String> scriptsLog = new HashMap<String, String>();
-	
-	public String getTime() {
-		time = new Date().toString();
-		return time;
-	}
-	
-	public void setTime(String timeStr) {
-		this.time = timeStr;
-	}
-	
-    public String getVersion() {
-		return version;
-	}
+    // pIDMap<scriptName, pid>
+    private Map<String, String> pidMap = new HashMap<String, String>();
+    // logMap<'wId'+'sId', ScriptLog>
+    private Map<String, String> scriptsLog = new HashMap<String, String>();
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public String getTime() {
+        time = new Date().toString();
+        return time;
+    }
+
+    public void setTime(String timeStr) {
+        this.time = timeStr;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public DriverContext() {
         /* empty */
@@ -81,38 +81,38 @@ public class DriverContext implements DriverInfo {
     }
 
     public void setAliveState(boolean aliveState) {
-		this.aliveState = aliveState;
-	}
-
-    public boolean getAliveState(){
-    	return aliveState;
+        this.aliveState = aliveState;
     }
 
-	public String getPidMap(String scriptName) {
-		String pid = pidMap.remove(scriptName);		
-		return (pid == null) ? "0" : pid;
-	}
+    public boolean getAliveState(){
+        return aliveState;
+    }
 
-	public void putPidMap(String scriptName, String pid) {
-		if (pid == null)
-			pidMap.put(scriptName, "0");
-		pidMap.put(scriptName, pid);
-	}
+    public String getPidMap(String scriptName) {
+        String pid = pidMap.remove(scriptName);        
+        return (pid == null) ? "0" : pid;
+    }
 
-	@Override
-	public Map<String, String> getLogMap() {
-		return scriptsLog;
-	}
+    public void putPidMap(String scriptName, String pid) {
+        if (pid == null)
+            pidMap.put(scriptName, "0");
+        pidMap.put(scriptName, pid);
+    }
 
-	public void putLogMap(String wsId, String ScriptLog) {
-		if (wsId == null || wsId.isEmpty())
-			return;
-		scriptsLog.put(wsId, ScriptLog);
-	}
-	
-	public String getLogMapValue(String wsId) {
-		return scriptsLog.remove(wsId);
-	}
+    @Override
+    public Map<String, String> getLogMap() {
+        return scriptsLog;
+    }
+
+    public void putLogMap(String wsId, String ScriptLog) {
+        if (wsId == null || wsId.isEmpty())
+            return;
+        scriptsLog.put(wsId, ScriptLog);
+    }
+
+    public String getLogMapValue(String wsId) {
+        return scriptsLog.remove(wsId);
+    }
 
     public String getMission_dir() {
         return mission_dir;
