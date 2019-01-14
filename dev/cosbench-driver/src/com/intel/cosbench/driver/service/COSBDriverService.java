@@ -70,6 +70,10 @@ class COSBDriverService implements DriverService, MissionListener {
     }
 
     public void init() {
+        if (this.context == null) {
+            LOGGER.error("Driver Context is not initialized.");
+            System.exit(-1);
+        }
         handlers = new HashMap<String, MissionHandler>();
         handlers = Collections.synchronizedMap(handlers);
         executor = Executors.newCachedThreadPool();
@@ -105,7 +109,7 @@ class COSBDriverService implements DriverService, MissionListener {
     }
 
     private MissionHandler createHandler(MissionContext mission) {
-        MissionHandler handler = new MissionHandler();
+        MissionHandler handler = new MissionHandler(context.getMission_dir());
         handler.setMissionContext(mission);
         handler.setAuthAPIs(authAPIs);
         handler.setStorageAPIs(storageAPIs);

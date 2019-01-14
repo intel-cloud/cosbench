@@ -48,12 +48,7 @@ class MissionHandler {
 
     private static final Logger LOGGER = LogFactory.getSystemLogger();
 
-    private static final File LOG_DIR = new File(new File("log"), "mission");
-
-    static {
-        if (!LOG_DIR.exists())
-            LOG_DIR.mkdirs();
-    }
+    private static File LOG_DIR;
 
     private int retry; // auth retry number
     private Config authConfig; // shared auth configurations
@@ -65,8 +60,9 @@ class MissionHandler {
     private ExecutorService executor;
     private MissionContext missionContext;
 
-    public MissionHandler() {
-        /* empty */
+    public MissionHandler(String mission_dir) {
+        LOG_DIR = new File(mission_dir);
+        if (!LOG_DIR.exists()) LOG_DIR.mkdirs();
     }
 
     public MissionContext getMissionContext() {

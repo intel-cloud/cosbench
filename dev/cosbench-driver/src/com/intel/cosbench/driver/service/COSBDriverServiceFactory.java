@@ -90,6 +90,7 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         context.setName(loadDriverName());
         context.setUrl(loadDriverUrl());
         context.setVersion(getVersion());
+        context.setMission_dir(loadMissionDir());
         return context;
     }
     
@@ -134,4 +135,7 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         return config.get("driver.url", "N/A");
     }
 
+    private String loadMissionDir() {
+        return config.get("driver.mission_dir", "log/mission");
+    }
 }

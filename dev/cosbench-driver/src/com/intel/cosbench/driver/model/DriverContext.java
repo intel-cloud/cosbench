@@ -36,6 +36,7 @@ public class DriverContext implements DriverInfo {
     private boolean aliveState;
     private String version;
     private String time;
+    private String mission_dir;
 
 	// pIDMap<scriptName, pid>
 	private Map<String, String> pidMap = new HashMap<String, String>();
@@ -112,4 +113,12 @@ public class DriverContext implements DriverInfo {
 	public String getLogMapValue(String wsId) {
 		return scriptsLog.remove(wsId);
 	}
+
+    public String getMission_dir() {
+        return mission_dir;
+    }
+
+    public void setMission_dir(String mission_dir) {
+        this.mission_dir = mission_dir;
+    }
 }
