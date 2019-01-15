@@ -1,6 +1,7 @@
 /** 
  
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,7 +36,7 @@ import com.intel.cosbench.web.AbstractController;
  */
 public class IndexPageController extends AbstractController {
 
-    private ControllerService controller;
+    protected ControllerService controller;
 
     public void setController(ControllerService controller) {
         this.controller = controller;

@@ -1,6 +1,6 @@
 <Server>
 	<Service name="Catalina">
-		<Connector port="18088" protocol="HTTP/1.1" />
+		<Connector port="18088" protocol="HTTP/1.1" compression="on" compressionMinSize="1024" compressableMimeType="text/html,text/plain,text/csv" />
 		<Engine name="Standalone" defaultHost="0.0.0.0">
 		    <Realm className="org.apache.catalina.realm.MemoryRealm"
 				pathname="./conf/cosbench-users.xml"/>

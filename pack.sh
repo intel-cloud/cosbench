@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #Copyright 2013 Intel Corporation, All Rights Reserved.
 #
@@ -45,6 +45,6 @@ cp -f pkg.lst $1/
 
 echo $(date +%Y%m%d) > $1/BUILD.no
 
-echo "Build up adaptor example enviornment"
+echo "Build up adaptor example environment"
 mkdir $1/ext
 cp -f -R ext/* $1/ext

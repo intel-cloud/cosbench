@@ -1,6 +1,7 @@
 /** 
  
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,8 @@ limitations under the License.
 */ 
 
 package com.intel.cosbench.config;
+
+import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -115,6 +118,10 @@ public class Workload {
     }
 
     public void validate() {
+        if (getName().indexOf(File.separator) >= 0) {
+            throw new ConfigException("Forbidden character (" + File.separator + ") in the name of the workload.");
+        }
+
         setName(getName());
         setWorkflow(getWorkflow());
         for (Stage stage : workflow)

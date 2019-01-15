@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 release_id=`cat VERSION`
 echo "release id is: "$release_id
 for dir in `ls dev`

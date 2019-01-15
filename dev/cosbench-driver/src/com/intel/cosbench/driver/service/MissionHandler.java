@@ -1,6 +1,7 @@
 /** 
- 
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,12 +49,7 @@ class MissionHandler {
 
     private static final Logger LOGGER = LogFactory.getSystemLogger();
 
-    private static final File LOG_DIR = new File(new File("log"), "mission");
-
-    static {
-        if (!LOG_DIR.exists())
-            LOG_DIR.mkdirs();
-    }
+    private static File LOG_DIR;
 
     private int retry; // auth retry number
     private Config authConfig; // shared auth configurations
@@ -65,8 +61,9 @@ class MissionHandler {
     private ExecutorService executor;
     private MissionContext missionContext;
 
-    public MissionHandler() {
-        /* empty */
+    public MissionHandler(String mission_dir) {
+        LOG_DIR = new File(mission_dir);
+        if (!LOG_DIR.exists()) LOG_DIR.mkdirs();
     }
 
     public MissionContext getMissionContext() {
@@ -137,34 +134,34 @@ class MissionHandler {
         context.setOperator(Operators.getOperator(op, config));
         return context;
     }
-    
-	private void initOpDefaultName(Mission mission) {
-		Set<String> opTypes = new HashSet<String>();
-		for (Operation op : mission.getOperations()) {
-			opTypes.add(op.getType());
-		}
-		if (opTypes.size() == mission.getOperations().size())
-			return;
-		for (String opType : opTypes) {
-			int index = 0;
-			for (Operation op : mission.getOperations()) {
-				if (op.getType().equals(opType)) {
-					index++;
-					if (op.getConfig().indexOf("name") < 0) {
-						op.setConfig(StringUtils.join(new Object[] {
-								op.getConfig(), ";name=",
-								String.valueOf(index), "-", op.getType() }));
-					}
-				}
-			}
-		}
-	}
+
+    private void initOpDefaultName(Mission mission) {
+        Set<String> opTypes = new HashSet<String>();
+        for (Operation op : mission.getOperations()) {
+            opTypes.add(op.getType());
+        }
+        if (opTypes.size() == mission.getOperations().size())
+            return;
+        for (String opType : opTypes) {
+            int index = 0;
+            for (Operation op : mission.getOperations()) {
+                if (op.getType().equals(opType)) {
+                    index++;
+                    if (op.getConfig().indexOf("name") < 0) {
+                        op.setConfig(StringUtils.join(new Object[] {
+                                op.getConfig(), ";name=",
+                                String.valueOf(index), "-", op.getType() }));
+                    }
+                }
+            }
+        }
+    }
 
     private void initOpPicker() {
         OperationPicker picker = new OperationPicker();
         Mission mission = missionContext.getMission();
         for (Operation op : mission)
-        	picker.addOperation(op.getId(), op.getRatio());
+            picker.addOperation(op.getId(), op.getRatio());
         missionContext.setOperationPicker(picker);
     }
 
@@ -253,7 +250,7 @@ class MissionHandler {
 
     @SuppressWarnings("unused")
     private void setAllWorkersAuthContext(AuthContext authContext) {
-	for (WorkerContext workerContext : missionContext.getWorkerRegistry())
+    for (WorkerContext workerContext : missionContext.getWorkerRegistry())
             workerContext.getStorageApi().setAuthContext(authContext);
     }
 
@@ -268,7 +265,7 @@ class MissionHandler {
         return agents;
     }
 
-	private List<Agent> createAuthAgents() {
+    private List<Agent> createAuthAgents() {
         List<Agent> agents = new ArrayList<Agent>();
         for (WorkerContext workerContext : missionContext.getWorkerRegistry())
             agents.add(Agents.newAuthAgent(retry, workerContext));
@@ -307,7 +304,7 @@ class MissionHandler {
             return;
         }
         LOGGER.info("mission {} has been executed successfully", id);
-       
+
     }
 
     private void stressTarget() {
@@ -361,19 +358,19 @@ class MissionHandler {
                     "mission should be in the state of finished");
         String id = missionContext.getId();
         missionContext.setState(ACCOMPLISHED);
-		for (int i = 0; i < missionContext.getReport().getAllMetrics().length; i++) {
-			LOGGER.debug("!!!! mission op: "
-					+ missionContext.getReport().getAllMetrics()[i].getOpType()
-					+ "-"
-					+ missionContext.getReport().getAllMetrics()[i].getOpType());
-			if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
-					&& missionContext.getReport().getAllMetrics()[i]
-							.getTotalSampleCount() > 0) {
-				missionContext.setState(FAILED);
-				LOGGER.debug("!!!! mission opt -> FAILED");
-				break;
-			}
-		}
+        for (int i = 0; i < missionContext.getReport().getAllMetrics().length; i++) {
+            LOGGER.debug("!!!! mission op: "
+                    + missionContext.getReport().getAllMetrics()[i].getOpType()
+                    + "-"
+                    + missionContext.getReport().getAllMetrics()[i].getOpType());
+            if (missionContext.getReport().getAllMetrics()[i].getSampleCount() == 0
+                    && missionContext.getReport().getAllMetrics()[i]
+                            .getTotalSampleCount() > 0) {
+                missionContext.setState(FAILED);
+                LOGGER.debug("!!!! mission opt -> FAILED");
+                break;
+            }
+        }
         LOGGER.info("mission {} has been closed successfully", id);
     }
 
@@ -397,27 +394,27 @@ class MissionHandler {
 
     private void abortAgents(boolean shutdownNow) {
         Thread.interrupted(); // clear interruption status
-        
-    	executor.shutdown(); 
-    	try {     
-    		// Wait a few seconds for existing tasks to terminate    
-    		if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {       
-    			executor.shutdownNow();
-    			
-    	        String id = missionContext.getId();
-    			
-    	        if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30)) 
-    				LOGGER.warn("fail to abort agents for mission {}", id);
-    			else
-    				LOGGER.info("all agents have been aborted in mission {}", id);
 
-    	        LOGGER.info("mission {} appears to be aborted", id); // agents aborted
-    		}   
+        executor.shutdown(); 
+        try {     
+            // Wait a few seconds for existing tasks to terminate    
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {       
+                executor.shutdownNow();
 
-    	} catch (InterruptedException ie) {     
-    			executor.shutdownNow();     
-    			Thread.currentThread().interrupt();   
-    	} 
+                String id = missionContext.getId();
+
+                if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30)) 
+                    LOGGER.warn("fail to abort agents for mission {}", id);
+                else
+                    LOGGER.info("all agents have been aborted in mission {}", id);
+
+                LOGGER.info("mission {} appears to be aborted", id); // agents aborted
+            }   
+
+        } catch (InterruptedException ie) {     
+                executor.shutdownNow();     
+                Thread.currentThread().interrupt();   
+        } 
     }
 
     private boolean awaitTermination(int seconds) {
@@ -431,5 +428,4 @@ class MissionHandler {
         }
         return executor.isTerminated();
     }
-
 }
