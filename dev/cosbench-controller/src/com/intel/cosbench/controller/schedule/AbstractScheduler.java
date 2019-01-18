@@ -1,6 +1,7 @@
-/** 
+/**
  
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,10 +40,14 @@ abstract class AbstractScheduler implements WorkScheduler {
     }
 
     protected void init(Stage stage, DriverRegistry registry) {
+        Boolean useOnlyActiveDrivers = Boolean.parseBoolean(System.getProperty("cosbench.controller.use_only_active_drivers", "false"));
         for (Work work : stage)
             works.add(work);
-        for (DriverContext driver : registry)
-            drivers.put(driver.getName(), driver);
+        for (DriverContext driver : registry) {
+            if (!useOnlyActiveDrivers || driver.getAliveState()) {
+                drivers.put(driver.getName(), driver);
+            }
+        }
     }
 
     protected static SchedulePlan createSchedule(Work work,
