@@ -40,7 +40,9 @@ abstract class AbstractScheduler implements WorkScheduler {
     }
 
     protected void init(Stage stage, DriverRegistry registry) {
-        Boolean useOnlyActiveDrivers = Boolean.parseBoolean(System.getProperty("cosbench.controller.use_only_active_drivers", "false"));
+        Boolean useOnlyActiveDrivers = Boolean.parseBoolean(
+            System.getProperty("cosbench.controller.use_only_active_drivers", "false")
+        );
         for (Work work : stage)
             works.add(work);
         for (DriverContext driver : registry) {
