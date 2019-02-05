@@ -69,8 +69,8 @@ class Reader extends AbstractOperator {
         Sample sample = doRead(out, path[0], path[1], config, session);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-		Result result = new Result(now, getId(), getOpType(), getSampleType(),
-				getName(), sample.isSucc());
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+                getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
 
@@ -90,8 +90,8 @@ class Reader extends AbstractOperator {
             if (!hashCheck) {
                 copyLarge(in, cout);
             } else if (!validateChecksum(conName, objName, session, in, cout)) {
-				return new Sample(new Date(), getId(), getOpType(),
-						getSampleType(), getName(), false);
+                return new Sample(new Date(), getId(), getOpType(),
+                        getSampleType(), getName(), false);
             }
             long xferEnd = System.nanoTime();
             xferTime = (xferEnd - xferStart) / 1000000;
@@ -99,8 +99,8 @@ class Reader extends AbstractOperator {
             doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
-        	isUnauthorizedException(e, session);
-        	errorStatisticsHandle(e, session, conName + "/" + objName);
+            isUnauthorizedException(e, session);
+            errorStatisticsHandle(e, session, conName + "/" + objName);
 
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
@@ -109,9 +109,9 @@ class Reader extends AbstractOperator {
         }
         long end = System.nanoTime();
 
-		return new Sample(new Date(), getId(), getOpType(), getSampleType(),
-				getName(), true, (end - start)/1000000,
-				xferTime, cout.getByteCount());
+        return new Sample(new Date(), getId(), getOpType(), getSampleType(),
+                getName(), true, (end - start)/1000000,
+                xferTime, cout.getByteCount());
     }
 
     public OutputStream copyLarge(InputStream input, OutputStream output)

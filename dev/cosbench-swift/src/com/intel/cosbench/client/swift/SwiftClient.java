@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.swift;
 
@@ -32,7 +32,7 @@ import com.intel.cosbench.log.*;
 
 public class SwiftClient {
 
-	private static boolean REPORT_DELETE_ERROR = false;
+    private static boolean REPORT_DELETE_ERROR = false;
 
     /* user context */
     private String authToken;
@@ -123,20 +123,20 @@ public class SwiftClient {
             SwiftException {
         SwiftResponse response = null;
         try {
-		Logger logger = LogFactory.getSystemLogger();
-		logger.debug("Creating container with auth_token " + authToken);
+        Logger logger = LogFactory.getSystemLogger();
+        logger.debug("Creating container with auth_token " + authToken);
 
             method = HttpClientUtil.makeHttpPut(getContainerPath(container));
             method.setHeader(X_AUTH_TOKEN, authToken);
             if(policy != null)
-            	method.setHeader(X_STORAGE_POLICY, policy);
+                method.setHeader(X_STORAGE_POLICY, policy);
             response = new SwiftResponse(client.execute(method));
             if (response.getStatusCode() == SC_CREATED) {
-            	logger.debug("Creating container "+container+" SUCCESS");
+                logger.debug("Creating container "+container+" SUCCESS");
                 return;
             }
             if (response.getStatusCode() == SC_ACCEPTED) {
-            	logger.debug("Creating container "+container+" SUCCESS");
+                logger.debug("Creating container "+container+" SUCCESS");
                 return;
             }
             throw new SwiftException("unexpected return from server",
@@ -187,28 +187,28 @@ public class SwiftClient {
         throw new SwiftException("unexpected result from server",
                 response.getResponseHeaders(), response.getStatusLine());
     }
-    
+
     public InputStream getTargetList(String container, String object) throws IOException, SwiftException {
-    	if (object.isEmpty())
-    		method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
-		else
-			method = HttpClientUtil.makeHttpHead(getObjectPath(container, object));
+        if (object.isEmpty())
+            method = HttpClientUtil.makeHttpGet(getObjectPath(container, object));
+        else
+            method = HttpClientUtil.makeHttpHead(getObjectPath(container, object));
         method.setHeader(X_AUTH_TOKEN, authToken);
         SwiftResponse response = new SwiftResponse(client.execute(method));
-        
+
         if (response.getStatusCode() == SC_OK) {
-        	if (!object.isEmpty() && response != null)
-				response.consumeResposeBody();
+            if (!object.isEmpty() && response != null)
+                response.consumeResposeBody();
             return object.isEmpty() ? response.getResponseBodyAsStream()
-            		: new ByteArrayInputStream(new byte[] {});
+                    : new ByteArrayInputStream(new byte[] {});
         }
         response.consumeResposeBody();
         if (response.getStatusCode() == SC_NOT_FOUND)
-            throw new SwiftFileNotFoundException("list target not found " + container + " / " 
-            		+ object, response.getResponseHeaders(), response.getStatusLine());
+            throw new SwiftFileNotFoundException("list target not found " + container + " / "
+                    + object, response.getResponseHeaders(), response.getStatusLine());
         throw new SwiftException("unexpected result from server",
                 response.getResponseHeaders(), response.getStatusLine());
-	}
+    }
 
     public void storeObject(String container, String object, byte[] data)
             throws IOException, SwiftException {

@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.model;
 
@@ -30,9 +30,9 @@ public interface StageInfo extends LifeCycle, Benchmark {
     public String getId();
 
     public StageState getState();
-    
+
     public void setState(String state, Date date);
-    
+
     public void setState(StageState state, boolean archived);
 
     public StateInfo[] getStateHistory();
@@ -52,15 +52,15 @@ public interface StageInfo extends LifeCycle, Benchmark {
     public TaskInfo[] getTaskInfos();
 
     public Snapshot[] getSnapshots();
-    
+
     public int getSnapshotCount();
 
-	public void setReport(Report report);
-	
-	public ListRegistry<Snapshot> getSnapshotRegistry();
-	
+    public void setReport(Report report);
+
+    public ListRegistry<Snapshot> getSnapshotRegistry();
+
     public List<TaskReport> getTaskReports();
 
-	public void setTaskReports(List<TaskReport> taskReports);
+    public void setTaskReports(List<TaskReport> taskReports);
 
 }

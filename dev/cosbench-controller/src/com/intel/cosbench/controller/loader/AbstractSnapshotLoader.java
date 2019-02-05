@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
  */
 
 package com.intel.cosbench.controller.loader;
@@ -24,36 +24,36 @@ import com.intel.cosbench.model.WorkloadInfo;
 
 /**
  * This class is the base class for exporting run information.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 abstract class AbstractSnapshotLoader implements SnapshotLoader{
 
-	protected BufferedReader reader;
-	protected WorkloadInfo workloadContext;
-	protected StageInfo stageContext;
-	
-	public AbstractSnapshotLoader() {
-		/* empty */
-	}
-	
-	@Override
-	public void init(BufferedReader reader, WorkloadInfo workloadContext,
-			String stageId) throws IOException {
-		this.reader = reader;
-		this.workloadContext = workloadContext;
-		this.stageContext = workloadContext.getStageInfo(stageId);
-	}
+    protected BufferedReader reader;
+    protected WorkloadInfo workloadContext;
+    protected StageInfo stageContext;
 
-	@Override
-	public void load() throws IOException{
-		readHeader();
-		readSnapshot();
-	}
-	
-	protected abstract void readHeader() throws IOException;
+    public AbstractSnapshotLoader() {
+        /* empty */
+    }
 
-	protected abstract void readSnapshot() throws IOException;
+    @Override
+    public void init(BufferedReader reader, WorkloadInfo workloadContext,
+            String stageId) throws IOException {
+        this.reader = reader;
+        this.workloadContext = workloadContext;
+        this.stageContext = workloadContext.getStageInfo(stageId);
+    }
+
+    @Override
+    public void load() throws IOException{
+        readHeader();
+        readSnapshot();
+    }
+
+    protected abstract void readHeader() throws IOException;
+
+    protected abstract void readSnapshot() throws IOException;
 
 }

@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.model;
 
@@ -28,7 +28,7 @@ import com.intel.cosbench.model.*;
 
 public class WorkloadContext implements WorkloadInfo {
 
-	private static final Logger LOGGER = LogFactory.getSystemLogger();
+    private static final Logger LOGGER = LogFactory.getSystemLogger();
     private String id;
     private Date submitDate;
     private Date startDate;
@@ -48,11 +48,11 @@ public class WorkloadContext implements WorkloadInfo {
     private volatile Report report = null; // will be merged from stage reports
 
     private transient List<WorkloadListener> listeners = new ArrayList<WorkloadListener>();
-    
+
     private String[] opInfo;
-    
+
     private boolean archived = false;
-    
+
  // private HashMap<String, HashMap<String, Integer>> errorStatistics = new HashMap<String, HashMap<String,Integer>>();
     private HashMap<String, ErrorSummary> errorStatistics = new HashMap<String, ErrorSummary>();
     public WorkloadContext() {
@@ -67,13 +67,13 @@ public class WorkloadContext implements WorkloadInfo {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public int getOrder(){
-    	return this.order;
+        return this.order;
     }
-    
+
     public void setOrder(int order){
-    	this.order = order;
+        this.order = order;
     }
 
     @Override
@@ -110,32 +110,32 @@ public class WorkloadContext implements WorkloadInfo {
 
     public void setState(WorkloadState state) {
         this.state = state;
-    	if(this.archived)
-    		return;
+        if(this.archived)
+            return;
         stateHistory.addState(state.name());
         if (WorkloadState.isRunning(state))
             fireWorkloadStarted();
         if (WorkloadState.isStopped(state))
             fireWorkloadStopped();
     }
-    
+
     public void setState(String state, Date date){
-    	stateHistory.addState(state, date);
+        stateHistory.addState(state, date);
     }
 
     private void fireWorkloadStarted() {
         for (WorkloadListener listener : listeners)
             listener.workloadStarted(this);
     }
-    
+
     @Override
     public void setArchived(boolean archived) {
-    	this.archived = archived;
+        this.archived = archived;
     }
-    
+
     @Override
     public boolean getArchived() {
-    	return archived;
+        return archived;
     }
 
     private void fireWorkloadStopped() {
@@ -189,25 +189,25 @@ public class WorkloadContext implements WorkloadInfo {
     public void setWorkload(Workload workload) {
         this.workload = workload;
     }
-    
+
     public String[] getOpInfo(){
-    	return opInfo;
+        return opInfo;
     }
-    
+
     public void setOpInfo(String[] opInfo){
-    	this.opInfo = opInfo;
+        this.opInfo = opInfo;
     }
 
     @Override
     public String[] getAllOperations() {
-    	if(opInfo == null) {
+        if(opInfo == null) {
         Set<String> ops = new LinkedHashSet<String>();
         for (Stage stage : workload.getWorkflow())
             for (Work work : stage)
                 for (Operation op : work)
                     ops.add(op.getType());
         setOpInfo(ops.toArray(new String[ops.size()]));
-    	}
+        }
         return getOpInfo();
     }
 
@@ -271,49 +271,49 @@ public class WorkloadContext implements WorkloadInfo {
     }
 
     public void addListener(WorkloadListener listener) {
-    	if(listeners == null)
-    		return;
+        if(listeners == null)
+            return;
         listeners.add(listener);
     }
-    
+
 
     public HashMap<String, ErrorSummary> getErrorStatistics() {
-		return errorStatistics;
-	}
-       
-    public void mergeErrorStatistics(){
-    	for(StageContext stageContext : stageRegistry){
-    		for(TaskContext taskContext : stageContext.getTaskRegistry()){
-    			String driverUrl = taskContext.getSchedule().getDriver().getUrl();
-    			if (! errorStatistics.containsKey(driverUrl))
-    				errorStatistics.put(driverUrl, new ErrorSummary(taskContext.getErrorStatistics()));
-    			else {
-    				HashMap<String, Integer> source = new HashMap<String, Integer>();
-    				source = taskContext.getErrorStatistics();
-    				HashMap<String, Integer> merge = errorStatistics.get(driverUrl).getErrorCodeAndNum();
-    				for(Map.Entry<String, Integer> entry : source.entrySet()){
-    					if (!merge.containsKey(entry.getKey())){
-    						merge.put(entry.getKey(), entry.getValue());
-    					}
-    					else{
-    						Integer value = merge.get(entry.getKey()) + entry.getValue();
-    						merge.put(entry.getKey(), value);
-    					}
-    				}
-    				errorStatistics.put(driverUrl, new ErrorSummary(merge));
-    			}
-    		}
-    	}
-    }
-    public void logErrorStatistics(Logger logger){
-    	for (Map.Entry<String, ErrorSummary> driverEntry : errorStatistics.entrySet()){
-    		for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().getErrorCodeAndNum().entrySet()){
-    			logger.warn(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
-    		}
-    	}
+        return errorStatistics;
     }
 
-	@Override
+    public void mergeErrorStatistics(){
+        for(StageContext stageContext : stageRegistry){
+            for(TaskContext taskContext : stageContext.getTaskRegistry()){
+                String driverUrl = taskContext.getSchedule().getDriver().getUrl();
+                if (! errorStatistics.containsKey(driverUrl))
+                    errorStatistics.put(driverUrl, new ErrorSummary(taskContext.getErrorStatistics()));
+                else {
+                    HashMap<String, Integer> source = new HashMap<String, Integer>();
+                    source = taskContext.getErrorStatistics();
+                    HashMap<String, Integer> merge = errorStatistics.get(driverUrl).getErrorCodeAndNum();
+                    for(Map.Entry<String, Integer> entry : source.entrySet()){
+                        if (!merge.containsKey(entry.getKey())){
+                            merge.put(entry.getKey(), entry.getValue());
+                        }
+                        else{
+                            Integer value = merge.get(entry.getKey()) + entry.getValue();
+                            merge.put(entry.getKey(), value);
+                        }
+                    }
+                    errorStatistics.put(driverUrl, new ErrorSummary(merge));
+                }
+            }
+        }
+    }
+    public void logErrorStatistics(Logger logger){
+        for (Map.Entry<String, ErrorSummary> driverEntry : errorStatistics.entrySet()){
+            for (Map.Entry<String, Integer> codeEntry : driverEntry.getValue().getErrorCodeAndNum().entrySet()){
+                logger.warn(driverEntry.getKey() + " : " + codeEntry.getKey() + " occured " + codeEntry.getValue() );
+            }
+        }
+    }
+
+    @Override
     public void disposeRuntime() {
         for (StageContext stage : stageRegistry)
             stage.disposeRuntime();
@@ -322,7 +322,7 @@ public class WorkloadContext implements WorkloadInfo {
         currentStage = null;
         listeners = null;
     }
-	
+
 
     public DriverRegistry getDriverRegistry() {
         return driverRegistry;
@@ -331,7 +331,7 @@ public class WorkloadContext implements WorkloadInfo {
     public void setDriverRegistry(DriverRegistry driverRegistry) {
         this.driverRegistry = driverRegistry;
     }
-    
+
     @Override
     public DriverInfo[] getDriverInfos() {
         return driverRegistry.getAllDrivers();

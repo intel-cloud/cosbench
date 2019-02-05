@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.exporter;
 
@@ -41,12 +41,12 @@ public class ScriptsLogExporter implements LogExporter {
 
     @Override
     public void export(Writer writer) throws IOException {
-    	exportWorkloadLog(writer);
-    	for (StageInfo stage : workload.getStageInfos())
+        exportWorkloadLog(writer);
+        for (StageInfo stage : workload.getStageInfos())
             exportStageLog(writer, stage);
         writer.flush();
     }
-    
+
     private void exportWorkloadLog(Writer writer) throws IOException {
         writer.write("=========================");
         writer.write("=========================");
@@ -57,16 +57,16 @@ public class ScriptsLogExporter implements LogExporter {
         String wsId = workload.getId();
         doExportLog(writer, wsId);
         writer.flush();
-	}
-    
+    }
+
     private void doExportLog(Writer writer, String wsId) throws IOException {
         for (DriverInfo driver : workload.getDriverInfos()) {
-        	Map<String, String> logMap = driver.getLogMap();
-        	if (logMap.containsKey(wsId)) {
-				exportScriptLog(writer, logMap.get(wsId), driver.getName());
-			}
+            Map<String, String> logMap = driver.getLogMap();
+            if (logMap.containsKey(wsId)) {
+                exportScriptLog(writer, logMap.get(wsId), driver.getName());
+            }
         }
-	}
+    }
 
     private void exportStageLog(Writer writer, StageInfo stage) throws IOException {
         writer.write("=========================");
@@ -79,20 +79,20 @@ public class ScriptsLogExporter implements LogExporter {
         doExportLog(writer, wsId);
         writer.flush();
     }
-    
+
     private void exportScriptLog(Writer writer, String logCtx, String driver) throws IOException {
-		int idx = StringUtils.indexOf(logCtx, ";");
-		if (idx < 0 || idx+1 == logCtx.length())
-			return;
-		String scriptName = StringUtils.left(logCtx, idx);
-		String log = StringUtils.substring(logCtx, idx+1);
+        int idx = StringUtils.indexOf(logCtx, ";");
+        if (idx < 0 || idx+1 == logCtx.length())
+            return;
+        String scriptName = StringUtils.left(logCtx, idx);
+        String log = StringUtils.substring(logCtx, idx+1);
         writer.write("-----------------");
         writer.write("-----------------");
         writer.write(" driver: " + driver + "  script: " + scriptName + ' ');
         writer.write("-----------------");
         writer.write("-----------------");
         writer.write('\n');
-		writer.write(log);
-	}
+        writer.write(log);
+    }
 
 }

@@ -1,5 +1,8 @@
-/** 
- 
+/**
+
+Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -10,7 +13,22 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
+
+*/
+/**
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
 
 package com.intel.cosbench.api.librados;
@@ -41,8 +59,8 @@ import com.intel.cosbench.log.Logger;
  * LibradosStorage provides methods to access a Storage using librados.
  * It is based on rados-java
  * {@link https://github.com/wido/rados-java}
- * 
- * 
+ *
+ *
  * @author Niklas Goerke - niklas974@github
  *
  */
@@ -68,31 +86,31 @@ public class LibradosStorage extends NoneStorage {
 
         try {
             if (client == null) {
-            	synchronized (this.getClass()) {
-            		if(client == null) {
-		                client = new Rados(this.accessKey);
-		                client.confSet("key", this.secretKey);
-		                client.confSet("mon_host", this.endpoint);
-		                client.connect();
-		                logger.info("Librados client has connected.");
-            		}
-            	}
+                synchronized (this.getClass()) {
+                    if(client == null) {
+                        client = new Rados(this.accessKey);
+                        client.confSet("key", this.secretKey);
+                        client.confSet("mon_host", this.endpoint);
+                        client.connect();
+                        logger.info("Librados client has connected.");
+                    }
+                }
             }
-            
+
             logger.debug("Librados client has been initialized");
         } catch (RadosAlreadyConnectedException ace) {
-        	logger.debug("The connection is already connected");
+            logger.debug("The connection is already connected");
         } catch (RadosOperationInProgressException eip) {
-        	logger.warn("Connection is in progress");
-        	// normally this means race condition where multiple threads are trying to use the same rados client to create connections.
-        	// we will treat it's valid so far, but assume the later thread can directly use the connection after a short wait.
-        	try {
-        		Thread.sleep(100);
-        	}catch(InterruptedException ie) {
-        		throw new StorageException(ie);
-        	}
+            logger.warn("Connection is in progress");
+            // normally this means race condition where multiple threads are trying to use the same rados client to create connections.
+            // we will treat it's valid so far, but assume the later thread can directly use the connection after a short wait.
+            try {
+                Thread.sleep(100);
+            }catch(InterruptedException ie) {
+                throw new StorageException(ie);
+            }
         } catch (RadosException e) {
-        	logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new StorageException(e);
         }
 
@@ -117,15 +135,15 @@ public class LibradosStorage extends NoneStorage {
                 throw new StorageException("Object larger than 2GB, handling not implemented");
                 // TODO: implement - read in parts and concatinate
             }
-            
+
             byte[] buf = new byte[(int) length];
             ioctx.read(object, (int) length, 0, buf);
             stream = new ByteArrayInputStream(buf);
         } catch (RadosException e) {
             throw new StorageException(e);
         }finally {
-        	if(ioctx != null)
-        		client.ioCtxDestroy(ioctx);
+            if(ioctx != null)
+                client.ioCtxDestroy(ioctx);
         }
         return stream;
     }
@@ -140,7 +158,7 @@ public class LibradosStorage extends NoneStorage {
                 }
             }
             if (!exists) {
-                client.poolCreate(container);    
+                client.poolCreate(container);
             }
         } catch (RadosException e) {
             throw new StorageException(e);
@@ -169,8 +187,8 @@ public class LibradosStorage extends NoneStorage {
         } catch (IOException e) {
             throw new StorageException(e);
         } finally {
-        	if(ioctx != null)
-        		client.ioCtxDestroy(ioctx);
+            if(ioctx != null)
+                client.ioCtxDestroy(ioctx);
         }
     }
 
@@ -183,8 +201,8 @@ public class LibradosStorage extends NoneStorage {
         } catch (RadosException e) {
             throw new StorageException(e);
         } finally {
-        	if(ioctx != null) 
-        		client.ioCtxDestroy(ioctx);
+            if(ioctx != null)
+                client.ioCtxDestroy(ioctx);
         }
     }
 }

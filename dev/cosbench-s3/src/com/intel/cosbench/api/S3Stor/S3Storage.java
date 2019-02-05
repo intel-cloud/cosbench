@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 */
 package com.intel.cosbench.api.S3Stor;
 
@@ -35,31 +35,31 @@ import com.intel.cosbench.log.Logger;
 
 public class S3Storage extends NoneStorage {
     private int timeout;
-    
+
     private String accessKey;
     private String secretKey;
     private String endpoint;
-    
+
     private AmazonS3 client;
 
     @Override
     public void init(Config config, Logger logger) {
         super.init(config, logger);
-        
+
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
 
         parms.put(CONN_TIMEOUT_KEY, timeout);
-        
+
         endpoint = config.get(ENDPOINT_KEY, ENDPOINT_DEFAULT);
         accessKey = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         secretKey = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
 
         boolean pathStyleAccess = config.getBoolean(PATH_STYLE_ACCESS_KEY, PATH_STYLE_ACCESS_DEFAULT);
         int maxConnections = config.getInt(MAX_CONNECTIONS, MAX_CONNECTIONS_DEFAULT);
-        
+
         String proxyHost = config.get(PROXY_HOST_KEY, "");
         String proxyPort = config.get(PROXY_PORT_KEY, "");
-        
+
         parms.put(ENDPOINT_KEY, endpoint);
         parms.put(AUTH_USERNAME_KEY, accessKey);
         parms.put(AUTH_PASSWORD_KEY, secretKey);
@@ -70,10 +70,10 @@ public class S3Storage extends NoneStorage {
 
         initClient();
     }
-    
+
     private AmazonS3 initClient() {
         logger.debug("initialize S3 client with storage config: {}", parms);
-        
+
         ClientConfiguration clientConf = new ClientConfiguration();
         clientConf.setConnectionTimeout(parms.getInt(CONN_TIMEOUT_KEY));
         clientConf.setMaxConnections(parms.getInt(MAX_CONNECTIONS));
@@ -85,17 +85,17 @@ public class S3Storage extends NoneStorage {
             clientConf.setProxyHost(parms.getStr(PROXY_HOST_KEY));
             clientConf.setProxyPort(parms.getInt(PROXY_PORT_KEY));
         }
-        
+
         AWSCredentials myCredentials = new BasicAWSCredentials(accessKey, secretKey);
         client = new AmazonS3Client(myCredentials, clientConf);
         client.setEndpoint(endpoint);
         client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(parms.getBoolean(PATH_STYLE_ACCESS_KEY)));
-        
+
         logger.debug("S3 client has been initialized");
-        
+
         return client;
     }
-    
+
     @Override
     public void setAuthContext(AuthContext info) {
         super.setAuthContext(info);
@@ -112,10 +112,10 @@ public class S3Storage extends NoneStorage {
         super.getObject(container, object, config);
         InputStream stream = null;
         try {
-            
+
             S3Object s3Obj = client.getObject(container, object);
             stream = s3Obj.getObjectContent();
-            
+
         } catch(AmazonServiceException ase) {
             if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {
                 throw new StorageException(ase);
@@ -125,7 +125,7 @@ public class S3Storage extends NoneStorage {
             ace.printStackTrace();
             initClient();
         }
-        
+
         return stream;
     }
 
@@ -156,7 +156,7 @@ public class S3Storage extends NoneStorage {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(length);
             metadata.setContentType("application/octet-stream");
-            
+
             client.putObject(container, object, data, metadata);
         }catch(AmazonServiceException ase) {
             if(ase.getStatusCode() != HttpStatus.SC_NOT_FOUND) {

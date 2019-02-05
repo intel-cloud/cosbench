@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.tomcat;
 
@@ -27,9 +27,9 @@ import org.osgi.framework.*;
 
 /**
  * The class encapsulates the registration of service exposed by Tomcat bundle.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class TomcatRegister {
 
@@ -46,7 +46,7 @@ public class TomcatRegister {
     /**
      * This method will register service into osgi context, so other bundles can
      * access the service.
-     * 
+     *
      * @param context
      *            the osgi bundle context
      * @param service
@@ -59,7 +59,7 @@ public class TomcatRegister {
 
     /**
      * This method will unregister service from osgi context.
-     * 
+     *
      */
     public void unpublishService() {
         registration.unregister();

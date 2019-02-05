@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.api.storage;
 
@@ -30,9 +30,9 @@ import com.intel.cosbench.log.Logger;
 /**
  * This class encapsulates one none storage system which is used if no any other
  * storage system is assigned.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class NoneStorage implements StorageAPI {
 
@@ -52,7 +52,7 @@ public class NoneStorage implements StorageAPI {
     public void init(Config config, Logger logger) {
         this.logger = logger;
         this.parms = new Context();
-		
+
         logging = config.getBoolean(LOGGING_KEY, LOGGING_DEFAULT);
         /* register all parameters */
         parms.put(LOGGING_KEY, logging);
@@ -61,15 +61,15 @@ public class NoneStorage implements StorageAPI {
 
     @Override
     public void setAuthContext(AuthContext info) {
-    	setAuthFlag(true);
+        setAuthFlag(true);
         /* empty */
     }
 
-	@Override
-	public AuthContext getAuthContext() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public AuthContext getAuthContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public void dispose() {
@@ -92,10 +92,10 @@ public class NoneStorage implements StorageAPI {
             logger.info("performing GET at /{}/{}", container, object);
         return new ByteArrayInputStream(new byte[] {});
     }
-    
+
     @Override
     public InputStream getList(String container, String object, Config config) {
-    	if (logging)
+        if (logging)
             logger.info("performing LIST at /{}/{}", container, object);
         return new ByteArrayInputStream(new byte[] {});
     }
@@ -145,9 +145,9 @@ public class NoneStorage implements StorageAPI {
         return Collections.emptyMap();
     }
     public void setAuthFlag(Boolean auth) {
-    	this.authFlag = auth;
+        this.authFlag = auth;
     }
     public Boolean isAuthValid() {
-    	return authFlag;
+        return authFlag;
     }
 }

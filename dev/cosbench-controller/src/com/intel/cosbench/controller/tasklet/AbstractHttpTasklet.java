@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.tasklet;
 
@@ -61,8 +61,8 @@ abstract class AbstractHttpTasklet extends AbstractTasklet {
         try {
             response = client.execute(request);
         } catch (SocketException se) {
-        	LOGGER.error("fail to POST driver with socket connection error, will give up the task" , se);
-        	throw new CancelledException();
+            LOGGER.error("fail to POST driver with socket connection error, will give up the task" , se);
+            throw new CancelledException();
         } catch (SocketTimeoutException ste) {
             LOGGER.error("fail to POST driver with url=" + url , ste);
             throw new TaskletException(); // mark termination
@@ -75,14 +75,14 @@ abstract class AbstractHttpTasklet extends AbstractTasklet {
             LOGGER.error("fail to POST driver with url=" + url, e);
             throw new TaskletException(); // mark termination
         } finally {
-        	if(response != null) {      
-//        		LOGGER.info("try to fetch response body");
-        		try{
-        			body = fetchResponseBody(response);
-        		}catch(IOException ioe) {
-        			LOGGER.error("fail to fetch response body", ioe);
-        		}
-        	}
+            if(response != null) {
+//                LOGGER.info("try to fetch response body");
+                try{
+                    body = fetchResponseBody(response);
+                }catch(IOException ioe) {
+                    LOGGER.error("fail to fetch response body", ioe);
+                }
+            }
         }
         return body; // HTTP response body retrieved
     }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping>
+
+	<class name="com.intel.cosbench.config.Workload">
+
+		<map-to xml="workload" />
+
+		<field name="name" type="string">
+			<bind-xml name="name" node="attribute" />
+		</field>
+
+		<field name="description" type="string">
+			<bind-xml name="description" node="attribute" />
+		</field>
+		
+		<field name="trigger" type="string">
+      		<bind-xml name="trigger" node="attribute" />
+        </field>
+		
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
+		
+		<field name="auth" type="com.intel.cosbench.config.Auth">
+			<bind-xml name="auth" node="element" />
+		</field>
+
+		<field name="storage" type="com.intel.cosbench.config.Storage">
+			<bind-xml name="storage" node="element" />
+		</field>
+
+		<field name="workflow" type="com.intel.cosbench.config.Workflow">
+			<bind-xml name="workflow" node="element" />
+		</field>
+
+	</class>
+
+</mapping>

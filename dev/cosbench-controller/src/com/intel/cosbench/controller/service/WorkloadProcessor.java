@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.service;
 
@@ -35,9 +35,9 @@ import com.intel.cosbench.service.IllegalStateException;
 
 /**
  * This class encapsulates workload processing logic.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class WorkloadProcessor {
 
@@ -74,12 +74,12 @@ class WorkloadProcessor {
     }
 
     public void dispose() {
-	    if (executor != null)
-	        executor.shutdown();
-	    executor = null;
-	}
+        if (executor != null)
+            executor.shutdown();
+        executor = null;
+    }
 
-	private void resolveWorklaod() {
+    private void resolveWorklaod() {
         XmlConfig config = workloadContext.getConfig();
         WorkloadResolver resolver = CastorConfigTools.getWorkloadResolver();
         workloadContext.setWorkload(resolver.toWorkload(config));
@@ -96,21 +96,21 @@ class WorkloadProcessor {
     }
 
     private static StageContext createStageContext(String id, Stage stage) {
-    	initStageOpId(stage);
+        initStageOpId(stage);
         StageContext context = new StageContext();
         context.setId(id);
         context.setStage(stage);
         context.setState(StageState.WAITING);
         return context;
     }
-    
+
     private static void initStageOpId(Stage stage) {
-    	int index = 0;
-		for (Work work : stage.getWorks()) {
-			for (Operation op : work.getOperations())
-				if("none".equals(op.getId()))
-					op.setId("op" + String.valueOf(++index));
-		}
+        int index = 0;
+        for (Work work : stage.getWorks()) {
+            for (Operation op : work.getOperations())
+                if("none".equals(op.getId()))
+                    op.setId("op" + String.valueOf(++index));
+        }
     }
 
     private void createExecutor() {
@@ -134,10 +134,10 @@ class WorkloadProcessor {
         } catch (WorkloadException we) {
             terminateWorkload();
             return;
-		} catch (InterruptedException e) {
-			terminateWorkload();
-			return;
-		} catch (Exception e) {
+        } catch (InterruptedException e) {
+            terminateWorkload();
+            return;
+        } catch (Exception e) {
             LOGGER.error("unexpected exception", e);
             terminateWorkload();
             return;
@@ -166,13 +166,13 @@ class WorkloadProcessor {
         workloadContext.setStopDate(new Date());
         workloadContext.setCurrentStage(null);
         workloadContext.mergeErrorStatistics();
-		for (StageContext stageContext : workloadContext.getStageRegistry()
-				.getAllItems()) {
-			if (stageContext.getState().equals(StageState.FAILED)) {
-				workloadContext.setState(FAILED);
-				return;
-			}
-		}
+        for (StageContext stageContext : workloadContext.getStageRegistry()
+                .getAllItems()) {
+            if (stageContext.getState().equals(StageState.FAILED)) {
+                workloadContext.setState(FAILED);
+                return;
+            }
+        }
         workloadContext.setState(FINISHED);
     }
 
@@ -201,29 +201,29 @@ class WorkloadProcessor {
 
         workloadContext.setCurrentStage(stageContext);
         if (stageName.equals("delay") && closuredelay > 0) {
-			executeDelay(stageContext, closuredelay);
-		} else {
-			executeStage(stageContext);
+            executeDelay(stageContext, closuredelay);
+        } else {
+            executeStage(stageContext);
 
-			long elapsedTime = System.currentTimeMillis() - startStamp;
+            long elapsedTime = System.currentTimeMillis() - startStamp;
 
-			LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
-			LOGGER.info("============================================");
-			if(closuredelay > 0)
-				executeDelay(stageContext, closuredelay);
-		}
-		LOGGER.info("successfully ran stage {}", id);
-	}
-    
-	private void executeDelay(StageContext stageContext, int closuredelay)
-			throws InterruptedException {
+            LOGGER.info("END WORK:   {}, Time elapsed: {}", stageName, millisToHMS(elapsedTime));
+            LOGGER.info("============================================");
+            if(closuredelay > 0)
+                executeDelay(stageContext, closuredelay);
+        }
+        LOGGER.info("successfully ran stage {}", id);
+    }
 
-		LOGGER.info("sleeping for " + closuredelay + " seconds...");
-		stageContext.setState(StageState.SLEEPING);
-		Thread.sleep(closuredelay * 1000);
-		LOGGER.info("sleep complete.");
-		stageContext.setState(StageState.COMPLETED);
-	} 
+    private void executeDelay(StageContext stageContext, int closuredelay)
+            throws InterruptedException {
+
+        LOGGER.info("sleeping for " + closuredelay + " seconds...");
+        stageContext.setState(StageState.SLEEPING);
+        Thread.sleep(closuredelay * 1000);
+        LOGGER.info("sleep complete.");
+        stageContext.setState(StageState.COMPLETED);
+    }
 
     private void executeStage(StageContext stageContext) {
         StageRunner runner = createStageRunner(stageContext);
@@ -235,7 +235,7 @@ class WorkloadProcessor {
         try {
             executor.invokeAll(Arrays.asList(callables));
         } catch (InterruptedException ie) {
-        	executeTrigger(trigger, false, wsId);
+            executeTrigger(trigger, false, wsId);
             throw new CancelledException(); // workload cancelled
         }
         runner.dispose(); // early dispose runner
@@ -271,13 +271,13 @@ class WorkloadProcessor {
         workloadContext.setState(TERMINATED);
         LOGGER.info("successfully terminated workload {}", id);
     }
-    
+
     private void executeTrigger(String trigger, boolean isEnable, String wsId) {
-    	if (trigger == null || trigger.isEmpty())
-			return;
-    	TriggerRunner runner = new TriggerRunner(workloadContext.getDriverRegistry());
-		runner.runTrigger(isEnable, trigger, wsId);
-	}
+        if (trigger == null || trigger.isEmpty())
+            return;
+        TriggerRunner runner = new TriggerRunner(workloadContext.getDriverRegistry());
+        runner.runTrigger(isEnable, trigger, wsId);
+    }
 
     public void cancel() {
         String id = workloadContext.getId();
@@ -314,11 +314,11 @@ class WorkloadProcessor {
         if (Thread.interrupted())
             LOGGER.warn("get cancelled when canceling workload {}", id);
         try {
-        	if (!executor.awaitTermination(5, TimeUnit.SECONDS)
-        			&& !executor.awaitTermination(5, TimeUnit.SECONDS))
-				executor.shutdownNow();
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)
+                    && !executor.awaitTermination(5, TimeUnit.SECONDS))
+                executor.shutdownNow();
             if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30))
-            	LOGGER.warn("get cancelled when canceling workload {}", id);
+                LOGGER.warn("get cancelled when canceling workload {}", id);
         } catch (InterruptedException e) {
             executor.shutdownNow();
             Thread.currentThread().interrupt();
@@ -335,7 +335,7 @@ class WorkloadProcessor {
         workloadContext.setState(CANCELLED);
         LOGGER.info("successfully cancelled workload {}", id);
     }
-    
+
     private boolean awaitTermination(int seconds) {
         try {
             if (!executor.isTerminated()) {

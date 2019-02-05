@@ -1,3 +1,21 @@
+/**
+
+Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+*/
 package com.intel.cosbench.exporter;
 
 import static com.intel.cosbench.exporter.Formats.NUM;
@@ -12,8 +30,8 @@ import com.intel.cosbench.bench.TaskReport;
 
 public class CSVWorkerExporter extends AbstractWorkerExporter{
 
-	@Override
-	protected void writeHeader(Writer writer) throws IOException {
+    @Override
+    protected void writeHeader(Writer writer) throws IOException {
         StringBuilder buffer = new StringBuilder();
         char[] cs = new char[8];
         buffer.append("Op-Type").append(',');
@@ -28,8 +46,8 @@ public class CSVWorkerExporter extends AbstractWorkerExporter{
         writer.write(buffer.toString());
     }
 
-	@Override
-	  protected void writeMetrics(Writer writer,Metrics metrics)throws IOException {
+    @Override
+      protected void writeMetrics(Writer writer,Metrics metrics)throws IOException {
         StringBuilder buffer = new StringBuilder();
         /*Operation Type*/
         buffer.append(metrics.getOpType()).append(',');
@@ -46,7 +64,7 @@ public class CSVWorkerExporter extends AbstractWorkerExporter{
         else
             buffer.append("N/A");
         buffer.append(',');
-        
+
         /* Transfer Time */
         double pt = metrics.getAvgResTime() - metrics.getAvgXferTime();
         if (pt > 0)
@@ -54,7 +72,7 @@ public class CSVWorkerExporter extends AbstractWorkerExporter{
         else
             buffer.append("N/A");
         buffer.append(',');
-        
+
         /* Throughput */
         buffer.append(NUM.format(metrics.getThroughput())).append(',');
         /* Bandwidth */
@@ -68,5 +86,5 @@ public class CSVWorkerExporter extends AbstractWorkerExporter{
         buffer.append('\n');
         writer.write(buffer.toString());
     }
-	
+
 }

@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.model;
 
@@ -30,9 +30,9 @@ import com.intel.cosbench.model.WorkerInfo;
 
 /**
  * This class encapsulates worker related information.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class WorkerContext implements WorkerInfo {
 
@@ -46,7 +46,7 @@ public class WorkerContext implements WorkerInfo {
     private volatile boolean error = false;
     private volatile boolean aborted = false;
     private volatile boolean finished = false;
-    
+
     /* Each worker starts with an empty snapshot */
     private transient volatile Snapshot snapshot = new Snapshot();
     /* Each worker starts with an empty report */
@@ -57,7 +57,7 @@ public class WorkerContext implements WorkerInfo {
     private volatile int version = 0;
     private volatile int runlen = 0;
 
-    
+
     public WorkerContext() {
         /* empty */
     }
@@ -121,48 +121,48 @@ public class WorkerContext implements WorkerInfo {
 
     @Override
     public Snapshot getSnapshot() {
-    	if(snapshot.getVersion() < version)
-    	{
-    		logger.debug("Worker[{}] : blank snapshot is generated.", index);
-    		Snapshot blankSnapshot = new Snapshot();
+        if(snapshot.getVersion() < version)
+        {
+            logger.debug("Worker[{}] : blank snapshot is generated.", index);
+            Snapshot blankSnapshot = new Snapshot();
 
-    		blankSnapshot.setVersion(version);
-    		blankSnapshot.setMinVersion(version);
-    		blankSnapshot.setMaxVersion(version);
-    		
-    		version++;
-    		runlen++;
-    		
-    		return blankSnapshot;
-    	}
-    
-    	// align snapshot metrics to compensate the under-counting due to blank snapshots.
-    	if(runlen > 0)
-    	{
-	    	Report report = snapshot.getReport();
-	    	Metrics[] metrics = report.getAllMetrics();
-	
-	    	for(int i=0; i<metrics.length; i++)
-	    	{
-	    		logger.debug("Worker[{}] : ratio={}", index, runlen+1);
-	    		metrics[i].setThroughput(metrics[i].getThroughput()*(runlen+1));
-	    		metrics[i].setBandwidth(metrics[i].getBandwidth()*(runlen+1));
-	    	}
-	    	
-	    	runlen = 0;
-    	}
-    	
-    	version++;
-    	
-    	return snapshot;
+            blankSnapshot.setVersion(version);
+            blankSnapshot.setMinVersion(version);
+            blankSnapshot.setMaxVersion(version);
+
+            version++;
+            runlen++;
+
+            return blankSnapshot;
+        }
+
+        // align snapshot metrics to compensate the under-counting due to blank snapshots.
+        if(runlen > 0)
+        {
+            Report report = snapshot.getReport();
+            Metrics[] metrics = report.getAllMetrics();
+
+            for(int i=0; i<metrics.length; i++)
+            {
+                logger.debug("Worker[{}] : ratio={}", index, runlen+1);
+                metrics[i].setThroughput(metrics[i].getThroughput()*(runlen+1));
+                metrics[i].setBandwidth(metrics[i].getBandwidth()*(runlen+1));
+            }
+
+            runlen = 0;
+        }
+
+        version++;
+
+        return snapshot;
     }
 
     public void setSnapshot(Snapshot snapshot) {
-    	this.snapshot = snapshot;
+        this.snapshot = snapshot;
 
-    	this.snapshot.setVersion(version);
-    	this.snapshot.setMinVersion(version);
-    	this.snapshot.setMaxVersion(version);
+        this.snapshot.setVersion(version);
+        this.snapshot.setMinVersion(version);
+        this.snapshot.setMaxVersion(version);
     }
 
     @Override
@@ -179,32 +179,32 @@ public class WorkerContext implements WorkerInfo {
     }
 
     public boolean isFinished() {
-    	return finished;
+        return finished;
     }
-    
+
     public void setFinished(boolean finished) {
-    	this.finished = finished;
+        this.finished = finished;
     }
-    
+
     public ErrorStatistics getErrorStatistics() {
-		return errorStatistics;
-	}
+        return errorStatistics;
+    }
 
-	public void setErrorStatistics(ErrorStatistics errorStatistics) {
-		this.errorStatistics = errorStatistics;
-	}
+    public void setErrorStatistics(ErrorStatistics errorStatistics) {
+        this.errorStatistics = errorStatistics;
+    }
 
-	@Override
+    @Override
     public synchronized void disposeRuntime() {
-    	if(authApi != null) {
-	        authApi.dispose();
-	        authApi = null;
-    	}
-    	if(storageApi != null) {
-	        storageApi.dispose();
-	        storageApi = null;
-    	}
-    	finished = true;
+        if(authApi != null) {
+            authApi.dispose();
+            authApi = null;
+        }
+        if(storageApi != null) {
+            storageApi.dispose();
+            storageApi = null;
+        }
+        finished = true;
 //        random = null;
 //        snapshot = new Snapshot();
 //        logger = null;

@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.operator;
 
@@ -36,9 +36,9 @@ import com.intel.cosbench.service.AbortedException;
 /**
  * This class encapsulates operations to create objects, essentially, it maps to
  * primitive WRITE operation.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class Preparer extends AbstractOperator {
 
@@ -57,7 +57,7 @@ class Preparer extends AbstractOperator {
 
     @Override
     protected void init(String id, int ratio, String division, Config config) {
-    	super.init(id, ratio, division, config);
+        super.init(id, ratio, division, config);
         objScanner.init(division, config);
         sizePicker.init(config);
         chunked = config.getBoolean("chunked", false);
@@ -100,8 +100,8 @@ class Preparer extends AbstractOperator {
         }
 
         Date now = new Date();
-		Result result = new Result(now, getId(), getOpType(), getSampleType(),
-				getName(), true);
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+                getName(), true);
         session.getListener().onOperationCompleted(result);
     }
 
@@ -110,19 +110,19 @@ class Preparer extends AbstractOperator {
             throw new AbortedException();
 
         try {
-        	session.getApi().createContainer(conName, config);
+            session.getApi().createContainer(conName, config);
         } catch (StorageInterruptedException sie) {
             doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         }catch(StorageException se) {
-        	isUnauthorizedException(se, session);
+            isUnauthorizedException(se, session);
             errorStatisticsHandle(se, session, conName);
             if(session.getApi().isAuthValid()){
-            	throw new AgentException();
+                throw new AgentException();
             }
             else {
-				throw new AuthException(se);
-			}
+                throw new AuthException(se);
+            }
         }catch (Exception e) {
             throw new AgentException(); // mark error
         }

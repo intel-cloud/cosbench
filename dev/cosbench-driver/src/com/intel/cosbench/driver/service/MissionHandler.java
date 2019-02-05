@@ -1,4 +1,4 @@
-/** 
+/**
 
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
@@ -13,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.service;
 
@@ -395,26 +395,26 @@ class MissionHandler {
     private void abortAgents(boolean shutdownNow) {
         Thread.interrupted(); // clear interruption status
 
-        executor.shutdown(); 
-        try {     
-            // Wait a few seconds for existing tasks to terminate    
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {       
+        executor.shutdown();
+        try {
+            // Wait a few seconds for existing tasks to terminate
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
 
                 String id = missionContext.getId();
 
-                if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30)) 
+                if (!awaitTermination(5) && !awaitTermination(10) && !awaitTermination(30))
                     LOGGER.warn("fail to abort agents for mission {}", id);
                 else
                     LOGGER.info("all agents have been aborted in mission {}", id);
 
                 LOGGER.info("mission {} appears to be aborted", id); // agents aborted
-            }   
+            }
 
-        } catch (InterruptedException ie) {     
-                executor.shutdownNow();     
-                Thread.currentThread().interrupt();   
-        } 
+        } catch (InterruptedException ie) {
+                executor.shutdownNow();
+                Thread.currentThread().interrupt();
+        }
     }
 
     private boolean awaitTermination(int seconds) {

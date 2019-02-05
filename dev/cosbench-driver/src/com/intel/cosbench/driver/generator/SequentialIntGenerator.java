@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,10 +27,10 @@ import com.intel.cosbench.config.ConfigException;
 /**
  * This class supplies a thread-save int generator that returns ints from lower to upper, and then restarts at lower
  * again.
- * 
- * 
+ *
+ *
  * @author Niklas Goerke niklas974@github
- * 
+ *
  */
 class SequentialIntGenerator implements IntGenerator {
 

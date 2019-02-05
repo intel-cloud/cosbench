@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.tasklet;
 
@@ -25,7 +25,7 @@ import com.intel.cosbench.protocol.Response;
 
 /**
  * The base class encapsulates commands through HTTP request.
- * 
+ *
  * @author ywang19, qzheng7
  */
 abstract class AbstractCommandTasklet<T extends Response> extends
@@ -51,19 +51,19 @@ abstract class AbstractCommandTasklet<T extends Response> extends
     }
 
     protected void issueCommand(String command) {
-    	int count = 3;
-    	long timeStamp = System.currentTimeMillis();
-    	while (--count >= 0) {
-    		issueCommand(command, String.valueOf(timeStamp));
-    		if (Math.abs(timeDrift) < tolerableTimeDrift)
-				break;
-    		timeStamp = System.currentTimeMillis() + timeDrift / 2;
-		}
-    	LOGGER.info("time drift between controller and driver-{} is {} mSec",
-				getDriver().getName(), timeDrift);
-    	if (count < 0)
-			LOGGER.warn("time drift is still longer than tolerable time drift {} mSec after 3 times of synchronization",
-					tolerableTimeDrift);
+        int count = 3;
+        long timeStamp = System.currentTimeMillis();
+        while (--count >= 0) {
+            issueCommand(command, String.valueOf(timeStamp));
+            if (Math.abs(timeDrift) < tolerableTimeDrift)
+                break;
+            timeStamp = System.currentTimeMillis() + timeDrift / 2;
+        }
+        LOGGER.info("time drift between controller and driver-{} is {} mSec",
+                getDriver().getName(), timeDrift);
+        if (count < 0)
+            LOGGER.warn("time drift is still longer than tolerable time drift {} mSec after 3 times of synchronization",
+                    tolerableTimeDrift);
     }
 
     protected void issueCommand(String command, String content) {

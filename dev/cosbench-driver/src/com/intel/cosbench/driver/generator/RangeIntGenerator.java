@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
  */
 
 package com.intel.cosbench.driver.generator;
@@ -55,7 +55,7 @@ public class RangeIntGenerator implements IntGenerator {
                 while (i++ < 11) {
                     int answer = generator.next(rnd, idx, all);
                     if (!results.contains(answer)) {
-                        System.out.println(this.getName() + ": " + answer);    
+                        System.out.println(this.getName() + ": " + answer);
                     } else {
                         System.out.println(this.getName() + ": " + answer + " I did get this before!");
                     }
@@ -95,20 +95,20 @@ public class RangeIntGenerator implements IntGenerator {
             throw new IllegalArgumentException();
         this.lower = lower;
         this.upper = upper;
-  
+
     }
 
     private synchronized void init(int all) {
-    	if(cursors != null) 
-    		return;
-    	
-      	this.cursors = new AtomicInteger[all];
+        if(cursors != null)
+            return;
 
-		for (int i = 0; i<all; i++) {
-			cursors[i] = new AtomicInteger(0);
-		}
+          this.cursors = new AtomicInteger[all];
+
+        for (int i = 0; i<all; i++) {
+            cursors[i] = new AtomicInteger(0);
+        }
     }
-    
+
     @Override
     public int next(Random random) {
         return next(random, 1, 1);
@@ -116,16 +116,16 @@ public class RangeIntGenerator implements IntGenerator {
 
     @Override
     public int next(Random random, int idx, int all) {
-    	if(cursors == null)
-    		init(all);
-    		
+        if(cursors == null)
+            init(all);
+
         int range = upper - lower + 1;
         int base = range / all;
         int extra = range % all;
         int offset = base * (idx - 1) + (extra >= idx - 1 ? idx - 1 : extra);
         int segment = base + (extra >= idx ? 1 : 0);
-        
-    	return lower + offset + cursors[idx-1].getAndIncrement() % segment;
+
+        return lower + offset + cursors[idx-1].getAndIncrement() % segment;
     }
 
     public static RangeIntGenerator parse(String pattern) {

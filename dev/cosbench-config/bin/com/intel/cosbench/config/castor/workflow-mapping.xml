@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapping>
+
+	<class name="com.intel.cosbench.config.Workflow">
+
+		<mapt-to xml="workflow" />
+
+		<field name="stages" collection="arraylist"
+			type="com.intel.cosbench.config.Stage">
+			<bind-xml name="workstage" node="element" />
+		</field>
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
+
+	</class>
+
+</mapping>

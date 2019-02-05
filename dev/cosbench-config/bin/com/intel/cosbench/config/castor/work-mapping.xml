@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapping>
+
+	<class name="com.intel.cosbench.config.Work">
+
+		<mapt-to xml="work" />
+
+		<field name="name" type="string">
+			<bind-xml name="name" node="attribute" />
+		</field>
+
+		<field name="type" type="string">
+			<bind-xml name="type" node="attribute" />
+		</field>
+
+		<field name="workers" type="integer">
+			<bind-xml name="workers" node="attribute" />
+		</field>
+
+		<field name="interval" type="integer">
+			<bind-xml name="interval" node="attribute" />
+		</field>
+
+		<field name="division" type="string">
+			<bind-xml name="division" node="attribute" />
+		</field>
+
+		<field name="runtime" type="integer">
+			<bind-xml name="runtime" node="attribute" />
+		</field>
+
+		<field name="rampup" type="integer">
+			<bind-xml name="rampup" node="attribute" />
+		</field>
+
+		<field name="rampdown" type="integer">
+			<bind-xml name="rampdown" node="attribute" />
+		</field>
+		
+		<field name="afr" type="integer">
+			<bind-xml name="afr" node="attribute" />
+		</field>
+
+		<field name="totalOps" type="integer">
+			<bind-xml name="totalOps" node="attribute" />
+		</field>
+
+		<field name="totalBytes" type="long">
+			<bind-xml name="totalBytes" node="attribute" />
+		</field>
+		
+		<field name="driver" type="string">
+			<bind-xml name="driver" node="attribute" />
+		</field>
+
+		<field name="config" type="string">
+			<bind-xml name="config" node="attribute" />
+		</field>
+
+		<field name="auth" type="com.intel.cosbench.config.Auth">
+			<bind-xml name="auth" node="element" />
+		</field>
+
+		<field name="storage" type="com.intel.cosbench.config.Storage">
+			<bind-xml name="storage" node="element" />
+		</field>
+
+		<field name="operations" collection="arraylist"
+			type="com.intel.cosbench.config.Operation">
+			<bind-xml name="operation" node="element" />
+		</field>
+
+	</class>
+
+</mapping>

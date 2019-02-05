@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,15 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.bench;
 
 /**
- * This class encapsulates calculation of different percentiles, 
+ * This class encapsulates calculation of different percentiles,
  * so far it supports 60/80/90/95/99/100 percentiles.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -101,9 +101,9 @@ public class Histogram implements Cloneable {
 
     /**
      * The method calculates 60/80/90/95/99 percentiles.
-     * 
-     * @param 
-     * @return	
+     *
+     * @param
+     * @return
      */
     public void recalcPercentiles() {
         int curr = 0;

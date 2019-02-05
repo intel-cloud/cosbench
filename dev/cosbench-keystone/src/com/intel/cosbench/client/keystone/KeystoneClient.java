@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.keystone;
 
@@ -35,7 +35,7 @@ import com.intel.cosbench.log.Logger;
  * The client can be used to obtain a valid keystone token in exchange of
  * correct credentials. According to keystone, there are different ways to
  * achieve this:
- * 
+ *
  * <ol>
  * <li>Simple Authentication</li>
  * <p>
@@ -55,22 +55,22 @@ import com.intel.cosbench.log.Logger;
  * order to get a new token that will be scoped with the specified tenant.
  * </p>
  * </ol>
- * @author ywang19 
+ * @author ywang19
  * @author qzheng
  */
 public class KeystoneClient {
-	
-	private Logger logger;
-	
+
+    private Logger logger;
+
     /* user info */
     private String username;
     private String password;
     private String userToken;
-    
+
     /* tenant info */
     private String tenantId;
     private String tenantName;
-    
+
     /*targe region*/
     private String region;
     /* authentication handler */
@@ -81,7 +81,7 @@ public class KeystoneClient {
 
     public KeystoneClient(Logger logger, HttpClient client, String url, String username,
             String password, String tenantName, int timeout) {
-    	this.logger = logger;
+        this.logger = logger;
         this.username = username;
         this.password = password;
         this.tenantName = tenantName;
@@ -92,7 +92,7 @@ public class KeystoneClient {
      * Perform the authentication against a keystone service. Once the
      * authentication is successfully completed, the results can be retrieved
      * from the client instance.
-     * 
+     *
      * @see KeystoneClient#getKeystoneTokenId()
      * @see KeystoneClient#getServiceUrl(String)
      */
@@ -277,7 +277,7 @@ public class KeystoneClient {
      * only be called after the client has successfully performed an
      * authentication against the keystone service, <code>null</code> will be
      * returned otherwise.
-     * 
+     *
      * @return the keystone token id
      */
     public String getKeystoneTokenId() {
@@ -289,7 +289,7 @@ public class KeystoneClient {
      * This method should only be called after the client has successfully
      * performed an authentication against the keystone service,
      * <code>null</code> will be returned otherwise.
-     * 
+     *
      * @param serviceName
      *            - the name identifying the service
      * @return the public URL of a cloud service
@@ -299,34 +299,34 @@ public class KeystoneClient {
         if (service == null)
             return null;
         List<Endpoint> endpoints = service.getEndpoints();
-        
+
         if (endpoints == null || endpoints.size() == 0)
         {
-        	logger.error("no endpoints return from keystone");
-        	return null;
+            logger.error("no endpoints return from keystone");
+            return null;
         }
-      
+
         List<String> regions = new ArrayList<String>();
-	   	for (Endpoint endpoint : endpoints) {
-    		String the_region = endpoint.getRegion();
-    		if(the_region != null) {
-    			regions.add(the_region);
-    		}
-	   	}
-	   	
+           for (Endpoint endpoint : endpoints) {
+            String the_region = endpoint.getRegion();
+            if(the_region != null) {
+                regions.add(the_region);
+            }
+           }
+
         if (region == null || region.isEmpty()) { // no region assigned, will use the first one.
 
-    	   	logger.warn("Below regions are returned from keystone : " + regions.toString() + 
-    	   			", but no expected region assigned in your configuration, so the first region will be used.");
-    	   	return endpoints.get(0).getPublicURL();
+               logger.warn("Below regions are returned from keystone : " + regions.toString() +
+                       ", but no expected region assigned in your configuration, so the first region will be used.");
+               return endpoints.get(0).getPublicURL();
         }
 
         int idx = -1;
-	   	if((idx=regions.indexOf(region)) >= 0) {
-	   		return endpoints.get(idx).getPublicURL();
-		}
-        
-		return null;
+           if((idx=regions.indexOf(region)) >= 0) {
+               return endpoints.get(idx).getPublicURL();
+        }
+
+        return null;
     }
 
     /**
@@ -334,7 +334,7 @@ public class KeystoneClient {
      * given name. This method should only be called after the client has
      * successfully performed an authentication against the keystone service,
      * <code>null</code> will be returned otherwise.
-     * 
+     *
      * @param serviceName
      *            - the name identifying the service
      * @return the information regarding a cloud service
@@ -345,13 +345,13 @@ public class KeystoneClient {
             if (serviceName != null ? serviceName.equals(service.getName())
                     : service.getName() == null)
                 return service;
-        
+
         List<String> services = new ArrayList<String>();
         for (ServiceInfo service : catalog)
-        	services.add(service.getName());
-        
+            services.add(service.getName());
+
         logger.error("no designated service [" + serviceName + "] found, but only those services returned: " + services.toString());
-        
+
         return null;
     }
 

@@ -1,4 +1,4 @@
-/** 
+/**
 
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
@@ -13,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.model;
 
@@ -26,9 +26,9 @@ import com.intel.cosbench.model.DriverInfo;
 
 /**
  * This class encapsulates the configurations in driver.conf.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class DriverContext implements DriverInfo {
 
@@ -90,7 +90,7 @@ public class DriverContext implements DriverInfo {
     }
 
     public String getPidMap(String scriptName) {
-        String pid = pidMap.remove(scriptName);        
+        String pid = pidMap.remove(scriptName);
         return (pid == null) ? "0" : pid;
     }
 

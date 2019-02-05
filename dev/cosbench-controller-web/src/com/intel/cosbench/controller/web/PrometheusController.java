@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,13 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 /*
- * 
+ *
  * PROMETHEUS EXPORTER
- * 
+ *
  * @Author: Jérôme Loyet for OpenIO
  */
 package com.intel.cosbench.controller.web;
@@ -43,7 +43,7 @@ import com.intel.cosbench.service.ControllerService;
 
 public class PrometheusController extends IndexPageController {
 
-  /* 
+  /*
    * Custom "inline" View dedicated for Prometheus output generation
    */
   private static final View PROMETHEUS = new PrometheusView();
@@ -54,7 +54,7 @@ public class PrometheusController extends IndexPageController {
      * chart_name_with_underscores_separator{label1="value1",label2="value2"} 0.0000000 1546933475642
      * Followed by the value of the metric as a float
      * At the end, the timestamp can be added (Unix time in milliseconds)
-     * 
+     *
      * More at https://prometheus.io/docs/instrumenting/exposition_formats/
      */
 
@@ -78,7 +78,7 @@ public class PrometheusController extends IndexPageController {
       writer.print(PROM_PREFIX + name);
 
       /* handle labels if present */
-      if (labels != null) {        
+      if (labels != null) {
 
         Iterator<Map.Entry<String, String>> it = labels.entrySet().iterator();
         boolean first = true;
@@ -91,7 +91,7 @@ public class PrometheusController extends IndexPageController {
           /* iterate through labels */
           while (it.hasNext()) {
 
-            /* print PROM_LABL_SEP ',' only since the 2nd item */ 
+            /* print PROM_LABL_SEP ',' only since the 2nd item */
             if (first) first = false;
             else writer.print(PROM_LABEL_SEP);
 
@@ -121,7 +121,7 @@ public class PrometheusController extends IndexPageController {
     }
 
     /*
-     * 
+     *
      */
     private void printMetrics(Report report, HashMap<String, String> labels, PrintWriter writer) {
       printMetrics(report, labels, 0, writer);
@@ -136,7 +136,7 @@ public class PrometheusController extends IndexPageController {
      *   - Average Process time (which is Response time - Transfer Time)
      *   - Throughput (which is the number of operations per seconds)
      *   - Bandwidth (which is the number transfer bytes per seconds)
-     *   - Success Percentage   
+     *   - Success Percentage
      */
     private void printMetrics(Report report, HashMap<String, String> labels, long time, PrintWriter writer) {
       /* duplicate labels for each workload */
@@ -184,7 +184,7 @@ public class PrometheusController extends IndexPageController {
 
     /*
      * Return the Content-Type for prometheus
-     *   force charset to prevent tomcat to add another 
+     *   force charset to prevent tomcat to add another
      */
     @Override
     public String getContentType() {
@@ -234,7 +234,7 @@ public class PrometheusController extends IndexPageController {
       res.setContentType(this.getContentType());
       PrintWriter writer = res.getWriter();
 
-      /* setup default labels with current hostname */ 
+      /* setup default labels with current hostname */
       HashMap<String,String> labels = new HashMap<String, String>();
       labels.put("instance", InetAddress.getLocalHost().getHostName());
 
@@ -307,13 +307,13 @@ public class PrometheusController extends IndexPageController {
     }
   }
 
-  /* 
+  /*
    * Controller main function
    */
   @Override
   protected ModelAndView process(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-    /* instanciate custom "inline" View */ 
+    /* instanciate custom "inline" View */
     ModelAndView result = new ModelAndView(PROMETHEUS);
 
     /* pass controller Object to View */

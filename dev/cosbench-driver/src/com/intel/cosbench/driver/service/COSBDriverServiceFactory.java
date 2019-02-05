@@ -1,4 +1,4 @@
-/** 
+/**
 
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
@@ -13,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.service;
 
@@ -105,14 +105,14 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
     private String getName(String fileName){
           String str = null ;
         File myFile=new File(fileName);
-        if(!myFile.exists()){ 
+        if(!myFile.exists()){
             System.err.println("Can't Find " + fileName);
         }
         try {
             BufferedReader in = new BufferedReader(new FileReader(myFile));
             str = in.readLine();
             in.close();
-         } 
+         }
          catch (IOException e) {
             e.getStackTrace();
          }

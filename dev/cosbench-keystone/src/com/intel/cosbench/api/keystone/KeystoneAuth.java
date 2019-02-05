@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.api.keystone;
 
@@ -31,9 +31,9 @@ import com.intel.cosbench.log.Logger;
 /**
  * This class encapsulates an Openstack Keystone implementation for the
  * Auth-API.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class KeystoneAuth extends NoneAuth {
 
@@ -48,7 +48,7 @@ class KeystoneAuth extends NoneAuth {
     /* tenant info */
     private String tenantId;
     private String tenantName;
-    
+
     /*keystone region*/
     private String region;
 
@@ -57,7 +57,7 @@ class KeystoneAuth extends NoneAuth {
 
     /* connection setting */
     private int timeout;
-    
+
     Logger logger = null;
 
     public KeystoneAuth() {
@@ -87,7 +87,7 @@ class KeystoneAuth extends NoneAuth {
         parms.put(AUTH_SERVICE_KEY, service);
         parms.put(CONN_TIMEOUT_KEY, timeout);
         parms.put(AUTH_REGION_KEY, AUTH_REGION_DEFAULT);
-        
+
 
         logger.debug("using auth config: {}", parms);
 
@@ -126,7 +126,7 @@ class KeystoneAuth extends NoneAuth {
 //        context.put(STORAGE_URL_KEY, client.getServiceUrl(service));
 //        return context;
         KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service,region));
-        
+
         return context;
     }
 

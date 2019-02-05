@@ -1,5 +1,5 @@
 /**
- 
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
@@ -13,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.schedule;
 
@@ -25,9 +25,9 @@ import com.intel.cosbench.controller.model.*;
 
 /**
  * The base class of scheduler.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 abstract class AbstractScheduler implements WorkScheduler {
 

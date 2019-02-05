@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.model;
 
@@ -26,9 +26,9 @@ import com.intel.cosbench.utils.ListRegistry;
 
 /**
  * This class encapsulates one work stage.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class StageContext implements StageInfo {
 
@@ -46,18 +46,18 @@ public class StageContext implements StageInfo {
     private volatile Report report = null; // will be merged from task reports
 
     private transient List<StageListener> listeners = new ArrayList<StageListener>();
-    
+
     private List<TaskReport> taskReports = new ArrayList<TaskReport>();
 
     public List<TaskReport> getTaskReports() {
-		return taskReports;
-	}
+        return taskReports;
+    }
 
-	public void setTaskReports(List<TaskReport> taskReports) {
-		this.taskReports = taskReports;
-	}
+    public void setTaskReports(List<TaskReport> taskReports) {
+        this.taskReports = taskReports;
+    }
 
-	public StageContext() {
+    public StageContext() {
         /* empty */
     }
 
@@ -75,21 +75,21 @@ public class StageContext implements StageInfo {
     }
 
     public void setState(StageState state) {
-    	setState(state, false);
+        setState(state, false);
     }
-    
+
     public void setState(StageState state, boolean archived) {
         this.state = state;
-        if(archived) 
-        	return;
+        if(archived)
+            return;
         stateHistory.addState(state.name());
         if (StageState.isStopped(state))
             fireStageStopped();
     }
-    
+
     @Override
     public void setState(String state, Date date) {
-    	stateHistory.addState(state,date);
+        stateHistory.addState(state,date);
     }
 
     private void fireStageStopped() {
@@ -104,12 +104,12 @@ public class StageContext implements StageInfo {
             return new Report();
         ReportMerger merger = new ReportMerger();
         for (TaskContext task : taskRegistry){
-        	TaskReport tReport=new TaskReport();
-        	tReport.setReport(task.getReport());
-        	tReport.setDriverName(task.getSchedule().getDriver().getName());
-        	tReport.setDriverUrl(task.getSchedule().getDriver().getUrl());
-        	taskReports.add(tReport);
-        	merger.add(task.getReport());
+            TaskReport tReport=new TaskReport();
+            tReport.setReport(task.getReport());
+            tReport.setDriverName(task.getSchedule().getDriver().getName());
+            tReport.setDriverUrl(task.getSchedule().getDriver().getUrl());
+            taskReports.add(tReport);
+            merger.add(task.getReport());
         }
         return merger.merge();
     }
@@ -233,9 +233,9 @@ public class StageContext implements StageInfo {
         listeners = null;
     }
 
-	@Override
-	public ListRegistry<Snapshot> getSnapshotRegistry() {
-		return snapshotRegistry;
-	}
+    @Override
+    public ListRegistry<Snapshot> getSnapshotRegistry() {
+        return snapshotRegistry;
+    }
 
 }

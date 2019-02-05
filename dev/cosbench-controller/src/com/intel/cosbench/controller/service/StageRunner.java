@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.service;
 
@@ -34,9 +34,9 @@ import com.intel.cosbench.service.CancelledException;
 
 /**
  * This class encapsulates one control class to run stages.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class StageRunner implements StageCallable {
 
@@ -138,50 +138,50 @@ class StageRunner implements StageCallable {
         if (Thread.interrupted())
             throw new CancelledException();
         closeTasks();
-        
-		TaskRegistry tasks = stageContext.getTaskRegistry();
-		for (TaskContext task : tasks) {
-			if (task.getState().equals(TaskState.FAILED)) {
-				stageContext.setState(FAILED);
-				return;
-			}
-		}
-		
-		if (!reachAFRGoal()) {
-			stageContext.setState(FAILED);
-			return;
-		}
+
+        TaskRegistry tasks = stageContext.getTaskRegistry();
+        for (TaskContext task : tasks) {
+            if (task.getState().equals(TaskState.FAILED)) {
+                stageContext.setState(FAILED);
+                return;
+            }
+        }
+
+        if (!reachAFRGoal()) {
+            stageContext.setState(FAILED);
+            return;
+        }
         stageContext.setState(COMPLETED);
     }
-    
+
     private boolean reachAFRGoal() {
-    	String id = stageContext.getId();
-    	boolean bool = true;
-		stageContext.setReport(stageContext.mergeReport());
-		for (Work work : stageContext.getStage().getWorks()) {
-			List<String> operationIDs = work.getOperationIDs();
-			long sumSampleCount = 0;
-			long sumTotalSampleCount = 0;
-			for (Metrics metric : stageContext.getReport().getAllMetrics()) {
-				if (operationIDs.contains(metric.getOpId())) {
-					sumSampleCount +=
-							metric.getSampleCount() > 0 ? metric.getSampleCount() : 0;
-					sumTotalSampleCount +=
-							metric.getTotalSampleCount() > 0 ? metric.getTotalSampleCount() : 0;
-				}
-			}
-			LOGGER.info("acceptable failure ratio of work {} = {}", id+"-"+work.getName(), (double)work.getAfr() / 1000000);
-			LOGGER.info("real failure ratio of work {} = {}", id+"-"+work.getName(), 
-					sumTotalSampleCount > 0 ? (double)(sumTotalSampleCount - sumSampleCount) / sumTotalSampleCount : "N/A");
-			if ((sumTotalSampleCount - sumSampleCount) > sumTotalSampleCount * work.getAfr() / 1000000) {
-				LOGGER.info("fail to reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
-				bool = false;
-				continue;
-			}
-			LOGGER.info("successfully reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
-		}
-		return bool;
-	}
+        String id = stageContext.getId();
+        boolean bool = true;
+        stageContext.setReport(stageContext.mergeReport());
+        for (Work work : stageContext.getStage().getWorks()) {
+            List<String> operationIDs = work.getOperationIDs();
+            long sumSampleCount = 0;
+            long sumTotalSampleCount = 0;
+            for (Metrics metric : stageContext.getReport().getAllMetrics()) {
+                if (operationIDs.contains(metric.getOpId())) {
+                    sumSampleCount +=
+                            metric.getSampleCount() > 0 ? metric.getSampleCount() : 0;
+                    sumTotalSampleCount +=
+                            metric.getTotalSampleCount() > 0 ? metric.getTotalSampleCount() : 0;
+                }
+            }
+            LOGGER.info("acceptable failure ratio of work {} = {}", id+"-"+work.getName(), (double)work.getAfr() / 1000000);
+            LOGGER.info("real failure ratio of work {} = {}", id+"-"+work.getName(),
+                    sumTotalSampleCount > 0 ? (double)(sumTotalSampleCount - sumSampleCount) / sumTotalSampleCount : "N/A");
+            if ((sumTotalSampleCount - sumSampleCount) > sumTotalSampleCount * work.getAfr() / 1000000) {
+                LOGGER.info("fail to reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
+                bool = false;
+                continue;
+            }
+            LOGGER.info("successfully reach the goal of acceptable failure ratio in stage {} - work {}", id, work.getName());
+        }
+        return bool;
+    }
 
     private void bootTasks() {
         String id = stageContext.getId();

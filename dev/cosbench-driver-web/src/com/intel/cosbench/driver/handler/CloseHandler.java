@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.handler;
 
@@ -48,16 +48,16 @@ public class CloseHandler extends MissionHandler {
         Report report = info.getReport();
         List<Metrics> wrReport = new ArrayList<Metrics>();
         for(Report wReport:info.getWorkerReports()){
-        	for(Metrics metrics : wReport){
-        		wrReport.add(metrics);
-        	}
+            for(Metrics metrics : wReport){
+                wrReport.add(metrics);
+            }
         }
         response.setWrReport(wrReport);
         response.setReport(Arrays.asList(report.getAllMetrics()));
-		if (info.getState().equals(FAILED))
-			response.setState(TaskState.FAILED);
-		else
-			response.setState(TaskState.ACCOMPLISHED);
+        if (info.getState().equals(FAILED))
+            response.setState(TaskState.FAILED);
+        else
+            response.setState(TaskState.ACCOMPLISHED);
         String log = null;
         try {
             log = info.getLogManager().getLogAsString();
@@ -66,7 +66,7 @@ public class CloseHandler extends MissionHandler {
         }
         response.setErrorStatistics(info.getErrorStatistics().getErrorCodeAndNum());
         response.setDriverLog(log);
-        
+
         return response;
     }
 

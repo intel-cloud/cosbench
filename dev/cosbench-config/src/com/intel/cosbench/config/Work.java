@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.config;
 
@@ -25,9 +25,9 @@ import com.intel.cosbench.config.common.ConfigUtils;
 
 /**
  * The model class mapping to "work" in configuration xml with following form:
- * 	<work type="type" workers="workers" division="division" 
- * 		rampup="rampup" rampdown="rampdown" runtime="runtime" config="config" ... />
- * 
+ *     <work type="type" workers="workers" division="division"
+ *         rampup="rampup" rampdown="rampdown" runtime="runtime" config="config" ... />
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -48,7 +48,7 @@ public class Work implements Iterable<Operation> {
     private String driver;
     private String config = "";
     private Auth auth;
-    private Storage storage;    
+    private Storage storage;
     private List<Operation> operations;
 
     public Work() {
@@ -208,7 +208,7 @@ public class Work implements Iterable<Operation> {
             throw new ConfigException("a work must have its storge");
         this.storage = storage;
     }
-    
+
     public int getAfr() {
         return afr;
     }
@@ -217,15 +217,15 @@ public class Work implements Iterable<Operation> {
         if (afr > 1000000 || afr < 0)
             throw new ConfigException("afr should be at 0 to 1000000 range");
         this.afr = afr;
-    }    
+    }
 
     public List<String> getOperationIDs() {
-		List<String> opIds = new ArrayList<String>();
-		for (Operation operation : operations) {
-			opIds.add(operation.getId());
-		}
-		return opIds;
-	}
+        List<String> opIds = new ArrayList<String>();
+        for (Operation operation : operations) {
+            opIds.add(operation.getId());
+        }
+        return opIds;
+    }
 
 
     public List<Operation> getOperations() {
@@ -236,7 +236,7 @@ public class Work implements Iterable<Operation> {
         if (operations == null || operations.isEmpty())
             throw new ConfigException("a work must have opertations");
         for(Operation op: operations) {
-        	op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
+            op.setConfig(ConfigUtils.inherit(op.getConfig(), this.config));
         }
         this.operations = operations;
     }
@@ -326,27 +326,27 @@ public class Work implements Iterable<Operation> {
         op.setConfig(StringUtils.join(cfgs, ';'));
         setOperations(Collections.singletonList(op));
     }
-    
-	public void toDelayWork() {
-		if (name == null)
-			name = "delay";
-		setDivision("none");
-		setRuntime(0);
-		setDefaultAfr(0);
-		setTotalBytes(0);
-		setWorkers(1);
-		setTotalOps(getWorkers());
-		Operation op = new Operation();
-		op.setType("delay");
-		op.setRatio(100);
-		op.setConfig("");
-		setOperations(Collections.singletonList(op));
-	} 
-	
-	private void setDefaultAfr(int def) {
-		if (afr < 0)
-			setAfr(def);
-	}
+
+    public void toDelayWork() {
+        if (name == null)
+            name = "delay";
+        setDivision("none");
+        setRuntime(0);
+        setDefaultAfr(0);
+        setTotalBytes(0);
+        setWorkers(1);
+        setTotalOps(getWorkers());
+        Operation op = new Operation();
+        op.setType("delay");
+        op.setRatio(100);
+        op.setConfig("");
+        setOperations(Collections.singletonList(op));
+    }
+
+    private void setDefaultAfr(int def) {
+        if (afr < 0)
+            setAfr(def);
+    }
 
     public void validate() {
         if (type.equals("prepare"))
@@ -357,10 +357,10 @@ public class Work implements Iterable<Operation> {
             toInitWork();
         else if (type.equals("dispose"))
             toDisposeWork();
-		else if (type.equals("delay"))
-			toDelayWork(); 
-		else 
-			setDefaultAfr(200000);
+        else if (type.equals("delay"))
+            toDelayWork();
+        else
+            setDefaultAfr(200000);
         setName(getName());
         setWorkers(getWorkers());
         if (runtime == 0 && totalOps == 0 && totalBytes == 0)
@@ -372,9 +372,9 @@ public class Work implements Iterable<Operation> {
         storage.validate();
         List<Operation> tempOpList = new ArrayList<Operation>();
         for (Operation op: operations) {
-        	if(op.getRatio() > 0) {
-        		tempOpList.add(op);
-        	}
+            if(op.getRatio() > 0) {
+                tempOpList.add(op);
+            }
         }
         operations = tempOpList;
         setOperations(getOperations());

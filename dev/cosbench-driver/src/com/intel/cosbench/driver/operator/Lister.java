@@ -62,8 +62,8 @@ public class Lister extends AbstractOperator {
         Sample sample = doList(out, path[0], path[1], config, session);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-		Result result = new Result(now, getId(), getOpType(), getSampleType(),
-				getName(), sample.isSucc());
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+                getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
 
@@ -79,16 +79,16 @@ public class Lister extends AbstractOperator {
         long xferTime = 0L;
         try {
             doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);
-	        in = session.getApi().getList(conName, objName, config);
-	        long xferStart = System.nanoTime();
-	        copyLarge(in, cout);
-	        xferTime = (System.nanoTime() - xferStart) / 1000000;
+            in = session.getApi().getList(conName, objName, config);
+            long xferStart = System.nanoTime();
+            copyLarge(in, cout);
+            xferTime = (System.nanoTime() - xferStart) / 1000000;
         } catch (StorageInterruptedException sie) {
             doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
         } catch (Exception e) {
-        	isUnauthorizedException(e, session);
-        	errorStatisticsHandle(e, session, conName + "/" + objName);
+            isUnauthorizedException(e, session);
+            errorStatisticsHandle(e, session, conName + "/" + objName);
 
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
@@ -97,8 +97,8 @@ public class Lister extends AbstractOperator {
         }
         long end = System.nanoTime();
 
-		return new Sample(new Date(), getId(), getOpType(), getSampleType(),
-				getName(), true, (end - start) / 1000000, xferTime, cout.getByteCount());
+        return new Sample(new Date(), getId(), getOpType(), getSampleType(),
+                getName(), true, (end - start) / 1000000, xferTime, cout.getByteCount());
     }
 
     public OutputStream copyLarge(InputStream input, OutputStream output)
