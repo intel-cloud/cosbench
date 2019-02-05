@@ -133,8 +133,8 @@ public class S3Storage extends NoneStorage {
     public void createContainer(String container, Config config) {
         super.createContainer(container, config);
         try {
+            container = container.split("/")[0];
             if(!client.doesBucketExist(container)) {
-                
                 client.createBucket(container);
             }
         } catch(AmazonServiceException ase) {
@@ -173,6 +173,7 @@ public class S3Storage extends NoneStorage {
     public void deleteContainer(String container, Config config) {
         super.deleteContainer(container, config);
         try {
+            container = container.split("/")[0];
             if(client.doesBucketExist(container)) {
                 client.deleteBucket(container);
             }
