@@ -114,8 +114,15 @@ abstract class AbstractOperator implements Operator {
     protected abstract void operate(int idx, int all, Session session);
 
     public static void errorStatisticsHandle(Exception e, Session session, String target){
-            String trace = e.getStackTrace()[0].toString();
-            trace = e.getCause() == null ? trace : trace + e.getCause().getStackTrace()[0].toString();
+            String trace = null;
+            try {
+                trace = e.getStackTrace()[0].toString();
+                trace = e.getCause() == null ? trace : trace + e.getCause().getStackTrace()[0].toString();
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+                LOGGER.debug("Got an error with an empty stack trace. " +
+                        "Run the driver with -XX:-OmitStackTraceInFastThrow to prevent this.", e);
+                trace = "<undefined>";
+            }
             ErrorStatistics errorStatistics = session.getErrorStatistics();
             HashMap<String, String> stackTraceAndTargets = errorStatistics.getStackTraceAndTargets();
             synchronized (stackTraceAndTargets) {
