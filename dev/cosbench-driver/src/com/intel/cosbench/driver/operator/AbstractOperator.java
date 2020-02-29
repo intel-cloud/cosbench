@@ -76,6 +76,10 @@ abstract class AbstractOperator implements Operator {
         operate(idx, all, session);
     }
     
+    protected static long getCurrentTimeMillis() {
+        return System.nanoTime()/1000000;
+    }
+
     protected static void doLogInfo(Logger logger, String message) {
         if (logger != null)
             logger.info(message);
@@ -114,24 +118,40 @@ abstract class AbstractOperator implements Operator {
     protected abstract void operate(int idx, int all, Session session);
     
     public static void errorStatisticsHandle(Exception e, Session session, String target){
-    		String trace = e.getStackTrace()[0].toString();
-    		trace = e.getCause() == null ? trace : trace + e.getCause().getStackTrace()[0].toString();
-    		ErrorStatistics errorStatistics = session.getErrorStatistics();
-    		HashMap<String, String> stackTraceAndTargets = errorStatistics.getStackTraceAndTargets();
-    		synchronized (stackTraceAndTargets) {
-    			if(! stackTraceAndTargets.containsKey(trace)){
+         StackTraceElement[] stktrace = e.getStackTrace();
+         String trace = null;
+         if (stktrace.length > 0) {
+            trace = e.getStackTrace()[0].toString();
+         } else {
+            trace = e.toString();
+         }
+
+         if (e.getCause() != null) {
+            StackTraceElement[] castrace = e.getCause().getStackTrace();
+            if (castrace.length > 0) {
+                trace = trace + castrace[0].toString();
+            }
+          }
+
+          ErrorStatistics errorStatistics = session.getErrorStatistics();
+          HashMap<String, String> stackTraceAndTargets = errorStatistics.getStackTraceAndTargets();
+          synchronized (stackTraceAndTargets) {
+              if(! stackTraceAndTargets.containsKey(trace)){
     				errorStatistics.getStackTraceAndException().put(trace, e);
     				stackTraceAndTargets.put(trace, target);
     				doLogErr(session.getLogger(), "worker "+ session.getIndex() + " fail to perform operation " + target, e);
-    			}
-    			String targets = stackTraceAndTargets.get(trace);
-    			stackTraceAndTargets.put(trace, targets + ", "+target);
-    		}
+               }
+               String targets = stackTraceAndTargets.get(trace);
+                stackTraceAndTargets.put(trace, targets + ", "+target);
+           }
     }
     public static void isUnauthorizedException(Exception e, Session session) {
     	if(e != null && e.getMessage() != null)
     		try{
-    			if(401 == Integer.valueOf(e.getMessage().substring(9, 12))){
+                String msg = e.getMessage();
+                if (msg.length() < 12) {
+                    LOGGER.error("catch error from storage backend: " + msg);
+                } else if(401 == Integer.valueOf(e.getMessage().substring(9, 12))){
     				session.getApi().setAuthFlag(false);
     				LOGGER.debug("catch 401 error from storage backend, set auth flag to false");
     			}

@@ -75,14 +75,14 @@ public class Lister extends AbstractOperator {
         InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
         doLogWarn(session.getLogger(), "listerrr: "+ conName + "/" + objName);//###
-        long start = System.currentTimeMillis();
+        long start = getCurrentTimeMillis();
         long xferTime = 0L;
         try {
         	doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);      	
 	        in = session.getApi().getList(conName, objName, config);
-	        long xferStart = System.currentTimeMillis();
+	        long xferStart = getCurrentTimeMillis();
 	        copyLarge(in, cout);
-	        xferTime = System.currentTimeMillis() - xferStart;
+	        xferTime = getCurrentTimeMillis() - xferStart;
         } catch (StorageInterruptedException sie) {
             doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
@@ -95,10 +95,9 @@ public class Lister extends AbstractOperator {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(cout);
         }
-        long end = System.currentTimeMillis();
+        long end = getCurrentTimeMillis();
 
-        Date now = new Date(end);
-		return new Sample(now, getId(), getOpType(), getSampleType(),
+		return new Sample(new Date(), getId(), getOpType(), getSampleType(),
 				getName(), true, end - start, xferTime, cout.getByteCount());
     }
 

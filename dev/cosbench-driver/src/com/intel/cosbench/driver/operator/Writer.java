@@ -91,7 +91,7 @@ class Writer extends AbstractOperator {
             throw new AbortedException();
         
         XferCountingInputStream cin = new XferCountingInputStream(in);	
-        long start = System.currentTimeMillis();
+        long start = getCurrentTimeMillis();
 
         try {
             session.getApi()
@@ -110,9 +110,8 @@ class Writer extends AbstractOperator {
             IOUtils.closeQuietly(cin);
         }
 
-        long end = System.currentTimeMillis();
-        Date now = new Date(end);
-		return new Sample(now, op.getId(), op.getOpType(), op.getSampleType(),
+        long end = getCurrentTimeMillis();
+		return new Sample(new Date(), op.getId(), op.getOpType(), op.getSampleType(),
 				op.getName(), true, end - start, cin.getXferTime(), cin.getByteCount());
     }
     /*

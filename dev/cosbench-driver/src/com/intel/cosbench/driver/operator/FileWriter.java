@@ -147,7 +147,7 @@ class FileWriter extends AbstractOperator {
 
         XferCountingInputStream cin = new XferCountingInputStream(in);
 
-        long start = System.currentTimeMillis();
+        long start = getCurrentTimeMillis();
 
         try {
               session.getApi().createObject(conName, objName, cin, length, config);
@@ -163,10 +163,9 @@ class FileWriter extends AbstractOperator {
             IOUtils.closeQuietly(cin);
         }
 
-        long end = System.currentTimeMillis();
+        long end = getCurrentTimeMillis();
 
-        Date now = new Date(end);
-        return new Sample(now,  getId(), getOpType(), getSampleType(),
+        return new Sample(new Date(),  getId(), getOpType(), getSampleType(),
 				getName(), true, end - start, cin.getXferTime(), cin.getByteCount());
     }
 }
