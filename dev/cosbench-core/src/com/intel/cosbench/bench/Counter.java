@@ -62,6 +62,7 @@ public class Counter {
      */
     public void doAdd(long time) {
         int index = (time >= RES_MAX) ? UL : (int) (time / RES_INT);
+        index = index < 0 ? 0 : index;
         counts[index].incrementAndGet();
     }
 

@@ -82,15 +82,15 @@ class Reader extends AbstractOperator {
         InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
 
-        long start = System.currentTimeMillis();
+        long start = getCurrentTimeMillis();
         long xferTime = 0L;
         long xferTimeCheck = 0L;
         try {
             in = session.getApi().getObject(conName, objName, config);
-            long xferStart = System.currentTimeMillis();
+            long xferStart = getCurrentTimeMillis();
             if (!hashCheck){
                 copyLarge(in, cout);
-            	long xferEnd = System.currentTimeMillis();
+                long xferEnd = getCurrentTimeMillis();
             	xferTime = xferEnd - xferStart;
             } else if (!validateChecksum(conName, objName, session, in, cout, xferTimeCheck))
 				return new Sample(new Date(), getId(), getOpType(),
@@ -107,7 +107,7 @@ class Reader extends AbstractOperator {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(cout);
         }
-        long end = System.currentTimeMillis();
+        long end = getCurrentTimeMillis();
 
         Date now = new Date(end);
 		return new Sample(now, getId(), getOpType(), getSampleType(),
@@ -139,7 +139,7 @@ class Reader extends AbstractOperator {
             String storedHash = new String();
             String calculatedHash = new String();
             
-            long xferStart = System.currentTimeMillis();
+            long xferStart = getCurrentTimeMillis();
             int br1 = in.read(buf1);
 
             if (br1 <= hashLen) {
@@ -176,7 +176,7 @@ class Reader extends AbstractOperator {
                     br1 = br2;
                 }
             }
-            xferTimeCheck = System.currentTimeMillis() - xferStart;
+            xferTimeCheck = getCurrentTimeMillis() - xferStart;
             
             if (!calculatedHash.equals(storedHash)) {
                 if (storedHash.startsWith(HashUtil.GUARD)) {
