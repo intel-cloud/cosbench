@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,13 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.tasklet;
 
 import java.io.*;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,20 +57,32 @@ abstract class AbstractHttpTasklet extends AbstractTasklet {
         HttpClient client = context.getHttpClient();
         HttpPost request = prepareRequest(content, url);
         String body = null;
+        HttpResponse response = null;
         try {
-            HttpResponse response = client.execute(request);
-            body = fetchResponseBody(response);
+            response = client.execute(request);
+        } catch (SocketException se) {
+            LOGGER.error("fail to POST driver with socket connection error, will give up the task" , se);
+            throw new CancelledException();
         } catch (SocketTimeoutException ste) {
-            LOGGER.error("fail to POST driver", ste);
+            LOGGER.error("fail to POST driver with url=" + url , ste);
             throw new TaskletException(); // mark termination
         } catch (ConnectTimeoutException cte) {
-            LOGGER.error("fail to POST driver", cte);
+            LOGGER.error("fail to POST driver with url=" + url, cte);
             throw new TaskletException(); // mark termination
         } catch (InterruptedIOException ie) {
             throw new CancelledException(); // task cancelled
         } catch (Exception e) {
-            LOGGER.error("fail to POST driver", e);
+            LOGGER.error("fail to POST driver with url=" + url, e);
             throw new TaskletException(); // mark termination
+        } finally {
+            if(response != null) {
+//                LOGGER.info("try to fetch response body");
+                try{
+                    body = fetchResponseBody(response);
+                }catch(IOException ioe) {
+                    LOGGER.error("fail to fetch response body", ioe);
+                }
+            }
         }
         return body; // HTTP response body retrieved
     }

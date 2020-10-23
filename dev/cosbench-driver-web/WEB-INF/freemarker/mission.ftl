@@ -226,7 +226,7 @@
         <tr>
           <th>Error Message</th>
           <th>Error Code</th>
-          <th>Occurence Number</th>
+          <th>Occurrence Number</th>
           <th>StatckTrace</th>  
         </tr>
         <#list info.errorStatistics.stackTraceAndMessage?keys as trace>
@@ -235,10 +235,12 @@
           <#else>
             <tr class="high-light">
           </#if>
+		  <#if trace??>
             <td class="id" style="width:13%">${info.errorStatistics.stackTraceAndMessage[trace]}</td>
             <td>${info.errorStatistics.stackTraceAndErrorCode[trace]}</td>
             <td>${info.errorStatistics.stackTraceAndNum[trace]}</td>
             <td>${info.errorStatistics.stackTraceAndEntireTrace[trace]?substring(0,50)+"......"}</td>
+		  </#if>
        </tr>
         </#list>
       </table>

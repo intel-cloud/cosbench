@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
  */
 
 package com.intel.cosbench.driver.util;
@@ -26,9 +26,9 @@ import org.apache.commons.io.input.NullInputStream;
 
 /**
  * This class is used to concatinate the file given with its hash (hash is formatted !!!!$hash!!!!)
- * 
+ *
  * @author Niklas Goerke niklas974@github
- * 
+ *
  */
 public class HashedFileInputStream extends NullInputStream {
 
@@ -53,7 +53,7 @@ public class HashedFileInputStream extends NullInputStream {
         this.size = size;
         this.hashLen = this.util.getHashLen();
     }
-    
+
     @Override
     protected int processByte() {
         throw new UnsupportedOperationException("do not read byte by byte");

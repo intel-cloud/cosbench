@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.tasklet;
 
@@ -27,9 +27,9 @@ import com.intel.cosbench.protocol.AbortResponse;
 /**
  * The class encapsulates how to handle abort request/response, internally, it
  * issues command to abort driver, and get log from driver.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class Aborter extends AbstractCommandTasklet<AbortResponse> {
 
@@ -63,7 +63,7 @@ class Aborter extends AbstractCommandTasklet<AbortResponse> {
 
     @Override
     protected void handleResponse(AbortResponse response) {
-    	Report report = new Report();
+        Report report = new Report();
         for (Metrics metrics : response.getReport())
             report.addMetrics(metrics);
         context.setReport(report);

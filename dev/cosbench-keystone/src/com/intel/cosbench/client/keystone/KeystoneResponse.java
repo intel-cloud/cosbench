@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.keystone;
 
@@ -192,6 +192,7 @@ public class KeystoneResponse {
                 private String adminURL;
                 private String internalURL;
                 private String publicURL;
+                private String region;
 
                 public String getAdminURL() {
                     return adminURL;
@@ -216,6 +217,16 @@ public class KeystoneResponse {
                 public void setPublicURL(String publicURL) {
                     this.publicURL = publicURL;
                 }
+
+                public String getRegion() {
+                    return region;
+                }
+
+                public void setRegion(String region) {
+                    this.region = region;
+                }
+
+
 
             }
 

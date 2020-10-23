@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,8 +9,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.agent;
 
@@ -74,6 +74,7 @@ class AuthAgent extends AbstractAgent {
     private AuthContext login() {
         Logger logger = getMissionLogger();
         AuthAPI authApi = workerContext.getAuthApi();
+
         int attempts = 0;
         while (attempts++ < loginAttempts - 1)
             try {
@@ -88,41 +89,41 @@ class AuthAgent extends AbstractAgent {
             }
         return tryLogin(); // the very last attempt!
     }
-    
+
     private AuthContext tryLogin() {
         Logger logger = getMissionLogger();
         logger.debug("begin to login, will attempt {} times", loginAttempts);
-        
+
         AuthAPI authApi = workerContext.getAuthApi();
         AuthContext import_context = authApi.getParms();
-    	AuthContext auth_context;
-		String id = import_context.getID();
-    	
-		boolean caching = import_context.getBoolean(AuthConstants.CACHING_KEY, AuthConstants.CACHING_DEFAULT);
-		logger.debug("input auth context is {} with caching={}", import_context.toString(), caching);
+        AuthContext auth_context;
+        String id = import_context.getID();
+
+        boolean caching = import_context.getBoolean(AuthConstants.CACHING_KEY, AuthConstants.CACHING_DEFAULT);
+        logger.debug("input auth context is {} with caching={}", import_context.toString(), caching);
         if(caching) { // auth caching is enabled
-    		// check if auth context is already cached.
+            // check if auth context is already cached.
             logger.debug("auth caching is enabled, will query cache pool with id={}", id);
             synchronized(AuthCachePool.getInstance()) {
-        		if(AuthCachePool.getInstance().containsKey(id)) {// already cached
-        			auth_context = AuthCachePool.getInstance().get(id);
-        			logger.debug("auth context for id={} is found as {}", id, auth_context);
-        		}
-	    		else { // not found
-	    			logger.debug("auth context for id={} is not found, will try to login", id);
-					auth_context = authApi.login();
-					if(auth_context != null) // the authentication mechanism is embedded into storage adapter
-					{
-						logger.debug("login is successful, auth context for id={} will be cacahed as {}", id, auth_context);
-						AuthCachePool.getInstance().put(id,  auth_context);
-					}else { // the authentication mechanism is embedded into storage adapter
-						logger.info("no auth context required.");								
-					}
-				}
+                if(AuthCachePool.getInstance().containsKey(id)) {// already cached
+                    auth_context = AuthCachePool.getInstance().get(id);
+                    logger.debug("auth context for id={} is found as {}", id, auth_context);
+                }
+                else { // not found
+                    logger.debug("auth context for id={} is not found, will try to login", id);
+                    auth_context = authApi.login();
+                    if(auth_context != null) // the authentication mechanism is embedded into storage adapter
+                    {
+                        logger.debug("login is successful, auth context for id={} will be cacahed as {}", id, auth_context);
+                        AuthCachePool.getInstance().put(id,  auth_context);
+                    }else { // the authentication mechanism is embedded into storage adapter
+                        logger.info("no auth context required.");
+                    }
+                }
             }
-    	}
-        else 
-			auth_context = authApi.login();
+        }
+        else
+            auth_context = authApi.login();
 
         return auth_context;
     }

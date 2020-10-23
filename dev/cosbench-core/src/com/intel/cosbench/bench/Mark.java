@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.bench;
 
@@ -22,7 +22,7 @@ import com.intel.cosbench.utils.MapRegistry.Item;
 
 /**
  * The class aggregates performance data in one sample interval.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -64,21 +64,21 @@ public class Mark implements Cloneable, Item {
     public void setOpType(String opType) {
         this.opType = opType;
     }
-    
+
     public void setOpName(String opName){
-    	this.opName = opName;
+        this.opName = opName;
     }
-    
+
     public String getOpName(){
-    	return opName;
+        return opName;
     }
-    
+
     public void setOpId(String opId) {
-    	this.opId = opId;
+        this.opId = opId;
     }
-    
+
     public String getOpId() {
-    	return opId;
+        return opId;
     }
 
     public String getSampleType() {
@@ -130,12 +130,12 @@ public class Mark implements Cloneable, Item {
     }
 
     public long getXtSum() {
-		return xtSum;
-	}
+        return xtSum;
+    }
 
     public void setXtSum(long xtSum) {
-		this.xtSum = xtSum;
-	}
+        this.xtSum = xtSum;
+    }
 
     public long getByteCount() {
         return byteCount;
@@ -163,7 +163,7 @@ public class Mark implements Cloneable, Item {
             xtSum += sample.getXferTime();
             byteCount += sample.getBytes();
         }
-        
+
         totalSampleCount += 1;
     }
 
@@ -173,10 +173,10 @@ public class Mark implements Cloneable, Item {
         totalOpCount += 1;
     }
 
-	public static String getMarkType(String opId, String opType,
-			String sampleType, String opName) {
-		return opId + "." + opType + "." + sampleType + "." + opName;
-	}
+    public static String getMarkType(String opId, String opType,
+            String sampleType, String opName) {
+        return opId + "." + opType + "." + sampleType + "." + opName;
+    }
 
     public static Mark newMark(String type) {
         String[] types = type.split("\\.");

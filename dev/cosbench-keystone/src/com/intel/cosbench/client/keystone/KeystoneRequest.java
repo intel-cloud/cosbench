@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.keystone;
 
@@ -28,11 +28,11 @@ import com.intel.cosbench.client.keystone.KeystoneRequest.AuthInfo.Token;
  * This class is specially structured in a way that is compatible with the
  * interface provided by the keystone service. Please refer to the keystone
  * documents for more detailed information. <br />
- * 
+ *
  * <code>
  *   {"auth": ... }
  * </code>
- * 
+ *
  * @author qzheng
  */
 public class KeystoneRequest {
@@ -81,12 +81,12 @@ public class KeystoneRequest {
      * The authentication information holding either the password credentials or
      * the token id. This class is specially structured in a way that is
      * compatible with the interface provided by the keystone service.<br />
-     * 
+     *
      * <code>
      *   {"passwordCredentials": ... , "token": ... ,
      *    "tenantId": "?", "tenantName": "?"}
      * </code>
-     * 
+     *
      * @author qzheng
      */
     public static class AuthInfo {
@@ -136,11 +136,11 @@ public class KeystoneRequest {
          * The credentials comprised of both the username and the password. This
          * class is specially structured in a way that is compatible with the
          * interface provided by the keystone service.<br />
-         * 
+         *
          * <code>
-         *   {"username": "?", "password": "?"} 
+         *   {"username": "?", "password": "?"}
          * </code>
-         * 
+         *
          * @author qzheng
          */
         public static class Credentials {
@@ -174,11 +174,11 @@ public class KeystoneRequest {
          * The token meta data identified by its id. This class is specially
          * structured in a way that is compatible with the interface provided by
          * the keystone service.<br />
-         * 
+         *
          * <code>
-         *   {"id": "?"} 
+         *   {"id": "?"}
          * </code>
-         * 
+         *
          * @author qzheng
          */
         public static class Token {

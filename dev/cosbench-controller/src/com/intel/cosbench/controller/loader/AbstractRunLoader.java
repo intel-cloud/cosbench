@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
  */
 
 package com.intel.cosbench.controller.loader;
@@ -24,31 +24,31 @@ import com.intel.cosbench.model.WorkloadInfo;
 
 /**
  * This class is the base class for exporting run information.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 abstract class AbstractRunLoader implements RunLoader{
 
-	protected BufferedReader reader;
-	
-	public AbstractRunLoader() {
-		/* empty */
-	}
-	
-	@Override
-	public void init(BufferedReader reader) throws IOException{
-		this.reader = reader;
-		readHeader();
-	}
+    protected BufferedReader reader;
 
-	@Override
-	public List<WorkloadInfo> load() throws IOException{
-		return readWorkload();
-	}
-	
-	protected abstract void readHeader() throws IOException;
+    public AbstractRunLoader() {
+        /* empty */
+    }
 
-	protected abstract List<WorkloadInfo> readWorkload() throws IOException;
+    @Override
+    public void init(BufferedReader reader) throws IOException{
+        this.reader = reader;
+        readHeader();
+    }
+
+    @Override
+    public List<WorkloadInfo> load() throws IOException{
+        return readWorkload();
+    }
+
+    protected abstract void readHeader() throws IOException;
+
+    protected abstract List<WorkloadInfo> readWorkload() throws IOException;
 
 }

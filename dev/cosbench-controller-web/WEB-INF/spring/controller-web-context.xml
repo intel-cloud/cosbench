@@ -91,6 +91,11 @@
 		<property name="controller" ref="controller" />
 	</bean>
 
+	<bean id="prometheusController" name="/prometheus"
+		class="com.intel.cosbench.controller.web.PrometheusController">
+		<property name="controller" ref="controller" />
+	</bean>
+
 	<bean id="urlHandler"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 	</bean>

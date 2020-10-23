@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #Copyright 2013 Intel Corporation, All Rights Reserved.
 #
@@ -43,6 +43,8 @@ cp -f 3rd-party-licenses.pdf $1/
 cp -f pkg.lst $1/
 
 
-echo "Build up adaptor example enviornment"
+echo $(date +%Y%m%d) > $1/BUILD.no
+
+echo "Build up adaptor example environment"
 mkdir $1/ext
 cp -f -R ext/* $1/ext

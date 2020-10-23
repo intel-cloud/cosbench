@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.bench;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The class encapsulates the sample counting of response time histogram, the buckets are selected by using 
+ * The class encapsulates the sample counting of response time histogram, the buckets are selected by using
  * 10 milliseconds as interval and 500 seconds as upper limit.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -33,7 +33,7 @@ public class Counter {
 
     /* limit for the response time histogram */
     public final static long RES_MAX = 500 * 1000; // 500 seconds
-    
+
     /* the index of upper limit */
     public final static int UL = (int) (RES_MAX/RES_INT);
 
@@ -56,8 +56,8 @@ public class Counter {
 
     /**
      * The method counts the time to corresponding bucket.
-     * 
-     * @param time	the response time to be counted
+     *
+     * @param time    the response time to be counted
      * @return
      */
     public void doAdd(long time) {

@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.model;
 
@@ -30,9 +30,9 @@ import com.intel.cosbench.model.*;
 /**
  * This class encapsulates behaviors of mission scheduled to current driver, one
  * mission is actually fragment of one workload.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class MissionContext implements MissionInfo {
 
@@ -42,23 +42,31 @@ public class MissionContext implements MissionInfo {
     private StateRegistry stateHistory = new StateRegistry();
     private transient XmlConfig config;
     private transient volatile Future<?> future;
-    
+
     private Mission mission;
     private LogManager logManager;
     private ErrorStatistics errorStatistics;
     private transient OperationPicker operationPicker;
     private transient OperatorRegistry operatorRegistry;
-    
+
     private WorkerRegistry workerRegistry;
 
     /* Report will be available after the mission is accomplished */
     private volatile Report report = null; // will be merged from worker reports
 
     private transient List<MissionListener> listeners = new ArrayList<MissionListener>();
-    
+
     private static final String GENERATE_HISTOGRAM_KEY = "histogram";
     private static final boolean DEFAULT_GENERATE_HISTOGRAM = true;
-    
+
+    public List<Report> getWorkerReports(){
+        List<Report> wReports = new ArrayList<Report>();
+        for(WorkerContext wContext:workerRegistry){
+            wReports.add(wContext.getReport());
+        }
+        return wReports;
+    }
+
     public MissionContext() {
         errorStatistics = new ErrorStatistics();
     }
@@ -99,7 +107,7 @@ public class MissionContext implements MissionInfo {
         for (MissionListener listener : listeners)
             listener.missionStopped(this);
     }
-    
+
     private Report mergeReport() {
         ReportMerger merger = new ReportMerger();
         for (WorkerContext worker : workerRegistry)
@@ -108,11 +116,11 @@ public class MissionContext implements MissionInfo {
         Config missionConfig = KVConfigParser.parse(mission.getConfig());
         boolean histogram = missionConfig.getBoolean(GENERATE_HISTOGRAM_KEY, DEFAULT_GENERATE_HISTOGRAM);
         if(histogram) {
-        	generateHistogram(report);
+            generateHistogram(report);
         }
         return report;
     }
-    
+
     private void generateHistogram(Report report) {
         OperatorRegistry registry = operatorRegistry;
         for (Metrics metrics : report) {
@@ -158,18 +166,16 @@ public class MissionContext implements MissionInfo {
     public void setLogManager(LogManager logManager) {
         this.logManager = logManager;
     }
-    
-    
 
     public ErrorStatistics getErrorStatistics() {
-		return errorStatistics;
-	}
+        return errorStatistics;
+    }
 
-	public void setErrorStatistics(ErrorStatistics errorStatistics) {
-		this.errorStatistics = errorStatistics;
-	}
+    public void setErrorStatistics(ErrorStatistics errorStatistics) {
+        this.errorStatistics = errorStatistics;
+    }
 
-	public OperationPicker getOperationPicker() {
+    public OperationPicker getOperationPicker() {
         return operationPicker;
     }
 
@@ -226,16 +232,16 @@ public class MissionContext implements MissionInfo {
 
     @Override
     public void disposeRuntime() {
-    	if(MissionState.isStopped(state)) {
-	        for (WorkerContext worker : workerRegistry)
-	            worker.disposeRuntime();
-	        config = null;
-	        future = null;
-	        operationPicker = null;
-	        operatorRegistry = null;
-	        listeners = null;
-	        logManager.dispose();
-    	}
+        if(MissionState.isStopped(state)) {
+            for (WorkerContext worker : workerRegistry)
+                worker.disposeRuntime();
+            config = null;
+            future = null;
+            operationPicker = null;
+            operatorRegistry = null;
+            listeners = null;
+            logManager.dispose();
+        }
     }
 
 }

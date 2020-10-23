@@ -1,3 +1,21 @@
+/**
+
+Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+*/
 package com.intel.cosbench.api.cdmiswift;
 
 import static com.intel.cosbench.client.cdmiswift.CdmiSwiftConstants.*;
@@ -18,7 +36,7 @@ public class CDMIStorage extends NoneStorage {
 
     private CdmiSwiftClient client;
     private int timeout;
-    
+
     private String rootPath;
     private String storageUrl;
 
@@ -26,36 +44,36 @@ public class CDMIStorage extends NoneStorage {
     public void init(Config config, Logger logger) {
         super.init(config, logger);
         initParms(config);
-        
+
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
         client = new CdmiSwiftClient(httpClient);
     }
 
     private void initParms(Config config) {
-    	rootPath = config.get(ROOT_PATH_KEY, ROOT_PATH_DEFAULT);
-    	storageUrl = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
+        rootPath = config.get(ROOT_PATH_KEY, ROOT_PATH_DEFAULT);
+        storageUrl = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
         timeout = config.getInt(TIMEOUT_KEY, TIMEOUT_DEFAULT);
-        
+
         parms.put(ROOT_PATH_KEY, rootPath);
         parms.put(STORAGE_URL_KEY, storageUrl);
-    	parms.put(TIMEOUT_KEY, timeout);
+        parms.put(TIMEOUT_KEY, timeout);
     }
-    
+
 //    @Override
 //    public void setAuthContext(AuthContext info) {
 //        super.setAuthContext(info);
 //        try {
-//        	String authToken = info.getStr(AUTH_TOKEN_KEY);
+//            String authToken = info.getStr(AUTH_TOKEN_KEY);
 //            String tempUrl = info.getStr(STORAGE_URL_KEY);
 //            String parts[] = tempUrl.split("/");
 //            if(parts.length > 2)
 //            {
-//	            parts[parts.length-2] = nsroot;
-//	            tempUrl = "";
-//	            for(int i=0; i<parts.length; i++)
-//	            	tempUrl += parts[i] + "/";
+//                parts[parts.length-2] = nsroot;
+//                tempUrl = "";
+//                for(int i=0; i<parts.length; i++)
+//                    tempUrl += parts[i] + "/";
 //            }
-//            
+//
 //            logger.debug("auth token=" + authToken + ", storage url=" + tempUrl);
 //            client.init(authToken, tempUrl);
 //        } catch (Exception e) {
@@ -67,9 +85,9 @@ public class CDMIStorage extends NoneStorage {
     public void setAuthContext(AuthContext info) {
         super.setAuthContext(info);
         try {
-        	String authToken = info.getStr(AUTH_TOKEN_KEY);
+            String authToken = info.getStr(AUTH_TOKEN_KEY);
             String storageUrl = info.getStr(STORAGE_URL_KEY);
-            
+
             logger.debug("auth token=" + authToken + ", storage url=" + storageUrl);
             client.init(authToken, storageUrl);
         } catch (Exception e) {

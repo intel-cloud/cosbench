@@ -32,7 +32,7 @@ OSGI_CONFIG=conf/.$SERVICE_NAME
 TOMCAT_CONFIG=conf/$SERVICE_NAME-tomcat-server.xml
 
 TOOL="nc"
-TOOL_PARAMS="-i 0"
+TOOL_PARAMS=""
 
 #-------------------------------
 # MAIN
@@ -43,7 +43,7 @@ mkdir -p log
 
 echo "Launching osgi framwork ... "
 
-/usr/bin/nohup java -Dcosbench.tomcat.config=$TOMCAT_CONFIG -server -cp main/* org.eclipse.equinox.launcher.Main -configuration $OSGI_CONFIG -console $OSGI_CONSOLE_PORT 1> $BOOT_LOG 2>&1 &
+/usr/bin/nohup java -XX:-OmitStackTraceInFastThrow -Dcosbench.tomcat.config=$TOMCAT_CONFIG -server -cp main/* org.eclipse.equinox.launcher.Main -configuration $OSGI_CONFIG -console $OSGI_CONSOLE_PORT 1> $BOOT_LOG 2>&1 &
 
 if [ $? -ne 0 ];
 then
@@ -80,7 +80,7 @@ do
         attempts=60
         while [ $ready -ne 1 ];
         do
-                echo "ss -s ACTIVE cosbench" | $TOOL $TOOL_PARAMS 0.0.0.0 $OSGI_CONSOLE_PORT | grep $module >> /dev/null
+                echo -e "ss -s ACTIVE cosbench\ndisconnect\n" | $TOOL $TOOL_PARAMS 0.0.0.0 $OSGI_CONSOLE_PORT | grep $module >> /dev/null
                 if [ $? -ne 0 ];
                 then
                         attempts=`expr $attempts - 1`

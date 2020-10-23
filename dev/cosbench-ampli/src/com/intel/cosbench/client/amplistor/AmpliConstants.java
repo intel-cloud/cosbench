@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.amplistor;
 
@@ -25,18 +25,18 @@ public interface AmpliConstants {
 
     String TIMEOUT_KEY = "timeout";
     Integer TIMEOUT_DEFAULT = 30000;
-    
+
     String HOST_KEY = "host";
     String HOST_DEFAULT = "127.0.0.1";
-    
+
     String PORT_KEY = "port";
     int PORT_DEFAULT = 8080;
-    
+
     String NSROOT_KEY = "nsroot";
     String NSROOT_DEFAULT = "/namespace";
-    
+
     String POLICY_KEY = "policy";
     String POLICY_DEFAULT = "";
 
-    
+
 }

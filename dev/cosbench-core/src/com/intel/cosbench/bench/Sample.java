@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.bench;
 
@@ -21,7 +21,7 @@ import java.util.Date;
 
 /**
  * This class encapsulates the performance sample of one operation.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -39,36 +39,36 @@ public class Sample {
     private long xferTime; /* transfer time */
     private long bytes; /* bytes transferred */
 
-	public Sample(Date timestamp, String opId, String opType,
-			String sampleType, String opName, boolean succ) {
-		this(timestamp, opId, opType, sampleType, opName, succ, 0L, 0L, 0L);
+    public Sample(Date timestamp, String opId, String opType,
+            String sampleType, String opName, boolean succ) {
+        this(timestamp, opId, opType, sampleType, opName, succ, 0L, 0L, 0L);
     }
 
-	public Sample(Date timestamp, String opId, String opType,
-			String sampleType, String opName, boolean succ, long time, long xferTime,
-			long bytes) {
-		this.timestamp = timestamp;
-		this.succ = succ;
-		this.time = time;
-		this.xferTime = xferTime;
-		this.bytes = bytes;
-		this.opType = opType;
-		this.sampleType = sampleType;
-		this.opName = opName;
-		this.opId = opId;
-	}
+    public Sample(Date timestamp, String opId, String opType,
+            String sampleType, String opName, boolean succ, long time, long xferTime,
+            long bytes) {
+        this.timestamp = timestamp;
+        this.succ = succ;
+        this.time = time;
+        this.xferTime = xferTime;
+        this.bytes = bytes;
+        this.opType = opType;
+        this.sampleType = sampleType;
+        this.opName = opName;
+        this.opId = opId;
+    }
 
     public Date getTimestamp() {
         return timestamp;
     }
-    
-	public String getOpName() {
-		return opName;
-	}
 
-	public String getOpId() {
-		return opId;
-	}
+    public String getOpName() {
+        return opName;
+    }
+
+    public String getOpId() {
+        return opId;
+    }
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
@@ -107,12 +107,12 @@ public class Sample {
     }
 
     public long getXferTime() {
-		return xferTime;
-	}
+        return xferTime;
+    }
 
     public void setXferTime(long xferTime) {
-		this.xferTime = xferTime;
-	}
+        this.xferTime = xferTime;
+    }
 
     public long getBytes() {
         return bytes;

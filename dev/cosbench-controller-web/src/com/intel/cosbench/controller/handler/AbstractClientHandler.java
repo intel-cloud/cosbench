@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.handler;
 
@@ -67,9 +67,9 @@ abstract class AbstractClientHandler implements Controller {
         } catch (ConfigException ce) {
             message = ce.getMessage();
         } catch(FileNotFoundException fnfe) {
-        	message = fnfe.getMessage();
+            message = fnfe.getMessage();
         } catch(IOException ie) {
-        	message = ie.getMessage();
+            message = ie.getMessage();
         } catch (Exception e) {
             StringWriter writer = new StringWriter();
             e.printStackTrace(new PrintWriter(writer));

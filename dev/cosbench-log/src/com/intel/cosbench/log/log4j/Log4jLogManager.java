@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.log.log4j;
 
@@ -32,9 +32,9 @@ import com.intel.cosbench.log.Logger;
  * The wrapper of log4j LogManager; this log manager will create log file with
  * maximum size of 10 MB, and the maximum number of backup file is 10. The
  * default log level is INFO.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class Log4jLogManager implements LogManager {
 

@@ -45,6 +45,7 @@ a:visited {
 	background: transparent url('bg-header.png') repeat-x left top;
 	height: 65px;
 	position: fixed;
+	z-index: 2;
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -373,3 +374,15 @@ a:visited {
 	{
 	background-color: #18A9FF;
 }
+/* ---------------------------------------
+ * chart Styles
+ * --------------------------------------- */
+    .chart{
+      height: 400px;
+      width: 510px;
+      display: block;
+      float: left;
+      margin-left: 10px;
+      margin-top: 10px;
+      /*border: solid 1px #ccc;*/
+  }

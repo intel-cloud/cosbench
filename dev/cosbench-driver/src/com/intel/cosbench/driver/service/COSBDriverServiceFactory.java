@@ -1,6 +1,7 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,14 +13,17 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.service;
 
 import static org.apache.commons.lang.SystemUtils.IS_OS_WINDOWS;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import com.intel.cosbench.api.auth.AuthAPIService;
 import com.intel.cosbench.api.storage.StorageAPIService;
@@ -86,8 +90,35 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         DriverContext context = new DriverContext();
         context.setName(loadDriverName());
         context.setUrl(loadDriverUrl());
+        context.setVersion(getVersion());
+        context.setMission_dir(loadMissionDir());
         return context;
     }
+
+    private String getVersion() {
+          // TODO Auto-generated method stub
+          String str = getName("VERSION");
+          String str2 = getName("BUILD.no");
+          return str+"."+str2;
+      }
+
+    private String getName(String fileName){
+          String str = null ;
+        File myFile=new File(fileName);
+        if(!myFile.exists()){
+            System.err.println("Can't Find " + fileName);
+        }
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(myFile));
+            str = in.readLine();
+            in.close();
+         }
+         catch (IOException e) {
+            e.getStackTrace();
+         }
+        return str;
+    }
+
 
     protected String loadLogLevel() {
         return config.get("driver.log_level", "INFO");
@@ -105,4 +136,7 @@ public class COSBDriverServiceFactory extends AbstractServiceFactory implements
         return config.get("driver.url", "N/A");
     }
 
+    private String loadMissionDir() {
+        return config.get("driver.mission_dir", "log/mission");
+    }
 }

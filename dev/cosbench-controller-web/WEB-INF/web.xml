@@ -35,6 +35,10 @@
 		<servlet-name>main</servlet-name>
 		<url-pattern>*.csv</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>/prometheus</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>client</servlet-name>
@@ -73,6 +77,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>resource</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>resource</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
 
@@ -100,6 +108,10 @@
 	<mime-mapping>
 		<extension>css</extension>
 		<mime-type>text/css</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>js</extension>
+		<mime-type>text/javascript</mime-type>
 	</mime-mapping>
 	<mime-mapping>
 		<extension>png</extension>

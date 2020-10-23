@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.tomcat;
 
@@ -30,9 +30,9 @@ import com.intel.cosbench.log.*;
 
 /**
  * The class encapsulates tomcat configuration loading and catalina starting up.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class TomcatLoader extends Catalina {
 
@@ -62,7 +62,7 @@ public class TomcatLoader extends Catalina {
      * folder, 4. predefined default configuration file: - on unix like
      * environment, it's "/etc/cosbench/tomcat-server.xml" - on windows
      * environment, it's "c:\\tomcat-server.xml"
-     * 
+     *
      * @return the path to tomcat configuration file
      */
     private static String getServerConfig() {
@@ -81,7 +81,7 @@ public class TomcatLoader extends Catalina {
      * <p>
      * This method will start up tomcat service, and show listening port
      * information on console.
-     * 
+     *
      */
     @Override
     public void start() {
