@@ -106,7 +106,7 @@ public class S3Storage extends NoneStorage {
     public void createContainer(String container, Config config) {
         super.createContainer(container, config);
         try {
-        	if(!client.doesBucketExist(container)) {
+        	if(!client.doesBucketExistV2(container)) {
 	        	
 	            client.createBucket(container);
         	}
@@ -134,7 +134,7 @@ public class S3Storage extends NoneStorage {
     public void deleteContainer(String container, Config config) {
         super.deleteContainer(container, config);
         try {
-        	if(client.doesBucketExist(container)) {
+        	if(client.doesBucketExistV2(container)) {
         		client.deleteBucket(container);
         	}
         } catch(AmazonS3Exception awse) {
