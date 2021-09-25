@@ -48,7 +48,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 /**
  * This class encapsulates basic HTTP client related functions which are
