@@ -13,229 +13,128 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
+@author osmboy (lei.lei@ostorage.com.cn)
 */ 
 
 package com.intel.cosbench.client.keystone;
 
 import java.util.List;
 
-/**
- * <code>
- *  { "access": ... }
- * </code>
- */
+
 public class KeystoneResponse {
 
-    private AccessInfo access;
+    private TokenInfo token;
 
-    public AccessInfo getAccess() {
-        return access;
+    public TokenInfo getToken() {
+        return token;
     }
 
-    public void setAccess(AccessInfo access) {
-        this.access = access;
+    public void setToken(TokenInfo token) {
+        this.token = token;
     }
 
-    // --------------------------------------------------------------------------
-    // AccessInfo
-    // --------------------------------------------------------------------------
+    public static class TokenInfo {
 
-    /**
-     * <code>
-     *   { "user": ... , "token": ... , "serviceCatalog": [ ... ] }
-     * </code>
-     */
-    public static class AccessInfo {
-
+        private String id;
+        private String name;
         private User user;
-        private Token token;
-        private List<ServiceInfo> serviceCatalog;
+        private List<ServiceInfo> catalog;
+        
+	public String getId() {
+	    return id;
+	}
+	public void setId(String id) {
+	    this.id = id;
+	}
+	public String getName() {
+	    return name;
+	}
+	public void setName(String name) {
+	    this.name = name;
+	}
+	public List<ServiceInfo> getCatalog() {
+	    return catalog;
+	}
+	public void setCatalog(List<ServiceInfo> catalog) {
+	    this.catalog = catalog;
+	}
+	public User getUser() {
+	    return user;
+	}
+	public void setUser(User user) {
+	    this.user = user;
+	}
 
-        public User getUser() {
-            return user;
+
+    }
+   
+    public static class User {
+        private String id;
+        private String name;
+        public String getId() {
+	    return id;
+	}
+	public void setId(String id) {
+	    this.id = id;
+	}
+	public String getName() {
+	    return name;
+	}
+	public void setName(String name) {
+	    this.name = name;
+	}
+			
+    }
+        
+    public static class ServiceInfo {
+
+        private String name;
+        private String type;
+        private List<Endpoint> endpoints;
+
+        public String getName() {
+            return name;
         }
 
-        public void setUser(User user) {
-            this.user = user;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public Token getToken() {
-            return token;
+        public String getType() {
+            return type;
         }
 
-        public void setToken(Token token) {
-            this.token = token;
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public List<ServiceInfo> getServiceCatalog() {
-            return serviceCatalog;
+        public List<Endpoint> getEndpoints() {
+            return endpoints;
         }
 
-        public void setServiceCatalog(List<ServiceInfo> serviceCatalog) {
-            this.serviceCatalog = serviceCatalog;
+        public void setEndpoints(List<Endpoint> endpoints) {
+            this.endpoints = endpoints;
         }
+            
+        public static class Endpoint {
+            private String url;
+            private String region;
+	    public String getUrl() {
+		return url;
+	    }
+	    public void setUrl(String url) {
+		this.url = url;
+	    }
+	    public String getRegion() {
+	        return region;
+	    }
+	    public void setRegion(String region) {
+		this.region = region;
+	    }       	
 
-        // ----------------------------------------------------------------------
-        // AccessInfo.User
-        // ----------------------------------------------------------------------
-
-        /**
-         * <code>
-         *   { "id": "?", "name": "?" }
-         * </code>
-         */
-        public static class User {
-
-            private String id;
-            private String name;
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-        }
-
-        // ----------------------------------------------------------------------
-        // AccessInfo.Token
-        // ----------------------------------------------------------------------
-
-        /**
-         * <code>
-         *   { "id": "?", "expires": "?" }
-         * </code>
-         */
-        public static class Token {
-
-            private String id;
-            private String expires;
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getExpires() {
-                return expires;
-            }
-
-            public void setExpires(String expires) {
-                this.expires = expires;
-            }
-
-        }
-
-        // ----------------------------------------------------------------------
-        // AccessInfo.ServiceInfo
-        // ----------------------------------------------------------------------
-
-        /**
-         * <code>
-         *   {"name": "?", "type": "?", "endpoints": [ ... ] }
-         * </code>
-         */
-        public static class ServiceInfo {
-
-            private String name;
-            private String type;
-            private List<Endpoint> endpoints;
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public List<Endpoint> getEndpoints() {
-                return endpoints;
-            }
-
-            public void setEndpoints(List<Endpoint> endpoints) {
-                this.endpoints = endpoints;
-            }
-
-            // ------------------------------------------------------------------
-            // AccessInfo.ServiceInfo.Endpoint
-            // ------------------------------------------------------------------
-
-            /**
-             * <code>
-             * { "adminURL": "?", "internalURL": "?", "publicURL": "?" }
-             * </code>
-             */
-            public static class Endpoint {
-
-                private String adminURL;
-                private String internalURL;
-                private String publicURL;
-                private String region;
-
-                public String getAdminURL() {
-                    return adminURL;
-                }
-
-                public void setAdminURL(String adminURL) {
-                    this.adminURL = adminURL;
-                }
-
-                public String getInternalURL() {
-                    return internalURL;
-                }
-
-                public void setInternalURL(String internalURL) {
-                    this.internalURL = internalURL;
-                }
-
-                public String getPublicURL() {
-                    return publicURL;
-                }
-
-                public void setPublicURL(String publicURL) {
-                    this.publicURL = publicURL;
-                }
-
-				public String getRegion() {
-					return region;
-				}
-
-				public void setRegion(String region) {
-					this.region = region;
-				}
                 
-                
-
-            }
-
         }
 
     }
-
-    // --------------------------------------------------------------------------
-    // End
-    // --------------------------------------------------------------------------
 
 }

@@ -32,7 +32,7 @@ import com.intel.cosbench.log.Logger;
  * This class encapsulates an Openstack Keystone implementation for the
  * Auth-API.
  * 
- * @author ywang19, qzheng7
+ * @author ywang19, qzheng7, osmboy
  * 
  */
 class KeystoneAuth extends NoneAuth {
@@ -43,22 +43,17 @@ class KeystoneAuth extends NoneAuth {
     private String url;
     private String username;
     private String password;
-    private String userToken;
 
     /* tenant info */
-    private String tenantId;
     private String tenantName;
-    
-    /*keystone region*/
-    private String region;
 
+    /* domain info */
+    private String domain;
     /* service info */
     private String service;
 
     /* connection setting */
     private int timeout;
-    
-    Logger logger = null;
 
     public KeystoneAuth() {
         /* empty */
@@ -67,33 +62,28 @@ class KeystoneAuth extends NoneAuth {
     @Override
     public void init(Config config, Logger logger) {
         super.init(config, logger);
-        this.logger = logger;
+
         url = config.get(AUTH_URL_KEY, config.get(AUTH_URL_ALTKEY, URL_DEFAULT));
         username = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         password = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
-        userToken = config.get(AUTH_USERTOKEN_KEY, AUTH_USERTOKEN_DEFAULT);
-        tenantId = config.get(AUTH_TENANT_ID_KEY, AUTH_TENANT_ID_DEFAULT);
         tenantName = config.get(AUTH_TENANT_NAME_KEY, config.get(AUTH_TENANT_NAME_ALTKEY, AUTH_TENANT_NAME_DEFAULT));
+        domain = config.get(AUTH_DOMAIN_KEY, AUTH_DOMAIN_DEFAULT);
         service = config.get(AUTH_SERVICE_KEY, AUTH_SERVICE_DEFAULT);
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
-        region = config.get(AUTH_REGION_KEY, AUTH_REGION_DEFAULT);
 
         parms.put(AUTH_URL_KEY, url);
         parms.put(AUTH_USERNAME_KEY, username);
         parms.put(AUTH_PASSWORD_KEY, password);
-        parms.put(AUTH_USERTOKEN_KEY, userToken);
-        parms.put(AUTH_TENANT_ID_KEY, tenantId);
+        parms.put(AUTH_DOMAIN_KEY, domain);
         parms.put(AUTH_TENANT_NAME_KEY, tenantName);
         parms.put(AUTH_SERVICE_KEY, service);
         parms.put(CONN_TIMEOUT_KEY, timeout);
-        parms.put(AUTH_REGION_KEY, AUTH_REGION_DEFAULT);
-        
 
         logger.debug("using auth config: {}", parms);
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
-        client = new KeystoneClient(logger, httpClient, url, username, password,
-                tenantName, timeout);
+        client = new KeystoneClient(httpClient, url, username, password,
+                tenantName, domain, timeout);
         logger.debug("keystone client has been initialized");
     }
 
@@ -125,7 +115,7 @@ class KeystoneAuth extends NoneAuth {
 //        context.put(AUTH_TOKEN_KEY, client.getKeystoneTokenId());
 //        context.put(STORAGE_URL_KEY, client.getServiceUrl(service));
 //        return context;
-        KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service,region));
+        KeystoneAuthContext context = new KeystoneAuthContext(url, username, password, service, client.getKeystoneTokenId(), client.getServiceUrl(service));
         
         return context;
     }
