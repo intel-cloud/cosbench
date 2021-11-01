@@ -24,7 +24,7 @@ public interface KeystoneConstants {
     // --------------------------------------------------------------------------
     String AUTH_URL_KEY = "auth_url";
     String AUTH_URL_ALTKEY = "url";
-    String URL_DEFAULT = "http://127.0.0.1:5000/v2.0";
+    String URL_DEFAULT = "http://127.0.0.1:5000/v3";
 
     // --------------------------------------------------------------------------
     // CONNECTION
@@ -46,20 +46,14 @@ public interface KeystoneConstants {
 
     String AUTH_PASSWORD_KEY = "password";
     String AUTH_PASSWORD_DEFAULT = "";
-
-    String AUTH_USERTOKEN_KEY = "usertoken";
-    String AUTH_USERTOKEN_DEFAULT = "";
-
-    String AUTH_TENANT_ID_KEY = "tenant_id";
-    String AUTH_TENANT_ID_DEFAULT = "";
-
+    
+    String AUTH_DOMAIN_KEY = "domain";
+    String AUTH_DOMAIN_DEFAULT = "";
+    
     String AUTH_TENANT_NAME_KEY = "tenant_name";
     String AUTH_TENANT_NAME_ALTKEY = "tenname";
     String AUTH_TENANT_NAME_DEFAULT = "";
 
     String AUTH_SERVICE_KEY = "service";
     String AUTH_SERVICE_DEFAULT = "swift";
-    
-    String AUTH_REGION_KEY = "region";
-    String AUTH_REGION_DEFAULT = "regionOne";
 }
