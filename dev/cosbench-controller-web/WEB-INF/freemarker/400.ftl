@@ -6,13 +6,13 @@
   <title>400 Bad Request</title>
 </head>
 <body>
-<#include "header.ftl">
+<#include "head.ftl">
 <div id="main">
 <div class="top"><br /></div>
 <div class="content">
 <h2>400 Bad Request</h2>
 <p><span class="error"><strong>Note</strong>: The request you just issued cannot be processed!</span></p>
-<p><a href="index.html">go back to index</a></p>
+<p><a href="index.html">Go back to index</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->

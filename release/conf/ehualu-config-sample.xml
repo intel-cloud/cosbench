@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="ess-sample" description="sample benchmark for ehualu s3">
+  
+
+  <!-- New feature to ess and essv2 -->
+  <workflow>
+	<!-- mprepare, multipart upload object -->
+	<workstage name="mprepare example">
+	  <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
+      <work type="mprepare" workers="1" config="cprefix=s3testqwer;containers=r(1,2);objects=r(1,10);sizes=c(64)KB" />
+    </workstage>
+	<!-- end -->
+	
+	<!-- mwrite, multipart upload object -->
+    <workstage name="mwrite example">
+      <work name="mwrite test" workers="8" runtime="30">
+	    <!-- part_size: default is 5MiB, must be set >= 5MiB -->
+	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;part_size=5242880" />
+        <operation type="mwrite" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- restore, restore object -->
+	<workstage name="restore object example">
+      <work name="restore test" workers="8" runtime="30">
+	    <!-- restore_days: default is 1 -->
+	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;restore_days=1" />
+        <operation type="restore" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- storage_class, default is STANDARD -->
+	<workstage name="set object's storage_class">
+      <work name="storage class test" workers="8" runtime="30">
+	  <!-- storage_class must exist in your storage -->
+	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;storage_class=GLACIER" />
+		<!-- write, mwrite -->
+        <operation type="write" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- no_verify_ssl, default is false -->
+	<workstage name="disable verify ssl example">
+      <work name="https test" workers="8" runtime="30">
+	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;no_verify_ssl=true" />
+		<!-- write, read, etc. -->
+        <operation type="head" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	
+	<!-- GiB, MiB, KiB, etc. 2^n, not 10^n -->
+	<workstage name="set ">
+      <work name="object size test" workers="8" runtime="30">
+	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;no_verify_ssl=true" />
+		<!-- write, mwrite, both ok. -->
+        <operation type="write" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KiB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	
+	<!-- aws_region: just for essv2 -->
+	<workstage name="set ">
+      <work name="https test" workers="8" runtime="30">
+	    <!-- aws_region: default is us-east-1. Normally, there is no need to set this parameter. -->
+	    <storage type="essv2" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;aws_region=us-east-1" />
+		<!-- write, read, etc. -->
+        <operation type="head" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KiB" />
+      </work>
+    </workstage>
+	<!-- end -->
+
+  </workflow>
+  
+  
+  <!-- Same to s3, storage type: ess or s3, both ok. -->
+  <!--
+  <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
+  
+  <workflow>
+
+    <workstage name="init">
+      <work type="init" workers="1" config="cprefix=s3testqwer;containers=r(1,2)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="1" config="cprefix=s3testqwer;containers=r(1,2);objects=r(1,10);sizes=c(64)KB" />
+    </workstage>
+	
+    <workstage name="main">
+      <work name="main" workers="8" runtime="30">
+        <operation type="read" ratio="80" config="cprefix=s3testqwer;containers=u(1,2);objects=u(1,10)" />
+        <operation type="write" ratio="20" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup">
+      <work type="cleanup" workers="1" config="cprefix=s3testqwer;containers=r(1,2);objects=r(1,20)" />
+    </workstage>
+
+    <workstage name="dispose">
+      <work type="dispose" workers="1" config="cprefix=s3testqwer;containers=r(1,2)" />
+    </workstage>
+
+  </workflow>
+  -->
+  
+
+</workload>

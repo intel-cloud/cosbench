@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.agent;
 
@@ -23,9 +23,9 @@ import com.intel.cosbench.bench.ErrorStatistics;
 
 import java.util.*;
 
-import javax.naming.AuthenticationException;
+//import javax.naming.AuthenticationException;
 
-import com.intel.cosbench.api.auth.AuthBadException;
+//import com.intel.cosbench.api.auth.AuthBadException;
 import com.intel.cosbench.api.auth.AuthException;
 import com.intel.cosbench.api.context.AuthContext;
 import com.intel.cosbench.api.storage.StorageAPI;
@@ -78,7 +78,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     public void setWorkerContext(WorkerContext workerContext) {
         super.setWorkerContext(workerContext);
         this.has_histo = workerContext.getMission().hasHisto();
-        
+
         dog.setWorkerContext(workerContext);
     }
 
@@ -114,9 +114,9 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     public Logger getLogger() {
         return workerContext.getLogger();
     }
-    
+
     public ErrorStatistics getErrorStatistics(){
-    	return workerContext.getErrorStatistics();
+        return workerContext.getErrorStatistics();
     }
 
     @Override
@@ -175,36 +175,36 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         while (!workerContext.isFinished())
             try {
                 performOperation();
-			}catch (AbortedException ae) {
+            }catch (AbortedException ae) {
                 if (lrsample > frsample)
                     doSummary();
                 workerContext.setFinished(true);
             }
         doSnapshot();
     }
-        
+
 
     private void performOperation() {
-    	if(workerContext.getAuthApi() == null || workerContext.getStorageApi() == null) 
-    		throw new AbortedException();
-    	if(! workerContext.getStorageApi().isAuthValid())
-    		reLogin();
+        if(workerContext.getAuthApi() == null || workerContext.getStorageApi() == null)
+            throw new AbortedException();
+        if(! workerContext.getStorageApi().isAuthValid())
+            reLogin();
         lbegin = System.currentTimeMillis();
         Random random = workerContext.getRandom();
         String op = operationPicker.pickOperation(random);
         OperatorContext context = operatorRegistry.getOperator(op);
         try{
-        	context.getOperator().operate(this);
+            context.getOperator().operate(this);
         }catch(AuthException ae) {
-        	reLogin();
+            reLogin();
         }
     }
-    
+
     @Override
     public void onSampleCreated(Sample sample) {
         curr = sample.getTimestamp().getTime();
-		String type = getMarkType(sample.getOpId(), sample.getOpType(),
-				sample.getSampleType(), sample.getOpName());
+        String type = getMarkType(sample.getOpId(), sample.getOpType(),
+                sample.getSampleType(), sample.getOpName());
         currMarks.getMark(type).addSample(sample);
         if (lbegin >= begin && lbegin < end && curr > begin && curr <= end) {
             globalMarks.getMark(type).addSample(sample);
@@ -240,8 +240,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     public void onOperationCompleted(Result result) {
         curr = result.getTimestamp().getTime();
 /* */
-		String type = getMarkType(result.getOpId(), result.getOpType(),
-				result.getSampleType(), result.getOpName());
+        String type = getMarkType(result.getOpId(), result.getOpType(),
+                result.getSampleType(), result.getOpName());
         currMarks.getMark(type).addOperation(result);
         if (lop >= begin && lop < end && curr > begin && curr <= end)
             globalMarks.getMark(type).addOperation(result);
@@ -256,7 +256,7 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
                 && (totalBytes <= 0 || getTotalBytes() < totalBytes)) // bytes
             return; // not finished
         doSummary();
-        
+
         workerContext.setFinished(true);
     }
 
@@ -271,8 +271,8 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
     }
 
     private int getTotalOps() {
-//    	return ++op_count;
-    	
+//        return ++op_count;
+
         int sum = 0;
         for (Mark mark : globalMarks)
             sum += mark.getTotalOpCount();
@@ -286,24 +286,24 @@ class WorkAgent extends AbstractAgent implements Session, OperationListener {
         return bytes;
     }
     public void reLogin() {
-    	LOGGER.debug("WorkAgent {} auth failed, now relogin",workerContext.getIndex());
-		AuthContext authContext = workerContext.getStorageApi().getAuthContext();
-		synchronized (AuthCachePool.getInstance()) {
-			AuthCachePool.getInstance().remove(authContext.getID());
-		}
-    	try{
-    		workerContext.getAuthApi().init();
-    		authContext = workerContext.getAuthApi().login();
-    		workerContext.getStorageApi().setAuthContext(authContext);
-    		synchronized (AuthCachePool.getInstance()) {
-				AuthCachePool.getInstance().put(authContext.getID(), authContext);
-			}
-    		LOGGER.debug("WorkAgent {} relogin successfully",workerContext.getIndex());
-    	}catch(AuthException ae) {
-    		workerContext.getAuthApi().dispose();
-    		LOGGER.error("agent "+workerContext.getIndex()+" failed to login",ae);
-    		throw new AgentException();
-    	}	
+        LOGGER.debug("WorkAgent {} auth failed, now relogin",workerContext.getIndex());
+        AuthContext authContext = workerContext.getStorageApi().getAuthContext();
+        synchronized (AuthCachePool.getInstance()) {
+            AuthCachePool.getInstance().remove(authContext.getID());
+        }
+        try{
+            workerContext.getAuthApi().init();
+            authContext = workerContext.getAuthApi().login();
+            workerContext.getStorageApi().setAuthContext(authContext);
+            synchronized (AuthCachePool.getInstance()) {
+                AuthCachePool.getInstance().put(authContext.getID(), authContext);
+            }
+            LOGGER.debug("WorkAgent {} relogin successfully",workerContext.getIndex());
+        }catch(AuthException ae) {
+            workerContext.getAuthApi().dispose();
+            LOGGER.error("agent "+workerContext.getIndex()+" failed to login",ae);
+            throw new AgentException();
+        }
     }
 
 }

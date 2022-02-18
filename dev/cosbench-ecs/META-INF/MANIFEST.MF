@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: cosbench-ecs
 Bundle-SymbolicName: cosbench-ecs
-Bundle-Version: 0.4.2.0
+Bundle-Version: 0.4.7.6
 Bundle-Vendor: emc
 Import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,
@@ -26,3 +26,4 @@ Bundle-ClassPath: .,
  slf4j-api-1.7.5.jar,
  smart-client-2.0.6.jar,
  vipr-object-transformations-2.0.3.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

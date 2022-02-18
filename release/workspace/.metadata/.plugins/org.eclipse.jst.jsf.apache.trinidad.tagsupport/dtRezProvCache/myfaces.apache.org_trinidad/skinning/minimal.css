@@ -1,0 +1,243 @@
+/* This CSS file generated on Thu Apr 02 15:47:44 PDT 2009 */
+.AFInstructionText,.AFFieldText,.af_outputText,.af_outputFormatted,.af_outputDocument,.af_inputChoice_content,.af_inputChoice_content-input,.af_inputText_content,.af_inputNumberSpinbox_content,.af_inputColor_content,.af_inputDate_content,.af_inputListOfValues_content,.af_selectManyCheckbox_content,.af_selectManyListbox_content,.af_selectOneChoice_content,.af_selectOneListbox_content,.af_selectOneRadio_content,.af_inputText.AFFieldTextMarker .af_inputText_content,.af_inputText.p_AFDisabled.AFFieldTextMarker .af_inputText_content,.af_inputText.AFFieldTextLTRMarker .af_inputText_content,.af_inputText.AFPhoneFieldTextMarker .af_inputText_content,.af_inputText.AFPostalCodeFieldTextMarker .af_inputText_content,.af_inputText.AFAddressFieldTextMarker .af_inputText_content,.af_inputChoice.AFFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.p_AFDisabled.AFFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.AFFieldTextLTRMarker .af_inputChoice_content-input,.af_inputChoice.AFPhoneFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.AFPostalCodeFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.AFAddressFieldTextMarker .af_inputChoice_content-input,.af_inputNumberSpinbox.AFFieldTextMarker .af_inputNumberSpinbox_content,.af_inputNumberSpinbox.p_AFDisabled.AFFieldTextMarker .af_inputNumberSpinbox_content,.af_inputNumberSpinbox.AFFieldTextLTRMarker .af_inputNumberSpinbox_content,.AFFieldTextLTR,.AFPhoneFieldText,.AFPostalCodeFieldText,.AFAddressFieldText,.PortletText1,.PortletText2,.PortletText3,.PortletText4,.portlet-form-input-field,.portlet-form-field {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000}
+.AFInstructionTextDisabled,.AFFieldTextDisabled,.af_inputText.p_AFDisabled.AFFieldTextLTRMarker .af_inputText_content,.af_inputText.p_AFDisabled.AFPhoneFieldTextMarker .af_inputText_content,.af_inputText.p_AFDisabled.AFPostalCodeFieldTextMarker .af_inputText_content,.af_inputText.p_AFDisabled.AFAddressFieldTextMarker .af_inputText_content,.af_inputChoice.p_AFDisabled.AFFieldTextLTRMarker .af_inputChoice_content-input,.af_inputChoice.p_AFDisabled.AFPhoneFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.p_AFDisabled.AFPostalCodeFieldTextMarker .af_inputChoice_content-input,.af_inputChoice.p_AFDisabled.AFAddressFieldTextMarker .af_inputChoice_content-input,.af_inputNumberSpinbox.p_AFDisabled.AFFieldTextLTRMarker .af_inputNumberSpinbox_content,.p_InContextBrandingText,.AFFieldTextLTRDisabled,.AFPhoneFieldTextDisabled,.AFPostalCodeFieldTextDisabled,.AFAddressFieldTextDisabled,.OraHGridNavRowInactiveLink,.OraNavBarInactiveLink,.portlet-font-dim {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#999999}
+.AFDataText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#000000}
+.AFDataTextDisabled {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#999999}
+.AFDataNumber {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#000000;text-align:right}
+.AFDataNumberDisabled {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#999999;text-align:right}
+.AFFieldNumber,.af_inputText.AFFieldNumberMarker .af_inputText_content,.af_inputChoice.AFFieldNumberMarker .af_inputChoice_content-input,.af_inputNumberSpinbox.AFFieldNumberMarker .af_inputNumberSpinbox_content {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;text-align:right;color:#000000}
+.AFFieldNumberDisabled,.af_inputText.p_AFDisabled.AFFieldNumberMarker .af_inputText_content,.af_inputChoice.p_AFDisabled.AFFieldNumberMarker .af_inputChoice_content-input,.af_inputNumberSpinbox.p_AFDisabled.AFFieldNumberMarker .af_inputNumberSpinbox_content {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;text-align:right;color:#999999}
+.AFLabelText,.af_outputLabel,.af_inputChoice_label,.af_inputFile_label,.af_inputNumberSpinbox_label,.af_inputText_label,.af_selectBooleanCheckbox_label,.af_selectBooleanRadio_label,.af_inputColor_label,.af_inputDate_label,.af_inputListOfValues_label,.af_selectManyCheckbox_label,.af_selectManyListbox_label,.af_selectOneChoice_label,.af_selectOneListbox_label,.af_selectOneRadio_label,.af_panelLabelAndMessage_label,.af_panelFormLayout_label-cell,.portlet-form-label,.portlet-icon-label,.portlet-dlg-icon-label,.portlet-form-field-label {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;text-align:right;color:#000000;padding:0px 8px 0px 0px;font-weight:normal}
+.AFLabelCell {padding:0px 8px 0px 0px}
+.AFErrorIconStyle {color:#cc0000;font-family:monospace;font-weight:bold}
+.AFInfoIconStyle,.AFWarningIconStyle,.AFQuickSelectIconStyle {color:#669966;font-family:monospace;font-weight:bold}
+.AFRequiredIconStyle {color:#669966;font-family:Courier,sans-serif}
+.AFQuickSelectDisabledIconStyle {color:#999999;font-family:monospace;font-weight:bold}
+.OraLink:link,.af_treeTable_path,.af_menuPath,.af_panelList A,.af_panelPopup_link,.OraLinkText,.OraHGridNavRowActiveLink,.OraNavBarActiveLink {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#003333}
+.OraLink:active,.OraALinkText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#006666}
+.OraLink:visited,.OraVLinkText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#336666}
+.OraLinkDisabled,.af_outputLabel_required-icon-style,.af_inputChoice_required-icon-style,.af_inputNumberSpinbox_required-icon-style,.af_inputText_required-icon-style,.af_selectBooleanCheckbox_required-icon-style,.af_selectBooleanRadio_required-icon-style,.af_inputDate_required-icon-style,.af_selectManyCheckbox_required-icon-style,.af_selectManyListbox_required-icon-style,.af_selectOneChoice_required-icon-style,.af_selectOneListbox_required-icon-style,.af_selectOneRadio_required-icon-style,.af_outputLabel_group-icon-style,.af_inputChoice_group-icon-style,.af_inputNumberSpinbox_group-icon-style,.af_inputText_group-icon-style,.af_selectBooleanCheckbox_group-icon-style,.af_selectBooleanRadio_group-icon-style,.af_inputDate_group-icon-style,.af_selectManyCheckbox_group-icon-style,.af_selectManyListbox_group-icon-style,.af_selectOneChoice_group-icon-style,.af_selectOneListbox_group-icon-style,.af_selectOneRadio_group-icon-style,.af_menuList,.af_navigationPane_choice-label,.af_navigationPane_choice-options,.af_navigationPane_choice-button,.af_breadCrumbs,.af_selectManyShuttle_box-content,.af_selectOrderShuttle_box-content,.af_menuTabs,.af_commandButton,.af_goButton,.af_resetButton,.p_OraDisabled,.OraNav3,.p_OraTreeRow,.portlet-form-button {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal}
+.af_outputDocument_title,.AFHeaderLevelOne,H1.af_panelHeader,H1.af_showDetailHeader,.PortletHeaderText,.PortletHeading1,.PortletSubHeaderText,.portlet-section-header,.portlet-section-subheader,.portlet-table-header,.portlet-table-subheader {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;color:#669966;font-weight:bold;padding:0px;margin:0px}
+.af_outputDocument_paragraph {text-align:justify;padding:0px;margin:0px}
+.af_outputDocument_separator {text-align:center;padding:0px;margin:0px}
+.af_panelTip,.OraPageStampText,.af_singleStepButtonBar_label,.OraNavBarViewOnly {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#669966}
+.af_panelTip_label {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold}
+.af_panelAccordion_toolbar,.p_OraContentFooterChildren {float:right}
+.af_dialog_container,.af_panelPopup_container {border-color:#336633;border:1px solid;background-color:white}
+.af_dialog_title-bar,.af_panelPopup_title-bar {background-color:#CCCCCC;border-color:#336633;border-bottom:1px solid;padding:2px 2px 2px 2px}
+.af_dialog_title-text,.af_panelPopup_title-text {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:11pt;font-weight:normal;white-space:nowrap;overflow:hidden}
+.af_dialog_close-icon {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:11pt;font-weight:normal;margin-left:5px;background-image:url(images/close.gif);background-position:center;background-repeat:no-repeat;height:13px;width:13px}
+.af_dialog_content,.af_panelPopup_content {background-color:#e9e8e8;border:0px}
+.af_inputChoice.p_AFDisabled .af_inputChoice_label,.af_inputNumberSpinbox.p_AFDisabled .af_inputNumberSpinbox_label,.af_inputText.p_AFDisabled .af_inputText_label,.af_selectBooleanCheckbox.p_AFDisabled .af_selectBooleanCheckbox_label,.af_selectBooleanRadio.p_AFDisabled .af_selectBooleanRadio_label,.af_inputColor.p_AFDisabled .af_inputColor_label,.af_inputDate.p_AFDisabled .af_inputDate_label,.af_inputListOfValues.p_AFDisabled .af_inputListOfValues_label,.af_selectManyCheckbox.p_AFDisabled .af_selectManyCheckbox_label,.af_selectManyListbox.p_AFDisabled .af_selectManyListbox_label,.af_selectOneChoice.p_AFDisabled .af_selectOneChoice_label,.af_selectOneListbox.p_AFDisabled .af_selectOneListbox_label,.af_selectOneRadio.p_AFDisabled .af_selectOneRadio_label,.af_navigationPane_bar-inactive-enabled .af_navigationPane_bar-content,.af_navigationPane_bar-active-enabled .af_navigationPane_bar-content a,.af_navigationPane_bar-inactive-enabled .af_navigationPane_bar-content a,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-mid A {color:#000000}
+.af_inputNumberSpinbox_increment-cell,.af_inputNumberSpinbox_decrement-cell {background-color:#e9e8e8;border-color:#999999;border-width:1px;border-style:solid;width:11px;height:8px}
+.af_inputNumberSpinbox_spinbox-cell {padding-left:1px}
+.af_menuList_selected,.OraNav3Selected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#ccffcc}
+.af_menuChoice_label,.portlet-font {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;font-weight:normal}
+BODY,.portlet-section-body,.portlet-table-body {background-color:#ffffff;font-family:Arial,Helvetica,Geneva,sans-serif}
+.af_treeTable_path-step,.af_menuPath_step,.af_menuPath_selected-step {color:#003333;font-size:9pt}
+.af_treeTable_path-selected-step {font-size:9pt;color:#000000}
+.af_panelList UL {margin-top:4px;margin-bottom:4px}
+button {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;background-color:#e9e8e8;padding:0px;margin:1px}
+.af_inputColor_swatch-overlay {position:relative;left:-7px;top:5px}
+.af_navigationPane_bar {background-color:#EFEFEF;padding-left:6px;padding-right:6px}
+.af_navigationPane_bar-active-disabled,.af_navigationPane_bar-inactive-disabled,.af_navigationPane_buttons-active-disabled,.af_navigationPane_buttons-inactive-disabled,.af_navigationPane_list-active-disabled,.af_navigationPane_list-inactive-disabled {cursor:default}
+.af_navigationPane_bar-active-enabled,.af_navigationPane_bar-inactive-enabled,.af_navigationPane_buttons-active-enabled,.af_navigationPane_buttons-inactive-enabled,.af_navigationPane_list-active-enabled,.af_navigationPane_list-inactive-enabled,.af_navigationPane_tabs-active,.af_navigationPane_tabs-inactive {cursor:pointer}
+.af_navigationPane_bar-active-enabled .af_navigationPane_bar-content {color:#000000;font-weight:bold}
+.af_navigationPane_bar-active-enabled .af_navigationPane_bar-content a:hover,.af_navigationPane_bar-inactive-enabled .af_navigationPane_bar-content a:hover,.af_navigationPane_buttons-active-enabled .af_navigationPane_buttons-content a:hover,.af_navigationPane_buttons-inactive-enabled .af_navigationPane_buttons-content a:hover,.af_navigationPane_list-active-enabled .af_navigationPane_list-content a:hover,.af_navigationPane_list-inactive-enabled .af_navigationPane_list-content a:hover,.AFAccessKeyStyle {text-decoration:underline}
+.af_navigationPane_bar-active-disabled .af_navigationPane_bar-content,.af_navigationPane_buttons-active-disabled .af_navigationPane_buttons-content,.af_navigationPane_list-active-disabled .af_navigationPane_list-content {color:gray;font-weight:bold}
+.af_navigationPane_bar-inactive-disabled .af_navigationPane_bar-content,.af_navigationPane_bar-active-disabled .af_navigationPane_bar-content a,.af_navigationPane_bar-inactive-disabled .af_navigationPane_bar-content a,.af_navigationPane_buttons-inactive-disabled .af_navigationPane_buttons-content,.af_navigationPane_buttons-active-disabled .af_navigationPane_buttons-content a,.af_navigationPane_buttons-inactive-disabled .af_navigationPane_buttons-content a,.af_navigationPane_list-inactive-disabled .af_navigationPane_list-content,.af_navigationPane_list-active-disabled .af_navigationPane_list-content a,.af_navigationPane_list-inactive-disabled .af_navigationPane_list-content a,.af_navigationPane_tabs-active.p_AFDisabled .af_navigationPane_tabs-mid,.af_navigationPane_tabs-inactive.p_AFDisabled .af_navigationPane_tabs-mid {color:gray}
+.af_navigationPane_bar-content,.af_navigationPane_buttons-content,.af_navigationPane_list-content {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding-top:3px;padding-bottom:3px}
+.af_navigationPane_bar-content a,.af_navigationPane_buttons-content a,.af_navigationPane_list-content a {text-decoration:none}
+.af_navigationPane_bar-separator {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding-left:6px;padding-right:6px;color:gray}
+.af_navigationPane_buttons-active-enabled .af_navigationPane_buttons-content,.af_navigationPane_list-active-enabled .af_navigationPane_list-content,.af_navigationPane_tabs-active .af_navigationPane_tabs-mid A,.AFLinkAccessKeyStyle,.af_inputDate_selected,.af_chooseDate_selected {font-weight:bold}
+.af_navigationPane_buttons-separator {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding-left:6px;padding-right:6px}
+.af_navigationPane_list-bullet {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;vertical-align:middle;width:17px;background-image:url(images/list-bullet.gif);background-position:center;background-repeat:no-repeat}
+.af_navigationPane_tabs {height:26px;overflow:hidden}
+.af_navigationPane_tabs-active.p_AFDisabled,.af_navigationPane_tabs-inactive.p_AFDisabled {cursor:default;color:gray}
+.af_navigationPane_tabs-start,.af_navigationPane_tabs-start-join {height:22px;width:26px;background-position:top right}
+.af_navigationPane_tabs-start-join-from-active,.af_navigationPane_tabs-start-join-from-inactive {height:22px;width:14px;background-repeat:no-repeat}
+.af_navigationPane_tabs-mid {height:22px;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;padding-left:3px;white-space:nowrap}
+.af_navigationPane_tabs-end-join-to-inactive {height:22px;width:12px;background-repeat:no-repeat}
+.af_navigationPane_tabs-end {height:22px;width:15px}
+.af_navigationPane_tabs-bottom-start,.af_navigationPane_tabs-bottom-mid,.af_navigationPane_tabs-bottom-end {height:4px;background-repeat:repeat-x}
+.af_navigationPane_tabs-bottom-start-content {height:4px;width:17px;background-repeat:no-repeat}
+.af_navigationPane_tabs-bottom-mid-content {height:4px}
+.af_navigationPane_tabs-bottom-end-content {height:4px;width:100%;background-repeat:no-repeat}
+.af_navigationPane_tabs-mid A {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;text-decoration:none}
+.af_navigationPane_tabs-bottom-end-join {background-repeat:repeat-x}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-start {background-image:url(images/tab3-start-selected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-start-join {background-image:url(images/tab3-start-join-selected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-start,.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-mid,.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-end {background-image:url(images/tab3-bot-mid-selected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-start-content {background-image:url(images/tab3-bot-start-selected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-mid {background-image:url(images/tab3-mid-selected.gif);font-weight:bold}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-end-join-to-inactive {background-image:url(images/tab3-end-join-selected-to-deselected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-end {background-image:url(images/tab3-end-selected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-end-join,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-start,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-mid,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-end,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-end-join {background-image:url(images/tab3-bot-deselected.gif)}
+.af_navigationPane_tabs-active .af_navigationPane_tabs-bottom-end-content {background-image:url(images/tab3-bot-end-selected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-start {background-image:url(images/tab3-start-deselected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-start-content,.af_navigationPane_tabs-inactive .af_navigationPane_tabs-bottom-end-content {background-image:none}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-start-join-from-active {background-image:url(images/tab3-start-join-selected-to-deselected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-start-join-from-inactive {background-image:url(images/tab3-start-join-deselected-to-deselected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-mid {color:#000000;background-image:url(images/tab3-mid-deselected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-end-join-to-inactive {background-image:url(images/tab3-end-join-deselected-to-deselected.gif)}
+.af_navigationPane_tabs-inactive .af_navigationPane_tabs-end {background-image:url(images/tab3-end-deselected.gif)}
+.af_panelFormLayout_column,.p_OraTreeIcon {vertical-align:top}
+.af_panelFormLayout_separator {background-color:gray;height:1px;font-size:1px;margin-top:3px;margin-bottom:3px}
+.af_panelFormLayout_cell,.af_panelFormLayout_content-cell,.af_panelFormLayout_message-cell {padding:1px 0px}
+.af_panelFormLayout_label-stacked-cell {padding:1px 0px;text-align:left}
+.af_panelBox_transparent,.af_panelBox_light,.af_panelBox_medium {border-color:#99cc99;border-style:solid;border-width:1px;margin:2px}
+.af_panelBox_dark {border-style:solid;border-width:1px;margin:2px;border-color:#669966}
+.af_panelBox_transparent img,.af_panelBox_light img,.af_panelBox_medium img,.af_panelBox_dark img,.af_selectManyShuttle_box-content img,.af_selectOrderShuttle_box-content img,.af_menuBar img,.af_messages img,.af_menuTabs img {vertical-align:bottom}
+.af_panelBox_body {padding:5px;height:20px}
+.af_panelBox_light .af_panelBox_body,.af_selectManyShuttle_box-content .af_selectManyShuttle_box-body,.af_selectOrderShuttle_box-content .af_selectOrderShuttle_box-body,.af_panelSideBar_body,.OraBGAccentLight,.PortletBodyColor,.PortletSubHeaderColor,.af_messages_body {background-color:#e9e8e8}
+.af_panelBox_medium .af_panelBox_body,.OraBGAccentMedium {background-color:#ffffcc}
+.af_panelBox_dark .af_panelBox_body,.OraBGAccentDark {background-color:#CCCCCC}
+.af_panelBox_header,.PortletHeaderColor {width:100%;background-repeat:repeat-x;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:11pt;padding:0px 3px;font-weight:bold}
+.af_panelBox_light .af_panelBox_header {background-color:#99cc99;color:#ffffff}
+.af_panelPage_copyright,.af_panelPage_privacy,.af_panelPage_about {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;font-weight:normal;color:#000000;white-space:nowrap;padding:5px}
+.af_panelPage_copyright A,.af_panelPage_privacy A,.af_panelPage_about A,.af_train_link,.af_panelTabbed_tab A,.p_OraTreeRow A:link,.p_OraTreeRow A:active,.p_OraTreeRow A:visited {color:#003333}
+.af_panelCaptionGroup {border-color:#e9e8e8}
+.af_panelCaptionGroup_caption,.OraPageStampLabel,.OraTableControlBarText,.p_OraTreeRowSelected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#669966}
+.af_panelPopup_trigger {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#003333;text-decoration:none;white-space:nowrap}
+.af_panelPopup_close-icon {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:11pt;font-weight:normal;text-align:right;padding-left:5px}
+.af_menuButtons_text {color:#003333;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding:0px 2px 2px 2px}
+.af_menuButtons_text-selected {color:#669966;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding:0px 2px 2px 2px}
+.af_menuButtons_text-disabled {color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding:0px 2px 2px 2px}
+.af_menuBar {background-color:#669966;color:#ffffff;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;min-height:4px;padding:0px}
+.af_menuBar_enabled,.af_menuBar_selected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding:0px 0px 0px 5px;white-space:nowrap}
+.af_menuBar_enabled A,.af_menuBar_selected A,.PortletHeaderLink,.PortletSubHeaderLink {color:#ffffff;text-decoration:none}
+.af_menuBar_separator {color:#ffffff;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal}
+.af_treeTable_expansion {color:#669966;position:absolute;top:0px;left:-18px;text-decoration:none}
+.af_treeTable_focus {font-size:10pt;font-weight:normal;color:#669966;font-family:monospace;text-decoration:none}
+.af_treeTable_locator {font-size:10pt;font-weight:normal;color:#999999;font-family:monospace}
+.af_showOnePanel_container {border-color:#999999;border-width:0px 1px 1px 1px;border-style:solid}
+.af_showOnePanel_header-collapsed {border-color:#999999;height:21px;text-decoration:none;white-space:nowrap;padding-right:5px;border-width:1px 0px 0px 0px;border-style:solid;cursor:pointer;padding-left:5px}
+.af_showOnePanel_header-expanded {border-color:#999999;height:21px;text-decoration:none;white-space:nowrap;padding-right:5px;border-style:solid;border-width:1px 0px 1px 0px;padding-left:2px}
+.af_showOnePanel_header-disabled {border-color:#999999;height:21px;text-decoration:none;white-space:nowrap;padding-right:5px;border-style:solid;border-width:1px 0px 0px 0px;padding-left:18px}
+.af_showOnePanel_content {vertical-align:top;margin:5px}
+.af_showOnePanel_title-link {background:transparent;color:#669966;display:block;padding-top:2px;text-decoration:none;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold}
+.af_showOnePanel_title-disabled-link {color:#999999;display:block;padding-top:2px;text-decoration:none;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold}
+.AFHeaderLevelTwo,H2.af_panelHeader,H2.af_showDetailHeader,.PortletHeading2 {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:11pt;color:#669966;font-weight:bold;padding:0px;margin:0px}
+.AFHeaderLevelThreePlus,H3.af_panelHeader,H4.af_panelHeader,H5.af_panelHeader,H6.af_panelHeader,H3.af_showDetailHeader,H4.af_showDetailHeader,H5.af_showDetailHeader,H6.af_showDetailHeader,.PortletHeading3,.PortletHeading4 {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;color:#669966;font-weight:bold;padding:0px;margin:0px}
+.af_panelHeader_error,.af_messages_error,.portlet-msg-error {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;font-weight:bold;padding:0px;margin:0px;color:#cc0000}
+.af_messages_header {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;color:#669966;font-weight:bold;margin:0px;border-color:#CCCCCC;border-width:0px 0px 1px 0px;border-style:solid;vertical-align:bottom;margin-bottom:3px;padding:0px 3px}
+.af_messages {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#336633;width:100%;border-color:#999999;background-color:#ffffcc;border-style:solid;border-width:1px;padding:0px;margin:5px 0px 0px}
+.af_messages_message-text,.af_messages_list,.portlet-msg-info {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#669966;margin:0px 0px 0px 0px;padding:5px 30px 5px 30px}
+.af_panelSideBar {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#336633;border-color:#999999;border-width:0px 1px 1px;border-style:solid;padding:0px;margin:0px 5px 0px 0px}
+.AFSortableHeaderSortIcon {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:9pt;font-weight:normal;color:#669966;padding-left:4px;text-decoration:none}
+.af_menuTabs_enabled {background-color:#e9e8e8;white-space:nowrap;border-color:#999999;border-style:solid;border-width:1px 1px 0px 1px;padding:2px 6px}
+.af_menuTabs_selected {background-color:#669966;white-space:nowrap;border-color:#999999;border-style:solid;border-width:1px 1px 0px 1px;padding:2px 6px}
+.af_menuTabs_disabled {background-color:#e9e8e8;color:#999999;white-space:nowrap;border-color:#999999;border-style:solid;border-width:1px 1px 0px 1px;padding:2px 6px}
+.af_menuTabs_enabled A {text-decoration:none;color:#336633}
+.af_menuTabs_selected A {text-decoration:none;color:#ccffcc;font-weight:bold}
+.af_menuTabs_separator {width:0px}
+.af_table_content,.af_treeTable_content {border-collapse:collapse;border-color:#999999;border-style:solid;border-width:1px}
+.af_table_control-bar-top,.af_treeTable_control-bar-top {background-color:#e9e8e8;border-color:#999999;border-style:solid;border-width:1px 1px 0px;padding:1px 2px}
+.af_table_control-bar-bottom,.af_treeTable_control-bar-bottom {background-color:#e9e8e8;border-color:#999999;border-style:solid;border-width:0px 1px 1px;padding:1px 2px}
+.af_table_sub-control-bar,.af_treeTable_sub-control-bar {border-color:#999999;border-style:solid;border-width:1px 1px 0px;padding:1px 2px}
+.af_column_cell-text,.portlet-section-selected,.portlet-table-selected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#e9e8e8;border-color:#999999}
+.af_column_cell-text-band,.portlet-section-alternate,.portlet-table-alternate {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#ffffff;border-color:#999999}
+.af_column_cell-number {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#e9e8e8;border-color:#999999;text-align:right;padding-right:2px}
+.af_column_cell-number-band {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#ffffff;border-color:#999999;text-align:right;padding-right:2px}
+.af_column_cell-icon-format,.af_tableSelectOne_cell-icon-format,.af_tableSelectMany_cell-icon-format,.OraTableCellSelect,.portlet-section-text,.portlet-table-text {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#e9e8e8;border-color:#999999;text-align:center}
+.af_column_cell-icon-format-band,.af_tableSelectOne_cell-icon-format-band,.af_tableSelectMany_cell-icon-format-band,.OraTableCellSelectBand {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;vertical-align:baseline;background-color:#ffffff;border-color:#999999;text-align:center}
+.af_column_header-text {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:left;background-color:#CCCCCC;color:#669966;vertical-align:bottom}
+.af_column_header-number {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#CCCCCC;color:#669966;vertical-align:bottom;text-align:right}
+.af_column_header-icon-format {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#CCCCCC;color:#669966;vertical-align:bottom;text-align:center}
+.af_column_row-header-text {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:right;background-color:#CCCCCC;color:#669966}
+.af_table_detail {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#000000;border-color:#999999;background-color:#ffffff}
+.af_table_column-footer,.portlet-section-footer,.portlet-table-footer {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:left;background-color:#CCCCCC;color:#669966}
+.OraTableTotal {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:right;background-color:#CCCCCC;color:#669966}
+.af_column_total-number {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:right;background-color:#CCCCCC;color:#000000;vertical-align:baseline}
+.af_column_total-text {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:left;background-color:#CCCCCC;color:#000000;vertical-align:baseline}
+.af_column_sortable-header-text {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:left;background-color:#CCCCCC;color:#669966;vertical-align:bottom;cursor:pointer;border-width:2px;border-style:outset}
+.af_column_sortable-header-number {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#CCCCCC;color:#669966;vertical-align:bottom;cursor:pointer;border-width:2px;border-style:outset;text-align:right}
+.af_column_sortable-header-icon-format {border-color:#999999;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#CCCCCC;color:#669966;vertical-align:bottom;cursor:pointer;border-width:2px;border-style:outset;text-align:center}
+.af_train_stop-content,.af_train_overflow-start-content,.af_train_overflow-end-content,.af_train_parent-start-content,.af_train_parent-end-content {border-top-style:solid;border-top-width:2px;}
+.af_train_stop.p_AFSelected {color:#669966;font-weight:bold;border-color:#669966}
+.af_train_stop:visited,.af_train_stop:visited .af_train_link {color:#666666}
+.af_train_stop.p_AFDisabled {color:#999999;border-color:#cccccc}
+.af_train_stop.p_AFUnvisited {color:#669966;border-color:#669966}
+.af_train_stop.p_AFDisabled .af_train_link {color:#669999}
+.OraBGColorVeryDark {background-color:#336633}
+.OraBGColorDark,.af_menuBar_body,.af_menuBar_title,.af_menuBar_empty {background-color:#669966}
+.OraBGColorMedium {background-color:#99cc99}
+.OraBGColorLight {background-color:#ccffcc}
+.OraBGGrayVeryDark {background-color:#333333}
+.OraBGGrayDark {background-color:#666666}
+.OraBGGrayMedium,.OraBGAccentVeryDark,.OraTable {background-color:#999999}
+.OraBGGrayLight {background-color:#cccccc}
+.OraInlineInfoText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;font-weight:normal;color:#669966}
+.OraTextInline {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;font-weight:normal;color:#99cc99}
+.OraMessageBoxErrorText,.AFErrorText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;color:#cc0000}
+.OraErrorNameText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#cc0000}
+.OraInlineErrorText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;font-weight:normal;color:#cc0000}
+.OraGlobalPageTitle {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;color:#ffffff;font-weight:bold}
+.p_OraSelected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;background-color:#ccffcc;text-decoration:none}
+.p_OraHiddenLabel {position:absolute;top:-999px;left:0px;font-size:0px}
+.p_OraColorFieldSwatch {border-color:#000000;border-style:solid;border-width:1px}
+.p_OraColorPalette {background-color:#000000}
+.p_OraColorPaletteEmptyCell {background-color:#ffffff}
+.af_inputDate_nav A,.af_chooseDate_nav A {color:#003333;text-decoration:none}
+.af_inputDate_title,.af_chooseDate_title {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;font-weight:normal;text-align:center;background-color:#ffffff;color:#669966;padding:2px}
+.af_inputDate_header,.af_chooseDate_header {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;text-align:center;color:#669966;padding:2px}
+.af_inputDate_content A,.af_chooseDate_content A {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;text-align:center;color:#003333}
+.af_chooseDate_content {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;text-align:center;color:#999999;text-decoration:none;border-width:1px;border-style:solid;padding:2px}
+.p_OraContentFooterRule {color:#669966}
+.p_OraContentFooterStart {float:left}
+.p_OraContentFooterBottom {clear:both;margin-bottom:5px}
+.p_OraFooter {text-align:center}
+.p_OraFooterBottom {padding-top:5px}
+.p_OraHeaderNest {margin:5px 0px 0px 12px}
+.OraHGridLocatorHeader {border-color:#999999;background-color:#e9e8e8}
+.p_OraHideShowDisclosedSymbol,.af_panelTabbed_tab-selected A,.p_OraTreeDisclosedSymbol A:link,.p_OraTreeDisclosedSymbol A:active,.p_OraTreeDisclosedSymbol A:visited,.p_OraTreeRowSelected A:link,.p_OraTreeRowSelected A:active,.p_OraTreeRowSelected A:visited {color:#669966;text-decoration:none}
+.af_messages_list-single {list-style-type:none}
+.p_OraQuickSearchBox {background-color:#e9e8e8;border-color:#CCCCCC;border-style:solid;padding:0pt 5pt 5pt 5pt;border-width:0px 0px 1px 1px}
+.p_OraGlobalQuick {border-color:#CCCCCC;border-style:solid;border-width:0px 0px 0px 1px}
+.p_OraProcessingStatus {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#669966;border-color:#99cc99;border-style:solid;border-width:1px}
+.p_OraProductBrandingText {color:#669966;position:relative;font-family:Garamond, Times, Times New Roman, Serif;font-weight:normal;font-size:24pt;line-height:28.8pt;top:-4.8pt}
+.p_OraProductBrandingCompactText {color:#669966;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;margin-bottom:0px;margin-top:0px;font-weight:bold}
+.OraShuttleHeader {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:9pt;color:#669966;font-weight:bold;padding:0px 0px 0px 18px}
+.OraShuttleLinkText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:9pt;font-weight:normal;color:#003333}
+.p_OraSideBarMinWidth {width:140px}
+.OraStyledList {list-style-position:inside;padding:0px;margin:0px}
+.OraStyledList .OraStyledList {padding:0pt 0pt 0pt 10pt}
+.af_panelTabbed_orientation-top {background-color:#e9e8e8;border-color:#99cc99;text-align:center;border-style:solid;padding:2px 0px;margin:4px 0px;border-width:1px 0px 0px}
+.af_panelTabbed_orientation-bottom {background-color:#e9e8e8;border-color:#99cc99;text-align:center;border-style:solid;padding:2px 0px;margin:4px 0px;border-width:0px 0px 1px}
+.af_panelTabbed_tab {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;padding:0px 8px}
+.af_panelTabbed_tab .p_OraDisabled {color:#999999}
+.af_panelTabbed_tab-selected {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;padding:0px 8px}
+.af_panelTabbed_cell-start {width:0%}
+.af_panelTabbed_cell-end {width:100%}
+.OraTableBorder0001 {border-style:solid;border-width:0px 0px 0px 1px}
+.OraTableBorder0010 {border-style:solid;border-width:0px 0px 1px}
+.OraTableBorder0011 {border-style:solid;border-width:0px 0px 1px 1px}
+.OraTableBorder0100 {border-style:solid;border-width:0px 1px 0px 0px}
+.OraTableBorder0101 {border-style:solid;border-width:0px 1px}
+.OraTableBorder0110 {border-style:solid;border-width:0px 1px 1px 0px}
+.OraTableBorder0111 {border-style:solid;border-width:0px 1px 1px}
+.OraTableBorder1000 {border-style:solid;border-width:1px 0px 0px}
+.OraTableBorder1001 {border-style:solid;border-width:1px 0px 0px 1px}
+.OraTableBorder1010 {border-style:solid;border-width:1px 0px}
+.OraTableBorder1011 {border-style:solid;border-width:1px 0px 1px 1px}
+.OraTableBorder1100 {border-style:solid;border-width:1px 1px 0px 0px}
+.OraTableBorder1101 {border-style:solid;border-width:1px 1px 0px}
+.OraTableBorder1110 {border-style:solid;border-width:1px 1px 1px 0px}
+.OraTableBorder1111 {border-style:solid;border-width:1px}
+.OraTableTitle {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:13pt;font-weight:normal;background-color:#ffffff;color:#669966}
+.p_OraTreeDisclosedSymbol {color:#669966;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:normal;text-align:right}
+.p_OraTreeNodeAdjust {padding-bottom:2px}
+.af_chart {width:400px;height:300px;background-color:white}
+.p_OraOnePixelLine {background-color:#CCCCCC;font-size:0pt;overflow:hidden;height:1px;width:100%}
+.p_OraDisplayBlock {display:block}
+.p_OraHideSkipNaviText {font-size:0pt;margin-top:0px;margin-left:-999px}
+.AFLogo {width:103px;height:13px;background-repeat:no-repeat;background-position:center;vertical-align:middle;background-image:url(images/logo-dark.gif)}
+.af_panelBox_content-dark {border-color:#669966}
+.af_train_stop.p_AFVisited {border-color:#999999}
+.af_panelHeader,.af_showDetailHeader {border-color:#CCCCCC;border-width:0px 0px 1px 0px;border-style:solid;vertical-align:bottom;margin-bottom:3px;padding:0px 3px}
+.af_panelHeader_icon-style {margin-right:3px}
+.af_objectSeparator {border-color:#669966;border-style:dashed none none;border-width:1px 0px 0px;height:1px;margin:-3px 0px -3px 0px;padding:0px}
+body {margin-top:8px}
+.p_OraNav2 {border-color:#99cc99}
+.af_navigationPane {height:25px}
+/* The number of CSS selectors in this file is 566 */

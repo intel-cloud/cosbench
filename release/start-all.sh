@@ -15,8 +15,14 @@
 #limitations under the License.
 #
 
-sh start-driver.sh
+# Stop all before start.
+echo "======================================================"
+bash stop-all.sh
+echo "======================================================"
+
+# Start here.
+bash start-driver.sh
 echo
 echo "======================================================"
 echo
-sh start-controller.sh
+bash start-controller.sh

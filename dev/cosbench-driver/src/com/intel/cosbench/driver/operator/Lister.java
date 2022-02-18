@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.io.output.NullOutputStream;
 
+import com.intel.cosbench.api.storage.StorageException;
 import com.intel.cosbench.api.storage.StorageInterruptedException;
 import com.intel.cosbench.bench.Result;
 import com.intel.cosbench.bench.Sample;
@@ -38,7 +39,7 @@ public class Lister extends AbstractOperator {
 
     private ObjectPicker objPicker = new ObjectPicker();
 
-    private byte buffer[] = new byte[1024*1024];
+//    private byte buffer[] = new byte[1024*1024];
 
     public Lister() {
         /* empty */
@@ -62,8 +63,8 @@ public class Lister extends AbstractOperator {
         Sample sample = doList(out, path[0], path[1], config, session);
         session.getListener().onSampleCreated(sample);
         Date now = sample.getTimestamp();
-		Result result = new Result(now, getId(), getOpType(), getSampleType(),
-				getName(), sample.isSucc());
+        Result result = new Result(now, getId(), getOpType(), getSampleType(),
+                getName(), sample.isSucc());
         session.getListener().onOperationCompleted(result);
     }
 
@@ -74,21 +75,26 @@ public class Lister extends AbstractOperator {
 
         InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
-        doLogWarn(session.getLogger(), "listerrr: "+ conName + "/" + objName);//###
+        doLogWarn(session.getLogger(), "listerrr: "+ conName + "/" + objName); // TODO: ????
         long start = System.nanoTime();
         long xferTime = 0L;
         try {
             doLogDebug(session.getLogger(), "worker "+ session.getIndex() + " List target " + conName + "/" + objName);
-	        in = session.getApi().getList(conName, objName, config);
-	        long xferStart = System.nanoTime();
-	        copyLarge(in, cout);
-	        xferTime = (System.nanoTime() - xferStart) / 1000000;
+            in = session.getApi().getList(conName, objName, config);
+            long xferStart = System.nanoTime();
+            copyLarge(in, cout);
+            xferTime = (System.nanoTime() - xferStart) / 1000000;
         } catch (StorageInterruptedException sie) {
             doLogErr(session.getLogger(), sie.getMessage(), sie);
             throw new AbortedException();
-        } catch (Exception e) {
-        	isUnauthorizedException(e, session);
-        	errorStatisticsHandle(e, session, conName + "/" + objName);
+        } catch (StorageException se) {
+        	String msg = "Error list objects " + conName + "/" + objName + " " + se.getMessage();
+			doLogWarn(session.getLogger(), msg);
+			
+			return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
+		}catch (Exception e) {
+            isUnauthorizedException(e, session);
+            errorStatisticsHandle(e, session, conName + "/" + objName);
 
             return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
         } finally {
@@ -97,8 +103,8 @@ public class Lister extends AbstractOperator {
         }
         long end = System.nanoTime();
 
-		return new Sample(new Date(), getId(), getOpType(), getSampleType(),
-				getName(), true, (end - start) / 1000000, xferTime, cout.getByteCount());
+        return new Sample(new Date(), getId(), getOpType(), getSampleType(),
+                getName(), true, (end - start) / 1000000, xferTime, cout.getByteCount());
     }
 
     public OutputStream copyLarge(InputStream input, OutputStream output)

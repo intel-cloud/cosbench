@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="annotations-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="annotations-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="apache-client-2.17.129.jar" sourcepath="G:/aws-sdk-java-v2-2.17.48"/>
+	<classpathentry exported="true" kind="lib" path="arns-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="arns-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aspectjrt.jar"/>
+	<classpathentry exported="true" kind="lib" path="aspectjweaver.jar"/>
+	<classpathentry exported="true" kind="lib" path="auth-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="auth-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-core-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-core-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-core-1.12.158.jar" sourcepath="aws-java-sdk-core-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-core-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-kms-1.12.158.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-kms-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-s3-1.12.158.jar" sourcepath="aws-java-sdk-s3-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-java-sdk-s3-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-query-protocol-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-query-protocol-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-xml-protocol-2.17.129.jar" sourcepath="aws-xml-protocol-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-xml-protocol-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-codec-1.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-codec-1.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-codec-1.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-codec-1.15-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging-1.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging-1.1.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging-1.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="eventstream-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="eventstream-1.0.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="freemarker-2.3.20.jar"/>
+	<classpathentry exported="true" kind="lib" path="httpclient-4.5.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="httpclient-4.5.13-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="http-client-spi-2.17.129.jar" sourcepath="http-client-spi-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="http-client-spi-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="httpcore-4.4.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="httpcore-4.4.13-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="ion-java-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="ion-java-1.0.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-annotations-2.12.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-annotations-2.12.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-core-2.12.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-core-2.12.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-databind-2.12.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-databind-2.12.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-dataformat-cbor-2.12.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-dataformat-cbor-2.12.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jmespath-java-1.12.158.jar"/>
+	<classpathentry exported="true" kind="lib" path="jmespath-java-1.12.158-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="joda-time-2.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="joda-time-2.8.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="json-utils-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="json-utils-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="mail-1.4.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="metrics-spi-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="metrics-spi-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-buffer-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-buffer-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-http2-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-http2-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-http-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-codec-http-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-common-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-common-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-handler-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-handler-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-nio-client-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-nio-client-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-2.0.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-http-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-http-2.0.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-resolver-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-resolver-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-tcnative-classes-2.0.46.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-tcnative-classes-2.0.46.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-classes-epoll-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-classes-epoll-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-native-unix-common-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-native-unix-common-4.1.72.Final-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="profiles-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="profiles-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="protocol-core-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="protocol-core-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="reactive-streams-1.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="regions-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="regions-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="s3-2.17.129.jar" sourcepath="s3-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="s3-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="sdk-core-2.17.129.jar" sourcepath="sdk-core-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="sdk-core-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="slf4j-api-1.7.30.jar"/>
+	<classpathentry exported="true" kind="lib" path="slf4j-api-1.7.30-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="spring-beans-3.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="spring-context-3.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="spring-core-3.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="third-party-jackson-core-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="third-party-jackson-core-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="utils-2.17.129.jar" sourcepath="utils-2.17.129-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="utils-2.17.129-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="slf4j-nop-1.7.36.jar"/>
+	<classpathentry kind="lib" path="slf4j-nop-1.7.36-sources.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

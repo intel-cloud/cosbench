@@ -18,7 +18,7 @@ package com.emc.vipr.cosbench.ECSStor;
 /**
  * Constants for use with EMC ECS Storage API plugin
  * for COSBench.
- * 
+ *
  * The EMC ECS plugin requires at least access key and
  * secret key to be user-defined. If unspecified, ECS
  * endpoint will default to s3.amazonaws.com with a connection
@@ -32,26 +32,26 @@ public interface ECSConstants {
 
     // Read Timeout Control; default is same as connection timeout
     public static final String READ_TIMEOUT_KEY = "read_timeout";
-    
+
     // ECS Endpoint Constants
     public static final String ENDPOINT_KEY = "endpoint";
     public static final String ENDPOINT_DEFAULT = "http://s3.amazonaws.com";
-    
+
     // ECS Access Key
     public static final String AUTH_USERNAME_KEY = "accesskey";
     public static final String AUTH_USERNAME_DEFAULT = "";
-    
+
     // ECS Secret Key
     public static final String AUTH_PASSWORD_KEY = "secretkey";
     public static final String AUTH_PASSWORD_DEFAULT = "";
-    
+
     // Proxy Port/Host Keys - currently unsupported
 //    public static final String PROXY_HOST_KEY = "proxyhost";
 //    public static final String PROXY_PORT_KEY = "proxyport";
-    
+
     // Namespace Key
     public static final String NAMESPACE_KEY = "namespace";
-    
+
     // Path Style Access Constants
     public static final String PATH_STYLE_ACCESS_KEY = "path_style_access";
     public static final boolean PATH_STYLE_ACCESS_DEFAULT = false;

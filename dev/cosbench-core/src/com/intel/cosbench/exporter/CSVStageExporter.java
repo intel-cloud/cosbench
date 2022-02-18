@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.exporter;
 
@@ -28,7 +28,7 @@ import com.intel.cosbench.bench.*;
 
 /**
  * This class is to export stage information into CSV format.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -56,13 +56,13 @@ class CSVStageExporter extends AbstractStageExporter {
         for (int i = 0; i < 7; i++)
             // 7 metrics
             for (Metrics metrics : snapshots[0].getReport())
-				buffer.append(
-						StringUtils.join(new Object[] {
-								(metrics.getOpName().equals(
-										metrics.getSampleType()) ? null
-										: metrics.getOpName() + "-"),
-								metrics.getSampleType() })).append(',');
-        buffer.append("Min-Version").append(','); 
+                buffer.append(
+                        StringUtils.join(new Object[] {
+                                (metrics.getOpName().equals(
+                                        metrics.getSampleType()) ? null
+                                        : metrics.getOpName() + "-"),
+                                metrics.getSampleType() })).append(',');
+        buffer.append("Min-Version").append(',');
         buffer.append("Version").append(',');
         buffer.append("Max-Version").append('\n');
         writer.write(buffer.toString());
@@ -78,7 +78,7 @@ class CSVStageExporter extends AbstractStageExporter {
         {
                report.addMetrics(Metrics.newMetrics("na.na"));
         }
-        
+
         /* Operation Count */
         for (Metrics metrics : report)
             buffer.append(metrics.getSampleCount()).append(',');

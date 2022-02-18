@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.web;
 
@@ -65,6 +65,7 @@ public class MissionSubmissionController extends AbstractController {
 
     private ModelAndView createErrResult(String msg) {
         ModelAndView result = new ModelAndView("submit");
+        result.addObject("dInfo", driver.getDriverInfo());
         result.addObject("aInfos", driver.getActiveMissions());
         result.addObject("error", msg);
         return result;
@@ -72,6 +73,7 @@ public class MissionSubmissionController extends AbstractController {
 
     private ModelAndView createSuccResult(String id) {
         ModelAndView result = new ModelAndView("submit");
+        result.addObject("dInfo", driver.getDriverInfo());
         result.addObject("aInfos", driver.getActiveMissions());
         result.addObject("submitted", "your mission has been accepted");
         result.addObject("id", id);

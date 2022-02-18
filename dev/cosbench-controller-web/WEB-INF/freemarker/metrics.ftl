@@ -12,7 +12,11 @@
   </tr>
   <#list allMetrics as mInfo>
     <tr>
-      <td>${mInfo.opName}<#if mInfo.opName != mInfo.sampleType>-${mInfo.sampleType}</#if></td>
+      <td>
+        <#if mInfo.opId??>${mInfo.opId}:</#if>
+        ${mInfo.opName}
+        <#if mInfo.opName != mInfo.sampleType>-${mInfo.sampleType}</#if>
+      </td>
       <td>
         <#assign op = mInfo.sampleCount >
         <#if (op >= 1000) >
@@ -85,15 +89,15 @@
             <#assign bw = bw / 1000 >
             <#if (bw > 1000) >
               <#assign bw = bw / 1000 >
-              ${bw?string("0.##")} GB/S
+              ${bw?string("0.##")} GB/s
             <#else>
-              ${bw?string("0.##")} MB/S
+              ${bw?string("0.##")} MB/s
             </#if>
           <#else>
-            ${bw?string("0.##")} KB/S
+            ${bw?string("0.##")} KB/s
           </#if>
         <#else>
-          ${bw?string("0.##")} B/S
+          ${bw?string("0.##")} B/s
         </#if>
       </td>
       <td>

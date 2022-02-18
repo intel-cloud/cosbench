@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.exporter;
 
@@ -27,7 +27,7 @@ import com.intel.cosbench.model.StateInfo;
 
 /**
  * This class is to export workload information into CSV format.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -81,9 +81,9 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
 
         double pt = r - metrics.getAvgXferTime();
         if (pt > 0)
-        	buffer.append(NUM.format(pt));
+            buffer.append(NUM.format(pt));
         else
-        	buffer.append("N/A");
+            buffer.append("N/A");
         buffer.append(',');
 
         writeLatencyInfo(buffer, metrics.getLatency());
@@ -96,18 +96,18 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
             buffer.append("N/A").append(',');
         buffer.append(stage.getState().name().toLowerCase()).append(',');
         for (StateInfo state : stage.getStateHistory()) {
-			buffer.append(
-					state.getName().toLowerCase() + " @ "
-							+ DATETIME.format(state.getDate())).append(',');
+            buffer.append(
+                    state.getName().toLowerCase() + " @ "
+                            + DATETIME.format(state.getDate())).append(',');
         }
         buffer.setCharAt(buffer.length() - 1, '\n');
         writer.write(buffer.toString());
     }
-    
+
     @Override
     protected void writeMetrics(Writer writer, StageInfo stage)
             throws IOException {
-    	 StringBuilder buffer = new StringBuilder();
+         StringBuilder buffer = new StringBuilder();
          buffer.append(stage.getStage().getName()).append(',');
          buffer.append("N/A").append(',');
          buffer.append("N/A").append(',');
@@ -126,9 +126,9 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
          buffer.append("N/A").append(',');
          buffer.append(stage.getState().name().toLowerCase()).append(',');
          for (StateInfo state : stage.getStateHistory()) {
- 			buffer.append(
- 					state.getName().toLowerCase() + " @ "
- 							+ DATETIME.format(state.getDate())).append(',');
+             buffer.append(
+                     state.getName().toLowerCase() + " @ "
+                             + DATETIME.format(state.getDate())).append(',');
          }
          buffer.setCharAt(buffer.length() - 1, '\n');
          writer.write(buffer.toString());
@@ -136,21 +136,21 @@ class CSVWorkloadExporter extends AbstractWorkloadExporter {
 
     private static void writeLatencyInfo(StringBuilder buffer, Histogram latency)
             throws IOException {
-    	if(latency == null) {
+        if(latency == null) {
             writePercentileRT(buffer,null);
             writePercentileRT(buffer, null);
             writePercentileRT(buffer, null);
             writePercentileRT(buffer, null);
             writePercentileRT(buffer, null);
             writePercentileRT(buffer, null);
-    	}else {
-    		writePercentileRT(buffer, latency.get_60());
-    		writePercentileRT(buffer, latency.get_80());
-    		writePercentileRT(buffer, latency.get_90());
-    		writePercentileRT(buffer, latency.get_95());
-    		writePercentileRT(buffer, latency.get_99());
-    		writePercentileRT(buffer, latency.get_100());
-    	}
+        }else {
+            writePercentileRT(buffer, latency.get_60());
+            writePercentileRT(buffer, latency.get_80());
+            writePercentileRT(buffer, latency.get_90());
+            writePercentileRT(buffer, latency.get_95());
+            writePercentileRT(buffer, latency.get_99());
+            writePercentileRT(buffer, latency.get_100());
+        }
     }
 
     private static void writePercentileRT(StringBuilder buffer, long[] resTime) {

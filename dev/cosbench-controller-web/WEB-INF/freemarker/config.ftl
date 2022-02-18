@@ -11,7 +11,13 @@
 <div class="top"><br /></div>
 <div class="content">
   <h3 id="Wconfig">Workload Configuration</h3>
-   <span><p id="Wconfig1"> Workload Description</span></p>
+  <p><a href="index.html">Go back to index</a></p>
+   <span>
+     <p id="Wconfig1">Workload Description:</p>
+     <p>The page only provides basic configuration options, for advanced options, please follow user guide and edit xml files directly.</p>
+   </span>
+  
+  <#--
   <script>
   document.getElementById("Wconfig1").onmouseover = function() {mouseOver()};
   document.getElementById("Wconfig1").onmouseout = function() {mouseOut()};
@@ -25,6 +31,7 @@
   document.getElementById("Wconfig1").style.color = "black";
   }
   </script>
+  -->
 
   </div>
   
@@ -560,7 +567,7 @@
 	  
     </form>
   </div>
-  <p><a href="index.html">go back to index</a></p>
+  
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->

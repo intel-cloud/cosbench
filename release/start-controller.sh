@@ -19,6 +19,13 @@
 # COSBENCH CONTROLLER STARTER
 #-------------------------------
 
+# Stop before start.
+bash stop-controller.sh
+echo
+echo "======================================================"
+echo
+
+# Start here.
 SERVICE_NAME=controller
 VERSION=`cat VERSION`
 

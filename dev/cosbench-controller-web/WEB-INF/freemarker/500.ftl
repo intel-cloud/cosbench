@@ -6,7 +6,7 @@
   <title>Internal Error</title>
 </head>
 <body>
-<#include "header.ftl">
+<#include "head.ftl">
 <div id="main">
 <div class="top"><br /></div>
 <div class="content">

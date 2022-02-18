@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.bench;
 
@@ -23,9 +23,9 @@ import static com.intel.cosbench.bench.Metrics.newMetrics;
 import java.util.*;
 
 /**
- * This class encapsulates operations to aggregate data from all drivers, 
+ * This class encapsulates operations to aggregate data from all drivers,
  * also includes operations to calculate response time distribution.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -67,8 +67,8 @@ public class Aggregator {
         metrics.setAvgResTime(getAvgResTime());
         metrics.setAvgXferTime(getAvgXferTime());
         metrics.setLatency(getLatency());
-		metrics.setRatio(metrics.getTotalSampleCount() > 0 ? (double) metrics
-				.getSampleCount() / metrics.getTotalSampleCount() : 0D);
+        metrics.setRatio(metrics.getTotalSampleCount() > 0 ? (double) metrics
+                .getSampleCount() / metrics.getTotalSampleCount() : 0D);
         return metrics;
     }
 
@@ -96,13 +96,13 @@ public class Aggregator {
     }
 
     private double getAvgXferTime() {
-		if (sampleCount == 0)
-			return 0D;
-		double sum = 0D;
-		for (Metrics metrics : children)
-			sum += metrics.getAvgXferTime() * metrics.getSampleCount();
-		return sum / sampleCount;
-	}
+        if (sampleCount == 0)
+            return 0D;
+        double sum = 0D;
+        for (Metrics metrics : children)
+            sum += metrics.getAvgXferTime() * metrics.getSampleCount();
+        return sum / sampleCount;
+    }
 
     private Histogram getLatency() {
         if (!containsLatency)

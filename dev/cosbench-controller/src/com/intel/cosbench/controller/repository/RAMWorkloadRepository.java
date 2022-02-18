@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.repository;
 
@@ -29,9 +29,9 @@ import com.intel.cosbench.model.WorkloadState;
 /**
  * This class represents one in-memory repository to store all workloads
  * information.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 public class RAMWorkloadRepository implements WorkloadRepository,
         WorkloadListener {
@@ -53,7 +53,7 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         WorkloadList workloads = new SimpleWorkloadList(getMaxCapacity());
         this.workloads = workloads;
     }
-    
+
     @Override
     public int getMaxCapacity() {
         int maxCapacity = MAX_WORKLOAD_DEFAULT;
@@ -79,11 +79,11 @@ public class RAMWorkloadRepository implements WorkloadRepository,
         LOGGER.debug("workload {} has been saved in RAM", workload.getId());
         LOGGER.debug("{} workloads have been removed from RAM", removed.length);
     }
-    
+
     @Override
     public synchronized void removeWorkload(WorkloadContext workload) {
-    	workloads.remove(workload);
-    } 
+        workloads.remove(workload);
+    }
 
     @Override
     public synchronized WorkloadContext getWorkload(String id) {
@@ -113,10 +113,10 @@ public class RAMWorkloadRepository implements WorkloadRepository,
                 result.add(workload);
         return result.toArray(new WorkloadContext[result.size()]);
     }
-    
+
     @Override
     public synchronized WorkloadContext[] getArchivedWorkloads() {
-    	List<WorkloadContext> result = new ArrayList<WorkloadContext>();
+        List<WorkloadContext> result = new ArrayList<WorkloadContext>();
         for (WorkloadContext workload : workloads.values())
             if (workload.getArchived())
                 result.add(workload);

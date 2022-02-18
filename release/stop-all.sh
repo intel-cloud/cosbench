@@ -15,8 +15,8 @@
 #limitations under the License.
 #
 
-sh stop-controller.sh
+bash stop-controller.sh
 echo
 echo "======================================================"
 echo
-sh stop-driver.sh
+bash stop-driver.sh

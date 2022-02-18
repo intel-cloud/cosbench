@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.client.swauth;
 
@@ -68,8 +68,8 @@ public class SwiftAuthClient {
             method.setHeader(X_STORAGE_PASS, password);
             response = client.execute(method);
             if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_OK) &&
-				(response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100))
-				) {
+                (response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100))
+                ) {
                 authToken = response.getFirstHeader(X_AUTH_TOKEN) != null ? response
                         .getFirstHeader(X_AUTH_TOKEN).getValue() : null;
                 storageURL = response.getFirstHeader(X_STORAGE_URL) != null ? response
@@ -84,23 +84,23 @@ public class SwiftAuthClient {
                 EntityUtils.consume(response.getEntity());
         }
     }
-    
+
     public boolean check() {
-    	       HttpResponse response;
-    	       if(storageURL == null || authToken == null)
-    	    	   return false;
-    	       try {
-    	           HttpHead method = new HttpHead(storageURL);
-    	           method.setHeader(X_AUTH_TOKEN, authToken);
-    	           response = client.execute(method);
-    	
-    	           if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_OK) &&
-    	               (response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100)))
-    	              return true;
-    	       } catch (IOException e) {
-    	       }
-    	        return false;
+               HttpResponse response;
+               if(storageURL == null || authToken == null)
+                   return false;
+               try {
+                   HttpHead method = new HttpHead(storageURL);
+                   method.setHeader(X_AUTH_TOKEN, authToken);
+                   response = client.execute(method);
+
+                   if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_OK) &&
+                       (response.getStatusLine().getStatusCode() < (HttpStatus.SC_OK + 100)))
+                      return true;
+               } catch (IOException e) {
+               }
+                return false;
     }
-    
+
 
 }

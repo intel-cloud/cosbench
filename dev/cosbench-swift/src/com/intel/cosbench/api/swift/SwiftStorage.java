@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.api.swift;
 
@@ -36,9 +36,9 @@ import com.intel.cosbench.log.Logger;
 
 /**
  * This class encapsulates a Swift implementation for Storage API.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class SwiftStorage extends NoneStorage {
 
@@ -49,6 +49,7 @@ class SwiftStorage extends NoneStorage {
     private String token;
     private String storage_url;
     private String policy;
+    private int transfer_rate;
 
     public SwiftStorage() {
         /* empty */
@@ -62,16 +63,18 @@ class SwiftStorage extends NoneStorage {
         token = config.get(AUTH_TOKEN_KEY, AUTH_TOKEN_DEFAULT);
         storage_url = config.get(STORAGE_URL_KEY, STORAGE_URL_DEFAULT);
         policy = config.get(POLICY_KEY, POLICY_DEFAULT);
-        		
+        transfer_rate = config.getInt(TRANSFER_RATE, TRANSFER_RATE_DEFAULT);
+
         parms.put(CONN_TIMEOUT_KEY, timeout);
         parms.put(AUTH_TOKEN_KEY, token);
         parms.put(STORAGE_URL_KEY, storage_url);
         parms.put(POLICY_KEY, policy);
+        parms.put(TRANSFER_RATE, transfer_rate);
 
         logger.debug("using storage config: {}", parms);
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
-        
+
         client = new SwiftClient(httpClient);
         logger.debug("swift client has been initialized");
     }
@@ -79,37 +82,37 @@ class SwiftStorage extends NoneStorage {
     @Override
     public void setAuthContext(AuthContext info) {
         super.setAuthContext(info);
-        
+
         if(info != null) {
-        	token = info.getStr(AUTH_TOKEN_KEY);
-        	storage_url = info.getStr(STORAGE_URL_KEY);
+            token = info.getStr(AUTH_TOKEN_KEY);
+            storage_url = info.getStr(STORAGE_URL_KEY);
         }
-        
+
         try {
-            client.init(token, storage_url, policy);
+            client.init(token, storage_url, policy, transfer_rate);
         } catch (Exception e) {
             throw new StorageException(e);
         }
         logger.debug(new StringBuffer()
-        		.append("using auth token: ")
-        		.append(token)
-        		.append(", storage url: ")
-        		.append(storage_url)
-        		.append(", storage policy: ")
-        		.append(policy).toString());
+                .append("using auth token: ")
+                .append(token)
+                .append(", storage url: ")
+                .append(storage_url)
+                .append(", storage policy: ")
+                .append(policy).toString());
     }
 
     @Override
     public AuthContext getAuthContext() {
-		String token = client.getAuthToken();
-		String storage_url = client.getStorageURL();
-	
-		AuthContext info = new DefaultAuthContext();
-		info.put(AUTH_TOKEN_KEY, token);
-		info.put(STORAGE_URL_KEY, storage_url);
-	
-		logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
-		return info;
+        String token = client.getAuthToken();
+        String storage_url = client.getStorageURL();
+
+        AuthContext info = new DefaultAuthContext();
+        info.put(AUTH_TOKEN_KEY, token);
+        info.put(STORAGE_URL_KEY, storage_url);
+
+        logger.debug("returned auth token: {}, storage url: {}", token, storage_url);
+        return info;
     }
 
     @Override
@@ -144,13 +147,13 @@ class SwiftStorage extends NoneStorage {
         }
         return stream;
     }
-    
+
     @Override
     public InputStream getList(String container, String object, Config config) {
         super.getList(container, object, config);
         InputStream stream;
         try {
-        	stream = client.getTargetList(container, object);
+            stream = client.getTargetList(container, object);
         } catch (SocketTimeoutException ste) {
             throw new StorageTimeoutException(ste);
         } catch (ConnectTimeoutException cte) {

@@ -2,7 +2,7 @@
 <div class="content">
   <div>
     <center>
-      <span>Intel Corporation</span>
+      <span>Intel Corporation | EHualu Corporation</span>
     </center>
   </div>
 </div> <#-- end of content -->

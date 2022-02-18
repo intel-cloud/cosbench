@@ -39,14 +39,14 @@
 								<td >Authentication</td>
 								<td >
 									<select name="auth.type">
-									  <option value="swauth" selected="true">swauth</option>
+									  <option value="none" selected="true">none</option>
+									  <option value="swauth">swauth</option>
 									  <option value="keystone">keystone</option>
 									  <option value="mock">mock</option>
-									  <option value="none">none</option>
 									</select>
 								</td>
 								<td >
-									<input name="auth.config" type="text" style="width:500px" value="username=test:tester;password=testing;url=http://192.168.10.1:8080/auth/v1.0" 
+									<input name="auth.config" type="text" style="width:500px" value="" 
 					title="different auth system has different parameters: &#10;[swauth]: username=<account:username>;password=<password>;url=<url> &#10;[keystone]: username=<account:username>;password=<password>;url=<url> &#10;[mock]: delay=<time> &#10;[none]: " /> 
 								</td>
 							</tr>
@@ -55,14 +55,15 @@
 								<td >Storage</td>
 								<td >
 									<select name="storage.type">
-									  <option value="swift" selected="true">swift</option>
+									  <option value="s3" selected="true">s3</option>
+									  <option value="swift">swift</option>
 									  <option value="ampli">amplistor</option>
 									  <option value="mock">mock</option>
 									  <option value="none">none</option>
 									</select>
 								</td>
 								<td >
-									<input name="storage.config" type="text" style="width:500px" value=""
+									<input name="storage.config" type="text" style="width:500px" value="endpoint=<endpoint>;accesskey=<accesskey>;secretkey=<secretkey>;path_style_access=true"
 					title="different storage system has different parameters: &#10 [swift]:  &#10 [ampli]: host=<host>;port=<port>;nsroot=<namespace root>;policy=<policy id> &#10; [mock]: delay=<time>;&#10 [none]: " /> 
 								</td>
 							</tr>

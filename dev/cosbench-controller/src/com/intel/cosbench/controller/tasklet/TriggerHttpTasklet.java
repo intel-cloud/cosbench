@@ -1,3 +1,21 @@
+/**
+
+Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2019 OpenIO Corporation, All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+*/
 package com.intel.cosbench.controller.tasklet;
 
 import java.io.IOException;
@@ -24,7 +42,7 @@ import com.intel.cosbench.protocol.TriggerResponse;
 import com.intel.cosbench.service.UnexpectedException;
 
 abstract class TriggerHttpTasklet implements Tasklet{
-	private transient HttpClient httpClient;
+    private transient HttpClient httpClient;
     private transient ObjectMapper mapper;
     protected DriverContext driver;
     protected String trigger = null;
@@ -32,21 +50,21 @@ abstract class TriggerHttpTasklet implements Tasklet{
     protected String scriptName = null;
     protected String wsId = null;
 
-	Class<TriggerResponse> clazz = TriggerResponse.class;
-    
+    Class<TriggerResponse> clazz = TriggerResponse.class;
+
     private static final int TIMEOUT = 300 * 1000;
     protected static final Logger LOGGER = LogFactory.getSystemLogger();
-    
+
     protected abstract void execute();
     protected abstract void handleResponse(TriggerResponse response);
-    
+
     public TriggerHttpTasklet(DriverContext driver, String trigger, boolean option, String wsId) {
-		this.driver = driver;
-		this.trigger = trigger;
-		this.isEnable = option;
-		this.wsId = wsId;		
-	}
-    
+        this.driver = driver;
+        this.trigger = trigger;
+        this.isEnable = option;
+        this.wsId = wsId;
+    }
+
     protected void initObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         DeserializationConfig config = mapper.copyDeserializationConfig();
@@ -117,13 +135,13 @@ abstract class TriggerHttpTasklet implements Tasklet{
             LOGGER.debug("[ << ] - {} [body-omitted]", status);
         return body; // the response body
     }
-    
+
     protected void issueCommand(String command, String content) {
         TriggerResponse response = null;
         String body = issueHttpRequest(command, content);
         if (body == null) {
-        	LOGGER.error("TriggerResponse body is null");
-        	return;
+            LOGGER.error("TriggerResponse body is null");
+            return;
         }
         try {
             response = this.mapper.readValue(body, clazz);
@@ -138,11 +156,11 @@ abstract class TriggerHttpTasklet implements Tasklet{
         }
         handleResponse(response);
     }
-    
+
     @Override
     public Tasklet call() {
         try {
-        	execute();
+            execute();
         } catch (Exception e) {
             LOGGER.error("unexpected exception of trigger", e);
         }

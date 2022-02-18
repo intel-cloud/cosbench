@@ -21,6 +21,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring/controller-web-context.xml</param-value>
 		</init-param>
+		<!-- 表示容器再启动时立即加载servlet -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -34,6 +35,10 @@
 	<servlet-mapping>
 		<servlet-name>main</servlet-name>
 		<url-pattern>*.csv</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>main</servlet-name>
+		<url-pattern>/prometheus</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -73,6 +78,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>resource</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>resource</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
 
@@ -100,6 +109,10 @@
 	<mime-mapping>
 		<extension>css</extension>
 		<mime-type>text/css</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>js</extension>
+		<mime-type>text/javascript</mime-type>
 	</mime-mapping>
 	<mime-mapping>
 		<extension>png</extension>

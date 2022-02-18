@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.web;
 
@@ -30,8 +30,7 @@ import com.intel.cosbench.web.*;
 
 public class WorkersPageController extends AbstractController {
 
-    protected DriverService driver;
-
+    protected  DriverService driver;
     public void setDriver(DriverService driver) {
         this.driver = driver;
     }
@@ -45,7 +44,8 @@ public class WorkersPageController extends AbstractController {
         MissionInfo info = driver.getMissionInfo(id);
         if (info == null)
             throw new NotFoundException();
-        return createResult(info);
+        ModelAndView result = createResult(info).addObject("dInfo", driver.getDriverInfo());
+        return result;
     }
 
     private static ModelAndView createResult(MissionInfo info) {

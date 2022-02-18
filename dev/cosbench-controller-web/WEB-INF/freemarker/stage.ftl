@@ -62,9 +62,9 @@
         </tr>
       </#list>
     </table>
-    <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">hide details</a></p>
+    <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">Hide details</a></p>
   <#else>  
-    <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}&showDetails=True">more info</a></p>
+    <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}&showDetails=True">More info</a></p>
   </#if>
   <#if isStopped >
     <h3>Final Result</h3>
@@ -72,12 +72,12 @@
     <#include "metrics.ftl">
     <p>
     <#if perfDetails >
-      <a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">hide peformance details</a>
+      <a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">Hide peformance details</a>
     <#else>
-      <a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}&perfDetails=True">show peformance details</a>
+      <a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}&perfDetails=True">Show peformance details</a>
     </#if>
-    <a href="timeline.html?wid=${wInfo.id}&sid=${sInfo.id}">view timeline status</a>
     </p>
+    <p><a href="timeline.html?wid=${wInfo.id}&sid=${sInfo.id}">View timeline status</a></p>
   <#elseif isRunning >
     <h3>Snapshot</h3>
     <#assign snapshot = sInfo.snapshot >
@@ -112,7 +112,7 @@
           <td><span class="task-state-${tInfo.state?lower_case} state">${tInfo.state?lower_case}</span></td>
           <td>
             <#if tInfo.missionId?? >
-              <a href="${schedule.driver.url}/mission.html?id=${tInfo.missionId}" target="_blank">view details</a>
+              <a href="${schedule.driver.url}/mission.html?id=${tInfo.missionId}" target="_blank">View details</a>
             <#else>
               N/A
             </#if>
@@ -124,7 +124,7 @@
   <#else>
     <p class="warn">As the stage has not been run yet, no task information is available right now.</p>
   </#if>
-  <p><a href="workload.html?id=${wInfo.id}">go back to workload</a></p>
+  <p><a href="workload.html?id=${wInfo.id}">Go back to workload</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->

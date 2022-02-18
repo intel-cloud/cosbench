@@ -80,17 +80,20 @@
 <div id="main">
 <div class="top"><br /></div>
 <div class="content">
-  <h3>Controller Overview  <span class="counter state">${cInfo.driverCount}</span></h3>
+
+  <h3>Controller Overview</h3>
   <p>
     <span class="grid">
       <span class="label"><strong>Name</strong>:</span>
-      <#if cInfo.name == "N/A" ><i class="low">not configured</i><#else>${cInfo.name}</#if>
+      <#if cInfo.name == "N/A" ><i class="low">Default Controller</i><#else>${cInfo.name}</#if>
     </span>
     <span class="grid">
       <span class="label"><strong>URL</strong>:</span>
-      <#if cInfo.url == "N/A" ><i class="low">not configured</i><#else>${cInfo.url}</#if>
+      <#if cInfo.url == "N/A" ><i class="low">http://127.0.0.1:19088/controller/index.html</i><#else>${cInfo.url}</#if>
     </span>
   </p>
+  
+  <h3>Drivers Overview  <span class="counter state">${cInfo.driverCount} driver(s)</span></h3>
   <table class="info-table">
     <tr>
       <th>Driver</th>
@@ -109,20 +112,20 @@
         <#else>
         	<td><div class="dead"></div></td>
         </#if>
-        <td><a href="${dInfo.url}" target="_blank">view details</a></td>
+        <td><a href="${dInfo.url}" target="_blank">View details</a></td>
       </tr>
     </#list>
   </table>
   
   <div>
   	<p/>
-    <p><a href="submit.html">submit new workloads</a></p>
-  	<p><a href="config.html">config workloads</a></p>
-  	<p><a href="advanced-config.html">advanced config for workloads</a></p>
+    <p><a href="submit.html">Submit new workloads</a></p>
+  	<p><a href="config.html">Config workloads</a></p>
+  	<p><a href="advanced-config.html">Advanced config for workloads</a></p>
   	<p/>
   </div>
   
-  <h3>Active Workloads  <span class="counter state">${aInfos?size}</span></h3>
+  <h3>Active Workloads <span class="counter state">${aInfos?size}</span></h3>
   <div>
     <table class="info-table">
       <tr>
@@ -156,21 +159,24 @@
 			</form>
 			</#if>
           </td>
-          <td><a href="workload.html?id=${aInfo.id}">view details</a></td>
+          <td><a href="workload.html?id=${aInfo.id}">View details</a></td>
         </tr>
       </#list>
     </table>
   </div>
   
+  <br>
+    
   <form id="cancelForm" method="POST" action="index.html">
   	<input id="cancelIds" type="hidden" name="cancelIds" value="">
   	<input type="hidden" name="cancel" value="yes">
   	<input type="button" onclick="cancelWorkloads();" value="Cancel">
   </form>
   
+  
   <div>
-   <h3>Historical Workloads  <span class="counter state">${hInfos?size}</span></h3>
-    <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
+   <h3>Historical Workloads <span class="counter state">${hInfos?size}</span></h3>
+    <p><a href="matrix.html?type=histo&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">View performance matrix</a></p>
     <table class="info-table">
       <tr>
         <th style="width:5%;"><input type="checkbox" id="AllHistory" onclick="checkAll(event,'HistoryWorkload')"></th>
@@ -193,57 +199,67 @@
             </#list>
           </td>
           <td onclick="checkMe('${hInfo.id}','AllHistory');"><span class="workload-state-${hInfo.state?lower_case} state">${hInfo.state?lower_case}</span></td>
-          <td><a href="workload.html?id=${hInfo.id}">view details</a></td>
+          <td><a href="workload.html?id=${hInfo.id}">View details</a></td>
         </tr>
       </#list>
     </table>
     
-
-    <h3>Archived Workloads  <span class="counter state">${archInfos?size}</span></h3>
-    <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">view performance matrix</a></p>
-    <p>
-	    <#if loadArch == false>
-		  <p><a href="index.html?loadArch=true">load archived workloads</a></p>
-		  <#elseif loadArch == true>
-		  <p><a href="index.html?loadArch=false">unload archived workloads</a></p>
-	    </#if>
-    </p>
-    
-    <#if loadArch == true>
-    <table class="info-table">
-      <tr>
-        <th style="width:5%;"><input type="checkbox" id="AllArchived" onclick="checkAll(event,'ArchivedWorkload')"></th>
-        <th class="id" style="width:5%;">ID</th>
-        <th>Name</th>
-        <th>Duration</th>
-        <th>Op-Info</th>
-        <th>State</th>
-        <th style="width:15%;">Link</th>
-      </tr>
-       <#list archInfos as aInfo >
-        <tr>
-          <td><input type="checkbox" id="checkbox-${aInfo.id}" name="ArchivedWorkload" onclick="checkItem(event,'AllArchived')" value="${aInfo.id}"></td>
-          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.id}</td>
-          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.workload.name}</td>
-          <td onclick="checkMe('${aInfo.id}','AllArchived');");"><#if aInfo.startDate?? >${aInfo.startDate?datetime}<#else>N/A</#if> - ${aInfo.stopDate?time}</td>
-          <td onclick="checkMe('${aInfo.id}','AllArchived');");">
-            <#list aInfo.allOperations as op >
-              ${op}<#if op_has_next>,</#if>
-            </#list>
-          </td>
-          <td onclick="checkMe('${aInfo.id}','AllArchived');"><span class="workload-state-${aInfo.state?lower_case} state">${aInfo.state?lower_case}</span></td>
-          <td><a href="workload.html?id=${aInfo.id}">view details</a></td>
-        </tr>
-      </#list>
-    </table>
-    </#if>
+    <br>
     
     <form id="resubmitForm" method="POST" action="index.html">
   		<input id="resubmitIds" type="hidden" name="resubmitIds" value="">
   		<input type="hidden" name="resubmit" value="yes">
-  		<input type="button" onclick="resubmitWorkloads();" value="resubmit">
+  		<input type="button" onclick="resubmitWorkloads();" value="Resubmit">
   	</form>
-  	
+    
+
+    <h3>Archived Workloads  <span class="counter state">${archInfos?size}</span></h3>
+    <p><a href="matrix.html?type=arch&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&metrics=t&metrics=succ">View performance matrix</a></p>
+    <p>
+	    <#if loadArch == false>
+		  <p><a href="index.html?loadArch=true">Load archived workloads</a></p>
+		  <#elseif loadArch == true>
+		  <p><a href="index.html?loadArch=false">Unload archived workloads</a></p>
+	    </#if>
+    </p>
+    
+    <#if loadArch == true>
+	    <table class="info-table">
+	      <tr>
+	        <th style="width:5%;"><input type="checkbox" id="AllArchived" onclick="checkAll(event,'ArchivedWorkload')"></th>
+	        <th class="id" style="width:5%;">ID</th>
+	        <th>Name</th>
+	        <th>Duration</th>
+	        <th>Op-Info</th>
+	        <th>State</th>
+	        <th style="width:15%;">Link</th>
+	      </tr>
+	       <#list archInfos as aInfo >
+	        <tr>
+	          <td><input type="checkbox" id="checkbox-${aInfo.id}" name="ArchivedWorkload" onclick="checkItem(event,'AllArchived')" value="${aInfo.id}"></td>
+	          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.id}</td>
+	          <td onclick="checkMe('${aInfo.id}','AllArchived');");">${aInfo.workload.name}</td>
+	          <td onclick="checkMe('${aInfo.id}','AllArchived');");"><#if aInfo.startDate?? >${aInfo.startDate?datetime}<#else>N/A</#if> - ${aInfo.stopDate?time}</td>
+	          <td onclick="checkMe('${aInfo.id}','AllArchived');");">
+	            <#list aInfo.allOperations as op >
+	              ${op}<#if op_has_next>,</#if>
+	            </#list>
+	          </td>
+	          <td onclick="checkMe('${aInfo.id}','AllArchived');"><span class="workload-state-${aInfo.state?lower_case} state">${aInfo.state?lower_case}</span></td>
+	          <td><a href="workload.html?id=${aInfo.id}">View details</a></td>
+	        </tr>
+	      </#list>
+	    </table>
+	    
+	    <br>
+	    
+	    <form id="resubmitForm" method="POST" action="index.html">
+	  		<input id="resubmitIds" type="hidden" name="resubmitIds" value="">
+	  		<input type="hidden" name="resubmit" value="yes">
+	  		<input type="button" onclick="resubmitWorkloads();" value="Resubmit">
+	  	</form>
+    </#if>
+    
   </div>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>

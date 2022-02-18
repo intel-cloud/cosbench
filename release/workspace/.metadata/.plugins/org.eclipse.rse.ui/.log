@@ -1,0 +1,58 @@
+Sun Mar 08 15:47:20 CST 2020
+ERROR org.eclipse.rse.ui  Error saving new subsystem Local Files
+java.lang.IllegalStateException: Workbench has not been created yet.
+	at org.eclipse.ui.PlatformUI.getWorkbench(PlatformUI.java:93)
+	at org.eclipse.rse.core.subsystems.SubSystem.commit(SubSystem.java:3301)
+	at org.eclipse.rse.core.subsystems.SubSystemConfiguration.saveSubSystem(SubSystemConfiguration.java:2525)
+	at org.eclipse.rse.core.subsystems.SubSystemConfiguration.createSubSystem(SubSystemConfiguration.java:1051)
+	at org.eclipse.rse.internal.core.model.SystemRegistry.createSubSystems(SystemRegistry.java:1667)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreSubSystem(RSEDOMImporter.java:341)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreConnectorService(RSEDOMImporter.java:220)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreHost(RSEDOMImporter.java:188)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreProfile(RSEDOMImporter.java:105)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.load(RSEPersistenceManager.java:528)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.loadProfiles(RSEPersistenceManager.java:507)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:365)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:351)
+	at org.eclipse.rse.internal.core.RSEInitJob.run(RSEInitJob.java:206)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+--------------------------------------------
+Sun Mar 08 15:47:20 CST 2020
+ERROR org.eclipse.rse.ui  Error saving subsystem Local Files
+java.lang.IllegalStateException: Workbench has not been created yet.
+	at org.eclipse.ui.PlatformUI.getWorkbench(PlatformUI.java:93)
+	at org.eclipse.rse.core.subsystems.SubSystem.commit(SubSystem.java:3301)
+	at org.eclipse.rse.core.subsystems.SubSystemConfiguration.saveSubSystem(SubSystemConfiguration.java:2525)
+	at org.eclipse.rse.core.subsystems.SubSystem.filterEventFilterPoolReferenceCreated(SubSystem.java:1225)
+	at org.eclipse.rse.internal.core.filters.SystemFilterPoolReferenceManager.addReferenceToSystemFilterPool(SystemFilterPoolReferenceManager.java:484)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreFilterPoolReference(RSEDOMImporter.java:547)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreSubSystem(RSEDOMImporter.java:363)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreConnectorService(RSEDOMImporter.java:220)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreHost(RSEDOMImporter.java:188)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreProfile(RSEDOMImporter.java:105)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.load(RSEPersistenceManager.java:528)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.loadProfiles(RSEPersistenceManager.java:507)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:365)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:351)
+	at org.eclipse.rse.internal.core.RSEInitJob.run(RSEInitJob.java:206)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+--------------------------------------------
+Sun Mar 08 15:47:20 CST 2020
+ERROR org.eclipse.rse.ui  Error saving new subsystem Local Shells
+java.lang.IllegalStateException: Workbench has not been created yet.
+	at org.eclipse.ui.PlatformUI.getWorkbench(PlatformUI.java:93)
+	at org.eclipse.rse.core.subsystems.SubSystem.commit(SubSystem.java:3301)
+	at org.eclipse.rse.core.subsystems.SubSystemConfiguration.saveSubSystem(SubSystemConfiguration.java:2525)
+	at org.eclipse.rse.core.subsystems.SubSystemConfiguration.createSubSystem(SubSystemConfiguration.java:1051)
+	at org.eclipse.rse.internal.core.model.SystemRegistry.createSubSystems(SystemRegistry.java:1667)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreSubSystem(RSEDOMImporter.java:341)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreConnectorService(RSEDOMImporter.java:220)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreHost(RSEDOMImporter.java:188)
+	at org.eclipse.rse.internal.persistence.dom.RSEDOMImporter.restoreProfile(RSEDOMImporter.java:105)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.load(RSEPersistenceManager.java:528)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.loadProfiles(RSEPersistenceManager.java:507)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:365)
+	at org.eclipse.rse.internal.persistence.RSEPersistenceManager.restoreProfiles(RSEPersistenceManager.java:351)
+	at org.eclipse.rse.internal.core.RSEInitJob.run(RSEInitJob.java:206)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+--------------------------------------------

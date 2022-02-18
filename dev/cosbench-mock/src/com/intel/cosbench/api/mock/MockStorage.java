@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.api.mock;
 
@@ -31,9 +31,9 @@ import com.intel.cosbench.log.Logger;
 /**
  * This is an mocked storage, which just inserts a short delay before return for
  * each request.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class MockStorage extends NoneStorage {
 
@@ -62,7 +62,7 @@ class MockStorage extends NoneStorage {
         stats.addProfile("PUT");
         stats.addProfile("DEL");
         logger.debug("op profiling data has been initialized");
-        
+
         size = config.getLong(OBJECT_SIZE_KEY, OBJECT_SIZE_DEFAULT);
         delay = config.getLong(OP_DELAY_KEY, OP_DELAY_DEFAULT);
         errors = config.getDouble(OP_ERRORS_KEY, OP_ERRORS_DEFAULT);
@@ -76,7 +76,7 @@ class MockStorage extends NoneStorage {
         parms.put(PROFILING_KEY, profiling);
 
         logger.debug("using storage config: {}", parms);
-        
+
         logger.debug("mock client has been initialized");
     }
 
@@ -107,7 +107,7 @@ class MockStorage extends NoneStorage {
         MockUtils.sleep(delay);
         return new NullInputStream(size);
     }
-    
+
     @Override
     public InputStream getList(String container, String object, Config config) {
         super.getList(container, object, config);

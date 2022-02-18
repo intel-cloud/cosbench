@@ -27,7 +27,11 @@
         <#if allOps!false || write!false >checked="true"</#if> /></span> Write
       <span class="checkbox"><input name="ops" type="checkbox" value="delete"
         <#if allOps!false || delete!false >checked="true"</#if> /></span> Delete
-     <span class="checkbox"><input name="ops" type="checkbox" value="init"
+      <span class="checkbox"><input name="ops" type="checkbox" value="restore"
+        <#if allOps!false || restore!false >checked="true"</#if> /></span> Restore
+      <span class="checkbox"><input name="ops" type="checkbox" value="mwrite"
+        <#if allOps!false || mwrite!false >checked="true"</#if> /></span> MWrite
+      <span class="checkbox"><input name="ops" type="checkbox" value="init"
         <#if allOps!false || init!false >checked="true"</#if> /></span> Init
       <span class="checkbox"><input name="ops" type="checkbox" value="prepare"
         <#if allOps!false || prepare!false >checked="true"</#if> /></span> Prepare
@@ -70,8 +74,8 @@
       <span class="checkbox"><input name="others" type="checkbox" value="cfg"
         <#if cfg!false >checked="true"</#if> /></span> Config Info
       <br /><br />
-      <input type="submit" value="filter">
-      <input type="reset" value="reset"/>
+      <input type="submit" value="Filter">
+      <input type="reset" value="Reset"/>
     </form>
   </div>
   <h3>Metrics</h3>
@@ -293,11 +297,11 @@
     </#list>
   </table>
   <p>
-    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&others=cfg">show RT only</a>
-    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=t&others=cfg">show T only</a>
-    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=bw&others=cfg">show BW only</a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=rt&rthisto=_95rt&others=cfg">| Show RT only </a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=t&others=cfg">| Show T only </a>
+    <a href="matrix.html?type=${type}&ops=read&ops=write&ops=delete&metrics=bw&others=cfg">| Show BW only |</a>
   </p>
-  <p><a href="index.html">go back to index</a></p>
+  <p><a href="index.html">Go back to index</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->

@@ -1,0 +1,98 @@
+
+ COSBench 0.4.7.6(ehualu 2022.02.14)
+------------------------------------
+- #300: Refactor: s3 and s3v2 will not be supported, so s3v2 was deleted, add ess and essv2.
+		e.g: <storage type="ess" config="endpoint=xxx" />
+		e.g: <storage type="essv2" config="endpoint=xxx" />
+		
+		Notice:
+			if need new features, please use ess/essv2, thanks.
+			ess means e-SuperStor(s3), ^_^
+			ess use aws-sdk-java(version is 1.12.158 now)
+			essv2 use aws-sdk-java-v2(version is 2.17.129)
+		
+		ess/essv2 storage Features: 
+			no_verify_ssl: <storage type="ess" config="no_verify_ssl=true;...other config..."/> 
+			storage_class: <storage type="ess" config="storage_class="GLACIER";...other config..."/>
+			Restore object: <operation type="restore" ...>
+					 <storage type="ess" config="restore_days=1;...path_style_access=true;timeout=100000"/>
+			Multipart upload: <operation type="mwrite" ...>
+							  <storage type="s3" config="part_size=5242880;...path_style_access=true;timeout=100000"/>
+			Support GiB，MiB，KiB(2^n，not 10^n): 
+				<operation type="write" ratio="100" config="cprefix=xx;containers=c(1);oprefix=xx;objects=s(1,10);sizes=c(4)KiB" />
+			Head object: <operation type="head" ...>
+			mprepare, multipart upload object at prepare stage.
+			mfilewrite, multipart upload object at filewrite stage.
+			
+		ess Features special:
+			prefetch and range read: please read s3-config-prefetch-sample.xml and s3-config-range-sample.xml in the config dir.
+			
+		essv2 Features special::
+			aws_region: <storage type="essv2" config="endpoint=xxx;aws_region=us-east-1" />
+						default is us-east-1
+
+
+ COSBench 0.4.7.5(ehualu 2021.10.30)
+------------------------------------
+- #299: New feature: add prefetch and range read.(by @bissenbay)
+- #298: New feature to s3v2: add aws_region parameter(default is us-east-1)
+		e.g: <storage type="s3v2" config="endpoint=xxx;aws_region=us-east-1" />
+
+ COSBench 0.4.7.5(ehualu 2021.10.30)
+------------------------------------
+- #297: New feature: add Head-object method.
+- #296: Bug fixed: launch s3v2 failed when starting driver.
+
+  COSBench 0.4.7.4(ehualu 2021.10.11)
+------------------------------------
+- #295: Set osgi Bundle-RequiredExecutionEnvironment to JavaSE-1.8,JavaSE-1.6
+- #294: New Storage: s3v2(same to s3 except sdk version: s3v2 is aws-sdk-java-v2).
+		e.g. : <storage type="s3v2" config="endpoint=xxx" />
+
+- #293: Logs improvement.
+
+  COSBench 0.4.7.3(ehualu 2021.09.27)
+------------------------------------
+- #292: New feature: support GiB，MiB，KiB ===》1024，not 1000.
+- #291: Logs improvement.
+
+
+  COSBench 0.4.7.2(ehualu 2021.09.06)
+------------------------------------
+- #290: Bug fixed: if error, success ratio always 100%.
+- #289: Logs improvement.
+- #288: Web UI improvement.
+
+  COSBench 0.4.7.1(ehualu 2021.08.03)
+------------------------------------
+- #287: Add Multipart upload method and part_size parameter: You can set it now. Default is 5MiB.
+		e.g. : <operation type="mwrite" ...>
+		<storage type="s3" config="part_size=5242880;...path_style_access=true;timeout=100000"/>
+
+  COSBench 0.4.7(ehualu 2021.07.25)
+------------------------------------
+- #286: S3 java SDK version: 1.11.x -> 1.12.x
+
+  COSBench 0.4.7(ehualu 2021.07.12)
+------------------------------------
+- #285: Logs improvement
+- #284: S3 java SDK version: 1.10.x -> 1.11.x
+- #283: Add Restore method and restore_days parameter: restore_days. You can set it now. Default is 1.
+		e.g. : <operation type="restore" ...>
+		<storage type="s3" config="restore_days=1;...path_style_access=true;timeout=100000"/>
+
+  COSBench 0.4.7(ehualu 2021.02.14)
+------------------------------------
+- #282: Add StorageClass switcher: storage_class. You can set it now. Default is STANDARD.
+		e.g. : <storage type="s3" config="storage_class="GLACIER";...other config..."/>
+
+  COSBench 0.4.7(ehualu 2020.11.26)
+------------------------------------
+- #281: Add https switcher: no_verify_ssl. if true, ssl will not be verified. Default is false.
+		e.g. : <storage type="s3" config="no_verify_ssl=true;...other config..."/>
+
+
+  COSBench 0.4.7(ehualu 2020.11.23)
+------------------------------------
+- #280: Coding start.
+

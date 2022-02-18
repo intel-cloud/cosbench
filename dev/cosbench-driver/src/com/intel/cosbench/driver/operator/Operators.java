@@ -1,6 +1,7 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2021-2022 eHualu Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.operator;
 
@@ -24,32 +25,63 @@ import com.intel.cosbench.config.*;
 public class Operators {
 
 	public static Operator getOperator(Operation op, Config config) {
-        AbstractOperator operator = createOperator(op.getType());
-        operator.init(op.getId(), op.getRatio(), op.getDivision(), config);
-        return operator;
-    }
+		AbstractOperator operator = createOperator(op.getType());
+		operator.init(op.getId(), op.getRatio(), op.getDivision(), config);
+		return operator;
+	}
 
-    private static AbstractOperator createOperator(String type) {
-        if (StringUtils.equals(type, Reader.OP_TYPE))
-            return new Reader();
-        if (StringUtils.equals(type, Writer.OP_TYPE))
-            return new Writer();
-        if (StringUtils.equals(type, Lister.OP_TYPE))
-            return new Lister();
-        if (StringUtils.equals(type, FileWriter.OP_TYPE))
-            return new FileWriter();
-        if (StringUtils.equals(type, Preparer.OP_TYPE))
-            return new Preparer();
-        if (StringUtils.equals(type, Cleaner.OP_TYPE))
-            return new Cleaner();
-        if (StringUtils.equals(type, Initializer.OP_TYPE))
-            return new Initializer();
-        if (StringUtils.equals(type, Disposer.OP_TYPE))
-            return new Disposer();
-        if (StringUtils.equals(type, Deleter.OP_TYPE))
-            return new Deleter();
-        String msg = "unrecognized operation: " + type;
-        throw new ConfigException(msg);
-    }
+	private static AbstractOperator createOperator(String type) {
+		// TODO: switch case maybe better.
+		
+		if (StringUtils.equals(type, Reader.OP_TYPE)) {
+			return new Reader();
+		}
+		if (StringUtils.equals(type, Writer.OP_TYPE)) {
+			return new Writer();
+		}
+		if (StringUtils.equals(type, Lister.OP_TYPE)) {
+			return new Lister();
+		}
+		if (StringUtils.equals(type, FileWriter.OP_TYPE)) {
+			return new FileWriter();
+		}
+		if (StringUtils.equals(type, Preparer.OP_TYPE)) {
+			return new Preparer();
+		}
+		if (StringUtils.equals(type, Cleaner.OP_TYPE)) {
+			return new Cleaner();
+		}
+		if (StringUtils.equals(type, Initializer.OP_TYPE)) {
+			return new Initializer();
+		}
+		if (StringUtils.equals(type, Disposer.OP_TYPE)) {
+			return new Disposer();
+		}
+		if (StringUtils.equals(type, Deleter.OP_TYPE)) {
+			return new Deleter();
+		}
+		// 2021.7.12 ADD
+		if (StringUtils.equals(type, Restorer.OP_TYPE)) {
+			return new Restorer();
+		}
+		// 2021.8.3 ADD
+		if (StringUtils.equals(type, MWriter.OP_TYPE)) {
+			return new MWriter();
+		}
+		// 2021.10.30 ADD
+		if (StringUtils.equals(type, Header.OP_TYPE)) {
+			return new Header();
+		}
+		// 2022.02.14 ADD
+		if (StringUtils.equals(type, MPreparer.OP_TYPE)) {
+			return new MPreparer();
+		}
+		if (StringUtils.equals(type, MFileWriter.OP_TYPE)) {
+			return new MFileWriter();
+		}
+
+		String msg = "unrecognized operation: " + type;
+		throw new ConfigException(msg);
+	}
 
 }

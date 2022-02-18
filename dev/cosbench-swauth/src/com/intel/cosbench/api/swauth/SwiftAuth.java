@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.api.swauth;
 
@@ -33,9 +33,9 @@ import com.intel.cosbench.log.Logger;
 
 /**
  * This class encapsulates a Swauth implementation for the Auth-API.
- * 
+ *
  * @author ywang19, qzheng7
- * 
+ *
  */
 class SwiftAuth extends NoneAuth {
 
@@ -77,13 +77,13 @@ class SwiftAuth extends NoneAuth {
     }
     @Override
     public void init() {
-    	super.init();
-    	logger.debug("a second init of client using auth config: {}",parms);
-    	HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
+        super.init();
+        logger.debug("a second init of client using auth config: {}",parms);
+        HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
         client = new SwiftAuthClient(httpClient, url, username, password);
         logger.debug("a second swauth client has been initialized");
     }
-    
+
 
     @Override
     public void dispose() {
@@ -94,11 +94,11 @@ class SwiftAuth extends NoneAuth {
     @Override
     public AuthContext login() {
         super.login();
-//    	AuthContext authContext = new AuthContext();
-//    	SwiftTokenCache tokenCache = SwiftTokenCacheImpl.getSwiftTokenCache(client);
-//    	authContext.put("token",tokenCache.getToken());
+//        AuthContext authContext = new AuthContext();
+//        SwiftTokenCache tokenCache = SwiftTokenCacheImpl.getSwiftTokenCache(client);
+//        authContext.put("token",tokenCache.getToken());
 //        authContext.put("storage_url", tokenCache.getStorageURL());
-//    	return authContext;
+//        return authContext;
         try {
             client.login();
         } catch (SwiftAuthClientException se) {
@@ -108,10 +108,10 @@ class SwiftAuth extends NoneAuth {
         }
         return createContext();
     }
-    
+
     private AuthContext createContext() {
         SwiftAuthContext context = new SwiftAuthContext(url, username, password, client.getAuthToken(), client.getStorageURL());
-        
+
         return context;
     }
 }

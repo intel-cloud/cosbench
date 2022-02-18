@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.exporter;
 
@@ -27,7 +27,7 @@ import com.intel.cosbench.model.StageInfo;
 
 /**
  * This class is to export performance matrix data into CSV format.
- * 
+ *
  * @author ywang19, qzheng7
  *
  */
@@ -67,7 +67,7 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
         if (spt.equals(opt))
             buffer.append(opt);
         else
-        	buffer.append(opt + '-' + spt);
+            buffer.append(opt + '-' + spt);
         buffer.append(',');
         buffer.append(metrics.getSampleCount()).append(',');
         buffer.append(metrics.getByteCount()).append(',');
@@ -81,9 +81,9 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
 
         double pt = r - metrics.getAvgXferTime();
         if (pt > 0)
-        	buffer.append(NUM.format(pt));
+            buffer.append(NUM.format(pt));
         else
-        	buffer.append("N/A");
+            buffer.append("N/A");
         buffer.append(',');
 
         writeLatencyInfo(buffer, metrics.getLatency());
@@ -102,22 +102,22 @@ class CSVMatrixExporter extends AbstractMatrixExporter {
 
     private static void writeLatencyInfo(StringBuilder buffer, Histogram latency)
             throws IOException {
-    	if(latency == null) {
-    		writePercentileRT(buffer, null);
-    		writePercentileRT(buffer, null);
-    		writePercentileRT(buffer, null);
-    		writePercentileRT(buffer, null);
-    		writePercentileRT(buffer, null);
-    		writePercentileRT(buffer, null);
-    	}else {   
-    		writePercentileRT(buffer, latency.get_60());
-    		writePercentileRT(buffer, latency.get_80());
-    		writePercentileRT(buffer, latency.get_90());
-    		writePercentileRT(buffer, latency.get_95());
-    		writePercentileRT(buffer, latency.get_99());
-    		writePercentileRT(buffer, latency.get_100());
-		}   
- 
+        if(latency == null) {
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+            writePercentileRT(buffer, null);
+        }else {
+            writePercentileRT(buffer, latency.get_60());
+            writePercentileRT(buffer, latency.get_80());
+            writePercentileRT(buffer, latency.get_90());
+            writePercentileRT(buffer, latency.get_95());
+            writePercentileRT(buffer, latency.get_99());
+            writePercentileRT(buffer, latency.get_100());
+        }
+
     }
 
     private static void writePercentileRT(StringBuilder buffer, long[] resTime) {

@@ -14,7 +14,7 @@
     <h3>Submission Results</h3>
     <div>
       <p><span class="success"><strong>Success</strong>: ${submitted}!</span><p>
-      <p><a href="workload.html?id=${id}">view workload info</a></p>
+      <p><a href="workload.html?id=${id}">View workload info</a></p>
       <p>You may continue to submit new workloads via the following form.</p>
     </div>
   </#if>
@@ -24,12 +24,12 @@
       <#if error?? >
         <p><span class="error"><strong>Note</strong>: ${error}!</span></p>
       </#if>
-      <label for="config">workload config:</label>
+      <label for="config">Workload config:</label>
       <input name="config" type="file" id="config" style="width:500px" />
-      <input type="submit" value="submit" /> 
+      <input type="submit" value="Submit" /> 
     </form>
   </div>
-  <p><a href="index.html">go back to index</a></p>
+  <p><a href="index.html">Go back to index</a></p>
   <h3>Active Workloads</h3>
   <div>
     <table class="info-table">
@@ -50,7 +50,7 @@
           <td>${aInfo.workload.name}</td>
           <td>${aInfo.submitDate?datetime}</td>
           <td><span class="workload-state-${aInfo.state?lower_case} state">${aInfo.state?lower_case}</span></td>
-          <td><a href="workload.html?id=${aInfo.id}">view details</a></td>
+          <td><a href="workload.html?id=${aInfo.id}">View details</a></td>
         </tr>
       </#list>
     </table>

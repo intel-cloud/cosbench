@@ -43,8 +43,8 @@
   <h3>Timeline Status</h3>
   <#assign allSnapshots = sInfo.snapshots >
   <#include "timeline-metrics.ftl">
-  <p><a href="timeline.csv?wid=${wInfo.id}&sid=${sInfo.id}">export CSV file</a></p>
-  <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">go back to stage</a></p>
+  <p><a href="timeline.csv?wid=${wInfo.id}&sid=${sInfo.id}">Export CSV file</a></p>
+  <p><a href="stage.html?wid=${wInfo.id}&sid=${sInfo.id}">Go back to stage</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->

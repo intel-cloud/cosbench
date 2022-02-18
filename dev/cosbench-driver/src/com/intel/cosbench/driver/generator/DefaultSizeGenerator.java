@@ -1,6 +1,7 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
+Copyright 2021 EHualu Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,8 +13,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.driver.generator;
 
@@ -25,9 +26,11 @@ import com.intel.cosbench.config.ConfigException;
 
 /**
  * This class is to generate size, which supports "10MB" like size form.
- * 
+ *
  * @author ywang19, qzheng7
  * 
+ * add GiB, MiB...etc.
+ * @author sine
  */
 class DefaultSizeGenerator implements SizeGenerator {
 
@@ -41,10 +44,16 @@ class DefaultSizeGenerator implements SizeGenerator {
     public long setUnit(String unit) {
         if (StringUtils.endsWith(unit, "GB"))
             return (base = 1000 * 1000 * 1000);
+        if (StringUtils.endsWith(unit, "GiB"))
+            return (base = 1024 * 1024 * 1024);
         if (StringUtils.endsWith(unit, "MB"))
             return (base = 1000 * 1000);
+        if (StringUtils.endsWith(unit, "MiB"))
+            return (base = 1024 * 1024);
         if (StringUtils.endsWith(unit, "KB"))
             return (base = 1000);
+        if (StringUtils.endsWith(unit, "KiB"))
+            return (base = 1024);
         if (StringUtils.endsWith(unit, "B"))
             return (base = 1);
         String msg = "unrecognized size unit: " + unit;

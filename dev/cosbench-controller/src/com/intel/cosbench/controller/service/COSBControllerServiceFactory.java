@@ -1,5 +1,5 @@
-/** 
- 
+/**
+
 Copyright 2013 Intel Corporation, All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,19 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
-*/ 
+limitations under the License.
+*/
 
 package com.intel.cosbench.controller.service;
 
 import static org.apache.commons.lang.SystemUtils.IS_OS_WINDOWS;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.channels.ReadableByteChannel;
 
 import com.intel.cosbench.config.castor.CastorConfigTools;
 import com.intel.cosbench.controller.model.*;
@@ -76,7 +81,32 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
         context.setArchive_dir(loadArchiveDir());
         context.setConcurrency(loadConcurrency());
         context.setDriverRegistry(getDriverRegistry());
+        context.setVersion(getVersion());
         return context;
+    }
+
+    private String getVersion() {
+        // TODO Auto-generated method stub
+        String str = getName("VERSION");
+        String str2 = getName("BUILD.no");
+        return str+"."+str2;
+    }
+
+    private String getName(String fileName){
+         String str = null ;
+         File myFile=new File(fileName);
+         if(!myFile.exists()){
+             System.err.println("Can't Find " + fileName);
+         }
+         try {
+             BufferedReader in = new BufferedReader(new FileReader(myFile));
+             str = in.readLine();
+             in.close();
+         }
+         catch (IOException e) {
+             e.getStackTrace();
+         }
+         return str;
     }
 
     protected String loadLogLevel() {
@@ -88,9 +118,9 @@ public class COSBControllerServiceFactory extends AbstractServiceFactory
     }
 
     private String loadArchiveDir() {
-    	return config.get("controller.archive_dir", "archive");
+        return config.get("controller.archive_dir", "archive");
     }
-    
+
     private String loadControllerName() {
         return config.get("controller.name", "N/A");
     }

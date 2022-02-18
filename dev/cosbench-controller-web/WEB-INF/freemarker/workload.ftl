@@ -10,6 +10,7 @@
     <meta http-equiv="refresh" content="10; url=workload.html?id=${info.id}" />
   </#if>
   <link rel="stylesheet" type="text/css" href="resources/cosbench.css" />
+  <script type="text/javascript" src="resources/build/dist/echarts.js"></script>
   <title>Workload Details</title>
 </head>
 <body>
@@ -81,18 +82,18 @@
     </table>
       <th style="width:13%;">Time Remaining</th>
     
-    <p><a href="workload.html?id=${info.id}">hide details</a></p>
+    <p><a href="workload.html?id=${info.id}">Hide details</a></p>
   <#else>
-    <p><a href="workload.html?id=${info.id}&showDetails=True">more info</a></p>
+    <p><a href="workload.html?id=${info.id}&showDetails=True">More info</a></p>
   </#if>
   <#if isStopped >
     <h3>Final Result</h3>
     <#assign allMetrics = info.report.allMetrics >
     <#include "metrics.ftl">
     <#if perfDetails >
-      <p><a href="workload.html?id=${info.id}">hide peformance details</a></p>
+      <p><a href="workload.html?id=${info.id}">Hide peformance details</a></p>
     <#else>
-      <p><a href="workload.html?id=${info.id}&perfDetails=True">show peformance details</a></p>
+      <p><a href="workload.html?id=${info.id}&perfDetails=True">Show peformance details</a></p>
     </#if>
   <#elseif isRunning >
     <h3>Snapshot</h3>
@@ -199,10 +200,26 @@
           </#list>
         </td>
         <td><span class="stage-state-${sInfo.state?lower_case} state">${sInfo.state?lower_case}</span></td>
-        <td><a href="stage.html?wid=${info.id}&sid=${sInfo.id}">view details</a></td>
+        <td><a href="stage.html?wid=${info.id}&sid=${sInfo.id}">View details</a></td>
       </tr>
     </#list>
   </table>
+
+<!--running Performance Graph  -->
+<#if isRunning>
+  <h4>Performance Graph</h4>
+  <div id="graph">
+    <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+    <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="bandwidth"></div>
+    <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
+    <#include "forchart.ftl">
+    <#include "runningchart.ftl">
+    </viv>
+  </div>
+</#if>
+
   <p class="warn">There are ${info.stageCount} stages in this workload.</p>
   <#if isStopped>
     <#if showErrorStatistics> 
@@ -211,7 +228,7 @@
         <tr>
           <th>Driver Url</th>
           <th>Error Code</th>
-          <th>Occurence Number</th>
+          <th>Occurrence Number</th>
         </tr>
         <#list info.errorStatistics?keys as url>     
           <#list info.errorStatistics[url].errorCodeAndNum?keys as code>
@@ -227,21 +244,42 @@
         </#list>
         </#list>
       </table>
-      <p><a href="workload.html?id=${info.id}">hide error statistics details</a></p>
+      <p><a href="workload.html?id=${info.id}">Hide error statistics details</a></p>
     <#else>
-      <p><a href="workload.html?id=${info.id}&showErrorStatistics=True">show error statistics details</a></p>
+      <p><a href="workload.html?id=${info.id}&showErrorStatistics=True">Show error statistics details</a></p>
     </#if>
+    <!-- final Performance Graph -->
+      <h4>Performance Graph
+         <select id="cstage" onchange="custage()">
+            <option value="close" select="selected"></option>
+           <#list info.stageInfos  as sInfo >
+            <option value=${sInfo.id}>${sInfo.id}</option>
+           </#list>
+         </select>
+       </h4>
+      <div id="fchart" style="display:none">
+        <div style="width:1080px;height:810px;display:block;margin:auto;margin-top:20px;border: solid 1px #ccc;">
+        <div class="chart" style="width:1070px;height:200px;" id="throughput"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="resTime"></div>
+        <div class="chart" style="width:1070px;height:200px;" id="bandwidth" ></div>
+        <div class="chart" style="width:1070px;height:200px;" id="ratio"></div>
+        <#include "forchart.ftl">
+        <#include "finalchart.ftl">
+        </div>
+     </div>
   </#if>
+
+
   <h3>Actions</h3>
   <p>
     <#if !isStopped >
-      <a class="label" href="cancel-workload.do?id=${info.id}">cancel-workload</a>
+      <a class="label" href="cancel-workload.do?id=${info.id}">Cancel-workload</a>
     <#else>
-      <a class="label" href="download-log.do?id=${info.id}">download-log</a>
-      <a class="label" href="download-config.do?id=${info.id}">download-config</a>
+      <a class="label" href="download-log.do?id=${info.id}">Download-log</a>
+      <a class="label" href="download-config.do?id=${info.id}">Download-config</a>
     </#if>
   </p>  
-  <p><a href="index.html">go back to index</a></p>
+  <p><a href="index.html">Go back to index</a></p>
 </div> <#-- end of content -->
 <div class="bottom"><br /></div>
 </div> <#-- end of main -->
