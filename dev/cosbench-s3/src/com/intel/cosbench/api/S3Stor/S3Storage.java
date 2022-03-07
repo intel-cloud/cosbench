@@ -3,6 +3,7 @@ package com.intel.cosbench.api.S3Stor;
 import static com.intel.cosbench.client.S3Stor.S3Constants.*;
 
 import java.io.*;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 
@@ -96,6 +97,26 @@ public class S3Storage extends NoneStorage {
             S3Object s3Obj = client.getObject(container, object);
             stream = s3Obj.getObjectContent();
             
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        return stream;
+    }
+	
+	@Override
+    public InputStream getList(String container, String prefix, Config config) {
+        super.getList(container, prefix, config);
+        InputStream stream;
+        try {
+            ObjectListing s3ObjList = client.listObjects(container, prefix);
+            List<S3ObjectSummary> objSummaries = s3ObjList.getObjectSummaries();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            for (S3ObjectSummary s : objSummaries) {
+                baos.write(s.toString().getBytes());
+            }
+            byte[] bytes = baos.toByteArray();
+            stream = new ByteArrayInputStream(bytes);
+
         } catch (Exception e) {
             throw new StorageException(e);
         }
