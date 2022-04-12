@@ -39,8 +39,6 @@ public class Lister extends AbstractOperator {
 
     private ObjectPicker objPicker = new ObjectPicker();
 
-//    private byte buffer[] = new byte[1024*1024];
-
     public Lister() {
         /* empty */
     }
@@ -75,7 +73,6 @@ public class Lister extends AbstractOperator {
 
         InputStream in = null;
         CountingOutputStream cout = new CountingOutputStream(out);
-        doLogWarn(session.getLogger(), "listerrr: "+ conName + "/" + objName); // TODO: ????
         long start = System.nanoTime();
         long xferTime = 0L;
         try {
@@ -92,7 +89,7 @@ public class Lister extends AbstractOperator {
 			doLogWarn(session.getLogger(), msg);
 			
 			return new Sample(new Date(), getId(), getOpType(), getSampleType(), getName(), false);
-		}catch (Exception e) {
+		}catch (Exception e) { // TODO: catch IOException, need to improve.
             isUnauthorizedException(e, session);
             errorStatisticsHandle(e, session, conName + "/" + objName);
 

@@ -1,9 +1,74 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<workload name="ess-sample" description="sample benchmark for ehualu s3">
+<workload name="xml-sample" description="sample benchmark for ehualu s3">
   
-
-  <!-- New feature to ess and essv2 -->
   <workflow>
+    <!-- Features to GDAS storage START -->
+
+	<!-- mprepare, multipart upload object -->
+	<workstage name="mprepare example">
+	  <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
+      <work type="mprepare" workers="1" config="cprefix=s3testqwer;containers=r(1,2);objects=r(1,10);sizes=c(64)KB" />
+    </workstage>
+	<!-- end -->
+	
+	<!-- mwrite, multipart upload object -->
+    <workstage name="mwrite example">
+      <work name="mwrite test" workers="8" runtime="30">
+	    <!-- part_size: default is 5MiB, must be set >= 5MiB -->
+	    <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;part_size=5242880" />
+        <operation type="mwrite" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- restore, restore object -->
+	<workstage name="restore object example">
+      <work name="restore test" workers="8" runtime="30">
+	    <!-- restore_days: default is 1 -->
+	    <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;restore_days=1" />
+        <operation type="restore" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- no_verify_ssl, default is false -->
+	<workstage name="disable verify ssl example">
+      <work name="https test" workers="8" runtime="30">
+	    <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;no_verify_ssl=true" />
+		<!-- write, read, etc. -->
+        <operation type="head" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	
+	<!-- GiB, MiB, KiB, etc. 2^n, not 10^n -->
+	<workstage name="object size is 1024 based">
+      <work name="object size test" workers="8" runtime="30">
+	    <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;no_verify_ssl=true" />
+		<!-- write, mwrite, both ok. -->
+        <operation type="write" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KiB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	
+	<!-- aws_region -->
+	<workstage name="set aws_region example">
+      <work name="https test" workers="8" runtime="30">
+	    <!-- aws_region: default is us-east-1. Normally, there is no need to set this parameter. -->
+	    <storage type="gdas" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;aws_region=us-east-1" />
+		<!-- write, read, etc. -->
+        <operation type="head" ratio="100" config="cprefix=s3testqwer;containers=u(1,2);objects=u(11,20);sizes=c(64)KiB" />
+      </work>
+    </workstage>
+	<!-- end -->
+	
+	<!-- Features to GDAS storage END -->
+  
+  
+  
+    <!-- New feature to ess and essv2 -->
 	<!-- mprepare, multipart upload object -->
 	<workstage name="mprepare example">
 	  <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
@@ -54,7 +119,7 @@
 	
 	
 	<!-- GiB, MiB, KiB, etc. 2^n, not 10^n -->
-	<workstage name="set ">
+	<workstage name="object size is 1024 based">
       <work name="object size test" workers="8" runtime="30">
 	    <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;no_verify_ssl=true" />
 		<!-- write, mwrite, both ok. -->
@@ -65,7 +130,7 @@
 	
 	
 	<!-- aws_region: just for essv2 -->
-	<workstage name="set ">
+	<workstage name="set aws_region example">
       <work name="https test" workers="8" runtime="30">
 	    <!-- aws_region: default is us-east-1. Normally, there is no need to set this parameter. -->
 	    <storage type="essv2" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true;aws_region=us-east-1" />
@@ -78,9 +143,9 @@
   </workflow>
   
   
-  <!-- Same to s3, storage type: ess or s3, both ok. -->
+  <!-- Same to s3, storage type: gdas or ess or s3, both ok. -->
   <!--
-  <storage type="ess" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
+  <storage type="gdas/ess/s3" config="accesskey=<accesskey>;secretkey=<scretkey>;proxyhost=<proxyhost>;proxyport=<proxyport>;endpoint=<endpoint>;path_style_access=true" />
   
   <workflow>
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: cosbench-ecs
 Bundle-SymbolicName: cosbench-ecs
-Bundle-Version: 0.4.7.6
+Bundle-Version: 0.4.7.7
 Bundle-Vendor: emc
 Import-Package: com.intel.cosbench.api.auth,
  com.intel.cosbench.api.context,

@@ -3,7 +3,7 @@ Web-ContextPath: controller
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Controller Web Bundle
 Bundle-SymbolicName: cosbench-controller-web
-Bundle-Version: 0.4.7.6
+Bundle-Version: 0.4.7.7
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
  JavaSE-1.6

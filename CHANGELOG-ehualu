@@ -1,4 +1,29 @@
 
+ COSBench 0.4.7.7(ehualu 2022.04.12)
+------------------------------------
+- #302: modify list operation of gdas
+		List operation: change usePrefix to useMarker where in the bucket listing begins. SDK default max-keys is 1000.
+- #301: add gdas storage.
+		e.g: <storage type="gdas" config="endpoint=xxx" />
+		
+		Notice:
+			gdas use aws-sdk-java(version is 1.12.158 now)
+		
+		gdas storage Features: 
+			no_verify_ssl: <storage type="gdas" config="no_verify_ssl=true;...other config..."/> 
+			Restore object: <operation type="restore" ...>
+					 <storage type="gdas" config="restore_days=1;...path_style_access=true;timeout=100000"/>
+			Multipart upload: <operation type="mwrite" ...>
+							  <storage type="s3" config="part_size=5242880;...path_style_access=true;timeout=100000"/>
+			Support GiB，MiB，KiB(2^n，not 10^n): 
+				<operation type="write" ratio="100" config="cprefix=xx;containers=c(1);oprefix=xx;objects=s(1,10);sizes=c(4)KiB" />
+			Head object: <operation type="head" ...>
+			mprepare, multipart upload object at prepare stage.
+			mfilewrite, multipart upload object at filewrite stage.
+			aws_region: <storage type="gdas" config="endpoint=xxx;aws_region=us-east-1" />
+						default is us-east-1
+
+
  COSBench 0.4.7.6(ehualu 2022.02.14)
 ------------------------------------
 - #300: Refactor: s3 and s3v2 will not be supported, so s3v2 was deleted, add ess and essv2.
@@ -27,7 +52,7 @@
 		ess Features special:
 			prefetch and range read: please read s3-config-prefetch-sample.xml and s3-config-range-sample.xml in the config dir.
 			
-		essv2 Features special::
+		essv2 Features special:
 			aws_region: <storage type="essv2" config="endpoint=xxx;aws_region=us-east-1" />
 						default is us-east-1
 

@@ -8,15 +8,21 @@
          http://www.springframework.org/schema/osgi
          http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-	<bean name="storageFactory" class="com.intel.cosbench.api.ehualu.EssStorageFactory" />
+	<bean name="storageFactoryEss" class="com.intel.cosbench.api.ehualu.EssStorageFactory" />
 	
-	<bean name="storageFactoryV2" class="com.intel.cosbench.api.ehualu.EssStorageFactoryV2" />
+	<bean name="storageFactoryEssV2" class="com.intel.cosbench.api.ehualu.EssStorageFactoryV2" />
+	
+	<bean name="storageFactoryGdas" class="com.intel.cosbench.api.ehualu.GdasStorageFactory" />
 
-	<osgi:service ref="storageFactory" context-class-loader="service-provider"
+	<osgi:service ref="storageFactoryEss" context-class-loader="service-provider"
 		interface="com.intel.cosbench.api.storage.StorageAPIFactory">
 	</osgi:service>
 	
-	<osgi:service ref="storageFactoryV2" context-class-loader="service-provider"
+	<osgi:service ref="storageFactoryEssV2" context-class-loader="service-provider"
+		interface="com.intel.cosbench.api.storage.StorageAPIFactory">
+	</osgi:service>
+	
+	<osgi:service ref="storageFactoryGdas" context-class-loader="service-provider"
 		interface="com.intel.cosbench.api.storage.StorageAPIFactory">
 	</osgi:service>
 

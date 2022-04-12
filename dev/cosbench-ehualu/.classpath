@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="aspectjweaver.jar"/>
 	<classpathentry exported="true" kind="lib" path="auth-2.17.129.jar"/>
 	<classpathentry exported="true" kind="lib" path="auth-2.17.129-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="aws-core-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="aws-core-2.17.129.jar" sourcepath="aws-core-2.17.129-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="aws-core-2.17.129-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="aws-java-sdk-core-1.12.158.jar" sourcepath="aws-java-sdk-core-1.12.158-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="aws-java-sdk-core-1.12.158-sources.jar"/>
@@ -69,7 +69,7 @@
 	<classpathentry exported="true" kind="lib" path="netty-common-4.1.72.Final-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-handler-4.1.72.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-handler-4.1.72.Final-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="netty-nio-client-2.17.129.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-nio-client-2.17.129.jar" sourcepath="netty-nio-client-2.17.129-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-nio-client-2.17.129-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-2.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-reactive-streams-2.0.5-sources.jar"/>
@@ -79,7 +79,7 @@
 	<classpathentry exported="true" kind="lib" path="netty-resolver-4.1.72.Final-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-tcnative-classes-2.0.46.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-tcnative-classes-2.0.46.Final-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="netty-transport-4.1.72.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="netty-transport-4.1.72.Final.jar" sourcepath="netty-transport-4.1.72.Final-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-transport-4.1.72.Final-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-transport-classes-epoll-4.1.72.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="netty-transport-classes-epoll-4.1.72.Final-sources.jar"/>

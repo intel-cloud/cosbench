@@ -18,34 +18,54 @@ package com.intel.cosbench.api.ehualu;
 
 import static com.intel.cosbench.client.ehualu.EssConstants.*;
 
-import java.io.*;
+//import java.io.*;
 import java.net.URI;
 import java.time.Duration;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.awscore.exception.AwsServiceException;
-import software.amazon.awssdk.core.ResponseBytes;
-import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.http.SdkHttpClient;
-import software.amazon.awssdk.http.SdkHttpConfigurationOption;
-import software.amazon.awssdk.http.apache.ApacheHttpClient;
-import software.amazon.awssdk.http.apache.ProxyConfiguration;
+//import java.util.List;
+//import java.util.concurrent.CompletableFuture;
+//
+//import org.reactivestreams.Publisher;
+//
+//import java.util.ArrayList;
+//
+//import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+//import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+//import software.amazon.awssdk.awscore.exception.AwsServiceException;
+//import software.amazon.awssdk.core.ResponseBytes;
+//import software.amazon.awssdk.core.async.AsyncRequestBody;
+//import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
+//import software.amazon.awssdk.core.exception.SdkClientException;
+//import software.amazon.awssdk.core.sync.RequestBody;
+//import software.amazon.awssdk.http.SdkHttpClient;
+//import software.amazon.awssdk.http.SdkHttpConfigurationOption;
+//import software.amazon.awssdk.http.TlsTrustManagersProvider;
+//import software.amazon.awssdk.http.apache.ApacheHttpClient;
+//import software.amazon.awssdk.http.async.SdkAsyncHttpClient;
+//import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
+//import software.amazon.awssdk.http.nio.netty.ProxyConfiguration;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.utils.AttributeMap;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.async.AsyncResponseTransformer;
+import software.amazon.awssdk.core.async.ResponsePublisher;
+import software.amazon.awssdk.http.SdkHttpConfigurationOption;
+import software.amazon.awssdk.http.async.SdkAsyncHttpClient;
+import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
+import software.amazon.awssdk.http.nio.netty.ProxyConfiguration;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3Configuration;
 
 import com.intel.cosbench.api.storage.*;
+import com.amazonaws.services.s3.transfer.internal.future.CompletedFuture;
 import com.intel.cosbench.api.context.*;
 import com.intel.cosbench.config.Config;
 import com.intel.cosbench.log.Logger;
 
-public class EssStorageV2 extends NoneStorage {
+public class AsyncEssStorageV2 extends NoneStorage {
 
 	private int timeout;
 
@@ -53,7 +73,7 @@ public class EssStorageV2 extends NoneStorage {
 	private String secretKey;
 	private String endpoint;
 
-	private S3Client client;
+	private S3AsyncClient client;
 
 	private String storageClass;
 	private int restoreDays;
@@ -80,6 +100,7 @@ public class EssStorageV2 extends NoneStorage {
 
 		proxyHost = config.get(PROXY_HOST_KEY, "");
 		proxyPort = config.get(PROXY_PORT_KEY, "");
+		parms.put(PROXY_PORT_KEY, proxyPort);
 
 		// 2021.02.14
 		// You can set storage_class to other value in storage part.
@@ -101,12 +122,12 @@ public class EssStorageV2 extends NoneStorage {
 		// You can set region now, and default is us-east-1.
 		awsRegion = config.get(REGION_KEY, REGION_DEFAULT);
 
-		initClient();
+		initAsyncClient();
 
 	}
 
-	private S3Client initClient() {
-		logger.debug("initialize S3 client with storage config: {}", parms);
+	private S3AsyncClient initAsyncClient() {
+		logger.debug("initialize S3 async client with storage config: {}", parms);
 
 		AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
 
@@ -114,35 +135,37 @@ public class EssStorageV2 extends NoneStorage {
 
 		ProxyConfiguration.Builder proxyConfig = ProxyConfiguration.builder();
 		if ((!proxyHost.equals("")) && (!proxyPort.equals(""))) {
-			proxyConfig.useSystemPropertyValues(Boolean.FALSE)
-					.endpoint(URI.create("http://" + proxyHost + ":" + proxyPort));
+			proxyConfig.host(proxyHost).port(parms.getInt(PROXY_PORT_KEY));
 		}
 
-		ApacheHttpClient.Builder httpClientBuilder = ApacheHttpClient.builder()
-				// max connections.
-				.maxConnections(maxConnections)
-				// Set socket timeout for data to be transferred.
-				.socketTimeout(Duration.ofMillis(timeout))
+		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
+				// For HTTP/1.1 this is the same as max connections.
+				.maxConcurrency(maxConnections)
 				// Set connection timeout for initially establishing a connection.
 				.connectionTimeout(Duration.ofMillis(timeout))
+				// Set socket timeout(write and read) for data to be transferred.
+				// TODO: need to confirm.
+				.writeTimeout(Duration.ofMillis(timeout)).readTimeout(Duration.ofMillis(timeout))
 				// disable expect continue for HTTP/1.1.
-				.expectContinueEnabled(false).proxyConfiguration(proxyConfig.build());
+				// TODO
+				.putChannelOption(null, proxyConfig)
+				// proxy config.
+				.proxyConfiguration(proxyConfig.build());
 
-		SdkHttpClient httpClient;
-
+		SdkAsyncHttpClient asyncHttpClient;
 		if (noVerifySSL) {
-			httpClient = httpClientBuilder.buildWithDefaults(AttributeMap.builder()
+			asyncHttpClient = asyncHttpClientBuilder.buildWithDefaults(AttributeMap.builder()
 					.put(SdkHttpConfigurationOption.TRUST_ALL_CERTIFICATES, Boolean.TRUE).build());
 		} else {
-			httpClient = httpClientBuilder.build();
+			asyncHttpClient = asyncHttpClientBuilder.build();
 		}
-		
-		client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+
+		client = S3AsyncClient.builder().credentialsProvider(StaticCredentialsProvider.create(awsCreds))
 				.endpointOverride(URI.create(endpoint))
 				// solve issue: https://github.com/kisscelia/cosbench-ehualu/issues/3
-				.region(Region.of(awsRegion)).serviceConfiguration(s3Config).httpClient(httpClient).build();
+				.region(Region.of(awsRegion)).serviceConfiguration(s3Config).httpClient(asyncHttpClient).build();
 
-		logger.debug("S3 client has been initialized");
+		logger.debug("S3 async client has been initialized");
 
 		return client;
 	}
@@ -162,17 +185,37 @@ public class EssStorageV2 extends NoneStorage {
 	public InputStream getObject(String container, String object, Config config) {
 		super.getObject(container, object, config);
 		InputStream stream = null;
-		try {
-			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(container).key(object).build();
-			ResponseBytes<GetObjectResponse> objectBytes = client.getObjectAsBytes(getObjectRequest);
 
-			stream = objectBytes.asInputStream();
+		GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(container).key(object).build();
+		CompletableFuture<ResponsePublisher<GetObjectResponse>> futureGet = client.getObject(getObjectRequest,
+				AsyncResponseTransformer.toPublisher());
+		futureGet.whenComplete((resp, err) -> {
+			try {
+				if (resp != null) {
+					System.out.println("Object downloaded. Details: " + resp);
+				} else {
+					err.printStackTrace();
 
-		} catch (AwsServiceException ase) {
-			throw new StorageException(ase);
-		} catch (SdkClientException sce) {
-			throw new StorageTimeoutException(sce);
-		}
+				}
+			} finally {
+				client.close();
+			}
+		});
+
+//		try {
+//			GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(container).key(object).build();
+//			CompletedFuture<GetObjectResponse> futureGet = client.getObject(getObjectRequest, null);
+//			
+//			
+////			ResponseBytes<GetObjectResponse> objectBytes = client.getObjectAsBytes(getObjectRequest);
+//
+////			stream = objectBytes.asInputStream();
+//
+//		} catch (AwsServiceException ase) {
+//			throw new StorageException(ase);
+//		} catch (SdkClientException sce) {
+//			throw new StorageTimeoutException(sce);
+//		}
 
 		return stream;
 	}
@@ -217,18 +260,38 @@ public class EssStorageV2 extends NoneStorage {
 				.contentType("application/octet-stream").storageClass(storageClass).bucket(container).key(object)
 				.build();
 
-		RequestBody requestBody = RequestBody.fromInputStream(data, length);
+		// https://github.com/aws/aws-sdk-java-v2/issues/1177
+		// V2 async uses NIO APIs and supports non-blocking streaming operations.
+		// With v2 async client, you need to provide a Publisher instead of InputStream
+		// (blocking IO) via AsyncRequestBody#fromPublisher.
+		AsyncRequestBody aRequestBody = AsyncRequestBody.fromPublisher(null);
+		CompletableFuture<PutObjectResponse> future = client.putObject(putObjectRequest, aRequestBody);
 
-		try {
-			client.putObject(putObjectRequest, requestBody);
-		} catch (AwsServiceException ase) {
-			throw new StorageException(ase);
-		} catch (SdkClientException sce) {
-			throw new StorageTimeoutException(sce);
-		}
+		future.whenComplete((resp, err) -> {
+			try {
+				if (resp != null) {
+					// normal flow.
+
+				} else {
+					// error handler.
+
+				}
+			} finally {
+				client.close();
+			}
+		});
+
+		future.join();
+
+//		try {
+//			
+//		} catch (AwsServiceException ase) {
+//			throw new StorageException(ase);
+//		} catch (SdkClientException sce) {
+//			throw new StorageTimeoutException(sce);
+//		}
 	}
 
-	// 2021.8.3 updated, sine.
 	@Override
 	public void createMultipartObject(String container, String object, InputStream data, long length, Config config) {
 		super.createMultipartObject(container, object, data, length, config);
@@ -325,9 +388,23 @@ public class EssStorageV2 extends NoneStorage {
 			ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(container).prefix(object)
 					.build();
 
-			ListObjectsV2Response result = client.listObjectsV2(listObjectsV2Request);
+			CompletableFuture<ListObjectsV2Response> future = client.listObjectsV2(listObjectsV2Request);
 
-			stream = new ByteArrayInputStream(result.toString().getBytes());
+			future.whenComplete((resp, err) -> {
+				try {
+					if (resp != null) {
+
+					} else {
+
+					}
+				} finally {
+					client.close();
+				}
+			});
+
+			future.join();
+
+//			stream = new ByteArrayInputStream(result.toString().getBytes());
 		} catch (Exception e) {
 			throw new StorageException(e);
 		}

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: COSBench Controller Bundler
 Bundle-SymbolicName: cosbench-controller
-Bundle-Version: 0.4.7.6
+Bundle-Version: 0.4.7.7
 Bundle-Vendor: intel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
  JavaSE-1.6
