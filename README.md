@@ -36,11 +36,11 @@ New storage: ess and essv2(Usage, please refer to conf/ehualu-config-sample.xml,
 - HTTPS: If want to disable verify SSL, please set no_verify_ssl to true. Default is false.
 
 
-Notice
+eHualu - Notice
 ----------------------------------------
 - s3v2 was deleted(essv2 instead), s3 is no longer actively maintained.
 - if need new features, please use ess/essv2, thanks.
-- gdas use aws-sdk-java(now, version is 1.12.158)
+- ess means e-SuperStor(s3)
 - ess use aws-sdk-java(now, version is 1.12.158)
 - essv2 use aws-sdk-java-v2(now, version is 2.17.129)
 
