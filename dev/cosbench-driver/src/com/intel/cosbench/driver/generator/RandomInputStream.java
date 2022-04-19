@@ -96,7 +96,7 @@ public class RandomInputStream extends NullInputStream {
                 return;
             }
 
-            int gap = (int) ((processed + length) - (size - hashLen));
+            long gap = (processed + length) - (size - hashLen);
             if (gap > 0) // partial hash needs append in gap area.
                 length -= gap;
 
@@ -122,7 +122,7 @@ public class RandomInputStream extends NullInputStream {
                 }
 
                 if (gap > 0)
-                    System.arraycopy(hashBytes, 0, bytes, offset, gap);
+                    System.arraycopy(hashBytes, 0, bytes, offset, (int) gap);
             }
 
         }
