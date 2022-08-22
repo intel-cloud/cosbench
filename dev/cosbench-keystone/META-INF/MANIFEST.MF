@@ -18,5 +18,6 @@ Import-Package: com.intel.cosbench.api.auth,
  org.apache.http.message;version="[4.1.4,5.0.0)",
  org.apache.http.util;version="[4.1.4,5.0.0)",
  org.codehaus.jackson;version="[1.4.2,2.0.0)",
+ org.codehaus.jackson.annotate;version="1.4.2",
  org.codehaus.jackson.map;version="[1.4.2,2.0.0)",
  org.codehaus.jackson.map.annotate;version="[1.4.2,2.0.0)"

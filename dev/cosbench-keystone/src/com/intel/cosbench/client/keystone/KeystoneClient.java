@@ -17,18 +17,15 @@ limitations under the License.
 
 package com.intel.cosbench.client.keystone;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.HttpClient;
 
-import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo;
-import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.ServiceInfo;
-import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.ServiceInfo.Endpoint;
-import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.Token;
-import com.intel.cosbench.client.keystone.KeystoneResponse.AccessInfo.User;
+import com.intel.cosbench.client.keystone.KeystoneResponse.ServiceInfo;
+import com.intel.cosbench.client.keystone.KeystoneResponse.ServiceInfo.Endpoint;
+import com.intel.cosbench.client.keystone.KeystoneResponse.TokenInfo;
+import com.intel.cosbench.client.keystone.KeystoneResponse.User;
 import com.intel.cosbench.client.keystone.handler.*;
-import com.intel.cosbench.log.Logger;
 
 /**
  * A client for Openstack keystone authentication service. <br />
@@ -55,36 +52,37 @@ import com.intel.cosbench.log.Logger;
  * order to get a new token that will be scoped with the specified tenant.
  * </p>
  * </ol>
- * @author ywang19 
- * @author qzheng
+ * 
+ * @author qzheng (qing.zheng@intel.com), osmboy (lei.lei@ostorage.com.cn)
  */
 public class KeystoneClient {
-	
-	private Logger logger;
-	
+
     /* user info */
     private String username;
     private String password;
-    private String userToken;
-    
+
     /* tenant info */
-    private String tenantId;
     private String tenantName;
     
-    /*targe region*/
-    private String region;
+    /* domain info */
+    private String userdomain;
+    
+    /* domain info */
+    private String projectdomain;
+
     /* authentication handler */
     private AuthHandler handler;
 
     /* authentication response */
     private KeystoneResponse response;
 
-    public KeystoneClient(Logger logger, HttpClient client, String url, String username,
-            String password, String tenantName, int timeout) {
-    	this.logger = logger;
+    public KeystoneClient(HttpClient client, String url, String username,
+            String password, String tenantName, String userdomain,String projectdomain, int timeout) {
         this.username = username;
         this.password = password;
         this.tenantName = tenantName;
+        this.userdomain = userdomain;
+        this.projectdomain = projectdomain;
         this.handler = new HttpAuthHandler(url, timeout);
     }
 
@@ -111,25 +109,24 @@ public class KeystoneClient {
     private KeystoneRequest initRequest() {
         KeystoneRequest request = new KeystoneRequest();
         /* user info */
-        if (this.username != null && this.password != null) {
-            request.addCredentials(this.username, this.password);
-        } else if (this.userToken != null) {
-            request.addUserToken(this.userToken);
+        if (this.username != null && this.password != null && this.userdomain != null) {
+            request.addUserScope(this.username, this.password, this.userdomain);
         } else {
             String e = "no user info is detected in this keystone client";
             throw new IllegalStateException(e);
         }
         /* tenant info */
-        if (this.tenantId != null) {
-            request.addTenantId(this.tenantId);
-        } else if (this.tenantName != null) {
-            request.addTenantName(this.tenantName);
+        if (this.tenantName != null && this.projectdomain != null) {
+        	request.addProjectScope(this.tenantName, this.projectdomain);
+        }  else {
+        	String e = "no project info is detected in keystone scope";
+            throw new IllegalStateException(e);
         }
         return request;
     }
 
     private void validateResponse(KeystoneResponse response) {
-        AccessInfo info = response.getAccess();
+        TokenInfo info = response.getToken();
         if (info == null) {
             String e = "no access info is found in the auth response";
             throw new KeystoneResponseException(e);
@@ -139,12 +136,7 @@ public class KeystoneClient {
             String e = "no user info is found in the auth response";
             throw new KeystoneResponseException(e);
         }
-        Token token = info.getToken();
-        if (token == null) {
-            String e = "no token info is found in the auth response";
-            throw new KeystoneResponseException(e);
-        }
-        List<ServiceInfo> catalog = info.getServiceCatalog();
+        List<ServiceInfo> catalog = info.getCatalog();
         if (catalog == null) {
             String e = "no service catalog is found in the auth response";
             throw new KeystoneResponseException(e);
@@ -165,16 +157,6 @@ public class KeystoneClient {
     }
 
     public void setUsername(String username) {
-        if (username != null) {
-            if (this.userToken != null) {
-                String e = "cannot set username and userToken simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (username.isEmpty()) {
-                String e = "username cannot be empty";
-                throw new IllegalArgumentException(e);
-            }
-        }
         this.username = username;
     }
 
@@ -183,74 +165,32 @@ public class KeystoneClient {
     }
 
     public void setPassword(String password) {
-        if (password != null) {
-            if (this.userToken != null) {
-                String e = "cannot set password and userToken simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (password.isEmpty()) {
-                String e = "password cannot be empty";
-                throw new IllegalArgumentException(e);
-            }
-        }
         this.password = password;
     }
 
-    public String getUserToken() {
-        return userToken;
+    public String getUserDomain() {
+        return userdomain;
     }
 
-    public void setUserToken(String userToken) {
-        if (userToken != null) {
-            if (this.username != null) {
-                String e = "cannot set usernmae and userToken simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (this.password != null) {
-                String e = "cannot set password and userToken simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (userToken.isEmpty()) {
-                String e = "userToken cannot be empty";
-                throw new IllegalArgumentException(e);
-            }
-        }
-        this.userToken = userToken;
+    public void setUserDomain(String domain) {
+       
+        this.userdomain = domain;
+    }
+    
+    public String getProjectDomain() {
+        return projectdomain;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public void setProjectDomain(String domain) {
+       
+        this.projectdomain = domain;
     }
-
-    public void setTenantId(String tenantId) {
-        if (tenantId != null) {
-            if (this.tenantName != null) {
-                String e = "cannot set tenant id and name simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (tenantId.isEmpty()) {
-                String e = "tenant id cannot be empty";
-                throw new IllegalArgumentException(e);
-            }
-        }
-        this.tenantId = tenantId;
-    }
-
+    
     public String getTenantName() {
         return tenantName;
     }
 
     public void setTenantName(String tenantName) {
-        if (tenantName != null) {
-            if (this.tenantId != null) {
-                String e = "cannot set tenant id and name simultaneously";
-                throw new IllegalStateException(e);
-            }
-            if (tenantName.isEmpty()) {
-                String e = "tenant name cannot be empty";
-                throw new IllegalArgumentException(e);
-            }
-        }
         this.tenantName = tenantName;
     }
 
@@ -281,7 +221,7 @@ public class KeystoneClient {
      * @return the keystone token id
      */
     public String getKeystoneTokenId() {
-        return getToken().getId();
+        return getTokenInfo().getId();
     }
 
     /**
@@ -294,39 +234,14 @@ public class KeystoneClient {
      *            - the name identifying the service
      * @return the public URL of a cloud service
      */
-    public String getServiceUrl(String serviceName, String region) {
+    public String getServiceUrl(String serviceName) {
         ServiceInfo service = getServiceInfo(serviceName);
         if (service == null)
             return null;
         List<Endpoint> endpoints = service.getEndpoints();
-        
-        if (endpoints == null || endpoints.size() == 0)
-        {
-        	logger.error("no endpoints return from keystone");
-        	return null;
-        }
-      
-        List<String> regions = new ArrayList<String>();
-	   	for (Endpoint endpoint : endpoints) {
-    		String the_region = endpoint.getRegion();
-    		if(the_region != null) {
-    			regions.add(the_region);
-    		}
-	   	}
-	   	
-        if (region == null || region.isEmpty()) { // no region assigned, will use the first one.
-
-    	   	logger.warn("Below regions are returned from keystone : " + regions.toString() + 
-    	   			", but no expected region assigned in your configuration, so the first region will be used.");
-    	   	return endpoints.get(0).getPublicURL();
-        }
-
-        int idx = -1;
-	   	if((idx=regions.indexOf(region)) >= 0) {
-	   		return endpoints.get(idx).getPublicURL();
-		}
-        
-		return null;
+        if (endpoints != null && endpoints.size() > 0)
+            return endpoints.get(0).getUrl();
+        return null;
     }
 
     /**
@@ -340,31 +255,21 @@ public class KeystoneClient {
      * @return the information regarding a cloud service
      */
     public ServiceInfo getServiceInfo(String serviceName) {
-        List<ServiceInfo> catalog = getAccessInfo().getServiceCatalog();
+        List<ServiceInfo> catalog = getTokenInfo().getCatalog();
         for (ServiceInfo service : catalog)
             if (serviceName != null ? serviceName.equals(service.getName())
                     : service.getName() == null)
                 return service;
-        
-        List<String> services = new ArrayList<String>();
-        for (ServiceInfo service : catalog)
-        	services.add(service.getName());
-        
-        logger.error("no designated service [" + serviceName + "] found, but only those services returned: " + services.toString());
-        
+
         return null;
     }
 
     public User getUser() {
-        return getAccessInfo().getUser();
+        return getTokenInfo().getUser();
     }
 
-    public Token getToken() {
-        return getAccessInfo().getToken();
-    }
-
-    private AccessInfo getAccessInfo() {
-        return getResponse().getAccess();
+    private TokenInfo getTokenInfo() {
+        return getResponse().getToken();
     }
 
     private KeystoneResponse getResponse() {
