@@ -32,7 +32,7 @@ import com.intel.cosbench.log.Logger;
  * This class encapsulates an Openstack Keystone implementation for the
  * Auth-API.
  * 
- * @author ywang19, qzheng7, osmboy
+ * @author ywang19, qzheng7, osmboy, digvijay2040
  * 
  */
 class KeystoneAuth extends NoneAuth {
@@ -48,7 +48,8 @@ class KeystoneAuth extends NoneAuth {
     private String tenantName;
 
     /* domain info */
-    private String domain;
+    private String userdomain;
+    private String projectdomain;
     /* service info */
     private String service;
 
@@ -67,14 +68,17 @@ class KeystoneAuth extends NoneAuth {
         username = config.get(AUTH_USERNAME_KEY, AUTH_USERNAME_DEFAULT);
         password = config.get(AUTH_PASSWORD_KEY, AUTH_PASSWORD_DEFAULT);
         tenantName = config.get(AUTH_TENANT_NAME_KEY, config.get(AUTH_TENANT_NAME_ALTKEY, AUTH_TENANT_NAME_DEFAULT));
-        domain = config.get(AUTH_DOMAIN_KEY, AUTH_DOMAIN_DEFAULT);
+        userdomain = config.get(AUTH_USER_DOMAIN_KEY, AUTH_USER_DOMAIN_DEFAULT);
+        projectdomain = config.get(AUTH_PROJECT_DOMAIN_KEY, AUTH_PROJECT_DOMAIN_DEFAULT);
         service = config.get(AUTH_SERVICE_KEY, AUTH_SERVICE_DEFAULT);
         timeout = config.getInt(CONN_TIMEOUT_KEY, CONN_TIMEOUT_DEFAULT);
 
         parms.put(AUTH_URL_KEY, url);
         parms.put(AUTH_USERNAME_KEY, username);
         parms.put(AUTH_PASSWORD_KEY, password);
-        parms.put(AUTH_DOMAIN_KEY, domain);
+        parms.put(AUTH_USER_DOMAIN_KEY, userdomain);
+        parms.put(AUTH_PROJECT_DOMAIN_KEY, projectdomain);
+        
         parms.put(AUTH_TENANT_NAME_KEY, tenantName);
         parms.put(AUTH_SERVICE_KEY, service);
         parms.put(CONN_TIMEOUT_KEY, timeout);
@@ -83,7 +87,7 @@ class KeystoneAuth extends NoneAuth {
 
         HttpClient httpClient = HttpClientUtil.createHttpClient(timeout);
         client = new KeystoneClient(httpClient, url, username, password,
-                tenantName, domain, timeout);
+                tenantName, userdomain,projectdomain, timeout);
         logger.debug("keystone client has been initialized");
     }
 

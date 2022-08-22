@@ -47,8 +47,11 @@ public interface KeystoneConstants {
     String AUTH_PASSWORD_KEY = "password";
     String AUTH_PASSWORD_DEFAULT = "";
     
-    String AUTH_DOMAIN_KEY = "domain";
-    String AUTH_DOMAIN_DEFAULT = "";
+    String AUTH_USER_DOMAIN_KEY = "user_domain";
+    String AUTH_USER_DOMAIN_DEFAULT = "";
+    
+    String AUTH_PROJECT_DOMAIN_KEY = "project_domain";
+    String AUTH_PROJECT_DOMAIN_DEFAULT = "";
     
     String AUTH_TENANT_NAME_KEY = "tenant_name";
     String AUTH_TENANT_NAME_ALTKEY = "tenname";

@@ -65,7 +65,10 @@ public class KeystoneClient {
     private String tenantName;
     
     /* domain info */
-    private String domain;
+    private String userdomain;
+    
+    /* domain info */
+    private String projectdomain;
 
     /* authentication handler */
     private AuthHandler handler;
@@ -74,11 +77,12 @@ public class KeystoneClient {
     private KeystoneResponse response;
 
     public KeystoneClient(HttpClient client, String url, String username,
-            String password, String tenantName, String domain, int timeout) {
+            String password, String tenantName, String userdomain,String projectdomain, int timeout) {
         this.username = username;
         this.password = password;
         this.tenantName = tenantName;
-        this.domain = domain;
+        this.userdomain = userdomain;
+        this.projectdomain = projectdomain;
         this.handler = new HttpAuthHandler(url, timeout);
     }
 
@@ -105,15 +109,15 @@ public class KeystoneClient {
     private KeystoneRequest initRequest() {
         KeystoneRequest request = new KeystoneRequest();
         /* user info */
-        if (this.username != null && this.password != null && this.domain != null) {
-            request.addUserScope(this.username, this.password, this.domain);
+        if (this.username != null && this.password != null && this.userdomain != null) {
+            request.addUserScope(this.username, this.password, this.userdomain);
         } else {
             String e = "no user info is detected in this keystone client";
             throw new IllegalStateException(e);
         }
         /* tenant info */
-        if (this.tenantName != null && this.domain != null) {
-        	request.addProjectScope(this.tenantName, this.domain);
+        if (this.tenantName != null && this.projectdomain != null) {
+        	request.addProjectScope(this.tenantName, this.projectdomain);
         }  else {
         	String e = "no project info is detected in keystone scope";
             throw new IllegalStateException(e);
@@ -164,13 +168,22 @@ public class KeystoneClient {
         this.password = password;
     }
 
-    public String getDomain() {
-        return domain;
+    public String getUserDomain() {
+        return userdomain;
     }
 
-    public void setDomain(String domain) {
+    public void setUserDomain(String domain) {
        
-        this.domain = domain;
+        this.userdomain = domain;
+    }
+    
+    public String getProjectDomain() {
+        return projectdomain;
+    }
+
+    public void setProjectDomain(String domain) {
+       
+        this.projectdomain = domain;
     }
     
     public String getTenantName() {
